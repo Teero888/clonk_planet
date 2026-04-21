@@ -1,0 +1,1 @@
+Utility source code used by Clonk.

@@ -1,0 +1,1552 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// German (Germany) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+#ifdef _WIN32
+LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_00_C4X              ICON    DISCARDABLE     "cp.ico"
+IDI_01_C4S              ICON    DISCARDABLE     "c4s.ico"
+IDI_02_C4G              ICON    DISCARDABLE     "c4g.ico"
+IDI_03_C4F              ICON    DISCARDABLE     "c4f.ico"
+IDI_04_C4P              ICON    DISCARDABLE     "c4p.ico"
+IDI_05_C4X              ICON    DISCARDABLE     "c4x.ico"
+IDI_06_C4D              ICON    DISCARDABLE     "c4d.ico"
+IDI_07_C4I              ICON    DISCARDABLE     "c4i.ico"
+IDI_08_C4M              ICON    DISCARDABLE     "c4m.ico"
+IDI_09_C4B              ICON    DISCARDABLE     "c4b.ico"
+IDI_10_C4V              ICON    DISCARDABLE     "c4v.ico"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 4,6,5,0
+ PRODUCTVERSION 4,6,5,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "Shareware Release\0"
+            VALUE "CompanyName", "RedWolf Design\0"
+            VALUE "FileDescription", "Clonk Engine\0"
+            VALUE "FileVersion", "4.65\0"
+            VALUE "InternalName", "Clonk4\0"
+            VALUE "LegalCopyright", "Copyright © 2000 Matthes Bender\0"
+            VALUE "LegalTrademarks", "Clonk is a registered trademark of Matthes Bender.\0"
+            VALUE "OriginalFilename", "Clonk.c4x\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "Clonk Planet\0"
+            VALUE "ProductVersion", "4.65\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CONSOLE DIALOGEX 0, 0, 193, 125
+STYLE WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTROLPARENT
+CAPTION "CONSOLE"
+MENU IDR_CONSOLEMENU
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,162,85,29,12,WS_GROUP
+    PUSHBUTTON      "P",IDC_BUTTONPLAY,95,100,13,11,BS_BITMAP | WS_GROUP
+    PUSHBUTTON      "P",IDC_BUTTONHALT,110,100,13,11,BS_BITMAP | WS_GROUP
+    COMBOBOX        IDC_COMBOINPUT,1,85,159,250,CBS_DROPDOWN | 
+                    CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_EDITOUTPUT,1,1,174,82,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_AUTOHSCROLL | ES_READONLY | WS_VSCROLL | WS_HSCROLL
+    LTEXT           "Frame: 0",IDC_STATICFRAME,1,100,52,11,SS_CENTERIMAGE,
+                    WS_EX_STATICEDGE
+    LTEXT           "Cursor",IDC_STATICCURSOR,1,113,190,11,SS_CENTERIMAGE,
+                    WS_EX_STATICEDGE
+    PUSHBUTTON      "P",IDC_BUTTONMODEEDIT,178,14,13,12,BS_BITMAP | WS_GROUP
+    PUSHBUTTON      "P",IDC_BUTTONMODEDRAW,178,27,13,12,BS_BITMAP | WS_GROUP
+    LTEXT           "Script: 0",IDC_STATICSCRIPT,55,100,38,11,SS_CENTERIMAGE,
+                    WS_EX_STATICEDGE
+    LTEXT           "0:00:00 (0 FPS)",IDC_STATICTIME,125,100,66,11,
+                    SS_CENTERIMAGE,WS_EX_STATICEDGE
+    PUSHBUTTON      "P",IDC_BUTTONMODEPLAY,178,1,13,12,BS_BITMAP | WS_GROUP
+END
+
+IDD_PROPERTIES DIALOGEX 0, 0, 168, 62
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "PROPERTIES"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,135,48,31,12
+    EDITTEXT        IDC_EDITOUTPUT,1,1,165,45,ES_MULTILINE | ES_READONLY | 
+                    WS_VSCROLL
+    COMBOBOX        IDC_COMBOINPUT,2,48,131,250,CBS_DROPDOWN | 
+                    CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Reload Def",IDC_BUTTONRELOADDEF,2,22,45,12,NOT 
+                    WS_VISIBLE
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,52,
+                    22,114,12,WS_EX_STATICEDGE
+END
+
+IDD_TOOLS DIALOGEX 0, 0, 194, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "TOOLS"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Button1",IDC_BUTTONBRUSH,24,2,16,16,BS_BITMAP
+    PUSHBUTTON      "Button1",IDC_BUTTONLINE,41,2,16,16,BS_BITMAP
+    PUSHBUTTON      "Button1",IDC_BUTTONRECT,58,2,16,16,BS_BITMAP
+    PUSHBUTTON      "Button1",IDC_BUTTONFILL,92,2,16,16,BS_BITMAP
+    CONTROL         "Slider1",IDC_SLIDERGRADE,"msctls_trackbar32",TBS_VERT | 
+                    TBS_TOP | TBS_NOTICKS | WS_TABSTOP,59,18,10,36
+    LTEXT           "MATERIAL",IDC_STATICMATERIAL,112,3,78,8
+    LTEXT           "TEXTURE",IDC_STATICTEXTURE,112,27,78,8
+    PUSHBUTTON      "",IDC_BUTTONNOIFT,71,20,18,15,BS_BITMAP
+    PUSHBUTTON      "",IDC_BUTTONIFT,71,36,18,15,BS_BITMAP
+    COMBOBOX        IDC_COMBOMATERIAL,112,12,78,100,CBS_DROPDOWNLIST | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBOTEXTURE,112,36,78,100,CBS_DROPDOWNLIST | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_PREVIEW,"Static",SS_BLACKFRAME,24,21,33,30,
+                    WS_EX_TRANSPARENT | WS_EX_CLIENTEDGE
+    PUSHBUTTON      "",IDC_BUTTONMODEDYNAMIC,3,3,16,15,BS_BITMAP
+    PUSHBUTTON      "",IDC_BUTTONMODESTATIC,3,19,16,15,BS_BITMAP
+    PUSHBUTTON      "",IDC_BUTTONMODEEXACT,3,35,16,15,BS_BITMAP
+    PUSHBUTTON      "Button1",IDC_BUTTONPICKER,75,2,16,16,BS_BITMAP
+END
+
+IDD_COMPONENT DIALOG DISCARDABLE  0, 0, 277, 149
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "COMPONENT"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,188,134,42,14
+    PUSHBUTTON      "CANCEL",IDCANCEL,232,134,44,14
+    EDITTEXT        IDC_EDITDATA,1,1,275,131,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL | WS_HSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_CONSOLE, DIALOG
+    BEGIN
+        LEFTMARGIN, 1
+        RIGHTMARGIN, 191
+        TOPMARGIN, 1
+        BOTTOMMARGIN, 124
+    END
+
+    IDD_PROPERTIES, DIALOG
+    BEGIN
+        LEFTMARGIN, 2
+        RIGHTMARGIN, 166
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 60
+    END
+
+    IDD_TOOLS, DIALOG
+    BEGIN
+        LEFTMARGIN, 2
+        RIGHTMARGIN, 192
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 53
+    END
+
+    IDD_COMPONENT, DIALOG
+    BEGIN
+        LEFTMARGIN, 1
+        RIGHTMARGIN, 276
+        TOPMARGIN, 1
+        BOTTOMMARGIN, 148
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_PLAY                BITMAP  DISCARDABLE     "Play.bmp"
+IDB_HALT                BITMAP  DISCARDABLE     "Halt.bmp"
+IDB_CURSOR              BITMAP  DISCARDABLE     "Cursor.bmp"
+IDB_BRUSH               BITMAP  DISCARDABLE     "Brush.bmp"
+IDB_CURSOR2             BITMAP  DISCARDABLE     "Cursor2.bmp"
+IDB_PLAY2               BITMAP  DISCARDABLE     "Play2.bmp"
+IDB_HALT2               BITMAP  DISCARDABLE     "Halt2.bmp"
+IDB_BRUSH2              BITMAP  DISCARDABLE     "Brush2.bmp"
+IDB_FILL                BITMAP  DISCARDABLE     "Fill.bmp"
+IDB_LINE                BITMAP  DISCARDABLE     "Line.bmp"
+IDB_RECT                BITMAP  DISCARDABLE     "Rectangle.bmp"
+IDB_NOIFT               BITMAP  DISCARDABLE     "NoIFT.bmp"
+IDB_IFT                 BITMAP  DISCARDABLE     "IFT.bmp"
+IDB_MOUSE               BITMAP  DISCARDABLE     "mouse.bmp"
+IDB_MOUSE2              BITMAP  DISCARDABLE     "mouse1.bmp"
+IDB_DYNAMIC             BITMAP  DISCARDABLE     "ift1.bmp"
+IDB_STATIC              BITMAP  DISCARDABLE     "dynamic1.bmp"
+IDB_EXACT               BITMAP  DISCARDABLE     "static1.bmp"
+IDB_LINE2               BITMAP  DISCARDABLE     "line1.bmp"
+IDB_RECT2               BITMAP  DISCARDABLE     "rect1.bmp"
+IDB_FILL2               BITMAP  DISCARDABLE     "fill1.bmp"
+IDB_PICKER              BITMAP  DISCARDABLE     "brush1.bmp"
+IDB_PICKER2             BITMAP  DISCARDABLE     "picker1.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_CONTEXTMENUS MENU DISCARDABLE 
+BEGIN
+    POPUP "VIEWPORT"
+    BEGIN
+        MENUITEM "DELETE",                      IDM_VIEWPORT_DELETE
+        MENUITEM "DUPLICATE",                   IDM_VIEWPORT_DUPLICATE
+        MENUITEM "GRAB CONTENTS",               IDM_VIEWPORT_CONTENTS
+        , GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "PROPERTIES",                  IDM_VIEWPORT_PROPERTIES
+    END
+END
+
+IDR_CONSOLEMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "FILE"
+    BEGIN
+        MENUITEM "OPEN",                        IDM_FILE_OPEN
+        MENUITEM "OPENWPLRS",                   IDM_FILE_OPENWPLRS
+        MENUITEM SEPARATOR
+        MENUITEM "SAVESCENARIO",                IDM_FILE_SAVE
+        MENUITEM "SAVESCENARIOAS",              IDM_FILE_SAVEAS
+        MENUITEM "SAVEGAME",                    IDM_FILE_SAVEGAME
+        MENUITEM "SAVEGAME AS",                 IDM_FILE_SAVEGAMEAS
+        MENUITEM SEPARATOR
+        MENUITEM "CLOSE",                       IDM_FILE_CLOSE
+        MENUITEM SEPARATOR
+        MENUITEM "QUIT",                        IDM_FILE_QUIT
+    END
+    POPUP "COMPONENTS"
+    BEGIN
+        MENUITEM "SCRIPT",                      IDM_COMPONENTS_SCRIPT
+        MENUITEM "TITLE",                       IDM_COMPONENTS_TITLE
+        MENUITEM "INFO",                        IDM_COMPONENTS_INFO
+    END
+    POPUP "PLAYER"
+    BEGIN
+        MENUITEM "NEW",                         IDM_PLAYER_JOIN
+    END
+    POPUP "VIEWPORT"
+    BEGIN
+        MENUITEM "NEW",                         IDM_VIEWPORT_NEW
+    END
+    POPUP "?"
+    BEGIN
+        MENUITEM "ABOUT",                       IDM_HELP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_TOOLS DLGINIT
+BEGIN
+    IDC_COMBOMATERIAL, 0x403, 2, 0
+0x0031, 
+    IDC_COMBOMATERIAL, 0x403, 2, 0
+0x0032, 
+    IDC_COMBOMATERIAL, 0x403, 2, 0
+0x0033, 
+    IDC_COMBOTEXTURE, 0x403, 2, 0
+0x0031, 
+    IDC_COMBOTEXTURE, 0x403, 2, 0
+0x0032, 
+    IDC_COMBOTEXTURE, 0x403, 2, 0
+0x0033, 
+    0
+END
+
+IDD_CONSOLE DLGINIT
+BEGIN
+    IDC_COMBOINPUT, 0x403, 2, 0
+0x0031, 
+    IDC_COMBOINPUT, 0x403, 2, 0
+0x0032, 
+    IDC_COMBOINPUT, 0x403, 2, 0
+0x0033, 
+    IDC_COMBOINPUT, 0x403, 2, 0
+0x0034, 
+    IDC_COMBOINPUT, 0x403, 2, 0
+0x0035, 
+    IDC_COMBOINPUT, 0x403, 2, 0
+0x0036, 
+    IDC_COMBOINPUT, 0x403, 2, 0
+0x0037, 
+    IDC_COMBOINPUT, 0x403, 2, 0
+0x0038, 
+    IDC_COMBOINPUT, 0x403, 2, 0
+0x0039, 
+    IDC_COMBOINPUT, 0x403, 3, 0
+0x3031, "\000" 
+    0
+END
+
+IDD_PROPERTIES DLGINIT
+BEGIN
+    IDC_COMBOINPUT, 0x403, 2, 0
+0x0031, 
+    IDC_COMBOINPUT, 0x403, 2, 0
+0x0032, 
+    IDC_COMBOINPUT, 0x403, 2, 0
+0x0033, 
+    IDC_COMBOINPUT, 0x403, 2, 0
+0x0034, 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_NET_CLIENT          "Netzwerk-Client %s"
+    IDS_NET_CLIENTREMOVED   "Netzwerkrechner %s gelöscht."
+    IDS_NET_COMMENTCHANGED  "Neuer Netzwerkspiel-Kommentar gesetzt."
+    IDS_NET_CONNECTING      "Verbinde mit %s (%s)"
+    IDS_NET_CONTROLRATE     "Kontrollrate: %i"
+    IDS_NET_DENIED          "...abgelehnt."
+    IDS_NET_DIRECTJOIN      "Direkter Beitritt bei Host %s."
+    IDS_NET_ERROR           "Netzwerkfehler: %s"
+    IDS_NET_FILENOTICE      "Hinweis: Für Netzwerkspiele müssen auf allen beteiligten Rechnern exakt gleiche Versionen der verwendeten Dateien vorliegen. Entpackte Gruppendateien sind unzulässig."
+    IDS_NET_HOST            "Netzwerk-Host %s"
+    IDS_NET_HOSTING         "Spiel wird unter %s im Netzwerk angeboten."
+    IDS_NET_JOINREADY       "Warten auf Start des Netzwerkspieles..."
+    IDS_NET_KEEPALIVE       "Rückmeldung bei Masterserver..."
+    IDS_NET_LOBBYCLOSED     "Lobby geschlossen."
+    IDS_NET_LOBBYEXPECTING  "Erwartete Teilnehmer: "
+    IDS_NET_LOBBYINSTRUCTIONS 
+                            "Spiel starten mit [Enter] oder abbrechen mit [Escape]."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_NET_LOBBYNOLOCALFILE 
+                            "Die für den Beitritt benötigte lokale Szenariodatei %s ist nicht vorhanden oder entspricht nicht der Datei auf dem Host."
+    IDS_NET_LOBBYOPEN       "Lobby eröffnet."
+    IDS_NET_LOBBYWAITING    "Teilnehmer werden erwartet..."
+    IDS_NET_LOCAL           "lokal"
+    IDS_NET_LOCALREMOVED    "Rechner wurde vom Spiel ausgeschlossen. Spiel wird allein fortgesetzt."
+    IDS_NET_LOSTHOST        "Verbindung zum Host abgebrochen. Spiel wird alleine fortgesetzt."
+    IDS_NET_NOACCEPT        "Beitritt nicht akzeptiert."
+    IDS_NET_NOCONNECT       "Verbindung konnte nicht hergestellt werden."
+    IDS_NET_NOCREATION      "Diese Szenariodatei ist nicht tauglich für Netzwerkspiele."
+    IDS_NET_NODIRECTJOIN    "Direkter Beitritt nicht erfolgreich."
+    IDS_NET_NODIRECTSTART   "Netzwerkspieldaten können nicht direkt gestartet werden."
+    IDS_NET_NOINPUTSTREAM   "Fehler bei zusätzlicher Kontrollverbindung."
+    IDS_NET_NOJOINGO        "Kein Startsignal vom Host."
+    IDS_NET_NOJOINREADY     "Angemeldeter Client nicht bereit für Start des Spiels."
+    IDS_NET_NONETGAME       "Übertragenes Szenario enthält keine Netzwerkspieldaten."
+    IDS_NET_NORUNTIMEJOIN   "Laufzeitbeitritt von %s abgelehnt."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_NET_NOSIGNUP        "Masterserver: Meldung nicht bestätigt."
+    IDS_NET_NOTACTIVE       "Netzwerk nicht aktiviert."
+    IDS_NET_NOTHREAD        "Fehler beim Netzwerk-Thread."
+    IDS_NET_NOWORKPATH      "Fehler beim Netzwerk-Arbeitsverzeichnis."
+    IDS_NET_REFDENIED       "Spielinformationsabfrage nicht freigegeben."
+    IDS_NET_REFFILEERROR    "Fehler bei Masterserver-Referenzdatei."
+    IDS_NET_REFREQUESTBARRED "Spielinformationsabfrage gesperrt."
+    IDS_NET_REFREQUESTFREE  "Spielinformationsabfrage freigegeben."
+    IDS_NET_REQUESTGAME     "%s fordert Spieldaten an..."
+    IDS_NET_REQUESTINF      "%s fordert Spielinformationen an..."
+    IDS_NET_REQUESTINGJOIN  "Beitrittsanfrage..."
+    IDS_NET_REQUESTJOIN     "Beitritt von %s."
+    IDS_NET_RETRIEVING      "Netzwerkspieldaten werden eingeholt."
+    IDS_NET_RUNTIMEJOINBARRED "Laufzeitbeitritt gesperrt."
+    IDS_NET_RUNTIMEJOINFREE "Laufzeitbeitritt freigegeben."
+    IDS_NET_SERVERERROR     "Masterserver-Fehler: %s"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_NET_SIGNOFF         "Abmeldung bei Masterserver..."
+    IDS_NET_SIGNUP          "Anmeldung bei Masterserver %s..."
+    IDS_NET_SYNCLOSS        "Synchronisationsverlust bei %s."
+    IDS_NET_TRANSFEROK      "...Übertragung: Ok."
+    IDS_NET_UNKNOWN         "Unbekannt"
+    IDS_NET_USINGLOCALFILE  "Lokale Szenariodatei wird für Netzwerkspiel genutzt."
+    IDS_NET_WAITFORJOIN     "Warten auf Beitritt von %s..."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_OBJ_CONNECT         "%s an|%s angeschlossen"
+    IDS_OBJ_CONSTR          "Konstruktion|%s"
+    IDS_OBJ_DEATH1          "%s ist tot."
+    IDS_OBJ_DEATH2          "%s ist|von uns gegangen."
+    IDS_OBJ_DEATH3          "%s|ruht in Frieden."
+    IDS_OBJ_DEATH4          "%s war einmal..."
+    IDS_OBJ_DEATH5          "%s|hat's erwischt."
+    IDS_OBJ_DEATH6          "%s|ist verstorben."
+    IDS_OBJ_DEATH7          "%s|hat uns verlassen."
+    IDS_OBJ_DISCONNECT      "%s von|%s getrennt."
+    IDS_OBJ_EMPTY           "%s ist leer."
+    IDS_OBJ_HOSTILENOENTRANCE "%s verfeindet.|Eingang versperrt!"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_OBJ_LINEBREAK       "Leitung gerissen"
+    IDS_OBJ_LINEREMOVAL     "%s abgenommen."
+    IDS_OBJ_NEEDS           "%s|braucht noch"
+    IDS_OBJ_NEEDSUNDEF      "Braucht %s, doch|das gibt's hier nicht!"
+    IDS_OBJ_NEWLINE         "Konstruktion|%s."
+    IDS_OBJ_NOBRIDGE        "%s kann|keine Brücken bauen."
+    IDS_OBJ_NOBUILD         "%s kann nicht bauen."
+    IDS_OBJ_NOCARRY         "%s kann|%s nicht aufnehmen!"
+    IDS_OBJ_NOCHOP          "%s kann|keine Bäume fällen."
+    IDS_OBJ_NOCON           "%s kann nicht|gebaut werden!"
+    IDS_OBJ_NOCONACTIV      "%s ist noch nicht fertig|und kann noch nicht|aktiviert werden."
+    IDS_OBJ_NOCONNECT       "Verbindung hier|nicht möglich."
+    IDS_OBJ_NOCONNECTTYPE   "%s kann nicht an|%s angeschlossen werden."
+    IDS_OBJ_NOCONSTRUCT     "%s kann keine|Gebäude errichten."
+    IDS_OBJ_NODIG           "%s kann|nicht graben."
+    IDS_OBJ_NODOUBLEKIT     "%s wird bereits|am anderen Ende verlegt."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_OBJ_NOENTRANCE      "Eingang geht nicht!"
+    IDS_OBJ_NOLEVEL         "Untergrund|zu uneben!"
+    IDS_OBJ_NOLINECONSTRUCT "%s kann|keine Leitungen verlegen."
+    IDS_OBJ_NOMAGIC         "%s kann nicht zaubern."
+    IDS_OBJ_NOMAGICENERGY   "%s hat|nicht genug Zauberenergie."
+    IDS_OBJ_NONEWLINE       "Neue Leitung hier|nicht möglich."
+    IDS_OBJ_NOOTHER         "%s ist im Weg!"
+    IDS_OBJ_NOROOM          "Nicht genug Platz!"
+    IDS_OBJ_NOSHORTCONNECT  "Kurzschluß|nicht möglich."
+    IDS_OBJ_PROMOTION       "%s wird zum|%s befördert!"
+    IDS_OBJ_STUCK           "%s|hängt fest!"
+    IDS_OBJ_UNDEF           "Gebäude %s|gibt's hier nicht!"
+    IDS_OBJ_UNKNOWN         "unbekannt"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PLR_ALLSELECTED     "Alle ausgewählt."
+    IDS_PLR_ELIMINATED      "Spieler %s|eliminiert!"
+    IDS_PLR_HOSTILE         "Spieler %s|verfeindet!"
+    IDS_PLR_HOSTILITY       "%s greift %s an."
+    IDS_PLR_NOBKNOW         "Spieler %s|hat keine Baupläne."
+    IDS_PLR_NOBUY           "Es gibt nichts zu kaufen."
+    IDS_PLR_NOHOSTILITY     "%s greift %s nicht an."
+    IDS_PLR_NOMAGIC         "Keine Zauber verfügbar."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PLR_NOSURRENDER     "Aufgeben ist nicht erlaubt."
+    IDS_PLR_NOTAVAIL        "%s nicht verfügbar!"
+    IDS_PLR_NOWEALTH        "Nicht genug Geld!"
+    IDS_PLR_SURRENDERED     "Spieler %s|hat aufgegeben."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PRC_ABORTED         "Runde wurde abgebrochen."
+    IDS_PRC_DEFCBM          "%d Definitionen nach Material gefärbt."
+    IDS_PRC_DEFNOTFOUND     "Vorgegebene Objektdatei %s nicht vorhanden."
+    IDS_PRC_DEFOVERLOAD     "   %s (%s) überladen."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PRC_DEFSINVC4X      "%d der Objekte benötigen eine höhere Engine-Version."
+    IDS_PRC_DEFSLOADED      "  %d Definitionen geladen."
+    IDS_PRC_DEINIT          "Engine heruntergefahren."
+    IDS_PRC_ENVIRONMENT     "Umweltobjekte werden plaziert..."
+    IDS_PRC_EVALUATED       "Spiel ausgewertet."
+    IDS_PRC_FAIL            "Programm abgebrochen."
+    IDS_PRC_FAILC4P         "Fehler bei Spielerdatei: %s"
+    IDS_PRC_FAILINPUT       "Fehler beim Input-Handler."
+    IDS_PRC_FILEINVALID     "Datei ungültig oder falsche Version."
+    IDS_PRC_FILENOTFOUND    "Datei nicht gefunden oder ungültig."
+    IDS_PRC_FUNCTIONOVERLOAD "   Funktion %s in %s überladen."
+    IDS_PRC_GAMEOVER        "Runde beendet."
+    IDS_PRC_GFXRES          "Grafik wird geladen..."
+    IDS_PRC_INITDEFS        "Objektdefinitionen werden geladen:"
+    IDS_PRC_INITROUND       "Initialisierung der Runde..."
+    IDS_PRC_INVOBJ          "Objektdefinition %s ungültig."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PRC_JOIN            "Spiel beigetreten."
+    IDS_PRC_JOINFAIL        "Fehler bei Spielerdatei."
+    IDS_PRC_JOINFAILREMOTE  "Spieler %s bei %s konnte nicht wieder beitreten."
+    IDS_PRC_JOINPLR         "Spielerbeitritt: %s"
+    IDS_PRC_JOINPLRNET      "Spielerbeitritt: %s (%s)"
+    IDS_PRC_LANDSCAPE       "Erstellung der Landschaft..."
+    IDS_PRC_LOADC4S         "Szenario: %s"
+    IDS_PRC_LOCALMAT        "Lokale Materialdatei: %s\\%s"
+    IDS_PRC_LOCALMUSIC      "Lokale Musikdatei: %s\\%s"
+    IDS_PRC_LOCALONLY       "Szenario benutzt nur lokale Objektdefinitionen."
+    IDS_PRC_MATERIALS       "%d Materialien geladen."
+    IDS_PRC_NOADDONREG      "Dieses Szenario ist ein registrierungspflichtiges AddOn."
+    IDS_PRC_NOC4S           "Keine Szenariodatei angegeben."
+    IDS_PRC_NODEFS          "Keine gültigen Definitionen vorhanden."
+    IDS_PRC_NOEXACTC4X      "Dieses Szenario kann nur mit der Clonk Engine Version %d.%d%d gestartet werden."
+    IDS_PRC_NOGFXELEMENT    "Fehler bei Grafikelement %s: %s"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PRC_NOGFXFILE       "Fehler bei Grafikdatei %s: %s"
+    IDS_PRC_NOINCLUDESELF   "Objektdefinition %s basiert auf sich selbst!"
+    IDS_PRC_NOMATENUM       "Fehler bei Materialanordnung."
+    IDS_PRC_NOMATMAP        "Landschaft: Material %s nicht definiert."
+    IDS_PRC_NOMISSIONACCESS "Noch kein Zugang zu dieser Mission."
+    IDS_PRC_NOMISSIONPASS   "Noch keine Zugangsberechtigung für diese Mission."
+    IDS_PRC_NOMUSIC         "Musik nicht verfügbar."
+    IDS_PRC_NONETSCENARIO   "Netzwerkszenario konnte nicht geöffnet werden."
+    IDS_PRC_NOPLRS          "Fehler: Keine Teilnehmer in der Runde."
+    IDS_PRC_NOREG           "Registrierung fehlt. Zugang nicht freigegeben."
+    IDS_PRC_NOREQC4X        "Dieses Szenario benötigt die Clonk Engine Version %d.%d%d oder höher."
+    IDS_PRC_NOREQDEFS       "Für dieses Szenario benötigte Objektdefinitionen nicht vorhanden."
+    IDS_PRC_NOSND           "Fehler bei Sound-Datei."
+    IDS_PRC_NOSWSCENARIO    "Nicht registriert. Kein Shareware-Szenario."
+    IDS_PRC_NOSYSMATS       "System-Materialien nicht vorhanden."
+    IDS_PRC_NOTEXMAP        "Landkarte: Textur %d nicht definiert."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PRC_NOTEXPAT        "Landkarte: Textur '%s' nicht vorhanden."
+    IDS_PRC_OBJECTSLOADED   "%d Objekte plaziert."
+    IDS_PRC_PLAYER          "Spieler: %s"
+    IDS_PRC_PLAYERS         "Spieler werden plaziert..."
+    IDS_PRC_PLRELIMINATED   "Spieler %s eliminiert."
+    IDS_PRC_PLRFILEINUSE    "Spielerdatei wird bereits benutzt."
+    IDS_PRC_PLRSURRENDERED  "Spieler %s hat aufgegeben."
+    IDS_PRC_QUITPLR         "Spieler %s entfernt."
+    IDS_PRC_RECREATE        "Wiederherstellung: %s"
+    IDS_PRC_REG             "Registriert für %s."
+    IDS_PRC_REGNAMEINVALID  "Ungültiger Registrierungscode."
+    IDS_PRC_REMOVEPLR       "Spieler %s gelöscht."
+    IDS_PRC_RESUME          "Spiel wiederaufgenommen."
+    IDS_PRC_SCEOWNDEFS      "Szenario benutzt vorgegebene Objektdefinitionen."
+    IDS_PRC_SCREENSHOT      "Screenshot gespeichert."
+    IDS_PRC_SCREENSHOTERROR "Fehler beim Erstellen des Screenshots."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PRC_START           "Spiel gestartet."
+    IDS_PRC_TEXMAPENTRIES   "Texturtabelle mit %d Einträgen geladen."
+    IDS_PRC_TEXTURES        "%d Texturen geladen."
+    IDS_PRC_TOOFEWPLRS      "Der Spielmodus dieses Szenarios ist auf eine Mindestzahl von %d Spielern ausgelegt."
+    IDS_PRC_TOOMANYMATS     "Zu viele Materialien."
+    IDS_PRC_TOOMANYPLRS     "Dieses Szenario ist auf maximal %d Spieler ausgelegt."
+    IDS_PRC_UNDEFINEDINCLUDE 
+                            "Objektdefinition %s basiert auf nicht definiertem %s!"
+    IDS_PRC_UNDEFINEDOBJECT "Objekt vom Typ %s nicht plaziert."
+    IDS_PRC_UNREGUSER       "Nicht registrierter Nutzer"
+    IDS_PRC_WRONGMODE       "Falscher Modus. Spieler- bzw. Entwicklermodus anpassen."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CNS_PROPERTIES      "Eigenschaften"
+    IDS_CNS_REDRAWSTATIC    "Statische Landschaft neu berechnen?"
+    IDS_CNS_REGONLY         "Der Entwicklermodus ist nur in der registrierten Version zugänglich."
+    IDS_CNS_SAVEASERROR     "Fehler beim Erstellen der Szenariodatei %s"
+    IDS_CNS_SAVERROR        "Fehler beim Speichern des Szenarios."
+    IDS_CNS_SCENARIOSAVED   "Szenario gespeichert."
+    IDS_CNS_SCRIPT          "Script"
+    IDS_CNS_SCRIPTCREATEDOBJECTS 
+                            "Das Script dieses Szenarios hat beim Start der Runde Objekte erschaffen. "
+    IDS_CNS_SDKONLY         "Der Konsolenmodus ist nur registrierten SDK-Nutzern zugänglich."
+    IDS_CNS_TITLE           "Titel"
+    IDS_CNS_TOOLS           "Werkzeuge"
+    IDS_CNS_TYPE            "Typ: %s (%s)"
+    IDS_CNS_VIEWPORT        "Sichtfenster"
+    IDS_CNS_WARNDOUBLE      "Um Verdoppelungen der abgespeicherten Objekte beim nächsten Start zu vermeiden, sollte die Initialize-Funktion des Scripts entsprechend angepaßt werden."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_DESC_ASYNCMODE      "Internetmodus."
+    IDS_DESC_CLIENTS        "Teilnehmer: "
+    IDS_DESC_COMMENT        "Kommentar: %s"
+    IDS_DESC_DATE           "Spiel vom %i.%i.%i %02d:%02d Uhr."
+    IDS_DESC_DATENET        "Netzwerkspiel vom %i.%i.%i %02d:%02d Uhr."
+    IDS_DESC_DEFSPECS       "Objektdefinitionen: "
+    IDS_DESC_DEVMODE        "Entwicklermodus."
+    IDS_DESC_DURATION       "Spieldauer: %02d:%02d:%02d."
+    IDS_DESC_EXPECTING      "Teilnehmer werden erwartet."
+    IDS_DESC_FILE           "Szenariodatei: %s (%d KB)"
+    IDS_DESC_FILE2          "Szenariodatei: %s"
+    IDS_DESC_HOST           "Netzwerkspiel auf: %s (%s)"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_DESC_LOBBY          "Lobby eröffnet."
+    IDS_DESC_MAXPLR         "Maximale Spielerzahl: %i"
+    IDS_DESC_NORUNTIMEJOIN  "Kein Laufzeitbeitritt."
+    IDS_DESC_PLRS           "Spieler: "
+    IDS_DESC_VERSION        "Engine Version: %i.%i%i"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_GAME_DEFRANKS       "Clonk|Fähnrich|Leutnant|Hauptmann|Major|Oberst|Brigadegeneral|Generalmajor|Generalleutnant|General|Feldmarschall"
+    IDS_GAME_FAILSAVEGAME   "Fehler beim Speichern des Spiels."
+    IDS_GAME_NOCLIENTSAVE   "Netzwerkspiele können nur vom Host abgespeichert werden."
+    IDS_GAME_NONETSAVE      "Netzwerkspiele können nicht als Spielstand gespeichert werden."
+    IDS_GAME_NOSAVEDIR      "Fehler beim Speichern in Zielverzeichnis %s."
+    IDS_GAME_NOUNREGSAVE    "Speichern des Spiels ist nur in der registrierten Version möglich."
+    IDS_GAME_SAVEGAMEFOLDER "Spielstände.c4f"
+    IDS_GAME_SAVESCENARIOFOLDER "Szenarien.c4f"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CNS_MULTIPLEOBJECTS "%i Objekte ausgewählt."
+    IDS_CNS_NAMES           "Namen"
+    IDS_CNS_NEWPLRVIEWPORT  "Neu für %s"
+    IDS_CNS_NOCHILDSAVE     "%s befindet sich in einem Rundenordner.\r\nSzenarien können nicht in geschlossenen Gruppendateien gespeichert werden."
+    IDS_CNS_NODDSWITCH      "Kritischer Fehler beim Umschalten des Bildschirmmodus."
+    IDS_CNS_NOFULLSCREENPLRS 
+                            "Im Vollbildmodus kann nur gestartet werden, wenn Spieler am Spiel teilnehmen."
+    IDS_CNS_NOGAMEOVERSCEN  "Ein Spiel sollte nicht über die Datei des ursprünglichen Szenarios gespeichert werden."
+    IDS_CNS_NOMATDEF        "Zeichnen nicht möglich, da die angegebene\nMaterial-Textur-Kombination '%s-%s'\nnicht in der geladenen Texturtabelle definiert ist."
+    IDS_CNS_NONE            "Kein"
+    IDS_CNS_NONETEDIT       "Bei aktiviertem Netzwerk kann nicht editiert werden."
+    IDS_CNS_NOOBJECT        "Kein Objekt ausgewählt."
+    IDS_CNS_NOTHING         "Nichts"
+    IDS_CNS_OPENERROR       "Fehler beim Öffnen des Szenarios."
+    IDS_CNS_OWNER           "Besitzer: %s"
+    IDS_CNS_PLRQUIT         "%s löschen"
+    IDS_CNS_PLRQUITNET      "%s (%s) löschen"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CON_ACTIVATE        "%s aktivieren."
+    IDS_CON_ACTIVATEFROM    "Objekt in %s aktivieren"
+    IDS_CON_ATTACK          "%s angreifen."
+    IDS_CON_BUILD           "%s bauen."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CON_BUY             "Kaufen"
+    IDS_CON_CHOP            "%s fällen."
+    IDS_CON_COLLECT         "%s einsammeln."
+    IDS_CON_CONSTRUCTION    "Bauauftrag"
+    IDS_CON_CONTENTS        "Inhalt"
+    IDS_CON_CONTENTSRIGHTCLICK "Inhalt/Befehle.|(Rechte Maustaste)"
+    IDS_CON_DIGOUT          "%s ausgraben."
+    IDS_CON_DOUBLECLICK     "(Doppelklick)"
+    IDS_CON_ENERGY          "Energieversorgung"
+    IDS_CON_ENTER           "%s betreten."
+    IDS_CON_EXIT            "Gebäude verlassen"
+    IDS_CON_FAILURE         "%s|nicht möglich!"
+    IDS_CON_GAMEPAD         "-|-|-|-|Hoch|-|Links|Runter|Rechts|-"
+    IDS_CON_GET             "Objekt aus %s herausnehmen."
+    IDS_CON_GRAB            "%s anfassen."
+    IDS_CON_HELP            "Hilfe"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CON_HOME            "Zurück zur Basis"
+    IDS_CON_INFO            "Info"
+    IDS_CON_ITEMS           "Gegenstände"
+    IDS_CON_JUMP            "Springen."
+    IDS_CON_MENUCANCEL      "Menü schließen"
+    IDS_CON_MENUSELECT      "Auswahl bestätigen"
+    IDS_CON_NAME            "%s"
+    IDS_CON_PLAYERMENU      "Spielermenü"
+    IDS_CON_PUT             "%s in %s ablegen"
+    IDS_CON_SELECT          "%s auswählen."
+    IDS_CON_SELL            "Verkaufen"
+    IDS_CON_SIDEWINDER      "A|B|C|X|Y|Z|<1>|<2>|Start|M"
+    IDS_CON_UNGRAB          "%s loslassen."
+    IDS_CON_VEHICLEPUT      "%s in %s schieben"
+    IDS_CON_VEHICLES        "Fahrzeuge"
+    IDS_CON_VKEYSET1        "LBUTTON|RBUTTON|Ctrl-Break|MBUTTON||||<-|Tab|||Clear|Enter|||Shift|Ctrl|Alt|Pause|Caps Lock|||||||Esc|||||Leertaste|Bild auf|Bild ab|Ende|Pos 1|Links|Rauf|Rechts|Runter|SELECT|PRINT|EXECUTE|Druck|Einfg|Entf|HELP"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CON_VKEYSET2        "0|1|2|3|4|5|6|7|8|9|*|+|SEPARATOR|-|,|/|F1|F2|F3|F4|F5|F6|F7|F8|F9|F10|F11|F12|F13|F14|F15|F16|Num Lock|Scroll Lock"
+    IDS_CON_VKEYSET3        "Ü|+|,|-|.|#|Ö"
+    IDS_CON_VKEYSET4        "ß|^|´|Ä|?|?|?|<"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_MENU_ACTIVATE       "%s aktivieren"
+    IDS_MENU_ATTACK         "%s angreifen."
+    IDS_MENU_ATTACKFRIENDLY "freundlich "
+    IDS_MENU_ATTACKHOSTILE  "feindlich "
+    IDS_MENU_ATTACKINFO     "%s ist uns %sgesinnt und wird zur Zeit von uns %sangegriffen."
+    IDS_MENU_ATTACKNOT      "nicht "
+    IDS_MENU_ATTACKSELF     "Wir greifen uns selbst nicht an."
+    IDS_MENU_BRIDGE         "Flach links|Schräg links|Senkrecht|Schräg rechts|Flach rechts"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_MENU_BUY            "%s kaufen"
+    IDS_MENU_CONSTR         "Konstruktion"
+    IDS_MENU_CONSTRUCT      "Bauauftrag: %s"
+    IDS_MENU_CPATTACK       "Angriff"
+    IDS_MENU_CPATTACKINFO   "Festlegen, welche Spieler von den eigenen Clonks angegriffen werden sollen."
+    IDS_MENU_CPGOALS        "Spielziele"
+    IDS_MENU_CPGOALSINFO    "Die Runde endet, wenn alle Spielziele erfüllt sind."
+    IDS_MENU_CPMAIN         "Hauptmenü"
+    IDS_MENU_CPNEWPLAYER    "Spielerbeitritt"
+    IDS_MENU_CPNEWPLAYERINFO 
+                            "Einen weiteren Spieler beitreten lassen (Spielerdatei aus dem Arbeitsverzeichnis)."
+    IDS_MENU_CPQUIT         "Spiel verlassen"
+    IDS_MENU_CPRULES        "Spielregeln"
+    IDS_MENU_CPRULESINFO    "Bestimmen den Spielablauf."
+    IDS_MENU_CPSAVEGAME     "Spielstand speichern"
+    IDS_MENU_CPSAVEGAMEINFO "Der Spielstand wird im Rundenordner 'Spielstände' gespeichert."
+    IDS_MENU_CPSAVESCENARIO "Spiel als Szenario speichern"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_MENU_CPSAVESCENARIOINFO 
+                            "Das Spiel wird im Rundenorder 'Szenarien' ohne Mannschaftsdaten gespeichert, so daß es später mit anderen Spielern gestartet werden kann."
+    IDS_MENU_CPSURRENDER    "Aufgeben"
+    IDS_MENU_CPSURRENDERINFO "Das Spiel verlassen."
+    IDS_MENU_GET            "%s holen"
+    IDS_MENU_MAGIC          "Zaubern: %s"
+    IDS_MENU_MAIN           "Angriff|Aufgeben"
+    IDS_MENU_NEWPLAYER      "Spielerbeitritt: %s"
+    IDS_MENU_NOATTACK       "%s nicht angreifen."
+    IDS_MENU_NOPLRFILES     "Keine weiteren Spielerdateien verfügbar."
+    IDS_MENU_SELL           "%s verkaufen"
+    IDS_MENU_SURRENDER      "Wirklich aufgeben?"
+    IDS_MENU_TAKE           "%s nehmen"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERR_DDRAW           "Fehler bei DirectDraw. Bitte DirectX-Installation auf diesem System prüfen."
+    IDS_ERR_DINPUT          "Fehler bei DirectInput."
+    IDS_ERR_DSOUND          "DirectSound nicht verfügbar."
+    IDS_ERR_GBACK           "Fehler beim Landschaftsgenerator."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERR_LOADGAME        "Fehler beim Laden der Spiel-Laufzeitdaten."
+    IDS_ERR_MOVER           "Fehler beim Laden der MassMover."
+    IDS_ERR_NOGFXSYS        "Fehler beim Grafiksystem."
+    IDS_ERR_NOPLRFILENAMES  "Fehler beim Laden der Spielerdateinamen des gespeicherten Spieles."
+    IDS_ERR_NOPLRFILERECR   "Die Spielerdateien des gespeicherten Spiels wurden nicht gefunden und konnten nicht wiederhergestellt werden."
+    IDS_ERR_PLRINIT         "Fehler bei der Spielerinitialisierung."
+    IDS_ERR_PXS             "Fehler beim Laden der PXS-Daten."
+    IDS_ERR_TIMER           "Fehler beim System-Timer"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_HOLD_ABORT          "Runde abbrechen? (J/N)"
+    IDS_HOLD_GAMEOVER       "Runde vorbei"
+    IDS_HOLD_SAVINGGAME     "Spiel wird gespeichert..."
+    IDS_HOLD_SAVINGSCENARIO "Szenario wird gespeichert..."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CNS_ABOUT           "RedWolf Design\r\nClonk %d.%d%d\r\n(c) 2000 Matthes Bender"
+    IDS_CNS_ACTION          "Aktivität: "
+    IDS_CNS_C4SFILES        "Clonk 4 Szenariodateien"
+    IDS_CNS_CONSOLE         "Konsole"
+    IDS_CNS_CONTENTS        "Inhalt: "
+    IDS_CNS_DROPNODEF       "Ungültiges oder nicht geladenes Objekt: %s"
+    IDS_CNS_EXACTTOSTATIC   "Beim Wechsel von einer exakten zur statischen Landschaft gehen\nsämtliche in der exakten Karte gemachten Änderungen verloren."
+    IDS_CNS_FILLNOHALT      "Das Füllwerkzeug kann nicht im Haltemodus eingesetzt werden."
+    IDS_CNS_GAMECLOSED      "Spiel deinitialisiert."
+    IDS_CNS_GAMESAVED       "Spiel gespeichert."
+    IDS_CNS_INFO            "Info"
+    IDS_CNS_LOCALS          "Lokale Variablen: "
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_DLG_CONSOLE         "Konsole"
+    IDS_DLG_DYNAMIC         "Dynamische Landschaft"
+    IDS_DLG_EXACT           "Exakte Landschaft"
+    IDS_DLG_PROPERTIES      "Eigenschaften"
+    IDS_DLG_STATIC          "Statische Landschaft"
+    IDS_DLG_TOOLS           "Landschaftswerkzeuge"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_BTN_CANCEL          "Abbruch"
+    IDS_BTN_OK              "OK"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_COMM_CONTEXT        "Kontext"
+    IDS_COMM_DIG            "Graben"
+    IDS_COMM_DROP           "Ablegen"
+    IDS_COMM_ENERGY         "Energieversorgung"
+    IDS_COMM_ENTER          "Betreten"
+    IDS_COMM_EXIT           "Verlassen"
+    IDS_COMM_FOLLOW         "Folgen"
+    IDS_COMM_GET            "Holen"
+    IDS_COMM_GRAB           "Anfassen"
+    IDS_COMM_JUMP           "Springen"
+    IDS_COMM_MOVETO         "Bewegung"
+    IDS_COMM_NONE           "Kein Befehl"
+    IDS_COMM_PUSHTO         "Schieben"
+    IDS_COMM_PUT            "Ablegen"
+    IDS_COMM_RETRY          "Erneuter Versuch"
+    IDS_COMM_SELL           "Verkaufen"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_COMM_ACQUIRE        "Beschaffung"
+    IDS_COMM_ACTIVATE       "Aktivieren"
+    IDS_COMM_ATTACK         "Angreifen"
+    IDS_COMM_BUILD          "Bauen"
+    IDS_COMM_BUY            "Kaufen"
+    IDS_COMM_CALL           "Objektaufruf"
+    IDS_COMM_CHOP           "Fällen"
+    IDS_COMM_CONSTRUCT      "Konstruktion"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_COMM_THROW          "Werfen"
+    IDS_COMM_TRANSFER       "Bewegung"
+    IDS_COMM_UNGRAB         "Loslassen"
+    IDS_COMM_WAIT           "Warten"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CTL_FULLNOOWNMENU   "F1: Menü   F2: Meldung"
+    IDS_CTL_MATERIAL        "Material"
+    IDS_CTL_TEXTURE         "Textur"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_MNU_ABOUT           "Clonk Engine Info..."
+    IDS_MNU_CLOSE           "Schließen"
+    IDS_MNU_COMPONENTS      "Komponenten"
+    IDS_MNU_CONTENTS        "Inhalt nehmen"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_MNU_DELETE          "Löschen"
+    IDS_MNU_DUPLICATE       "Duplizieren"
+    IDS_MNU_FILE            "Datei"
+    IDS_MNU_INFO            "Info"
+    IDS_MNU_JOIN            "Beitritt"
+    IDS_MNU_NET             "Host"
+    IDS_MNU_NETCLIENT       "Client %s (%i) deaktivieren"
+    IDS_MNU_NETCLIENTDE     "Client %s (%i) deaktiviert"
+    IDS_MNU_NETHOST         "Host %s"
+    IDS_MNU_NEW             "Neu"
+    IDS_MNU_OPEN            "Öffnen..."
+    IDS_MNU_OPENWPLRS       "Öffnen mit Spielern..."
+    IDS_MNU_PLAYER          "Spieler"
+    IDS_MNU_QUIT            "Beenden"
+    IDS_MNU_SAVEGAME        "Spiel speichern"
+    IDS_MNU_SAVEGAMEAS      "Spiel speichern unter..."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_CNS_ABOUT        "RedWolf Design\r\nClonk %d.%d%d\r\n(c) 2000 Matthes Bender"
+    IDS_US_CNS_ACTION       "Action: "
+    IDS_US_CNS_C4SFILES     "Clonk 4 Scenario Files"
+    IDS_US_CNS_CONSOLE      "Console"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_CNS_CONTENTS     "Contents: "
+    IDS_US_CNS_DROPNODEF    "Object invalid or not loaded: %s"
+    IDS_US_CNS_EXACTTOSTATIC 
+                            "When switching from exact to dynamic mode\nall changes made in dynamic mode will be lost."
+    IDS_US_CNS_FILLNOHALT   "The fill tool cannot be used in halt mode."
+    IDS_US_CNS_GAMECLOSED   "Game cleared."
+    IDS_US_CNS_GAMESAVED    "Game saved."
+    IDS_US_CNS_INFO         "Info"
+    IDS_US_CNS_LOCALS       "Local variables: "
+    IDS_US_CNS_MULTIPLEOBJECTS "%i selected objects."
+    IDS_US_CNS_NAMES        "Names"
+    IDS_US_CNS_NEWPLRVIEWPORT "New for %s"
+    IDS_US_CNS_NOCHILDSAVE  "%s is located in a group folder.\r\nScenarios cannot be saved in closed group folders."
+    IDS_US_CNS_NODDSWITCH   "Critical error on screen mode switch."
+    IDS_US_CNS_NOFULLSCREENPLRS 
+                            "Fullscreen mode requires at least one participating player."
+    IDS_US_CNS_NOGAMEOVERSCEN 
+                            "You should not overwrite the original scenario file with a save game."
+    IDS_US_CNS_NOMATDEF     "Cannot draw because selected\nmaterial-texture combination '%s-%s'\ns not defined in the texture table."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_CNS_NONE         "None"
+    IDS_US_CNS_NONETEDIT    "No editing with activated network."
+    IDS_US_CNS_NOOBJECT     "No selected objects."
+    IDS_US_CNS_NOTHING      "Nothing"
+    IDS_US_CNS_OPENERROR    "Error while opening the scenario."
+    IDS_US_CNS_OWNER        "Owner: %s"
+    IDS_US_CNS_PLRQUIT      "Remove %s"
+    IDS_US_CNS_PLRQUITNET   "Remove %s (%s) "
+    IDS_US_CNS_PROPERTIES   "Properties"
+    IDS_US_CNS_REDRAWSTATIC "Redraw static landscape?"
+    IDS_US_CNS_REGONLY      "Developer mode available in the registered version only."
+    IDS_US_CNS_SAVEASERROR  "Error while creating scenario file\r\n%s"
+    IDS_US_CNS_SAVERROR     "Error while saving the scenario."
+    IDS_US_CNS_SCENARIOSAVED "Scenario saved."
+    IDS_US_CNS_SCRIPT       "Script"
+    IDS_US_CNS_SCRIPTCREATEDOBJECTS 
+                            "This scenario's script has created objects on initialization. "
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_CNS_SDKONLY      "Console mode is available to registered SDK users only."
+    IDS_US_CNS_TITLE        "Title"
+    IDS_US_CNS_TOOLS        "Tools"
+    IDS_US_CNS_TYPE         "Type: %s (%s)"
+    IDS_US_CNS_VIEWPORT     "Viewport"
+    IDS_US_CNS_WARNDOUBLE   "In order to avoid double creation, the script's 'Initialize' function should be modified."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_CON_ACTIVATE     "Activate %s."
+    IDS_US_CON_ACTIVATEFROM "Activate object in %s"
+    IDS_US_CON_ATTACK       "Attack %s."
+    IDS_US_CON_BUILD        "Build %s."
+    IDS_US_CON_BUY          "Buy"
+    IDS_US_CON_CHOP         "Chop %s."
+    IDS_US_CON_COLLECT      "Collect %s."
+    IDS_US_CON_CONSTRUCTION "Construction"
+    IDS_US_CON_CONTENTS     "Contents"
+    IDS_US_CON_CONTENTSRIGHTCLICK "Contents/Orders.|(Right button)"
+    IDS_US_CON_DIGOUT       "Dig out %s."
+    IDS_US_CON_DOUBLECLICK  "(Double click)"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_CON_ENERGY       "Power supply"
+    IDS_US_CON_ENTER        "Enter %s."
+    IDS_US_CON_EXIT         "Exit building"
+    IDS_US_CON_FAILURE      "%s failed!"
+    IDS_US_CON_GAMEPAD      "-|-|-|-|Up|-|Left|Down|Right|-"
+    IDS_US_CON_GET          "Take object from %s."
+    IDS_US_CON_GRAB         "Grab %s."
+    IDS_US_CON_HELP         "Help"
+    IDS_US_CON_HOME         "Back to base"
+    IDS_US_CON_INFO         "Info"
+    IDS_US_CON_ITEMS        "items"
+    IDS_US_CON_JUMP         "Jump."
+    IDS_US_CON_MENUCANCEL   "Close menu."
+    IDS_US_CON_MENUSELECT   "Accept."
+    IDS_US_CON_NAME         "%s"
+    IDS_US_CON_PLAYERMENU   "Player menu"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_CON_PUT          "Drop %s in %s"
+    IDS_US_CON_SELECT       "Select %s."
+    IDS_US_CON_SELL         "Sell"
+    IDS_US_CON_SIDEWINDER   "A|B|C|X|Y|Z|<1>|<2>|Start|M"
+    IDS_US_CON_UNGRAB       "Let go of %s."
+    IDS_US_CON_VEHICLEPUT   "Push %s into %s."
+    IDS_US_CON_VEHICLES     "Vehicles"
+    IDS_US_CON_VKEYSET1     "LBUTTON|RBUTTON|Ctrl-Break|MBUTTON||||<-|Tab|||Clear|Enter|||Shift|Ctrl|Alt|Pause|Caps Lock|||||||Esc|||||Space|Page up|Page down|End|Home|Left|Up|Right|Down|SELECT|PRINT|EXECUTE|Print screen|Insert|Delete|HELP"
+    IDS_US_CON_VKEYSET2     "0|1|2|3|4|5|6|7|8|9|*|+|SEPARATOR|-|.|/|F1|F2|F3|F4|F5|F6|F7|F8|F9|F10|F11|F12|F13|F14|F15|F16|Num Lock|Scroll Lock"
+    IDS_US_CON_VKEYSET3     "Ü|+|,|-|.|#|Ö"
+    IDS_US_CON_VKEYSET4     "ß|^|´|Ä|?|?|?|<"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_DESC_ASYNCMODE   "Internet mode."
+    IDS_US_DESC_CLIENTS     "Participants: "
+    IDS_US_DESC_COMMENT     "Comment: %s"
+    IDS_US_DESC_DATE        "Game saved %i.%i.%i %02d:%02d."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_DESC_DATENET     "Network game from %i.%i.%i %02d:%02d."
+    IDS_US_DESC_DEFSPECS    "Object definitions: "
+    IDS_US_DESC_DEVMODE     "Mode: Developer"
+    IDS_US_DESC_DURATION    "Playing time: %02d:%02d:%02d."
+    IDS_US_DESC_EXPECTING   "Awaiting participants."
+    IDS_US_DESC_FILE        "Scenario file: %s (%d KB)"
+    IDS_US_DESC_FILE2       "Scenario file: %s"
+    IDS_US_DESC_HOST        "Network game at: %s (%s)"
+    IDS_US_DESC_LOBBY       "Lobby open."
+    IDS_US_DESC_MAXPLR      "Maximum number of players: %i"
+    IDS_US_DESC_NORUNTIMEJOIN "No runtime join."
+    IDS_US_DESC_PLRS        "Players: "
+    IDS_US_DESC_VERSION     "Engine version: %i.%i%i"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_ERR_DDRAW        "Direct Draw failure. Please check the DirectDraw setup on this computer."
+    IDS_US_ERR_DINPUT       "DirectInput failure."
+    IDS_US_ERR_DSOUND       "DirectSound failure. Please check the DirectSound setup on this computer or deactivate sound effects."
+    IDS_US_ERR_GBACK        "Landscape error."
+    IDS_US_ERR_LOADGAME     "Save game data error."
+    IDS_US_ERR_MOVER        "MassMover data error."
+    IDS_US_ERR_NOGFXSYS     "Graphics system error."
+    IDS_US_ERR_NOPLRFILENAMES 
+                            "Error while loading the saved game's player file names."
+    IDS_US_ERR_NOPLRFILERECR 
+                            "The saved game's player files were not found and could not be reconstructed."
+    IDS_US_ERR_PLRINIT      "Player initialization error."
+    IDS_US_ERR_PXS          "PXS data error."
+    IDS_US_ERR_TIMER        "System timer error."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_GAME_DEFRANKS    "Clonk|Ensign|Lieutenant|Captain|Major|Lieutenant Colonel|Colonel|Brigade General|Major General|Lieutenant General|General"
+    IDS_US_GAME_FAILSAVEGAME "Error while saving the game."
+    IDS_US_GAME_NOCLIENTSAVE "Network games may be saved by the host only."
+    IDS_US_GAME_NONETSAVE   "Cannot save network games."
+    IDS_US_GAME_NOSAVEDIR   "Error saving to target directory %s."
+    IDS_US_GAME_NOUNREGSAVE "Saving games is available in the registered version only."
+    IDS_US_GAME_SAVEGAMEFOLDER "Savegames.c4f"
+    IDS_US_GAME_SAVESCENARIOFOLDER "Scenarios.c4f"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_HOLD_ABORT       "Abort round? (Y/N)"
+    IDS_US_HOLD_GAMEOVER    "Game over."
+    IDS_US_HOLD_SAVINGGAME  "Saving game..."
+    IDS_US_HOLD_SAVINGSCENARIO "Saving scenario..."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_MENU_ACTIVATE    "Activate %s"
+    IDS_US_MENU_ATTACK      "Attack %s"
+    IDS_US_MENU_ATTACKFRIENDLY "friendly "
+    IDS_US_MENU_ATTACKHOSTILE "hostile "
+    IDS_US_MENU_ATTACKINFO  "%s is currently %sand will %sbe attacked."
+    IDS_US_MENU_ATTACKNOT   "not "
+    IDS_US_MENU_ATTACKSELF  "We don't attack ourselves."
+    IDS_US_MENU_BRIDGE      "horizontal left|diagonal left|vertical|diagonal right|horizontal right"
+    IDS_US_MENU_BUY         "Buy %s"
+    IDS_US_MENU_CONSTR      "Construction"
+    IDS_US_MENU_CONSTRUCT   "Construction: %s"
+    IDS_US_MENU_CPATTACK    "Attack"
+    IDS_US_MENU_CPATTACKINFO "Order your clonks to attack other players."
+    IDS_US_MENU_CPGOALS     "Goals"
+    IDS_US_MENU_CPGOALSINFO "The round ends when all goals are fulfilled."
+    IDS_US_MENU_CPMAIN      "Main menu"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_MENU_CPNEWPLAYER "Join player"
+    IDS_US_MENU_CPNEWPLAYERINFO 
+                            "Have another player join the game (player files from the working directory)."
+    IDS_US_MENU_CPQUIT      "Quit game"
+    IDS_US_MENU_CPRULES     "Rules"
+    IDS_US_MENU_CPRULESINFO "Rules for this round."
+    IDS_US_MENU_CPSAVEGAME  "Save game"
+    IDS_US_MENU_CPSAVEGAMEINFO "Save the game in folder 'Savegames'."
+    IDS_US_MENU_CPSAVESCENARIO "Save game as scenario"
+    IDS_US_MENU_CPSAVESCENARIOINFO 
+                            "Save the game in folder 'Scenarios' without crew information so the current landscape may be restarted by different players."
+    IDS_US_MENU_CPSURRENDER "Surrender"
+    IDS_US_MENU_CPSURRENDERINFO "Exit the game."
+    IDS_US_MENU_GET         "Get %s"
+    IDS_US_MENU_MAGIC       "Magic: %s"
+    IDS_US_MENU_MAIN        "Attack|Surrender"
+    IDS_US_MENU_NEWPLAYER   "Join player: %s"
+    IDS_US_MENU_NOATTACK    "Don't attack %s"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_MENU_NOPLRFILES  "No additional player files available."
+    IDS_US_MENU_SELL        "Sell %s"
+    IDS_US_MENU_SURRENDER   "Are you sure?"
+    IDS_US_MENU_TAKE        "Take %s"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_NET_CLIENT       "Network client %s"
+    IDS_US_NET_CLIENTREMOVED "Client %s (%i) removed."
+    IDS_US_NET_COMMENTCHANGED "Network game comment adjusted."
+    IDS_US_NET_CONNECTING   "Connecting to %s at %s"
+    IDS_US_NET_CONTROLRATE  "Control rate: %i"
+    IDS_US_NET_DENIED       "...denied."
+    IDS_US_NET_DIRECTJOIN   "Direct join at host %s."
+    IDS_US_NET_ERROR        "Network error: %s"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_NET_FILENOTICE   "Notice: Network games require identical file versions on all participating computers. Unpacked group files are not eligible."
+    IDS_US_NET_HOST         "Network host %s"
+    IDS_US_NET_HOSTING      "Offering network game as %s."
+    IDS_US_NET_JOINREADY    "Waiting for network game start..."
+    IDS_US_NET_KEEPALIVE    "Sending keep alive to master server..."
+    IDS_US_NET_LOBBYCLOSED  "Lobby closed."
+    IDS_US_NET_LOBBYEXPECTING "Expected participants: "
+    IDS_US_NET_LOBBYINSTRUCTIONS 
+                            "Press [Enter] to start game or [Escape] to cancel."
+    IDS_US_NET_LOBBYNOLOCALFILE 
+                            "The scenario file %s required for joining this game is missing or is a different version."
+    IDS_US_NET_LOBBYOPEN    "Lobby open."
+    IDS_US_NET_LOBBYWAITING "Awaiting participants..."
+    IDS_US_NET_LOCAL        "local"
+    IDS_US_NET_LOCALREMOVED "The local computer has been removed from the network game. Game will continue independently."
+    IDS_US_NET_LOSTHOST     "Host connection lost. Game continued independently."
+    IDS_US_NET_NOACCEPT     "Join request not accepted."
+    IDS_US_NET_NOCONNECT    "Connection failure."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_NET_NOCREATION   "This scenario file can not be used for network games."
+    IDS_US_NET_NODIRECTJOIN "Direct join failure."
+    IDS_US_NET_NODIRECTSTART "Cannot start network game data directly."
+    IDS_US_NET_NOINPUTSTREAM "Auxiliary data connect failure."
+    IDS_US_NET_NOJOINGO     "No start signal from host..."
+    IDS_US_NET_NOJOINREADY  "Connected client not ready for game."
+    IDS_US_NET_NONETGAME    "Transferred scenario does not contain network game data."
+    IDS_US_NET_NORUNTIMEJOIN "Runtime join %s denied"
+    IDS_US_NET_NOSIGNUP     "Sign up not confirmed."
+    IDS_US_NET_NOTACTIVE    "Networking not activated."
+    IDS_US_NET_NOTHREAD     "Error at network thread."
+    IDS_US_NET_NOWORKPATH   "Error at network working directory."
+    IDS_US_NET_REFDENIED    "Game information request denied."
+    IDS_US_NET_REFFILEERROR "Error at master server reference file."
+    IDS_US_NET_REFREQUESTBARRED "Network reference request disabled."
+    IDS_US_NET_REFREQUESTFREE "Network reference request enabled."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_NET_REQUESTGAME  "Remote computer %s requesting game data."
+    IDS_US_NET_REQUESTINF   "Remote computer %s requesting game information."
+    IDS_US_NET_REQUESTINGJOIN "Requesting join..."
+    IDS_US_NET_REQUESTJOIN  "Join requested by %s."
+    IDS_US_NET_RETRIEVING   "Retrieving network game data..."
+    IDS_US_NET_RUNTIMEJOINBARRED "Runtime join prohibited."
+    IDS_US_NET_RUNTIMEJOINFREE "Runtime join free."
+    IDS_US_NET_SERVERERROR  "Master server error: %s"
+    IDS_US_NET_SIGNOFF      "Sign off at master server..."
+    IDS_US_NET_SIGNUP       "Sign up at master server %s..."
+    IDS_US_NET_SYNCLOSS     "Synchronization loss at client %s."
+    IDS_US_NET_TRANSFEROK   "...tranfser: ok."
+    IDS_US_NET_UNKNOWN      "Unknown"
+    IDS_US_NET_USINGLOCALFILE "Using local scenario file."
+    IDS_US_NET_WAITFORJOIN  "Waiting for %s to join..."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_OBJ_CONNECT      "%s conntected|to %s"
+    IDS_US_OBJ_CONSTR       "Construction|%s"
+    IDS_US_OBJ_DEATH1       "%s is dead."
+    IDS_US_OBJ_DEATH2       "%s has|deceased."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_OBJ_DEATH3       "%s|rests in peace."
+    IDS_US_OBJ_DEATH4       "%s is dead."
+    IDS_US_OBJ_DEATH5       "%s has|deceased."
+    IDS_US_OBJ_DEATH6       "%s|rests in peace."
+    IDS_US_OBJ_DEATH7       "%s is dead."
+    IDS_US_OBJ_DISCONNECT   "%s disconnected|from %s."
+    IDS_US_OBJ_EMPTY        "%s is empty."
+    IDS_US_OBJ_HOSTILENOENTRANCE "%s hostile.|No entrance!"
+    IDS_US_OBJ_LINEBREAK    "Line broken."
+    IDS_US_OBJ_LINEREMOVAL  "%s disconnected."
+    IDS_US_OBJ_NEEDS        "%s needs"
+    IDS_US_OBJ_NEEDSUNDEF   "Needs undefined %s."
+    IDS_US_OBJ_NEWLINE      "New|%s."
+    IDS_US_OBJ_NOBRIDGE     "%s cannot|build bridges."
+    IDS_US_OBJ_NOBUILD      "%s cannot build."
+    IDS_US_OBJ_NOCARRY      "%s cannot|collect %s."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_OBJ_NOCHOP       "%s cannot|chop trees."
+    IDS_US_OBJ_NOCON        "%s cannot|be built."
+    IDS_US_OBJ_NOCONACTIV   "%s not completed.|Activation denied."
+    IDS_US_OBJ_NOCONNECT    "Connection not possible."
+    IDS_US_OBJ_NOCONNECTTYPE "%s cannot be connected|to %s."
+    IDS_US_OBJ_NOCONSTRUCT  "%s cannot create|new construction sites."
+    IDS_US_OBJ_NODIG        "%s cannot dig."
+    IDS_US_OBJ_NODOUBLEKIT  "%s is not fixed at the other end."
+    IDS_US_OBJ_NOENTRANCE   "Entrance closed."
+    IDS_US_OBJ_NOLEVEL      "No level ground!"
+    IDS_US_OBJ_NOLINECONSTRUCT "%s cannot create lines."
+    IDS_US_OBJ_NOMAGIC      "%s cannot do magic."
+    IDS_US_OBJ_NOMAGICENERGY "%s does not have|sufficient magic energy."
+    IDS_US_OBJ_NONEWLINE    "Cannot create a new line here."
+    IDS_US_OBJ_NOOTHER      "%s is in the way."
+    IDS_US_OBJ_NOROOM       "Not enough room!"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_OBJ_NOSHORTCONNECT "No short circuits!"
+    IDS_US_OBJ_PROMOTION    "%s is promoted|to %s!"
+    IDS_US_OBJ_STUCK        "%s is stuck!"
+    IDS_US_OBJ_UNDEF        "Structure %s undefined."
+    IDS_US_OBJ_UNKNOWN      "unknown"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_PLR_ALLSELECTED  "All selected."
+    IDS_US_PLR_ELIMINATED   "Player %s|eliminated."
+    IDS_US_PLR_HOSTILE      "Player %s|hostile!"
+    IDS_US_PLR_HOSTILITY    "%s attacks %s."
+    IDS_US_PLR_NOBKNOW      "Player %s|has no construction plans."
+    IDS_US_PLR_NOBUY        "There is nothing to buy."
+    IDS_US_PLR_NOHOSTILITY  "%s does not attack %s."
+    IDS_US_PLR_NOMAGIC      "No magic spells available."
+    IDS_US_PLR_NOSURRENDER  "Surrender not allowed."
+    IDS_US_PLR_NOTAVAIL     "%s not available."
+    IDS_US_PLR_NOWEALTH     "Not enough money!"
+    IDS_US_PLR_SURRENDERED  "Player %s|has surrendered."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_PRC_ABORTED      "Round aborted."
+    IDS_US_PRC_DEFCBM       "%d definitions colored by material."
+    IDS_US_PRC_DEFNOTFOUND  "Required object file %s not available."
+    IDS_US_PRC_DEFOVERLOAD  "   %s (%s) overloaded."
+    IDS_US_PRC_DEFSINVC4X   "%s objects require a higher engine version."
+    IDS_US_PRC_DEFSLOADED   "   %d definitions loaded."
+    IDS_US_PRC_DEINIT       "Engine shut down."
+    IDS_US_PRC_ENVIRONMENT  "Placing environment objects..."
+    IDS_US_PRC_EVALUATED    "Game evaluated."
+    IDS_US_PRC_FAIL         "Program terminated."
+    IDS_US_PRC_FAILC4P      "Error at player file: %s"
+    IDS_US_PRC_FAILINPUT    "Input handler failure."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_PRC_FILEINVALID  "File invalid."
+    IDS_US_PRC_FILENOTFOUND "File not found or invalid."
+    IDS_US_PRC_FUNCTIONOVERLOAD "   Function %s in %s overloaded."
+    IDS_US_PRC_GAMEOVER     "Game over."
+    IDS_US_PRC_GFXRES       "Loading graphics..."
+    IDS_US_PRC_INITDEFS     "Loading object definitions:"
+    IDS_US_PRC_INITROUND    "Initializing round..."
+    IDS_US_PRC_INVOBJ       "Object definition %s invalid."
+    IDS_US_PRC_JOIN         "Game joined."
+    IDS_US_PRC_JOINFAIL     "Error at player file."
+    IDS_US_PRC_JOINFAILREMOTE "Player %s at %s failed to rejoin."
+    IDS_US_PRC_JOINPLR      "Player join: %s"
+    IDS_US_PRC_JOINPLRNET   "Player join: %s (%s)"
+    IDS_US_PRC_LANDSCAPE    "Creating landscape..."
+    IDS_US_PRC_LOADC4S      "Scenario: %s"
+    IDS_US_PRC_LOCALMAT     "Local material file: %s/%s"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_PRC_LOCALMUSIC   "Local music file: %s\\%s"
+    IDS_US_PRC_LOCALONLY    "Scenario uses local object definitions only."
+    IDS_US_PRC_MATERIALS    "%d materials loaded."
+    IDS_US_PRC_NOADDONREG   "Special registration needed for this scenario."
+    IDS_US_PRC_NOC4S        "No scenario file specified."
+    IDS_US_PRC_NODEFS       "No valid object definitions found."
+    IDS_US_PRC_NOEXACTC4X   "This scenario can only be played with engine version %d.%d%d or higher."
+    IDS_US_PRC_NOGFXELEMENT "Error at graphics element %s: %s"
+    IDS_US_PRC_NOGFXFILE    "Error at graphics file %s: %s"
+    IDS_US_PRC_NOINCLUDESELF "Object definition %s is based on itself!"
+    IDS_US_PRC_NOMATENUM    "Error at material enumeration."
+    IDS_US_PRC_NOMATMAP     "Landscape material %s undefined."
+    IDS_US_PRC_NOMISSIONACCESS "Access to this mission not yet granted."
+    IDS_US_PRC_NOMISSIONPASS "Mission access denied."
+    IDS_US_PRC_NOMUSIC      "Music not available."
+    IDS_US_PRC_NONETSCENARIO "Could not open network scenario."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_PRC_NOPLRS       "No participants in round."
+    IDS_US_PRC_NOREG        "Access denied. No registration."
+    IDS_US_PRC_NOREQC4X     "This scenario can only be played with engine version %d.%d%d or higher."
+    IDS_US_PRC_NOREQDEFS    "The object definitions required for this scenario are not available on this system."
+    IDS_US_PRC_NOSND        "Error at sound file."
+    IDS_US_PRC_NOSWSCENARIO "Not registered. No shareware scenario."
+    IDS_US_PRC_NOSYSMATS    "System materials missing."
+    IDS_US_PRC_NOTEXMAP     "Landscape: texture %d undefined."
+    IDS_US_PRC_NOTEXPAT     "Landscape: texture %s not available."
+    IDS_US_PRC_OBJECTSLOADED "%d objects positioned."
+    IDS_US_PRC_PLAYER       "Player: %s"
+    IDS_US_PRC_PLAYERS      "Placing players..."
+    IDS_US_PRC_PLRELIMINATED "Player %s eliminated."
+    IDS_US_PRC_PLRFILEINUSE "Player file already in use."
+    IDS_US_PRC_PLRSURRENDERED "Player %s surrendered."
+    IDS_US_PRC_QUITPLR      "Player %s removed."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_PRC_RECREATE     "Recreating: %s"
+    IDS_US_PRC_REG          "Registered for %s."
+    IDS_US_PRC_REGNAMEINVALID 
+                            "Invalid registration code. Please register this game."
+    IDS_US_PRC_REMOVEPLR    "Player %s removed."
+    IDS_US_PRC_RESUME       "Game resumed."
+    IDS_US_PRC_SCEOWNDEFS   "Scenario uses specified object definitions."
+    IDS_US_PRC_SCREENSHOT   "Screenshot saved."
+    IDS_US_PRC_SCREENSHOTERROR "Screenshot failure."
+    IDS_US_PRC_START        "Game started."
+    IDS_US_PRC_TEXMAPENTRIES "Texture table holds %i entries."
+    IDS_US_PRC_TEXTURES     "%i textures loaded."
+    IDS_US_PRC_TOOFEWPLRS   "This scenario's game mode requires a minimum of %i participating players."
+    IDS_US_PRC_TOOMANYMATS  "Too many materials."
+    IDS_US_PRC_TOOMANYPLRS  "This scenario is designed for a maximum of %i players."
+    IDS_US_PRC_UNDEFINEDINCLUDE 
+                            "Object definition %s is based on undefined %s!"
+    IDS_US_PRC_UNDEFINEDOBJECT "Object type %s not placed."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_PRC_UNREGUSER    "Unregistered user"
+    IDS_US_PRC_WRONGMODE    "Wrong mode. Please adjust player/developer mode."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_MNU_SAVESCENARIO    "Szenario speichern"
+    IDS_MNU_SAVESCENARIOAS  "Szenario speichern unter..."
+    IDS_MNU_SCRIPT          "Script"
+    IDS_MNU_TITLE           "Titel"
+    IDS_MNU_VIEWPORT        "Sichtfenster"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_BTN_CANCEL       "Cancel"
+    IDS_US_BTN_OK           "OK"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_CTL_FULLNOOWNMENU "F1: Menu   F2: Message"
+    IDS_US_CTL_MATERIAL     "Material"
+    IDS_US_CTL_TEXTURE      "Texture"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_DLG_CONSOLE      "Console"
+    IDS_US_DLG_DYNAMIC      "Dynamic landscape"
+    IDS_US_DLG_EXACT        "Exact landscape"
+    IDS_US_DLG_PROPERTIES   "Properties"
+    IDS_US_DLG_STATIC       "Static landscape"
+    IDS_US_DLG_TOOLS        "Landscape tools"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_MNU_ABOUT        "Clonk Engine Info..."
+    IDS_US_MNU_CLOSE        "Close"
+    IDS_US_MNU_COMPONENTS   "Components"
+    IDS_US_MNU_CONTENTS     "Grab contents"
+    IDS_US_MNU_DELETE       "Delete"
+    IDS_US_MNU_DUPLICATE    "Duplicate"
+    IDS_US_MNU_FILE         "File"
+    IDS_US_MNU_INFO         "Info"
+    IDS_US_MNU_JOIN         "Join"
+    IDS_US_MNU_NET          "Host"
+    IDS_US_MNU_NETCLIENT    "Client %s (%i)"
+    IDS_US_MNU_NETCLIENTDE  "Client %s (%i) deactivated"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_MNU_NETHOST      "Host %s"
+    IDS_US_MNU_NEW          "New"
+    IDS_US_MNU_OPEN         "Open..."
+    IDS_US_MNU_OPENWPLRS    "Open with players..."
+    IDS_US_MNU_PLAYER       "Player"
+    IDS_US_MNU_QUIT         "Quit"
+    IDS_US_MNU_SAVEGAME     "Save game"
+    IDS_US_MNU_SAVEGAMEAS   "Save game as..."
+    IDS_US_MNU_SAVESCENARIO "Save scenario"
+    IDS_US_MNU_SAVESCENARIOAS "Save scenario as..."
+    IDS_US_MNU_SCRIPT       "Script"
+    IDS_US_MNU_TITLE        "Title"
+    IDS_US_MNU_VIEWPORT     "Viewport"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_COMM_ACQUIRE     "Acquisition"
+    IDS_US_COMM_ACTIVATE    "Activation"
+    IDS_US_COMM_ATTACK      "Attack"
+    IDS_US_COMM_BUILD       "Build"
+    IDS_US_COMM_BUY         "Buy"
+    IDS_US_COMM_CALL        "Object call"
+    IDS_US_COMM_CHOP        "Chop"
+    IDS_US_COMM_CONSTRUCT   "Construction"
+    IDS_US_COMM_CONTEXT     "Context"
+    IDS_US_COMM_DIG         "Digging"
+    IDS_US_COMM_DROP        "Drop"
+    IDS_US_COMM_ENERGY      "Power supply"
+    IDS_US_COMM_ENTER       "Enter"
+    IDS_US_COMM_EXIT        "Exit"
+    IDS_US_COMM_FOLLOW      "Follow"
+    IDS_US_COMM_GET         "Get"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_US_COMM_GRAB        "Grab"
+    IDS_US_COMM_JUMP        "Jump"
+    IDS_US_COMM_MOVETO      "Movement"
+    IDS_US_COMM_NONE        "No order"
+    IDS_US_COMM_PUSHTO      "Push"
+    IDS_US_COMM_PUT         "Put"
+    IDS_US_COMM_RETRY       "Retry"
+    IDS_US_COMM_SELL        "Sell"
+    IDS_US_COMM_THROW       "Throw"
+    IDS_US_COMM_TRANSFER    "Movement"
+    IDS_US_COMM_UNGRAB      "Let go"
+    IDS_US_COMM_WAIT        "Wait"
+END
+
+#endif    // German (Germany) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
