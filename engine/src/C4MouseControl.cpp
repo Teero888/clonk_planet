@@ -964,7 +964,8 @@ void C4MouseControl::CreateDragImage(C4ID id)
 	Engine.DDraw.DrawBoxColorTable(cgo.Surface,cgo.X,cgo.Y,cgo.X+cgo.Wdt-1,cgo.Y+cgo.Hgt-1,RedTable);
 	Engine.DDraw.DrawInline(cgo.Surface,cgo.X,cgo.Y,cgo.X+cgo.Wdt-1,cgo.Y+cgo.Hgt-1,16,45,0);
 	Engine.DDraw.DrawInline(cgo.Surface,cgo.X,cgo.Y,cgo.X+cgo.Wdt-1,cgo.Y+cgo.Hgt-1,43,45,16);
-	DragImage.Draw(DragImage.GetPhase(1));
+	C4Facet fctPhase = DragImage.GetPhase(1);
+	DragImage.Draw(fctPhase);
 	ZeroMem(RedTable,256); RedTable[16]=43; RedTable[43]=45;
 	cgo=DragImage.GetPhase(1);
 	Engine.DDraw.DrawBoxColorTable(cgo.Surface,cgo.X,cgo.Y,cgo.X+cgo.Wdt-1,cgo.Y+cgo.Hgt-1,RedTable);

@@ -2,8 +2,8 @@
 
 /* Bitmap handling routines */
 
-#include <Windows.h>
-#include <StdIO.h>
+#include <Compat.h>
+#include <stdio.h>
 
 #include <Standard.h>
 #include <StdFile.h>

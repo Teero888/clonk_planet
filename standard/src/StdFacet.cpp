@@ -2,8 +2,8 @@
 
 /* A very primitive piece of surface */
 
-#include <Windows.h>
-#include <DDraw.h>
+#include <Compat.h>
+// #include <DDraw.h>
 
 #include <Standard.h>
 #include <StdSurface.h>

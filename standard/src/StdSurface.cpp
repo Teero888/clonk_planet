@@ -2,17 +2,17 @@
 
 /* A wrapper class to DirectDraw surfaces */
 
-#include <Windows.h>
-#include <MMSystem.h>
-#include <ShellAPI.h>
-#include <Math.h>
-#include <Stdio.h>
-#include <Io.h>
-#include <StdLib.h>
-#include <Time.h>
-#include <DDraw.h>
-#include <VfW.h>
-#include <Limits.h>
+#include <Compat.h>
+// #include <MMSystem.h>
+// #include <ShellAPI.h>
+#include <math.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <time.h>
+// #include <DDraw.h>
+// #include <VfW.h>
+#include <limits.h>
 
 #include <Standard.h>
 #include <StdFile.h>
@@ -303,7 +303,6 @@ HDC CSurface::GetDC()
 
 void CSurface::ReleaseDC(HDC hdc)
 	{
-	Surface->ReleaseDC(hdc);
 	}
 
 BOOL CSurface::Save(const char *szFilename)

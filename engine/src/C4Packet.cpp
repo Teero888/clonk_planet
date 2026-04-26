@@ -119,7 +119,7 @@ BOOL C4Packet::AddDataHead(BYTE *bpData, int iSize)
 BOOL C4Packet::AddStatic(C4Packet &rPacket)
 	{
 	// Add header
-	if (!AddData( (BYTE*) &rPacket, sizeof C4PacketHeader )) return FALSE;
+	if (!AddData( (BYTE*) &rPacket, sizeof(C4PacketHeader) )) return FALSE;
 	// Add data
 	if (rPacket.Data && rPacket.Size) 
 		if (!AddData( rPacket.Data, rPacket.Size )) return FALSE;
@@ -135,7 +135,7 @@ BOOL C4Packet::AddStaticHead(C4Packet &rPacket)
 	if (rPacket.Data && rPacket.Size) 
 		if (!AddDataHead( rPacket.Data, rPacket.Size )) return FALSE;
 	// Add header
-	if (!AddDataHead( (BYTE*) &rPacket, sizeof C4PacketHeader )) return FALSE;
+	if (!AddDataHead( (BYTE*) &rPacket, sizeof(C4PacketHeader) )) return FALSE;
 	// Success
 	return TRUE;	
 	}
@@ -154,11 +154,11 @@ BOOL C4Packet::GetStatic(int iIndex, C4Packet &rPacket)
 		// Set static packet & return
 		if (cIndex == iIndex)
 			{
-			rPacket.Set(pHeader->Type, pHeader->Size ? pData+sizeof C4PacketHeader : NULL, pHeader->Size);
+			rPacket.Set(pHeader->Type, pHeader->Size ? pData+sizeof(C4PacketHeader) : NULL, pHeader->Size);
 			return TRUE;
 			}
 		// Advance to next packet
-		cIndex++; iOffset += sizeof C4PacketHeader + pHeader->Size;
+		cIndex++; iOffset += sizeof(C4PacketHeader) + pHeader->Size;
 		if (iOffset < Size) pData = Data + iOffset; else pData = NULL;
 		}
 	return FALSE;

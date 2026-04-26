@@ -2,12 +2,14 @@
 
 /* Simple joystick handling with DirectInput 1 */
 
-#include <Windows.h>
-#include <WindowsX.h>
-#include <MMSystem.h>
+#include <Compat.h>
+#include <Compat.h>
+// #include <MMSystem.h>
 
 #include <Standard.h>
 #include <StdJoystick.h>
+
+#ifdef _WIN32
 
 DWORD dwStdGamepadMaxX = 0;
 DWORD dwStdGamepadMinX = 0;
@@ -102,3 +104,10 @@ int GetFirstSetBit(DWORD dwBitArray)
 	return -1;
 	}
 
+
+#endif
+
+#ifndef _WIN32
+BOOL StdSetGamepadCalibration(int iMinX, int iMaxX, int iMinY, int iMaxY) { return FALSE; }
+BOOL StdGetGamepad(int iGamepad, int iAxis, DWORD &rdwButtons, DWORD &rdwStatus) { return FALSE; }
+#endif

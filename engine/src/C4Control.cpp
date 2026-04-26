@@ -115,7 +115,7 @@ void C4ControlPacket::Execute()
 				char szPlayerFilename[_MAX_PATH+1]; 
 				sprintf(szPlayerFilename,"%s-%s",Config.AtNetworkPath(pJoinPlayer->AtClientName),GetFilename(pJoinPlayer->Filename));
 				EraseItem(szPlayerFilename);
-				CStdFile hFile; if (!hFile.Save(szPlayerFilename,Data+sizeof C4ControlJoinPlayer,Size-sizeof C4ControlJoinPlayer)) break;
+				CStdFile hFile; if (!hFile.Save(szPlayerFilename,Data+sizeof(C4ControlJoinPlayer),Size-sizeof(C4ControlJoinPlayer))) break;
 				Game.JoinPlayer(szPlayerFilename,pJoinPlayer->AtClient,pJoinPlayer->AtClientName);
 				}
 			break;
@@ -203,7 +203,7 @@ void C4ControlSyncCheck::Execute() // And determine control time difference
 		ScreenRate = BoundBy( ScreenRate-1, 1, 15 );*/
 
 	// Not equal
-	if (!MemEqual(this, &SyncCheck, sizeof C4ControlSyncCheck))
+	if (!MemEqual(this, &SyncCheck, sizeof(C4ControlSyncCheck)))
 		{
 		// Message
 		NetLog("Synchronization loss!");
@@ -269,7 +269,7 @@ BOOL C4Control::AddPlayerControl(int iPlayer, int iCom, int iData)
 	PlayerControl.Data = iData;
 	// Add packet
 	C4Packet Packet;
-	Packet.Set(C4PK_PlayerControl,&PlayerControl,sizeof C4ControlPlayerControl);
+	Packet.Set(C4PK_PlayerControl,&PlayerControl,sizeof(C4ControlPlayerControl));
 	AddStatic(Packet);
 	// Success
 	return TRUE;
@@ -297,7 +297,7 @@ BOOL C4Control::AddJoinPlayer(const char *szFilename)
 	SCopy(Game.Network.LocalName,JoinPlayer.AtClientName,C4MaxTitle);
 	// Add packet (with player file added)
 	C4Packet Packet;
-	Packet.Set(C4PK_JoinPlayer,&JoinPlayer,sizeof C4ControlJoinPlayer);
+	Packet.Set(C4PK_JoinPlayer,&JoinPlayer,sizeof(C4ControlJoinPlayer));
 	Packet.AddData(bypPlayerFile,iPlayerFileSize);
 	AddStatic(Packet);
 	// Free player file buffer
@@ -335,7 +335,7 @@ BOOL C4Control::AddSetHostility(int iPlayer, int iOpponent, int iHostility)
 	SetHostility.Hostility = iHostility;
 	// Add packet
 	C4Packet Packet;
-	Packet.Set(C4PK_SetHostility,&SetHostility, sizeof C4ControlSetHostility);
+	Packet.Set(C4PK_SetHostility,&SetHostility, sizeof(C4ControlSetHostility));
 	AddStatic(Packet);
 	// Success
 	return TRUE;
@@ -381,7 +381,7 @@ BOOL C4Control::AddSyncCheck()
 	C4ControlSyncCheck SyncCheck;
 	// Add packet (to head of queue)
 	C4Packet Packet;
-	Packet.Set(C4PK_SyncCheck, &SyncCheck, sizeof C4ControlSyncCheck);
+	Packet.Set(C4PK_SyncCheck, &SyncCheck, sizeof(C4ControlSyncCheck));
 	AddStaticHead(Packet);
 	// Success
 	return TRUE;
@@ -398,7 +398,7 @@ BOOL C4Control::AddJoinClient(C4Stream *pStream)
 	JoinClient.pStream = pStream; 
 	// Add packet
 	C4Packet Packet;
-	Packet.Set(C4PK_JoinClient, &JoinClient, sizeof C4ControlJoinClient);
+	Packet.Set(C4PK_JoinClient, &JoinClient, sizeof(C4ControlJoinClient));
 	AddStatic(Packet);
 	// Success
 	return TRUE;
@@ -457,7 +457,7 @@ BOOL C4Control::AddPlayerCommand(int iPlayer, int iCommand, int iX, int iY, C4Ob
 	PlayerCommand.AddMode=iAddMode;
 	// Add packet
 	C4Packet Packet;
-	Packet.Set(C4PK_PlayerCommand,&PlayerCommand,sizeof PlayerCommand);
+	Packet.Set(C4PK_PlayerCommand,&PlayerCommand,sizeof(PlayerCommand));
 	AddStatic(Packet);
 	// Success
 	return TRUE;

@@ -4,6 +4,19 @@
 
 #include <C4Include.h>
 
+#ifndef _WIN32
+C4PropertyDlg::C4PropertyDlg() { Default(); }
+C4PropertyDlg::~C4PropertyDlg() { Clear(); }
+void C4PropertyDlg::Default() { hDialog=0; }
+void C4PropertyDlg::Clear() {}
+void C4PropertyDlg::Execute() {}
+void C4PropertyDlg::ClearPointers(C4Object *pObj) {}
+void C4PropertyDlg::UpdateInputCtrl(C4Object *pObj) {}
+BOOL C4PropertyDlg::Open() { return FALSE; }
+BOOL C4PropertyDlg::Update() { return FALSE; }
+BOOL C4PropertyDlg::Update(C4ObjectList &rSelection) { return FALSE; }
+#else
+
 BOOL CALLBACK PropertyDlgProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 	{
 
@@ -93,7 +106,7 @@ BOOL C4PropertyDlg::Update(C4ObjectList &rSelection)
 BOOL IsObjectPointer(int iValue)
 	{
   for (C4ObjectLink *cLnk=Game.Objects.First; cLnk; cLnk=cLnk->Next)
-		if (cLnk->Obj == (C4Object*) iValue)
+		if (cLnk->Obj == (C4Object*) (long) iValue)
 			return TRUE;
 	return FALSE;
 	}
@@ -151,7 +164,7 @@ BOOL C4PropertyDlg::Update()
 					// C4ID
 					if ((iValue>=10000) && LooksLikeID(C4IdText(iValue))) { sprintf(OSTR+SLen(OSTR),"[%d] %s ",cnt,C4IdText(iValue)); continue; }
 					// C4Object*
-					if (IsObjectPointer(iValue)) { sprintf(OSTR+SLen(OSTR),"[%d] %s ",cnt,((C4Object*)iValue)->GetName()); continue; }
+					if (IsObjectPointer(iValue)) { sprintf(OSTR+SLen(OSTR),"[%d] %s ",cnt,((C4Object*)(long)iValue)->GetName()); continue; }
 					// int
 					sprintf(OSTR+SLen(OSTR),"[%d] %d ",cnt,iValue);
 					}
@@ -193,7 +206,7 @@ void C4PropertyDlg::UpdateInputCtrl(C4Object *pObj)
 	HWND hCombo = GetDlgItem(hDialog,IDC_COMBOINPUT);
 	
 	char szLastText[500+1];
-	GetWindowText(hCombo,szLastText,500);
+	if (hCombo) GetWindowText(hCombo,szLastText,500);
 
 	// Clear & add standard functions
 	SendMessage(hCombo,CB_RESETCONTENT,0,0);
@@ -221,7 +234,7 @@ void C4PropertyDlg::UpdateInputCtrl(C4Object *pObj)
 				SendMessage(hCombo,CB_INSERTSTRING,0,(LPARAM)OSTR);
 				}
 
-	SetWindowText(hCombo,szLastText);
+	if (hCombo) SetWindowText(hCombo,szLastText);
 
 	}
 
@@ -235,3 +248,4 @@ void C4PropertyDlg::ClearPointers(C4Object *pObj)
 	Selection.ClearPointers(pObj);
 	}
 
+#endif // _WIN32

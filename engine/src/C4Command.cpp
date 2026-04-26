@@ -50,8 +50,9 @@ int CommandByName(const char *szCommand)
 
 void AdjustMoveToTarget(int &rX, int &rY, BOOL fFreeMove, int iShapeHgt)
 	{
+	int iY;
 	// Above solid (always)
-	for (int iY=rY; (iY>=0) && GBackSolid(rX,iY); iY--);
+	for (iY=rY; (iY>=0) && GBackSolid(rX,iY); iY--);
 	if (iY>=0) rY=iY;
 	// No-free-move adjustments (i.e. if walking)
 	if (!fFreeMove)
@@ -80,10 +81,11 @@ BOOL FreeMoveTo(C4Object *cObj)
 
 BOOL AdjustSolidOffset(int &rX, int &rY, int iXOff, int iYOff)
 	{
+	int cnt;
 	// In solid: fail
 	if (GBackSolid(rX,rY)) return FALSE;
 	// Y Offset
-	for (int cnt=1; cnt<iYOff; cnt++)
+	for (cnt=1; cnt<iYOff; cnt++)
 		{
 		if (GBackSolid(rX,rY+cnt) && !GBackSolid(rX,rY-cnt)) rY--;
 		if (GBackSolid(rX,rY-cnt) && !GBackSolid(rX,rY+cnt)) rY++;
@@ -139,11 +141,11 @@ void C4Command::Default()
 
 BOOL ObjectAddWaypoint(int iX, int iY, int iTransferTarget, int ipObject)
 	{
-	C4Object *cObj = (C4Object*) ipObject; if (!cObj) return FALSE;
+	C4Object *cObj = (C4Object*)(intptr_t) ipObject; if (!cObj) return FALSE;
 
 	// Transfer waypoint
 	if (iTransferTarget)
-		return cObj->AddCommand(C4CMD_Transfer,(C4Object*)iTransferTarget,iX,iY,0,NULL,FALSE);
+		return cObj->AddCommand(C4CMD_Transfer,(C4Object*)(intptr_t)iTransferTarget,iX,iY,0,NULL,FALSE);
 
   // Solid offset
 	AdjustSolidOffset(iX,iY,cObj->Shape.Wdt/2,cObj->Shape.Hgt/2);
@@ -183,7 +185,7 @@ void C4Command::MoveTo()
 					if (!Game.PathFinder.Find( cObj->x,cObj->y, 
 																		 Tx,Ty,
 																		 &ObjectAddWaypoint,
-																		 (int)cObj))
+																		 (intptr_t)cObj))
 						{ /* Path not found: react? */ PathChecked=TRUE; /* recheck delay */ }
 					return;
 					}
@@ -956,7 +958,7 @@ void C4Command::Get()
 			if (cObj->Def->CollectionLimit && (cObj->Contents.ObjectCount()>=cObj->Def->CollectionLimit))
 				ObjectComPut(cObj,cObj->Contained);
 			// Check RejectCollect
-			if (cObj->Call(PSF_RejectCollection,(int)Target->Def->id,(int)Target))
+			if (cObj->Call(PSF_RejectCollection,(int)(long)Target->Def->id,(intptr_t)Target))
 				{
 				// Can't get due to RejectCollect: fail
 				Finish(); return; 
@@ -988,12 +990,11 @@ void C4Command::Get()
 				if (cObj->Def->CollectionLimit && (cObj->Contents.ObjectCount()>=cObj->Def->CollectionLimit))
 					ObjectComPut(cObj,Target->Contained);
 				// Check RejectCollect
-				if (cObj->Call(PSF_RejectCollection,(int)Target->Def->id,(int)Target))
+				if (cObj->Call(PSF_RejectCollection,(int)(long)Target->Def->id,(intptr_t)Target))
 					{
 					// Can't get due to RejectCollect: fail
 					Finish(); return; 
-					}
-				// Get target object
+					}				// Get target object
 				Target->Enter(cObj);
 				// Get call to object script
 				cObj->Call(PSF_Get);
@@ -1031,7 +1032,7 @@ void C4Command::Get()
 			if (cObj->Def->CollectionLimit && (cObj->Contents.ObjectCount()>=cObj->Def->CollectionLimit))
 				{ cObj->Action.ComDir=COMD_Stop; ObjectComDrop(cObj); }
 			// Check RejectCollect
-			if (cObj->Call(PSF_RejectCollection,(int)Target->Def->id,(int)Target))
+			if (cObj->Call(PSF_RejectCollection,(int)(long)Target->Def->id,(int)(long)Target))
 				{
 				// Can't get due to RejectCollect: fail
 				Finish(); cObj->Action.ComDir=COMD_Stop; return; 
@@ -1441,7 +1442,8 @@ BOOL C4Command::JumpControl()
 		if (PathFree(cx,cy,Tx,Ty))
 			if (Distance(cx,cy,Tx,Ty)>30)
 				{ 
-				for (int iTopFree=0; (iTopFree<50) && !GBackSolid(cx,cy+cObj->Shape.y-iTopFree); iTopFree++);
+				int iTopFree;
+				for (iTopFree=0; (iTopFree<50) && !GBackSolid(cx,cy+cObj->Shape.y-iTopFree); iTopFree++);
 				if (iTopFree>=15)
 					{
 					//sprintf(OSTR,"Diagonal %d (%d)",iAngle,Distance(cx,cy,Tx,Ty)); GameMsgObject(OSTR,cObj);
@@ -1517,7 +1519,7 @@ void C4Command::Transfer()
 
 	// Call target transfer script
 	if (!Tick5)
-		if (!Target->Call(PSF_ControlTransfer,(int)cObj,Tx,Ty))
+		if (!Target->Call(PSF_ControlTransfer,(intptr_t)cObj,Tx,Ty))
 			// Transfer not handled by target: done
 			{ Finish(TRUE); return; }
 
@@ -1681,7 +1683,8 @@ void C4Command::Acquire()
 void C4Command::Fail()
 	{
 	// Check for base command (next unfinished)
-	for (C4Command *pBase=Next; pBase; pBase=pBase->Next)	if (!pBase->Finished) break;
+	C4Command *pBase;
+	for (pBase=Next; pBase; pBase=pBase->Next)	if (!pBase->Finished) break;
 
 	// Fail notice if was base command
 	if (!pBase) 
@@ -1846,7 +1849,7 @@ void C4Command::Call()
 	// Done: success
 	Finish(TRUE);
 	// Object call
-	Target->Call(Text,(int)cObj,Tx,Ty,(int)Target2);
+	Target->Call(Text,(intptr_t)cObj,Tx,Ty,(intptr_t)Target2);
 	// Extreme caution notice: the script call might do just about anything 
 	// including clearing all commands (including this) i.e. through a call 
 	// to SetCommand. Thus, we must not do anything in this command anymore
@@ -1893,8 +1896,8 @@ BOOL C4Command::Read(const char *szSource)
 
 void C4Command::DenumeratePointers()
 	{
-	Target = Game.Objects.ObjectPointer((int)Target);
-	Target2 = Game.Objects.ObjectPointer((int)Target2);
+	Target = Game.Objects.ObjectPointer((intptr_t)Target);
+	Target2 = Game.Objects.ObjectPointer((intptr_t)Target2);
 	}
 
 void C4Command::EnumeratePointers()
@@ -1910,7 +1913,7 @@ int C4Command::CallFailed()
 	// Compose fail-function name
 	char szFunctionFailed[1024+1]; sprintf(szFunctionFailed,"%sFailed",Text);
 	// Call failed-function
-	return Target->Call(szFunctionFailed,(int)cObj,Tx,Ty,(int)Target2);
+	return Target->Call(szFunctionFailed,(intptr_t)cObj,Tx,Ty,(intptr_t)Target2);
 	// Extreme caution notice: the script call might do just about anything 
 	// including clearing all commands (including this) i.e. through a call 
 	// to SetCommand. Thus, we must not do anything in this command anymore

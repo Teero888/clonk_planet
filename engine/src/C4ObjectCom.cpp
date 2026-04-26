@@ -487,7 +487,7 @@ void ObjectComDigDouble(C4Object *cObj) // "Activation" by DFA_WALK, DFA_DIG, DF
 
 	// Contents activation (first contents object only)
 	if (cObj->Contents.GetObject())
-		if (cObj->Contents.GetObject()->Call(PSF_Activate,(int)cObj))
+		if (cObj->Contents.GetObject()->Call(PSF_Activate,(long)cObj))
 			return;
   
 	// Linekit: Line construction (move to linekit script...)
@@ -518,7 +518,7 @@ void ObjectComDigDouble(C4Object *cObj) // "Activation" by DFA_WALK, DFA_DIG, DF
 						return; 
 
   // Own activation call
-  if (cObj->Call(PSF_Activate, (int) cObj) ) return;
+  if (cObj->Call(PSF_Activate, (long)cObj) ) return;
 	 
   }
 
@@ -560,13 +560,13 @@ BOOL ObjectComPut(C4Object *cObj, C4Object *pTarget, C4Object *pThing)
 	// Check target collection limit
 	if (pTarget->Def->CollectionLimit && (pTarget->Contents.ObjectCount()>=pTarget->Def->CollectionLimit)) return FALSE;
 	// Check for collect rejection
-	if (pTarget->Call(PSF_RejectCollection,(int)pThing->Def->id,(int)pThing)) return FALSE;
+	if (pTarget->Call(PSF_RejectCollection,(long)pThing->Def->id,(long)pThing)) return FALSE;
   // Transfer thing
   pThing->Enter(pTarget);
 	// Put call to object script
   cObj->Call(PSF_Put);
 	// Target collection call
-  pTarget->Call(PSF_Collection,(int)pThing,TRUE);
+  pTarget->Call(PSF_Collection,(long)pThing,TRUE);
 	// Success
   return TRUE;
   }
@@ -708,15 +708,15 @@ BOOL ObjectComPunch(C4Object *cObj, C4Object *pTarget, int punch)
 	if (!punch) return TRUE;
 	pTarget->DoEnergy(-punch);
   int tdir=+1; if (cObj->Action.Dir==DIR_Left) tdir=-1;
-  pTarget->Call(PSF_CatchBlow,punch,(int)cObj);
+  pTarget->Call(PSF_CatchBlow,punch,(long)cObj);
   pTarget->Action.ComDir=COMD_Stop;
   // Hard punch
   if (punch>=10) 
     if (ObjectActionTumble(pTarget,pTarget->Action.Dir,ftofix(1.5)*tdir,ftofix(-2.0)))
-			{ pTarget->Call(PSF_CatchBlow,punch,(int)cObj); return TRUE; }
+			{ pTarget->Call(PSF_CatchBlow,punch,(long)cObj); return TRUE; }
   // Regular punch
   if (ObjectActionGetPunched(pTarget,ftofix(2.5)*tdir,0))
-		{ pTarget->Call(PSF_CatchBlow,punch,(int)cObj); return TRUE; }
+		{ pTarget->Call(PSF_CatchBlow,punch,(long)cObj); return TRUE; }
 	return FALSE;
   }
 

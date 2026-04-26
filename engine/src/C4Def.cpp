@@ -170,7 +170,7 @@ C4ActionDef::C4ActionDef()
 
 void C4ActionDef::Default()
 	{
-  ZeroMem(this,sizeof C4ActionDef);
+  ZeroMem(this,sizeof(C4ActionDef));
   Procedure=DFA_NONE;
   NextAction=ActIdle;
   Directions=1;
@@ -736,6 +736,7 @@ int C4DefList::Load(const char *szSearch,
 	// Wildcard items
 	if (SCharCount('*',szSearch))
 		{
+#ifdef _WIN32
 		struct _finddata_t fdt; int fdthnd;
 		if ((fdthnd=_findfirst(szSearch,&fdt))<0) return FALSE;
 		do
@@ -744,6 +745,7 @@ int C4DefList::Load(const char *szSearch,
 			}
 		while (_findnext(fdthnd,&fdt)==0);
 		_findclose(fdthnd);
+#endif
 		return iResult;
 		}
 

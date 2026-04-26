@@ -2,8 +2,8 @@
 
 /* Auto-registering data structures */
 
-#include <Windows.h>
-#include <StdIO.h>
+#include <Compat.h>
+#include <stdio.h>
 
 #include <Standard.h>
 #include <StdRegistry.h>

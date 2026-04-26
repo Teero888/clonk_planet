@@ -11,7 +11,7 @@ C4NameList::C4NameList()
 
 void C4NameList::Clear()
   {
-  ZeroMem(this,sizeof C4NameList);
+  ZeroMem(this,sizeof(C4NameList));
   }
 
 BOOL C4NameList::Set(const char *szName, int iCount)

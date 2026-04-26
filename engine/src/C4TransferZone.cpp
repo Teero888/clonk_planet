@@ -159,7 +159,8 @@ BOOL C4TransferZone::GetEntryPoint(int &rX, int &rY, int iToX, int iToY)
 	// Search around zone for free
 	int iX1=rX,iY1=rY,iX2=rX,iY2=rY;
 	int iXIncr1=0,iYIncr1=-1,iXIncr2=0,iYIncr2=+1;
-	for (int cnt=0; cnt<2*Wdt+2*Hgt; cnt++)
+	int cnt;
+	for (cnt=0; cnt<2*Wdt+2*Hgt; cnt++)
 		{
 		// Found free
 		if (!GBackSolid(iX1,iY1)) { rX=iX1; rY=iY1; break; }

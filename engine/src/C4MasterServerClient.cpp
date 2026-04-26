@@ -4,8 +4,20 @@
 
 #include <C4Include.h>
 
+#ifdef _WIN32
 #include <Winsock.h>
-#include <StdHttp.h>
+#else
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
+#define SOCKET int
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
+#define closesocket close
+#endif
+#include <StdHTTP.h>
 
 C4MasterServerClient::C4MasterServerClient()
 	{
@@ -136,9 +148,9 @@ BOOL ValidFilenameCharacter(char cChar)
 	if (Inside(cChar,'a','z')) return TRUE;
 	if (Inside(cChar,'A','Z')) return TRUE;
 	if (Inside(cChar,'0','9')) return TRUE;
-	if ((cChar == 'ö') || (cChar == 'ä') || (cChar == 'ü')) return TRUE;
-	if ((cChar == 'Ö') || (cChar == 'Ä') || (cChar == 'Ü')) return TRUE;
-	if (cChar == 'ß') return TRUE;
+	if ((cChar == 'ï¿½') || (cChar == 'ï¿½') || (cChar == 'ï¿½')) return TRUE;
+	if ((cChar == 'ï¿½') || (cChar == 'ï¿½') || (cChar == 'ï¿½')) return TRUE;
+	if (cChar == 'ï¿½') return TRUE;
 	if (cChar == '.') return TRUE;
 	return FALSE;
 	}

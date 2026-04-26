@@ -6,7 +6,7 @@
 
 C4ComponentHost *pCmpHost=NULL;
 
-#ifdef C4ENGINE
+#if defined(C4ENGINE) && defined(_WIN32)
 
 BOOL CALLBACK ComponentDlgProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 	{
@@ -85,7 +85,10 @@ void C4ComponentHost::Default()
 void C4ComponentHost::Clear()
 	{
 	if (Data) delete [] Data; Data=NULL;
-	if (hDialog) DestroyWindow(hDialog); hDialog=NULL;
+#ifdef _WIN32
+	if (hDialog) DestroyWindow(hDialog);
+#endif
+	hDialog=NULL;
 	}
 
 BOOL C4ComponentHost::Load(const char *szName,
@@ -126,7 +129,7 @@ void C4ComponentHost::Open()
 	
 	pCmpHost=this;
 
-#ifdef C4ENGINE
+#if defined(C4ENGINE) && defined(_WIN32)
 
 	DialogBox(Application.hInstance,
 						MAKEINTRESOURCE(IDD_COMPONENT),
@@ -160,13 +163,15 @@ BOOL C4ComponentHost::GetLanguageString(const char *szLanguage, char *sTarget, i
 void C4ComponentHost::Close()
 	{
 	if (!hDialog) return;
+#ifdef _WIN32
 	EndDialog(hDialog,1);
-	hDialog=FALSE;
+#endif
+	hDialog=NULL;
 	}
 
 void C4ComponentHost::InitDialog(HWND hDlg)
 	{
-#ifdef C4ENGINE
+#if defined(C4ENGINE) && defined(_WIN32)
 	hDialog=hDlg;
 	// Set text
 	SetWindowText(hDialog,Name);

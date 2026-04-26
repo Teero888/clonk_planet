@@ -51,7 +51,8 @@ BOOL C4NetworkClientList::Add(C4NetworkClient *pClient)
 BOOL C4NetworkClientList::Remove(int iNetworkClient)
 	{
 	C4NetworkClient *pClient = Get(iNetworkClient); if (!pClient) return FALSE;
-	for (C4NetworkClient *pPrev=First; pPrev; pPrev=pPrev->Next)
+	C4NetworkClient *pPrev;
+	for (pPrev=First; pPrev; pPrev=pPrev->Next)
 		if (pPrev->Next==pClient) break;
 	if (pPrev) pPrev->Next=pClient->Next;
 	else First=pClient->Next;
@@ -119,7 +120,7 @@ BOOL C4NetworkClientList::GetNetReady(C4Packet &rControl) // Nonblocking
 	
 	// All ready: reset NetReady flags (formerly done by SendNetGo)
 	if (fAllReady)
-		for (pClient=First; pClient; pClient=pClient->Next)
+		for (C4NetworkClient *pClient=First; pClient; pClient=pClient->Next)
 			pClient->NetReady=FALSE;
 
 	// Return all ready

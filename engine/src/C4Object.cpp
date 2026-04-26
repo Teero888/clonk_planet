@@ -1237,8 +1237,8 @@ BOOL C4Object::Exit(int iX, int iY, int iR, FIXED iXDir, FIXED iYDir, FIXED iRDi
   UpdateFace();
   SetOCF();
 	// Engine calls
-	if (fCalls) pContainer->Call(PSF_Ejection,(int)this);
-	if (fCalls) Call(PSF_Departure,(int)pContainer);
+	if (fCalls) pContainer->Call(PSF_Ejection,(long)this);
+	if (fCalls) Call(PSF_Departure,(long)pContainer);
 	// Success
   return TRUE;
   }
@@ -1268,7 +1268,7 @@ BOOL C4Object::Enter(C4Object *pTarget, BOOL fCalls)
   Contained->UpdateMass();
   Contained->SetOCF();
 	// Entrance call
-	if (fCalls) Call(PSF_Entrance,(int)Contained);
+	if (fCalls) Call(PSF_Entrance,(long)Contained);
 	// Success
   return TRUE;
   }
@@ -1291,7 +1291,7 @@ BOOL C4Object::ActivateEntrance(int by_plr, C4Object *by_obj)
     }
   // Try entrance activation
   if (OCF & OCF_Entrance)
-    if (Call(PSF_ActivateEntrance,(int)by_obj))
+    if (Call(PSF_ActivateEntrance,(long)by_obj))
       return TRUE;
 	// Failure
   return FALSE;
@@ -1819,7 +1819,7 @@ void C4Object::ClearPointers(C4Object *pObj)
 		cCom->ClearPointers(pObj);
 	// Local variable pointers
 	for (int cnt=0; cnt<C4MaxVariable; cnt++)
-		if ( Local[cnt] == (int) pObj )
+		if ( Local[cnt] == (long)pObj )
 			Local[cnt]=0;
 	// Menu
 	if (Menu) Menu->ClearPointers(pObj);
@@ -2293,7 +2293,7 @@ void C4Object::DenumeratePointers()
 			// Denumerate
 			C4Object *pObj = Game.Objects.ObjectPointer(Local[cnt]-C4EnumPointer1);
 			// Pointer ok, set it.
-			if (pObj)	Local[cnt] = (int) pObj;
+			if (pObj)	Local[cnt] = (long)pObj;
 			// Hm, it's not a valid pointer
 			else
 				// Could it be a C4ID? If yes, leave it. If no, zero it.
@@ -2343,8 +2343,9 @@ void C4Object::DrawCommands(C4Facet &cgoBottom, C4Facet &cgoSide, C4RegionList *
 	if (Contained) if (!fContainedDownOverride)
 		{
 		SCopy(LoadResStr(IDS_CON_EXIT),OSTR);
+		C4FacetEx fctE = Game.GraphicsResource.fctEntry.GetPhase(2);
 		DrawCommand(cgoBottom,C4FCT_Right,NULL,COM_Down,pRegions,Owner,
-								OSTR,&Game.GraphicsResource.fctEntry.GetPhase(2));
+								OSTR,&fctE);
 		}
 
 	// Contained base commands
@@ -2500,7 +2501,7 @@ BOOL C4Object::ContainedControl(BYTE byCom)
     }
   // Call container script
   sprintf(OSTR,PSF_ContainedControl,ComName(byCom));
-	Contained->Call(OSTR, (int) this);
+	Contained->Call(OSTR, (long)this);
 	// Success
   return TRUE;
 	}
@@ -2684,7 +2685,7 @@ void C4Object::DirectCom(BYTE byCom, int iData) // By player ObjectCom
         case COM_Throw: PlayerObjectCommand(Owner,C4CMD_Throw); break;
         }
       // Action target call control
-			if (Action.Target) Action.Target->CallControl(byCom, (int) this);
+			if (Action.Target) Action.Target->CallControl(byCom, (long)this);
       break;
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     case DFA_CHOP:
@@ -2863,14 +2864,14 @@ void C4Object::SetCommand(int iCommand, C4Object *pTarget, int iTx, int iTy,
 		CloseMenu();
 	// Script overload
 	if (fControl)
-		if (Call(PSF_ControlCommand,(int)CommandName(iCommand),(int)pTarget,iTx,iTy,(int)pTarget2,iData)) 
+		if (Call(PSF_ControlCommand,(long)CommandName(iCommand),(long)pTarget,iTx,iTy,(long)pTarget2,iData)) 
 			return;
 	// Inside vehicle control overload
   if (Contained)
 		if (Contained->Def->VehicleControl & C4D_VehicleControl_Inside)
 			{
 			Contained->Controller=Controller;
-			if (Contained->Call(PSF_ControlCommand,(int)CommandName(iCommand),(int)pTarget,iTx,iTy,(int)pTarget2,iData))
+			if (Contained->Call(PSF_ControlCommand,(long)CommandName(iCommand),(long)pTarget,iTx,iTy,(long)pTarget2,iData))
 				return;
 			}
 	// Outside vehicle control overload
@@ -2878,7 +2879,7 @@ void C4Object::SetCommand(int iCommand, C4Object *pTarget, int iTx, int iTy,
 		if (Action.Target)  if (Action.Target->Def->VehicleControl & C4D_VehicleControl_Outside)
 			{
 			Action.Target->Controller=Controller;
-			if (Action.Target->Call(PSF_ControlCommand,(int)CommandName(iCommand),(int)pTarget,iTx,iTy,(int)pTarget2,iData))
+			if (Action.Target->Call(PSF_ControlCommand,(long)CommandName(iCommand),(long)pTarget,iTx,iTy,(long)pTarget2,iData))
 				return;
 			}
 	// Add new command
@@ -2891,7 +2892,7 @@ BOOL C4Object::ExecuteCommand()
 	if (Command) Command->Execute();
 	// Command finished: engine call
 	if (Command && Command->Finished)
-		Call(PSF_ControlCommandFinished,(int)CommandName(Command->Command),(int)Command->Target,Command->Tx,Command->Ty,(int)Command->Target2,Command->Data);
+		Call(PSF_ControlCommandFinished,(long)CommandName(Command->Command),(long)Command->Target,Command->Tx,Command->Ty,(long)Command->Target2,Command->Data);
 	// Clear finished commands
 	while (Command && Command->Finished) ClearCommand(Command);
 	// Done
@@ -3125,7 +3126,8 @@ void GrabLost(C4Object *cObj)
 	// Grab lost script call on target (quite hacky stuff...)
 	cObj->Action.Target->Call(PSF_GrabLost);
 	// Clear commands down to first PushTo (if any) in command stack
-	for (C4Command *pCom=cObj->Command; pCom; pCom=pCom->Next)
+	C4Command *pCom;
+	for (pCom=cObj->Command; pCom; pCom=pCom->Next)
 		if (pCom->Next && pCom->Next->Command==C4CMD_PushTo)
 			break;
 	if (pCom) cObj->ClearCommand(pCom);
@@ -4137,4 +4139,11 @@ void C4Object::ExecAction()
 
   return;
   }
+
+
+
+
+
+
+
 

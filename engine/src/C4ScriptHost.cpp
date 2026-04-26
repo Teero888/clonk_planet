@@ -136,7 +136,7 @@ void C4ScriptHost::ClearPointers(C4Object *pObj)
 	{
 	// Global variable pointers
 	for (int cnt=0; cnt<C4MaxVariable; cnt++)
-		if ( Global[cnt] == (int) pObj )
+		if ( Global[cnt] == (long)pObj )
 			Global[cnt]=0;
 	}
 
@@ -156,7 +156,7 @@ BOOL C4ScriptHost::DenumerateVariablePointers()
 #ifdef C4ENGINE
 	for (int cnt=0; cnt<C4MaxVariable; cnt++)
 		if (Inside(Global[cnt],1000000000,1001000000))
-			Global[cnt] = (int) Game.Objects.ObjectPointer(Global[cnt]-1000000000);
+			Global[cnt] = (long) Game.Objects.ObjectPointer(Global[cnt]-1000000000);
 #endif
 	return TRUE;
 	}

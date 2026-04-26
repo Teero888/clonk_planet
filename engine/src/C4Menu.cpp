@@ -228,7 +228,7 @@ void C4Menu::Close()
 	Active=FALSE;
 	}
 
-BOOL C4Menu::Init(C4FacetEx &fctSymbol, const char *szEmpty, int iPlayer, int iExtra, int iExtraData, int iId, int iStyle)
+BOOL C4Menu::Init(C4FacetEx fctSymbol, const char *szEmpty, int iPlayer, int iExtra, int iExtraData, int iId, int iStyle)
 	{
 	Clear(); Default();
 	Active=TRUE;
@@ -241,7 +241,7 @@ BOOL C4Menu::Init(C4FacetEx &fctSymbol, const char *szEmpty, int iPlayer, int iE
 	return TRUE;
 	}
 
-BOOL C4Menu::Init(C4FacetEx &fctSymbol, const char *szEmpty, C4Object *pObject, int iExtra, int iExtraData, int iId, int iStyle)
+BOOL C4Menu::Init(C4FacetEx fctSymbol, const char *szEmpty, C4Object *pObject, int iExtra, int iExtraData, int iId, int iStyle)
 	{
 	Clear(); Default();
 	Active=TRUE;
@@ -255,7 +255,7 @@ BOOL C4Menu::Init(C4FacetEx &fctSymbol, const char *szEmpty, C4Object *pObject, 
 	return TRUE;
 	}
 
-BOOL C4Menu::Add(const char *szCaption, C4FacetEx &fctSymbol, const char *szCommand, 
+BOOL C4Menu::Add(const char *szCaption, C4FacetEx fctSymbol, const char *szCommand, 
 								 int iCount, C4Object *pObject, int iParameter, const char *szInfoCaption,
 								 C4ID idID, const char *szCommand2)
 	{
@@ -411,7 +411,8 @@ C4MenuItem* C4Menu::GetSelectedItem()
 BOOL C4Menu::ActivateNewPlayer(int iPlayer)
 	{
 	// Menu symbol/init
-	Init(GfxR->fctPlayer.GetPhase(),LoadResStr(IDS_MENU_NOPLRFILES),iPlayer);
+	C4FacetEx fctMenu = GfxR->fctPlayer.GetPhase();
+	Init(fctMenu,LoadResStr(IDS_MENU_NOPLRFILES),iPlayer);
 
 	// Search player files
 	char szSearch[_MAX_PATH+1],szFilename[_MAX_PATH+1],szCommand[_MAX_PATH+30+1];
@@ -442,8 +443,10 @@ BOOL C4Menu::ActivateNewPlayer(int iPlayer)
 				Add(OSTR,fctPortrait,szCommand);
 				fctPortrait.Default();
 				}
-			else
-				Add(OSTR,GfxR->fctPlayer.GetPhase(BoundBy(C4P.PrefColor,0,C4MaxColor-1)+2),szCommand);
+			else {
+				C4FacetEx fct2 = GfxR->fctPlayer.GetPhase(BoundBy(C4P.PrefColor,0,C4MaxColor-1)+2);
+				Add(OSTR,fct2,szCommand);
+			}
       }
     }
   while (_findnext(fdthnd,&fdt)==0);

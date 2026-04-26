@@ -2,7 +2,7 @@
 
 /* A structure for handling 256-color bitmap files */
 
-#include <Windows.h>
+#include <Compat.h>
 
 #include <Standard.h>
 #include <Bitmap256.h>
@@ -51,5 +51,5 @@ void CBitmap256Info::Set(int iWdt, int iHgt, BYTE *bypPalette)
 
 void CBitmap256Info::Default()
 	{
-	ZeroMem(this,sizeof CBitmap256Info);
+	ZeroMem(this, sizeof(CBitmap256Info));
 	}

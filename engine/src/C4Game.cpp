@@ -112,17 +112,20 @@ BOOL C4Game::InitDefs()
 BOOL C4Game::OpenScenario()
   {  
   
+	printf("OpenScenario: %s\n", ScenarioFilename);
 	// Scenario filename check & log
 	if (!ScenarioFilename[0]) { Log(LoadResStr(IDS_PRC_NOC4S)); return FALSE; }
   sprintf(OSTR,LoadResStr(IDS_PRC_LOADC4S),ScenarioFilename); Log(OSTR);
 
+	printf("OpenScenario: ScenarioFile.Open...\n");
 	// Open scenario file
   if (!ScenarioFile.Open(ScenarioFilename)) 
-		{ Log(LoadResStr(IDS_PRC_FILENOTFOUND)); return FALSE; }
+		{ printf("ScenarioFile.Open failed: %s\n", ScenarioFilename); Log(LoadResStr(IDS_PRC_FILENOTFOUND)); return FALSE; }
 
+	printf("OpenScenario: C4S.Load...\n");
   // Read scenario core
   if (!C4S.Load(ScenarioFile))
-		{ Log(LoadResStr(IDS_PRC_FILEINVALID)); return FALSE; }
+		{ printf("C4S.Load failed!\n"); Log(LoadResStr(IDS_PRC_FILEINVALID)); return FALSE; }
 
 	// Check registration
 	if (!CheckScenarioAccess()) 
@@ -174,11 +177,13 @@ void C4Game::CloseScenario()
 
 BOOL C4Game::Init(const char *szCmdLine)
   {
+	printf("Game::Init: %s\n", szCmdLine);
 
   // Parse command line
 	ParseCommandLine(szCmdLine);
 
   // System
+	printf("InitSystem...\n");
 	InitSystem();
 
 	// Loader screen
@@ -203,13 +208,16 @@ BOOL C4Game::Init(const char *szCmdLine)
 				{ Log(LoadResStr(IDS_PRC_REGNAMEINVALID)); return FALSE; }
 
 	// Init game
-	if (!InitGame()) return FALSE;
+	printf("InitGame...\n");
+	if (!InitGame()) { printf("InitGame failed!\n"); return FALSE; }
 
 	// Init players
-	if (!InitPlayers())	return FALSE;
+	printf("InitPlayers...\n");
+	if (!InitPlayers())	{ printf("InitPlayers failed!\n"); return FALSE; }
 
 	// Final init
-	if (!InitGameFinal())	return FALSE;
+	printf("InitGameFinal...\n");
+	if (!InitGameFinal())	{ printf("InitGameFinal failed!\n"); return FALSE; }
 
 	// Network final init	
 	if (!Network.FinalInit()) return FALSE;
@@ -703,7 +711,7 @@ void C4Game::CrossCheckObjects() // Every Tick1 by ExecObjects
 												int tmass=Max(obj1->Mass,50);
 												obj1->Fling(obj2->xdir*50/tmass,
 													-Abs(obj2->ydir/2)*50/tmass); 
-												obj1->Call(PSF_CatchBlow,-obj2->Mass/5,(int)obj2);
+												obj1->Call(PSF_CatchBlow,-obj2->Mass/5,(long)obj2);
                         continue; 
                         }                                        
                     // Collection
@@ -718,14 +726,14 @@ void C4Game::CrossCheckObjects() // Every Tick1 by ExecObjects
                                 if (SEqual(obj2->Def->ActMap[obj2->Action.Act].Name,"FlyBase"))
                                   continue;       
 													// Check for collect rejection
-													if (obj1->Call(PSF_RejectCollection,(int)obj2->Def->id,(int)obj2))
+													if (obj1->Call(PSF_RejectCollection,(long)obj2->Def->id,(long)obj2))
 														continue;
 													// Object enter container
                           obj2->Enter(obj1);
 													// Cancel attach (hacky)
                           ObjectComCancelAttach(obj2);
 													// Container Collection call
-                          obj1->Call(PSF_Collection,(int)obj2);
+                          obj1->Call(PSF_Collection,(long)obj2);
 													// Object Hit call
                           if (obj2->OCF & OCF_HitSpeed1) obj2->Call(PSF_Hit);
 													// Continue
@@ -1927,28 +1935,33 @@ int LandscapeFree(int x, int y)
 
 BOOL C4Game::InitGame()
 	{
-
+	printf("InitGame: Network override...\n");
 	// Network override StartupPlayerCount
 	if (Config.Network.Active) StartupPlayerCount=C4S_MaxPlayer;
 
+	printf("InitGame: DirectJoinGetReference...\n");
 	// Direct join: get reference
 	if (!DirectJoinGetReference()) return FALSE;
 
+	printf("InitGame: OpenScenario...\n");
   // Open scenario
   if (!OpenScenario()) 
-    { Log(LoadResStr(IDS_PRC_FAIL)); return FALSE; }
+    { printf("OpenScenario failed!\n"); Log(LoadResStr(IDS_PRC_FAIL)); return FALSE; }
 
+	printf("InitGame: InitNetworkScenario...\n");
 	// Init network scenario
-	if (!InitNetworkScenario()) return FALSE;
+	if (!InitNetworkScenario()) { printf("InitNetworkScenario failed!\n"); return FALSE; }
 
+	printf("InitGame: LoadScenarioComponents...\n");
 	// Scenario components
 	if (!LoadScenarioComponents())
-		{ Log(LoadResStr(IDS_PRC_FAIL)); return FALSE; }
+		{ printf("LoadScenarioComponents failed!\n"); Log(LoadResStr(IDS_PRC_FAIL)); return FALSE; }
 
+	printf("InitGame: GraphicsResource.Init...\n");
   // Graphics
   Log(LoadResStr(IDS_PRC_GFXRES));
   if (!GraphicsResource.Init()) 
-    { Log(LoadResStr(IDS_PRC_FAIL)); return FALSE; }
+    { printf("GraphicsResource.Init failed!\n"); Log(LoadResStr(IDS_PRC_FAIL)); return FALSE; }
 
 	// Sound
   if (Config.Sound.RXSound)
@@ -2095,10 +2108,12 @@ BOOL C4Game::InitPlayers()
 				return FALSE;
 
 	// Join local players to network game (control queue)
-	if (NetworkJoinPlayerFilenames[0])
+	if (NetworkJoinPlayerFilenames[0]) {
+		int iPar;
 		for (iPar=0; SCopySegment(NetworkJoinPlayerFilenames,iPar,szPlayerFilename,';',_MAX_PATH); iPar++)
 			if (szPlayerFilename[0])
 				Input.AddJoinPlayer(szPlayerFilename);
+	}
 
 	// Check valid participating player numbers (host/single only)
 	if (!Network.Active || (Network.Host && !fLobby))
@@ -2354,9 +2369,10 @@ void C4Game::ParseCommandLine(const char *szCmdLine)
   cSeparator=' '; if (SCharCount('"',szCmdLine)) cSeparator='"';
   for (int iPar=0; SCopySegment(szCmdLine,iPar,szParameter,cSeparator,_MAX_PATH); iPar++)
     {
-    // Scenario file
-    if (SEqualNoCase(GetExtension(szParameter),"c4s")) 
+    // Scenario file / folder
+    if (SEqualNoCase(GetExtension(szParameter),"c4s") || SEqualNoCase(GetExtension(szParameter),"c4f"))
       { SCopy(szParameter,ScenarioFilename,_MAX_PATH); continue; }
+
     // Player file    
     if (SEqualNoCase(GetExtension(szParameter),"c4p")) 
 			{

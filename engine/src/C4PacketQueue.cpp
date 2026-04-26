@@ -102,7 +102,7 @@ int ControlQueueSize,ControlQueueDataSize;
 BOOL C4PacketQueue::AddStatic(C4Packet &rPacket)
 	{
 	// Add header
-	if (!AddData( (BYTE*) &rPacket, sizeof C4PacketHeader )) return FALSE;
+	if (!AddData( (BYTE*) &rPacket, sizeof(C4PacketHeader) )) return FALSE;
 	// Add data
 	if (rPacket.Data && rPacket.Size) 
 		if (!AddData( rPacket.Data, rPacket.Size )) return FALSE;
@@ -121,7 +121,7 @@ BOOL C4PacketQueue::AddStaticHead(C4Packet &rPacket)
 	if (rPacket.Data && rPacket.Size) 
 		if (!AddDataHead( rPacket.Data, rPacket.Size )) return FALSE;
 	// Add header
-	if (!AddDataHead( (BYTE*) &rPacket, sizeof C4PacketHeader )) return FALSE;
+	if (!AddDataHead( (BYTE*) &rPacket, sizeof(C4PacketHeader) )) return FALSE;
 	// Success
 	return TRUE;	
 	}

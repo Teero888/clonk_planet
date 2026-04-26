@@ -1,12 +1,10 @@
+#ifndef INC_Standard
+#define INC_Standard
 /* Copyright (C) 1998-2000  Matthes Bender  RedWolf Design */
 
 /* All kinds of valuable helpers */
 
-typedef unsigned char  BYTE;
-typedef unsigned short WORD;
-typedef unsigned int   UINT;
-typedef unsigned long  DWORD;
-typedef int            BOOL;
+#include <Compat.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -165,3 +163,4 @@ void StdBlit(BYTE *bypSource, int iSourcePitch, int iSrcBufHgt,
 #include <Fixed.h>
 
 DWORD time_msecs();
+#endif

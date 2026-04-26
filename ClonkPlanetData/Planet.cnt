@@ -1,0 +1,17 @@
+:Base Planet.hlp>Def
+:Title Clonk Planet
+1 Welcome to Clonk Planet=HID_WELCOME
+1 Shareware and Registration
+2 Shareware=HID_SHAREWARE
+1 Control
+2 Mouse=HID_CONTROLMOUSE
+2 Keyboard and Gamepad=HID_CONTROL
+2 Line Construction and Pumps=HID_LINES
+1 Program
+2 What is Clonk?=HID_INFOCLONK
+2 Saving Games=HID_SAVEGAME
+2 Networking=HID_NETWORK
+2 System Requirements=HID_SYSTEMREQS
+2 Disclaimer=HID_DISCLAIMER
+1 RedWolf Design
+2 Contact=HID_REDWOLFDESIGN

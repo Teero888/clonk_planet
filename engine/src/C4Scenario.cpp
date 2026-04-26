@@ -237,15 +237,15 @@ BOOL C4Scenario::Save(C4Group &hGroup)
 		{ delete [] Buffer; return FALSE; }
 	return TRUE;
 	}
-
-void C4SDefinitions::Default()	
-  {
-	ZeroMem(this,sizeof C4SDefinitions);
+void C4SDefinitions::Default()
+	{
+	ZeroMem(this,sizeof(C4SDefinitions));
 	}
 
 void C4SHead::Default()
-  {
-	ZeroMem(this,sizeof C4SHead);
+	{
+	ZeroMem(this,sizeof(C4SHead));
+	
   EnableRoundOptions=1;
   Icon=18;
 	MaxPlayer=C4S_MaxPlayer;
@@ -425,6 +425,7 @@ BOOL C4SDefinitions::GetModules(char *sList)
 	if (!fSpecified) return FALSE;
 	// Compose entry list
 	sList[0]=0;
+	int cnt;
 	for (cnt=0; cnt<C4S_MaxDefinitions; cnt++)
 		if (Definition[cnt][0])
 			SAddModule(sList,Definition[cnt]);

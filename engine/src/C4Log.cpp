@@ -9,6 +9,9 @@ const int C4LogMsgLen=500;
 char *C4LogBuf=NULL;
 time_t C4LogStartTime=0;
 
+#include <thread>
+extern std::thread::id g_mainThreadId;
+
 void ClearC4Log()
   {
   if (C4LogBuf) delete [] C4LogBuf;
@@ -39,10 +42,11 @@ BOOL Log(const char *szMessage)
 	// Immediate save
   FILE *fhnd;
   if (fhnd=fopen(C4CFN_Log,"a+"))
-		{ fputs(szMessageBuf,fhnd); fputs("\n",fhnd); fclose(fhnd);	}
+		{ fputs(szMessageBuf,fhnd); fputs("\n",fhnd); fflush(fhnd); fclose(fhnd);	}
 
-	// Notify startup message board
-	Game.GraphicsSystem.MessageBoard.LogNotify();
+	// Notify startup message board (main thread only!)
+	if (std::this_thread::get_id() == g_mainThreadId)
+	    Game.GraphicsSystem.MessageBoard.LogNotify();
 
   return TRUE;
   }

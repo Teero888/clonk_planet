@@ -29,17 +29,18 @@ void DeleteBitmap(HBITMAP hbmp);
 
 extern const char *C4CFN_FLS[];
 
+#pragma pack(push, 1)
 class C4GroupHeader 
   { 
 	public:
 		C4GroupHeader();
   public:
     char id[24+1]; 
-    int Ver1,Ver2;
-    int Entries;  
+    int32_t Ver1,Ver2;
+    int32_t Entries;  
     char Maker[C4GroupMaxMaker+1];
     char Password[C4GroupMaxPassword+1];
-		int Creation,Original;
+		int32_t Creation,Original;
     BYTE fbuf[92];
   public:
     void Init();
@@ -49,11 +50,12 @@ class C4GroupEntryCore
   { 
   public:
     char FileName[_MAX_FNAME+1];
-    BOOL Packed,ChildGroup;
-    int Size,EntrySize,Offset;
-    time_t Time;
+    int32_t Packed,ChildGroup;
+    int32_t Size,EntrySize,Offset;
+    int32_t Time;
     BYTE fbuf[30];
   };
+#pragma pack(pop)
 
 const int C4GRES_InGroup  = 0,	
 					C4GRES_OnDisk		= 1,

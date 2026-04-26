@@ -20,12 +20,12 @@ CStdConfigValue C4ConfigMap[] =
 	{ CFG_String,		"Code",									ofC4Cfg(General.Code),									0							},
 	{ CFG_String,		"UserName",							ofC4Cfg(General.UserNameOld),						0							}, 
 	{ CFG_String,		"RegCode",							ofC4Cfg(General.RegCodeOld),						0							},
-	{ CFG_String,		"Language",							ofC4Cfg(General.Language),				(int) 0							},
-	{ CFG_String,		"Definitions",					ofC4Cfg(General.Definitions),			(int) 0							},
+	{ CFG_String,		"Language",							ofC4Cfg(General.Language),				0							},
+	{ CFG_String,		"Definitions",					ofC4Cfg(General.Definitions),			0							},
 	{ CFG_Integer,	"DebugMode",						ofC4Cfg(General.DebugMode),							0							},
-	{ CFG_String,		"RXFontName",						ofC4Cfg(General.RXFontName),			(int) "Comic Sans MS"	},
+	{ CFG_String,		"RXFontName",						ofC4Cfg(General.RXFontName), (long) "Comic Sans MS"	},
 	{ CFG_Integer,	"RXFontSize",						ofC4Cfg(General.RXFontSize),						10						},
-	{ CFG_String,		"FEFontName",						ofC4Cfg(General.FEFontName),			(int) "Comic Sans MS"	},
+	{ CFG_String,		"FEFontName",						ofC4Cfg(General.FEFontName), (long) "Comic Sans MS"	},
 	{ CFG_Integer,	"FEFontSize",						ofC4Cfg(General.FEFontSize),						9							},
 	{ CFG_String,		"TempPath",							ofC4Cfg(General.TempPath),							0							},
 	{ CFG_String,		"LogPath",							ofC4Cfg(General.LogPath),								0							},
@@ -63,21 +63,21 @@ CStdConfigValue C4ConfigMap[] =
 
 	{ CFG_Section,	"Network", 0,0 },
 	{ CFG_Integer,	"Active",								ofC4Cfg(Network.Active),								0							},
-	{ CFG_String,		"LocalName",						ofC4Cfg(Network.LocalName),				(int) "Unknown"			},
-	{ CFG_String,		"LocalAddress",					ofC4Cfg(Network.LocalAddress),		(int) "Unknown"			},
-	{ CFG_String,		"HostList",							ofC4Cfg(Network.HostList),				(int) 0							},
+	{ CFG_String,		"LocalName",						ofC4Cfg(Network.LocalName), (long) "Unknown"			},
+	{ CFG_String,		"LocalAddress",					ofC4Cfg(Network.LocalAddress), (long) "Unknown"			},
+	{ CFG_String,		"HostList",							ofC4Cfg(Network.HostList),				0							},
 	{ CFG_Integer,	"ControlRate",					ofC4Cfg(Network.ControlRate),						1							},
-	{ CFG_String,		"WorkPath",							ofC4Cfg(Network.WorkPath),				(int) "Network"			},
+	{ CFG_String,		"WorkPath",							ofC4Cfg(Network.WorkPath), (long) "Network"			},
 	{ CFG_Integer,	"Lobby",								ofC4Cfg(Network.Lobby),									0							},
 	{ CFG_Integer,	"NoRuntimeJoin",				ofC4Cfg(Network.NoRuntimeJoin),					0							},
 	{ CFG_Integer,	"NoReferenceRequest",		ofC4Cfg(Network.NoReferenceRequest),		0							},
 	{ CFG_Integer,	"AsynchronousControl",	ofC4Cfg(Network.AsynchronousControl),		0							},
-	{ CFG_String,		"Comment",							ofC4Cfg(Network.Comment),					(int) 0							},
+	{ CFG_String,		"Comment",							ofC4Cfg(Network.Comment),					0							},
 	
 	{ CFG_Integer,	"MasterServerSignUp",		ofC4Cfg(Network.MasterServerSignUp),		0							},
 	{ CFG_Integer,	"MasterServerActive",		ofC4Cfg(Network.MasterServerActive),		0							},
-	{ CFG_String,		"MasterServerAddress",	ofC4Cfg(Network.MasterServerAddress),		(int) "www.clonk.de" },
-	{ CFG_String,		"MasterServerDirectory", ofC4Cfg(Network.MasterServerPath),			(int) "/cgi-bin/cpmaster.pl" },
+	{ CFG_String,		"MasterServerAddress",	ofC4Cfg(Network.MasterServerAddress), (long) "www.clonk.de" },
+	{ CFG_String,		"MasterServerDirectory", ofC4Cfg(Network.MasterServerPath), (long) "/cgi-bin/cpmaster.pl" },
 	{ CFG_Integer,	"MasterKeepPeriod",			ofC4Cfg(Network.MasterKeepPeriod),			60						},
 	{ CFG_Integer,	"MasterReferencePeriod",ofC4Cfg(Network.MasterReferencePeriod),	120						},
 
@@ -89,15 +89,15 @@ CStdConfigValue C4ConfigMap[] =
 	{ CFG_Integer,	"ShowQuickStart",				ofC4Cfg(Explorer.ShowQuickStart),				1							},
 	{ CFG_String,		"Participants",					ofC4Cfg(Explorer.Participants),					0							}, 
 	{ CFG_String,		"Definitions",					ofC4Cfg(Explorer.Definitions),					0							}, 
-	{ CFG_String,		"EditorBitmap",					ofC4Cfg(Explorer.EditorBitmap),		(int) "MSPaint.exe"	}, 
-	{ CFG_String,		"EditorMusic",					ofC4Cfg(Explorer.EditorMusic),		(int) "MPlayer.exe"	}, 
-	{ CFG_String,		"EditorRichText",				ofC4Cfg(Explorer.EditorRichText),	(int) "Wordpad.exe"	}, 
-	{ CFG_String,		"EditorScript",					ofC4Cfg(Explorer.EditorScript),		(int) "Notepad.exe"	}, 
-	{ CFG_String,		"EditorText",						ofC4Cfg(Explorer.EditorText),			(int) "Notepad.exe"	}, 
-	{ CFG_String,		"EditorSound",					ofC4Cfg(Explorer.EditorSound),		(int) "MPlayer.exe"	}, 
-	{ CFG_String,		"EditorZip",						ofC4Cfg(Explorer.EditorZip),			(int) "WinZip32.exe"}, 
+	{ CFG_String,		"EditorBitmap",					ofC4Cfg(Explorer.EditorBitmap), (long) "MSPaint.exe"	}, 
+	{ CFG_String,		"EditorMusic",					ofC4Cfg(Explorer.EditorMusic), (long) "MPlayer.exe"	}, 
+	{ CFG_String,		"EditorRichText",				ofC4Cfg(Explorer.EditorRichText), (long) "Wordpad.exe"	}, 
+	{ CFG_String,		"EditorScript",					ofC4Cfg(Explorer.EditorScript), (long) "Notepad.exe"	}, 
+	{ CFG_String,		"EditorText",						ofC4Cfg(Explorer.EditorText), (long) "Notepad.exe"	}, 
+	{ CFG_String,		"EditorSound",					ofC4Cfg(Explorer.EditorSound), (long) "MPlayer.exe"	}, 
+	{ CFG_String,		"EditorZip",						ofC4Cfg(Explorer.EditorZip), (long) "WinZip32.exe"}, 
 	{ CFG_String,		"EditorDefinition",			ofC4Cfg(Explorer.EditorDefinition),     0							}, 
-	{ CFG_String,		"EditorHtml",						ofC4Cfg(Explorer.EditorHtml),			(int) "iexplore.exe"},
+	{ CFG_String,		"EditorHtml",						ofC4Cfg(Explorer.EditorHtml), (long) "iexplore.exe"},
 	{ CFG_String,		"Reload",								ofC4Cfg(Explorer.Reload),								0							}, 
 
 	{ CFG_Section,	"Controls", 0,0 },
@@ -191,7 +191,7 @@ C4Config::~C4Config()
 
 void C4Config::Default()
 	{
-  ZeroMem(this, sizeof C4Config);
+  ZeroMem(this, sizeof(C4Config));
 	}
 
 BOOL C4Config::Load()
@@ -214,16 +214,28 @@ void C4ConfigGeneral::DeterminePaths()
 	{
 	// Exe path
 	if (GetModuleFileName(NULL,ExePath,CFG_MaxString))
-		{	TruncatePath(ExePath); AppendBackslash(ExePath); }
+		{	
+            char dir[CFG_MaxString];
+            if (GetParentPath(ExePath, dir)) {
+                SCopy(dir, ExePath);
+            }
+        }
+	printf("DeterminePaths: ExePath (from Compat): %s\n", ExePath);
 	// WorkPath (force working directory to exe path)
 	BOOL fOkay = SetCurrentDirectory(ExePath);
+    printf("DeterminePaths: SetCurrentDirectory(%s): %d\n", ExePath, fOkay);
+#ifndef _WIN32
+    AppendBackslash(ExePath); // Clonk expects trailing backslash for its own path joins
+#endif
 	// Temp path
 	GetTempPath(CFG_MaxString,TempPath);
 	if (TempPath[0]) AppendBackslash(TempPath);
 	// Log path
 	SCopy(ExePath,LogPath);
+#ifdef _WIN32
 	if (LogPath[0]) AppendBackslash(LogPath);
-	else SCopy(ExePath,LogPath);
+#endif
+	printf("DeterminePaths: LogPath: %s\n", LogPath);
 	// Player path
 	if (PlayerPath[0]) AppendBackslash(PlayerPath);
 	// Round path
@@ -279,6 +291,7 @@ void C4ConfigGeneral::CheckSaveFolders(WORD wSaveGame, WORD wSaveScenario)
 
 BOOL C4Config::Init()
 	{
+	Graphics.DetermineResolution();
 	return TRUE;
 	}
 

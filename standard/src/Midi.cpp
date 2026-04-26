@@ -2,10 +2,12 @@
 
 /* Play midis using mci */
 
-#include <windows.h>
-#include <mmsystem.h>
-#include <midi.h>
+#include <Compat.h>
+// #include <mmsystem.h>
+#include <Midi.h>
 #include <stdio.h>
+
+#ifdef _WIN32
 
 BOOL PlayMidi(const char *sFileName, HWND appWnd)
 	{
@@ -44,3 +46,10 @@ BOOL ReplayMidi(HWND appWnd)
 	return TRUE;
 	}
 
+
+#endif
+
+#ifndef _WIN32
+BOOL StopMidi() { return FALSE; }
+BOOL PlayMidi(const char *szConfig, HWND hWnd) { return FALSE; }
+#endif

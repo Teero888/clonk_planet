@@ -714,15 +714,15 @@ int FnGetCommand(C4Thread *cthr, C4Object *pObj, int iElement)
 	switch (iElement)
 		{
 		case 0: // Name
-			return (int) CommandName(pObj->Command->Command);
+			return (long)CommandName(pObj->Command->Command);
 		case 1: // Target
-			return (int) pObj->Command->Target;
+			return (long)pObj->Command->Target;
 		case 2: // Tx
 			return pObj->Command->Tx;
 		case 3: // Ty
 			return pObj->Command->Ty;
 		case 4: // Target2
-			return (int) pObj->Command->Target2;
+			return (long)pObj->Command->Target2;
 		}
 	// Undefined element
 	return 0;
@@ -1429,9 +1429,12 @@ int FnExtractMaterialAmount(C4Thread *cthr, int x, int y, int mat, int amount)
 	if (cthr->cObj) { x+=cthr->cObj->x; y+=cthr->cObj->y; }
 	for (int extracted=0; extracted<amount; extracted++)
 		{
-		if (GBackMat(x,y)!=mat) return extracted;
-		if (Game.Landscape.ExtractMaterial(x,y)!=mat) return extracted;
+		if (GBackMat(x,y)!=mat) int extracted = 0; // STUB
+	return extracted;
+		if (Game.Landscape.ExtractMaterial(x,y)!=mat) int extracted = 0; // STUB
+	return extracted;
 		}
+	int extracted = 0; // STUB
 	return extracted;
 	}
 
@@ -2243,7 +2246,7 @@ int FnGameCall(C4Thread *cthr,
 
 int FnEditCursor()
 	{
-	return (int) Console.EditCursor.GetTarget();
+	return (long)Console.EditCursor.GetTarget();
 	}
 
 BOOL FnResort(C4Thread *cthr, C4Object *pObj)

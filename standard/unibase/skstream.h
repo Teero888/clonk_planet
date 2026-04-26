@@ -1,3 +1,6 @@
+#include <Compat.h>
+typedef int SOCKET;
+#include <Compat.h>
 
 // Code modified for use by Clonk engine.
 
@@ -23,8 +26,12 @@
 #ifndef __SOCKET_STREAM__
 #define __SOCKET_STREAM__
 
-#include <iostream.h>
-#include <winsock.h>
+#include <iostream>
+#include <streambuf>
+using namespace std;
+#include <streambuf>
+using namespace std;
+// #include <winsock.h>
 
 
 //

@@ -14,17 +14,21 @@
 
 const int C4XVer1 = 4, C4XVer2 = 6, C4XVer3 = 5, C4XVer4 = 0;
 
+#ifdef _WIN32
 #include <Windows.h>
 #include <MMSystem.h>
 #include <ShellAPI.h>
-#include <Math.h>
-#include <Stdio.h>
-#include <Io.h>
-#include <StdLib.h>
-#include <Time.h>
 #include <DDraw.h>
 #include <VfW.h>
 #include <Commdlg.h>
+#else
+#include <Compat.h>
+#endif
+
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include <Standard.h>
 #include <StdFile.h>
@@ -49,7 +53,7 @@ const int C4XVer1 = 4, C4XVer2 = 6, C4XVer3 = 5, C4XVer4 = 0;
 #include <C4Constants.h>
 #include <C4Facet.h>
 #include <C4FacetEx.h>
-#include <C4ID.h>
+#include <C4Id.h>
 #include <C4IDList.h>
 #include <C4NameList.h>
 #include <C4RankSystem.h>
@@ -83,7 +87,7 @@ const int C4XVer1 = 4, C4XVer2 = 6, C4XVer3 = 5, C4XVer4 = 0;
 
 #ifdef C4ENGINE
 
-#include "..\res\Resource.h"
+#include "../res/resource.h"
 
 #include <C4Log.h>
 #include <C4Random.h>

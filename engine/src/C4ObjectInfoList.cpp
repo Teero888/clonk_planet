@@ -174,7 +174,8 @@ void C4ObjectInfoList::DetachFromObjects()
 
 C4ObjectInfo* C4ObjectInfoList::GetLast()
 	{
-	for (C4ObjectInfo *cInfo = First; cInfo && cInfo->Next; cInfo=cInfo->Next);
+	C4ObjectInfo *cInfo;
+	for (cInfo=First; cInfo && cInfo->Next; cInfo=cInfo->Next);
 	return cInfo;
 	}
 

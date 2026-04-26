@@ -4,7 +4,7 @@
 
 #include <C4Include.h>
 
-#include <..\unibase\skstream.h>
+#include <skstream.h>
 
 C4Stream::C4Stream()
 	{
@@ -172,7 +172,7 @@ int C4Stream::GetPacket(C4Packet &rPacket)
 		{
 		if (!(rPacket.Data = new BYTE [rPacket.Size+1])) return C4STRM_NoMemory;
 		rPacket.OwnData=TRUE;
-		for (cnt=0; cnt<rPacket.Size; cnt++)
+		for (int cnt=0; cnt<rPacket.Size; cnt++)
 			{
 			if (!pStream->good()) return C4STRM_DataError;
 			char ch; pStream->get(ch);
@@ -199,7 +199,7 @@ int C4Stream::PutPacket(C4Packet &rPacket, void (*fnPrcs)(int))
 		}
 	// Put data
 	int iPrcBlock=0;
-	for (cnt=0; cnt<rPacket.Size; cnt++)
+	for (int cnt=0; cnt<rPacket.Size; cnt++)
 		{
 		if (!rPacket.Data) return C4STRM_NoData;
 		if (!pStream->good()) return C4STRM_NoGood;
@@ -313,9 +313,9 @@ BOOL C4Stream::CrapRecovery(C4Packet &rPacket)
 		// Move first header byte to recovery buffer
 		RecoveryBuffer[iRecovery] = ((BYTE*)&rPacket)[0];
 		// Shift header data by one byte
-		MemCopy( ((BYTE*)&rPacket)+1, ((BYTE*)&rPacket), sizeof C4PacketHeader - 1 );
+		MemCopy( ((BYTE*)&rPacket)+1, ((BYTE*)&rPacket), sizeof(C4PacketHeader) - 1 );
 		// Put next byte to end of header
-		((BYTE*)&rPacket)[sizeof C4PacketHeader - 1] = ch;
+		((BYTE*)&rPacket)[sizeof(C4PacketHeader) - 1] = ch;
 		// Check match
 		if (SEqual(rPacket.Head,C4PK_Head)) { iRecovery++; return TRUE; }
 		}

@@ -185,7 +185,8 @@ BOOL C4GraphicsSystem::CreateViewport(int iPlayer)
 	else 
 		fOkay = nvp->Init(Application.hWindow,Application.hInstance,iPlayer); 
 	if (!fOkay)	{ delete nvp; return FALSE; }
-	for (C4Viewport *pLast=FirstViewport; pLast && pLast->Next; pLast=pLast->Next);
+	C4Viewport *pLast;
+	for (pLast=FirstViewport; pLast && pLast->Next; pLast=pLast->Next);
 	if (pLast) pLast->Next=nvp; else FirstViewport=nvp;
 	// Recalculate viewports
 	RecalculateViewports();

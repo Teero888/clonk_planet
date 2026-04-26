@@ -73,14 +73,14 @@ C4CompilerValue C4CR_PlayerInfoCore[] = {
 
 C4PlayerInfoCore::C4PlayerInfoCore()
   {
-  ZeroMem(this,sizeof C4PlayerInfoCore);
+  ZeroMem(this,sizeof(C4PlayerInfoCore));
   Ver1=C4PVer1; Ver2=C4PVer2;
 	Default();
   }
 
 void C4PlayerInfoCore::Default(C4RankSystem *pRanks)
   {
-  ZeroMem(this,sizeof C4PlayerInfoCore);
+  ZeroMem(this,sizeof(C4PlayerInfoCore));
   Ver1=C4PVer1; Ver2=C4PVer2;
   Rank=0;
   SCopy("Neuling",Name);
@@ -177,7 +177,7 @@ C4PhysicalInfo::C4PhysicalInfo()
 
 void C4PhysicalInfo::Default()
 	{
-	ZeroMem(this,sizeof C4PhysicalInfo);
+	ZeroMem(this,sizeof(C4PhysicalInfo));
 	}
 
 //------------------------------- Object Info ----------------------------------------
@@ -360,8 +360,11 @@ C4RoundResult::C4RoundResult()
 
 void C4RoundResult::Default()
 	{
-	ZeroMem(this,sizeof C4RoundResult);
+	ZeroMem(this,sizeof(C4RoundResult));
 	}
+
+
+
 
 
 

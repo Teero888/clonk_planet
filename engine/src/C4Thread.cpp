@@ -19,7 +19,7 @@ BOOL LooksLikeInteger(const char *str)
 
 C4Thread::C4Thread()
   {
-  ZeroMem(this,sizeof C4Thread);
+  ZeroMem(this,sizeof(C4Thread));
   }
 
 C4Thread::~C4Thread()
@@ -79,7 +79,7 @@ int C4Thread::ExecuteStatement()
   if (cScr[0]=='"') 
     { 
     // Return string pointer
-    int rval = (int) cScr;
+    int rval = (long)cScr;
     // Advance to end of string
     cScr=SAdvancePast(cScr+1,'"');
     return rval;

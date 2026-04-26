@@ -169,7 +169,8 @@ BOOL C4PlayerList::Remove(C4Player *pPlr)
 	FullScreen.ViewportCheck();
 
 	// Remove player
-	for (C4Player *pPrev=First; pPrev; pPrev=pPrev->Next)
+	C4Player *pPrev;
+	for (pPrev=First; pPrev; pPrev=pPrev->Next)
 		if (pPrev->Next==pPlr) break;
 	if (pPrev) pPrev->Next=pPlr->Next;
 	else First=pPlr->Next;
@@ -206,7 +207,8 @@ C4Player* C4PlayerList::Join(const char *szFilename, BOOL fScenarioInit, int iAt
 	C4Player *pPlr = new C4Player;
 
 	// Append to player list
-	for (C4Player *pLast=First; pLast && pLast->Next; pLast=pLast->Next);
+	C4Player *pLast;
+	for (pLast=First; pLast && pLast->Next; pLast=pLast->Next);
 	if (pLast) pLast->Next=pPlr; else First = pPlr;
 	
 	// Init
@@ -301,7 +303,8 @@ C4Player* C4PlayerList::GetByName(const char *szName, int iExcluding)
 BOOL C4PlayerList::FileInUse(const char *szFilename)
 	{
 	// Check original player files
-	for (C4Player *cPlr=First; cPlr; cPlr=cPlr->Next)
+	C4Player *cPlr;
+		for (cPlr=First; cPlr; cPlr=cPlr->Next)
 		if (ItemIdentical(cPlr->Filename,szFilename))
 			return TRUE;
 	// Compare to any network path player files with prefix (hack)

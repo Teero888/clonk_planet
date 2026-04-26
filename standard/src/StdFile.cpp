@@ -2,13 +2,13 @@
 
 /* Lots of file helpers */
 
-#include <Windows.h>
-#include <Stdio.h>
-#include <Io.h>
-#include <Direct.h>
-#include <StdLib.h>
-#include <Sys\Types.h>
-#include <Sys\Stat.h>
+#include <Compat.h>
+#include <stdio.h>
+#include <unistd.h>
+// #include <Direct.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <Standard.h>
 #include <StdFile.h>
@@ -18,12 +18,12 @@
 const char *GetWorkingDirectory()
   {
   static char buf[_MAX_PATH+1];
-  return _getcwd(buf,_MAX_PATH);
+  return getcwd(buf,_MAX_PATH);
   }
 
 BOOL SetWorkingDirectory(const char *szPath)
   {
-  return (_chdir(szPath)==0);
+  return (chdir(szPath)==0);
   }
 
 //--------------------------------- Path & Filename --------------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ char *GetExtension(const char *szFilename)
   for (end=0; szFilename[end]; end++);
   pos = end;
   while ((pos>0) && (szFilename[pos-1] != '.') && (szFilename[pos-1] != Backslash)) pos--;
-  if (szFilename[pos-1] == '.') return (char*) szFilename+pos;
+  if (pos>0 && szFilename[pos-1] == '.') return (char*) szFilename+pos;
   return (char*) szFilename+end;
   }
 
@@ -57,7 +57,7 @@ BOOL GetParentPath(const char *szFilename, char *szBuffer, int iBufferSize)
 	// Prepare filename
 	SCopy(szFilename,szBuffer,iBufferSize);
 	// Extend relative single filenames
-	if (!SCharCount(Backslash,szFilename)) _fullpath(szBuffer,szFilename,iBufferSize);
+	if (!SCharCount(Backslash,szFilename)) SCopy(szFilename,szBuffer,iBufferSize);
 	// Truncate path
 	return TruncatePath(szBuffer);
 	}	
@@ -168,21 +168,21 @@ int FileSize(const char *szFilename)
   FILE *fhnd;
   int rval;
   if (!(fhnd=fopen(szFilename,"rb"))) return 0;
-  rval=filelength(fileno(fhnd));
+  rval=lseek(fileno(fhnd), 0, SEEK_END);
   fclose(fhnd);
   return rval;
   }
 
 int FileTime(const char *szFilename)
   {
-	struct _stat stStats;
-	if (_stat(szFilename,&stStats)!=0) return 0;
+	struct stat stStats;
+	if (stat(szFilename,&stStats)!=0) return 0;
 	return stStats.st_mtime;
   }
 
 BOOL EraseFile(const char *szFilename)
   {
-	_chmod(szFilename,200);
+	chmod(szFilename,200);
 	return (remove(szFilename)==0);
   }
 
@@ -215,7 +215,7 @@ BOOL CopyDirectory(const char *szSource, const char *szTarget)
     if (!EraseItem(szTarget)) return FALSE;
 
   // Create target directory
-  if (_mkdir(szTarget)!=0) return FALSE;
+  if (mkdir(szTarget, 0775)!=0) return FALSE;
 
   // Copy contents to target directory
   char contents[_MAX_PATH+1];
@@ -262,8 +262,8 @@ BOOL EraseDirectory(const char *szDirName)
       { szPath[lbacks]=0; SetWorkingDirectory(szPath); }
     }
   // Remove directory
-	_chmod(szDirName,200);
-  return (_rmdir(szDirName)==0);
+	chmod(szDirName,200);
+  return (rmdir(szDirName)==0);
   }
 
 //--------------------------------- Items --------------------------------------------------------------------------------------------------------
@@ -330,8 +330,8 @@ BOOL MoveItem(const char *szSource, const char *szTarget)
 BOOL ItemIdentical(const char *szFilename1, const char *szFilename2)
 	{
 	char szFullFile1[_MAX_PATH+1],szFullFile2[_MAX_PATH+1];
-	_fullpath(szFullFile1,szFilename1,_MAX_PATH);
-	_fullpath(szFullFile2,szFilename2,_MAX_PATH);
+	SCopy(szFilename1,szFullFile1,_MAX_PATH);
+	SCopy(szFilename2,szFullFile2,_MAX_PATH);
 	if (SEqualNoCase(szFullFile1,szFullFile2)) return TRUE;
 	return FALSE;
 	}

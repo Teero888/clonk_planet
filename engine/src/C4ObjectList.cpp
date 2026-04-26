@@ -512,8 +512,8 @@ C4Object* C4ObjectList::Enumerated(C4Object *pObj)
 C4Object* C4ObjectList::Denumerated(C4Object *pObj)
 	{
 	// If valid enumeration, convert to pointer
-	if (Inside( (int) pObj, C4EnumPointer1, C4EnumPointer2 )) 
-		return ObjectPointer( (int) pObj - C4EnumPointer1 );
+	if (Inside( (long) pObj, C4EnumPointer1, C4EnumPointer2 )) 
+		return ObjectPointer( (long) pObj - C4EnumPointer1 );
 	// Invalid, return original pointer
 	return pObj;
 	}
@@ -616,7 +616,7 @@ BOOL C4ObjectList::Save(const char *szFilename, BOOL fSaveGame)
 				}
 
 	delete [] Buffer;
-	hTemp.Write(EndOfFile,1);
+	hTemp.Write((void*)EndOfFile,1);
 
 	// Denumerate
 	Denumerate();

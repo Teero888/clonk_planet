@@ -33,7 +33,7 @@ class CStdHttp
 		bool ReceiveLine(char *sBuf, int iBufSize);
 		bool ReceiveHeader(CStdHttpMessage &rMsg);
 		HOSTENT *pHost;
-		SOCKET Socket;
+		int Socket;
 		char UserAgent[httpMaxString+1];
 		char HostName[httpMaxString+1];
 		char PostTarget[httpMaxString+1];

@@ -1,16 +1,18 @@
+#include <zlib.h>
+#define _ZLIB_H
 /* Copyright (C) 1998-2000  Matthes Bender  RedWolf Design */
 
 /* A handy wrapper class to gzio files */
 
-#include <Windows.h>
+#include <Compat.h>
 #include <stdio.h>
-#include <StdLib.h>
+#include <stdlib.h>
 
 #include <Standard.h>
 #include <StdFile.h>
 #include <CStdFile.h>
 
-#include <..\zlib\ZLib.h>
+// #include <zlib.h>
 
 CStdFile::CStdFile()
   {
@@ -49,11 +51,28 @@ BOOL CStdFile::Open(const char *szFilename, BOOL fCompressed)
 	SCopy(szFilename,Name,_MAX_PATH);
 	// Set modes
   ModeWrite=FALSE;
-	// Open standard file
+  hFile = NULL; hgzFile = NULL;
+  
+  // Clonk group files are ALWAYS opened via gzopen because zlib handles
+  // both compressed and uncompressed data transparently if the magic is there.
+  // HOWEVER, Clonk's "compressed" files are actually just the group file
+  // being scrambled, NOT necessarily zlib-compressed.
+  // CStdFile handles this by opening uncompressed first, and only if fCompressed
+  // is set (which means it's a group file) it uses gzopen.
+  // But wait, the original code logic was:
+  /*
 	if (fCompressed)
 		{ if (!(hgzFile=gzopen(Name,"rb"))) return FALSE; }
 	else
 		{ if (!(hFile=fopen(Name,"rb"))) return FALSE; }
+  */
+  // The problem is that gzopen will NOT work if the file is "scrambled" but not
+  // actually gzipped. Group files are scrambled ON DISK.
+  // So we MUST open them with fopen, then unscramble.
+  
+  if (!(hFile=fopen(Name,"rb"))) return FALSE;
+
+  printf("CStdFile::Open: %s, hFile=%p, fCompressed=%d\n", Name, hFile, fCompressed);
 	// Reset buffer
   ClearBuffer();
 	// Set status
@@ -71,6 +90,7 @@ BOOL CStdFile::Close()
   // Close file(s)
   if (hgzFile) if (gzclose(hgzFile)!=Z_OK) rval=FALSE;
 	if (hFile) if (fclose(hFile)!=0) rval=FALSE;
+    printf("CStdFile::Close: hFile=%p, hgzFile=%p\n", hFile, hgzFile);
 	hgzFile=NULL; hFile=NULL;
 	return rval;  
   }
@@ -101,17 +121,18 @@ BOOL CStdFile::Read(void *pBuffer, int iSize, BOOL fPacked, int *ipFSize)
 
 int CStdFile::LoadBuffer()
   {
+    if (hFile && hgzFile) printf("CRITICAL: Both hFile and hgzFile set in LoadBuffer! %p %p\n", hFile, hgzFile);
 	if (hFile) BufferLoad = fread(Buffer,1,CStdFileBufSize,hFile);
-  if (hgzFile) BufferLoad = gzread(hgzFile, Buffer,CStdFileBufSize);
-  BufferPtr=0;
-  return BufferLoad;
+    else if (hgzFile) BufferLoad = gzread(hgzFile, Buffer,CStdFileBufSize);
+    BufferPtr=0;
+    return BufferLoad;
   }
 
 BOOL CStdFile::SaveBuffer()
   {
   int saved;
 	if (hFile) saved=fwrite(Buffer,1,BufferLoad,hFile);
-	if (hgzFile) saved=gzwrite(hgzFile,Buffer,BufferLoad);
+	else if (hgzFile) saved=gzwrite(hgzFile,Buffer,BufferLoad);
 	if (saved!=BufferLoad) return FALSE;
 	BufferLoad=0;
 	return TRUE;

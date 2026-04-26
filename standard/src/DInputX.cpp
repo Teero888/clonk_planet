@@ -2,14 +2,16 @@
 
 /* A mouse handling wrapper to DirectInput */
 
-#include <windows.h>
-#include <windowsx.h>
+#include <Compat.h>
+// #include <windowsx.h>
 #include <stdarg.h>
-#include <dinput.h>
-#include <mmsystem.h>
+// #include <dinput.h>
+// #include <mmsystem.h>
 #include <stdio.h>
 
 #include <DInputX.h>
+
+#ifdef _WIN32
 
 BOOL Log(const char *szMessage);
 
@@ -164,3 +166,5 @@ void DirectInputCritical()
 
 
 
+
+#endif

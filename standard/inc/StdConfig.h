@@ -20,7 +20,7 @@ class CStdConfigValue
     int Type;
 		char *Name;
     int Offset;
-    int Default;
+    long Default;
   };
 
 class CStdConfig  

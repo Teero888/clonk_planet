@@ -44,9 +44,10 @@ void C4EditCursor::Execute()
 
 BOOL C4EditCursor::Init(HINSTANCE hInst)
 	{
-	
+#ifdef _WIN32
 	if (!(hMenu = LoadMenu(hInst,MAKEINTRESOURCE(IDR_CONTEXTMENUS)))) 
 		return FALSE;
+#endif
 
 	Console.UpdateModeCtrls(Mode);
 
@@ -241,11 +242,16 @@ BOOL C4EditCursor::LeftButtonUp()
 
 BOOL SetMenuItemEnable(HMENU hMenu, WORD id, BOOL fEnable)
 	{
+#ifdef _WIN32
 	return EnableMenuItem(hMenu,id,MF_BYCOMMAND | MF_ENABLED | ( fEnable ? 0 : MF_GRAYED));
+#else
+	return FALSE;
+#endif
 	}
 
 BOOL SetMenuItemText(HMENU hMenu, WORD id, const char *szText)
 	{
+#ifdef _WIN32
 	MENUITEMINFO minfo;
 	ZeroMem(&minfo,sizeof(minfo));
 	minfo.cbSize = sizeof(minfo);
@@ -255,6 +261,9 @@ BOOL SetMenuItemText(HMENU hMenu, WORD id, const char *szText)
 	minfo.dwTypeData = (char*) szText;
 	minfo.cch = SLen(szText);
 	return SetMenuItemInfo(hMenu,id,FALSE,&minfo);
+#else
+	return FALSE;
+#endif
 	}
 
 BOOL C4EditCursor::RightButtonUp()
@@ -418,7 +427,9 @@ void C4EditCursor::Default()
 
 void C4EditCursor::Clear()
 	{
+#ifdef _WIN32
 	if (hMenu) DestroyMenu(hMenu); hMenu=NULL;
+#endif
 	Selection.Clear();
 	}
 
@@ -429,8 +440,10 @@ void C4EditCursor::UpdateGraphicsSystem()
 
 BOOL C4EditCursor::SetMode(int iMode)
 	{
+#ifdef _WIN32
 	// Store focus
 	HWND hFocus=GetFocus();
+#endif
 	// Update console buttons (always)
 	Console.UpdateModeCtrls(iMode);
 	// No change
@@ -458,8 +471,10 @@ BOOL C4EditCursor::SetMode(int iMode)
 	// Update cursor
 	if (Mode==C4CNS_ModePlay) Game.MouseControl.ShowCursor();
 	else Game.MouseControl.HideCursor();
+#ifdef _WIN32
 	// Restore focus
 	SetFocus(hFocus);
+#endif
 	// Done
 	return TRUE;
 	}
@@ -535,6 +550,7 @@ BOOL C4EditCursor::SetToolPatCol(BYTE &bCol)
 
 BOOL C4EditCursor::DoContextMenu()
 	{
+#ifdef _WIN32
 	POINT point; GetCursorPos(&point);
 	HMENU hContext = GetSubMenu(hMenu,0);
 	BOOL fObjectSelected = Selection.ObjectCount();
@@ -559,6 +575,7 @@ BOOL C4EditCursor::DoContextMenu()
 		case IDM_VIEWPORT_CONTENTS: GrabContents(); break;
 		case IDM_VIEWPORT_PROPERTIES:	OpenPropTools();	break;
 		}
+#endif
 	return TRUE;
 	}
 
@@ -582,6 +599,7 @@ void C4EditCursor::UpdateDropTarget(WORD wKeyFlags)
 	
 	DropTarget=NULL;
 
+#ifdef _WIN32
 	if (wKeyFlags & MK_CONTROL)
 		if (Selection.GetObject())
 			for (clnk=Game.Objects.First; clnk && (cobj=clnk->Obj); clnk=clnk->Next)
@@ -591,6 +609,7 @@ void C4EditCursor::UpdateDropTarget(WORD wKeyFlags)
 							if (Inside(Y-(cobj->y+cobj->Shape.y),0,cobj->Shape.Hgt-1))
 								if (!Selection.GetLink(cobj))
 									{ DropTarget=cobj; break; }
+#endif
 	
 	}
 

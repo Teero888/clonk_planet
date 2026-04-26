@@ -14,7 +14,7 @@ BOOL C4Shape::AddVertex(int iX, int iY)
 
 void C4Shape::Default()
 	{
-	ZeroMem(this,sizeof C4Shape);
+	ZeroMem(this, sizeof(C4Shape));
 	AttachMat=MNone;
 	}
 
@@ -56,7 +56,7 @@ BOOL C4Rect::Overlap(C4Rect &rTarget)
 
 void C4Shape::Clear()
 	{
-	ZeroMem(this, sizeof C4Shape);
+	ZeroMem(this, sizeof(C4Shape));
 	}
 
 void C4Shape::Rotate(int iAngle)
@@ -74,7 +74,7 @@ void C4Shape::Rotate(int iAngle)
   mtx[0]=cos(dang); mtx[1]=-sin(dang);
   mtx[2]=sin(dang); mtx[3]= cos(dang);  
   // Rotate vertices
-  for (cnt=0; cnt<VtxNum; cnt++)
+	for (int cnt=0; cnt<VtxNum; cnt++)
     {
     //nvtx= (int) ( mtx[0]*vtx[cnt] + mtx[1]*vty[cnt] );
     //nvty= (int) ( mtx[2]*vtx[cnt] + mtx[3]*vty[cnt] );
@@ -116,7 +116,7 @@ void C4Shape::Stretch(int iPercent)
   Wdt=Wdt*iPercent/100;
   Hgt=Hgt*iPercent/100;
   FireTop=FireTop*iPercent/100;
-  for (cnt=0; cnt<VtxNum; cnt++)
+	for (int cnt=0; cnt<VtxNum; cnt++)
     {
     VtxX[cnt]=VtxX[cnt]*iPercent/100;
     VtxY[cnt]=VtxY[cnt]*iPercent/100; 
@@ -129,7 +129,7 @@ void C4Shape::Jolt(int iPercent)
   y=y*iPercent/100;
   Hgt=Hgt*iPercent/100;
   FireTop=FireTop*iPercent/100;
-  for (cnt=0; cnt<VtxNum; cnt++)
+	for (int cnt=0; cnt<VtxNum; cnt++)
     VtxY[cnt]=VtxY[cnt]*iPercent/100;
   }
 
@@ -137,7 +137,7 @@ void C4Shape::GetVertexOutline(C4Rect &rRect)
   {
   int cnt;
   rRect.x=rRect.y=rRect.Wdt=rRect.Hgt=0;
-  for (cnt=0; cnt<VtxNum; cnt++)
+	for (int cnt=0; cnt<VtxNum; cnt++)
     {
 		// Extend left
     if (VtxX[cnt]<rRect.x) 
@@ -234,7 +234,8 @@ BOOL C4Shape::LineConnect(int tx, int ty, int cvtx, int ld)
 		{
 		// Intersected, find bend vertex
 		int cix,ciy,irange=8;
-		for (int cnt=0; cnt<4; cnt++)
+		int cnt;
+		for (cnt=0; cnt<4; cnt++)
 			{
 			cix=ix-irange/2+irange*(cnt%2);
 			ciy=iy-irange/2+irange*(cnt/2);

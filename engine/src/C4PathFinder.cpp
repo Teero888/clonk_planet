@@ -388,7 +388,7 @@ void C4PathFinderRay::SetCompletePath()
 		{
 		// Transfer waypoint
 		if (pRay->UseZone)
-			pPathFinder->SetWaypoint(pRay->X2,pRay->Y2,(int)pRay->UseZone->Object,
+			pPathFinder->SetWaypoint(pRay->X2,pRay->Y2,(long)pRay->UseZone->Object,
 															 pPathFinder->WaypointParameter);
 		// MoveTo waypoint
 		else

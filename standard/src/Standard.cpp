@@ -1,10 +1,12 @@
+#include <thread>
+std::thread::id g_mainThreadId;
 /* Copyright (C) 1998-2000  Matthes Bender  RedWolf Design */
 
 /* All kinds of valuable helpers */
 
-#include <Memory.h>
-#include <String.h>
-#include <Math.h>
+#include <memory.h>
+#include <string.h>
+#include <math.h>
 #include <sys/timeb.h>
 
 #include <Standard.h>
@@ -323,7 +325,7 @@ void SAppendChar(char cChar, char *szStr)
 	{
 	if (!szStr) return;
 	for (char *cPos=szStr; *cPos; cPos++);
-	*cPos=cChar; *(cPos+1)=0;
+	char *cPos = szStr + SLen(szStr); *cPos=cChar; *(cPos+1)=0;
 	}
 
 bool SCopySegment(const char *szString, int iSegment, char *sTarget, 
@@ -815,10 +817,10 @@ void StdBlit(BYTE *bypSource, int iSourcePitch, int iSrcBufHgt,
 
 DWORD time_msecs()
 	{
-	struct _timeb timebuffer;
-	_ftime(&timebuffer);
-	DWORD secs = timebuffer.time;
-	DWORD msecs = timebuffer.millitm;
+	/* struct _timeb timebuffer; */
+	// _ftime(&timebuffer);
+	DWORD secs = 0;
+	DWORD msecs = 0;
 	return secs*1000+msecs;
 	}
 

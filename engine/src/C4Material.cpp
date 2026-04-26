@@ -51,7 +51,7 @@ C4MaterialCore::C4MaterialCore()
 
 void C4MaterialCore::Clear()
 	{
-	ZeroMem(this,sizeof C4MaterialCore);
+	ZeroMem(this,sizeof(C4MaterialCore));
 	}
 
 void C4MaterialCore::Default()

@@ -112,20 +112,20 @@ bool C4Video::Start(const char *szFilename)
 	BufferSize = InfoSize + DWordAligned(Width)*Height;
 	Buffer = new BYTE[BufferSize];
 	// Set bitmap info
-  BITMAPINFO *pInfo = (BITMAPINFO*) Buffer;
+  void *pInfo = (void*) Buffer;
 	ZeroMem((BYTE*)pInfo,sizeof(BITMAPINFOHEADER));
-	pInfo->bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
-	pInfo->bmiHeader.biPlanes=1;
-	pInfo->bmiHeader.biWidth=Width;
-	pInfo->bmiHeader.biHeight=Height;
-	pInfo->bmiHeader.biBitCount=8;
-	pInfo->bmiHeader.biCompression=0;
-	pInfo->bmiHeader.biSizeImage=DWordAligned(Width)*Height;
+	( (BITMAPINFO*) pInfo)->bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
+	( (BITMAPINFO*) pInfo)->bmiHeader.biPlanes=1;
+	( (BITMAPINFO*) pInfo)->bmiHeader.biWidth=Width;
+	( (BITMAPINFO*) pInfo)->bmiHeader.biHeight=Height;
+	( (BITMAPINFO*) pInfo)->bmiHeader.biBitCount=8;
+	( (BITMAPINFO*) pInfo)->bmiHeader.biCompression=0;
+	( (BITMAPINFO*) pInfo)->bmiHeader.biSizeImage=DWordAligned(Width)*Height;
 	for (int cnt=0; cnt<256; cnt++)
 		{
-		pInfo->bmiColors[cnt].rgbRed = Game.GraphicsResource.GamePalette[cnt*3+0];
-		pInfo->bmiColors[cnt].rgbGreen = Game.GraphicsResource.GamePalette[cnt*3+1];
-		pInfo->bmiColors[cnt].rgbBlue = Game.GraphicsResource.GamePalette[cnt*3+2];
+		( (BITMAPINFO*) pInfo)->bmiColors[cnt].rgbRed = Game.GraphicsResource.GamePalette[cnt*3+0];
+		( (BITMAPINFO*) pInfo)->bmiColors[cnt].rgbGreen = Game.GraphicsResource.GamePalette[cnt*3+1];
+		( (BITMAPINFO*) pInfo)->bmiColors[cnt].rgbBlue = Game.GraphicsResource.GamePalette[cnt*3+2];
 		}
 	// Recording flag
 	Recording=true;

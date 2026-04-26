@@ -2,7 +2,7 @@
 
 /* Load bi-language strings from the resource string table */
 
-#include <Windows.h>
+#include <Compat.h>
 
 #include <Standard.h>
 #include <StdResStr.h>
