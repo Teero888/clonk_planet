@@ -136,7 +136,7 @@ void C4GraphicsSystem::Execute()
 	DrawFlashMessage();
 
 	// Palette update
-	if (fSetPalette) { SetPalette(); /*SetDarkColorTable();*/ }
+	if (fSetPalette) { SetPalette(); SetDarkColorTable(); }
 	fSetPalette=FALSE;
 
 	// Video record & status (fullsrceen)
@@ -146,6 +146,9 @@ void C4GraphicsSystem::Execute()
 	// Fullscreen page flip
 	if (Application.Fullscreen)
 		Engine.DDraw.PageFlip();
+    // Windowed mode page flip on Linux
+    else
+        Engine.DDraw.PageFlip();
 
 	}
 

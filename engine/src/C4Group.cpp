@@ -339,15 +339,15 @@ BOOL C4Group_ExplodeDirectory(const char *szFilename) {
 void MemScramble(BYTE *bypBuffer, int iSize) {
   int cnt;
   BYTE temp;
-  // XOR deface
-  for (cnt = 0; cnt < iSize; cnt++)
-    bypBuffer[cnt] ^= 237;
   // BYTE swap
   for (cnt = 0; cnt + 2 < iSize; cnt += 3) {
     temp = bypBuffer[cnt];
     bypBuffer[cnt] = bypBuffer[cnt + 2];
     bypBuffer[cnt + 2] = temp;
   }
+  // XOR deface
+  for (cnt = 0; cnt < iSize; cnt++)
+    bypBuffer[cnt] ^= 237;
 }
 
 //------------------------------- Bitmap Helper
@@ -470,12 +470,19 @@ BOOL C4Group::Open(const char *szGroupName, BOOL fCreate) {
 
   // While not a real reference (child group), trace back to mother group or
   // folder. Open mother and child in exclusive mode.
+  printf("Tracing back to mother for: %s\n", szGroupName);
   char szRealGroup[_MAX_FNAME];
   SCopy(szGroupName, szRealGroup, _MAX_FNAME);
   do {
     if (!TruncatePath(szRealGroup))
+    {
+      printf("  TruncatePath failed, mother not found!\n");
       return Error("Open: File not found");
+    }
+    printf("  Checking mother: %s\n", szRealGroup);
   } while (!FileExists(szRealGroup));
+
+  printf("  Found mother group: %s\n", szRealGroup);
 
   // Open mother and child in exclusive mode
   C4Group *pMother;
@@ -483,10 +490,15 @@ BOOL C4Group::Open(const char *szGroupName, BOOL fCreate) {
     return Error("Open: mem");
   pMother->SetStdOutput(StdOutput);
   if (!pMother->Open(szRealGroup)) {
+    printf("  Failed to open mother group: %s\n", szRealGroup);
     Clear();
     return Error("Open: Cannot open mother");
   }
-  if (!OpenAsChild(pMother, szGroupName + SLen(szRealGroup) + 1, TRUE)) {
+  const char* szEntryName = szGroupName + SLen(szRealGroup);
+  if (szEntryName[0] == '/' || szEntryName[0] == '\\') szEntryName++;
+  printf("  Opening as child: %s\n", szEntryName);
+  if (!OpenAsChild(pMother, szEntryName, TRUE)) {
+    printf("  Failed to open as child: %s\n", szEntryName);
     Clear();
     return Error("Open:: Cannot open as child");
   }
@@ -536,60 +548,45 @@ BOOL C4Group::OpenReal(const char *szFilename) {
   return Error("OpenReal: Not a valid group");
 }
 
-BOOL C4Group::OpenRealGrpFile() {
-  int cnt, file_entries;
+BOOL C4Group::OpenRealGrpFile()
+  {
+  printf("sizeof(C4GroupHeader) = %zu\n", sizeof(C4GroupHeader));
+  printf("sizeof(C4GroupEntryCore) = %zu\n", sizeof(C4GroupEntryCore));
+  int cnt,file_entries;
   C4GroupEntryCore corebuf;
 
   // Open StdFile
-  if (!StdFile.Open(FileName, TRUE)) {
-    printf("OpenRealGrpFile: StdFile.Open failed\n");
-    return Error("OpenRealGrpFile: Cannot open standard file");
-  }
+  if (!StdFile.Open(FileName,TRUE)) return Error("OpenRealGrpFile: Cannot open standard file");
 
   // Read header
-  if (!StdFile.Read((BYTE *)&Head, sizeof(C4GroupHeader))) {
-    printf("OpenRealGrpFile: StdFile.Read header failed\n");
-    return Error("OpenRealGrpFile: Error reading header");
-  }
-
-  printf("Header before scramble: ");
-  for (int i = 0; i < 32; i++)
-    printf("%02x ", ((BYTE *)&Head)[i]);
+  if (!StdFile.Read((BYTE*)&Head,sizeof(C4GroupHeader))) return Error("OpenRealGrpFile: Error reading header");
+  printf("Raw Header Hex: ");
+  for (int i=0; i<16; i++) printf("%02x ", ((BYTE*)&Head)[i]);
   printf("\n");
-
-  MemScramble((BYTE *)&Head, sizeof(C4GroupHeader));
-
-  printf("Header after scramble: ");
-  for (int i = 0; i < 32; i++)
-    printf("%02x ", ((BYTE *)&Head)[i]);
-  printf("\n");
-  EntryOffset += sizeof(C4GroupHeader);
-
+	MemScramble((BYTE*)&Head,sizeof(C4GroupHeader));
+  EntryOffset+=sizeof(C4GroupHeader);
+  
   // Check Header
-  if (!SEqual(Head.id, C4GroupFileID) || (Head.Ver1 != C4GroupFileVer1) ||
-      (Head.Ver2 > C4GroupFileVer2)) {
-    printf("OpenRealGrpFile: Invalid header id=%s, v1=%d, v2=%d\n", Head.id,
-           Head.Ver1, Head.Ver2);
-    return Error("OpenRealGrpFile: Invalid header");
-  }
-
+  if (!SEqual(Head.id,C4GroupFileID)
+   || (Head.Ver1!=C4GroupFileVer1) || (Head.Ver2>C4GroupFileVer2))
+     return Error("OpenRealGrpFile: Invalid header");
+  
   // Read Entries
-  file_entries = Head.Entries;
-  printf("OpenRealGrpFile: Entries=%d\n", file_entries);
-  Head.Entries = 0; // Reset, will be recounted by AddEntry
-  for (cnt = 0; cnt < file_entries; cnt++) {
-    if (!StdFile.Read((BYTE *)&corebuf, sizeof(C4GroupEntryCore))) {
-      printf("OpenRealGrpFile: StdFile.Read entry %d failed\n", cnt);
-      return Error("OpenRealGrpFile: Error reading entries");
-    }
-    EntryOffset += sizeof(C4GroupEntryCore);
-    if (!AddEntry(C4GRES_InGroup, corebuf.ChildGroup, corebuf.FileName,
-                  corebuf.Size, corebuf.Time))
+	file_entries=Head.Entries;
+	Head.Entries=0; // Reset, will be recounted by AddEntry
+  for (cnt=0; cnt<file_entries; cnt++)
+    {
+    if (!StdFile.Read((BYTE*)&corebuf,sizeof(C4GroupEntryCore))) return Error("OpenRealGrpFile: Error reading entries");
+    if (!StdFile.IsCompressed()) MemScramble((BYTE*)&corebuf,sizeof(C4GroupEntryCore));
+    printf("  Found entry: %s (%d bytes)%s\n", corebuf.FileName, corebuf.Size, corebuf.ChildGroup ? " [Group]" : "");
+    EntryOffset+=sizeof(C4GroupEntryCore);
+    if (!AddEntry(C4GRES_InGroup,corebuf.ChildGroup,
+                  corebuf.FileName,corebuf.Size,corebuf.Time))
       return Error("OpenRealGrpFile: Cannot add entry");
-  }
+    }
 
   return TRUE;
-}
+  }
 
 BOOL C4Group::AddEntry(int status, BOOL childgroup, const char *fname,
                        long size, time_t time, const char *entryname,
@@ -1157,7 +1154,7 @@ BOOL C4Group::Add(const char *szFiles) {
   int iFileCount = 0;
   long lAttrib = _A_ALL;
   struct _finddata_t fdt;
-  long fdthnd;
+  intptr_t fdthnd;
 
   // Process segmented path & search wildcards
   for (int cseg = 0; SCopySegment(szFiles, cseg, szFileName, ';'); cseg++)
@@ -1198,7 +1195,7 @@ BOOL C4Group::Move(const char *szFiles) {
   int iFileCount = 0;
   long lAttrib = _A_ALL;
   struct _finddata_t fdt;
-  long fdthnd;
+  intptr_t fdthnd;
 
   // Process segmented path & search wildcards
   for (int cseg = 0; SCopySegment(szFiles, cseg, szFileName, ';'); cseg++)

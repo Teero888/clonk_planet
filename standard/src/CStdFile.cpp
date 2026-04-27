@@ -53,26 +53,55 @@ BOOL CStdFile::Open(const char *szFilename, BOOL fCompressed)
   ModeWrite=FALSE;
   hFile = NULL; hgzFile = NULL;
   
-  // Clonk group files are ALWAYS opened via gzopen because zlib handles
-  // both compressed and uncompressed data transparently if the magic is there.
-  // HOWEVER, Clonk's "compressed" files are actually just the group file
-  // being scrambled, NOT necessarily zlib-compressed.
-  // CStdFile handles this by opening uncompressed first, and only if fCompressed
-  // is set (which means it's a group file) it uses gzopen.
-  // But wait, the original code logic was:
-  /*
-	if (fCompressed)
-		{ if (!(hgzFile=gzopen(Name,"rb"))) return FALSE; }
-	else
-		{ if (!(hFile=fopen(Name,"rb"))) return FALSE; }
-  */
-  // The problem is that gzopen will NOT work if the file is "scrambled" but not
-  // actually gzipped. Group files are scrambled ON DISK.
-  // So we MUST open them with fopen, then unscramble.
-  
+  if (fCompressed) {
+    // Group files might be gzipped but scrambled
+    FILE* f = fopen(Name, "rb");
+    if (!f) return FALSE;
+    BYTE magic[2];
+    if (fread(magic, 1, 2, f) == 2) {
+        if (magic[0] == 0x1e && magic[1] == 0x8c) {
+            // Scrambled gzip!
+            fclose(f);
+            // We need to XOR the first two bytes to 1f 8b
+            // Since we can't easily modify the file, we'll read it into memory,
+            // XOR the magic, and then use gzopen or similar.
+            // But wait, CStdFile can just handle the buffer itself.
+            // For now, let's use a simpler approach: 
+            // open with gzopen, and if it fails, it fails.
+            // But we KNOW it will fail if it's scrambled.
+            
+            // Real Clonk might have unscrambled on the fly.
+            // Let's try to XOR and save to a temp file, then gzopen that.
+            static int iTmpCount = 0;
+            char szTemp[260];
+            sprintf(szTemp, "%s.%d.tmp", Name, iTmpCount++);
+            FILE* f2 = fopen(szTemp, "wb");
+            if (f2) {
+                f = fopen(Name, "rb");
+                BYTE b;
+                int i=0;
+                while (fread(&b, 1, 1, f) == 1) {
+                    if (i == 0) b ^= 1;
+                    else if (i == 1) b ^= 7;
+                    fwrite(&b, 1, 1, f2);
+                    i++;
+                }
+                fclose(f);
+                fclose(f2);
+                if (hgzFile = gzopen(szTemp, "rb")) {
+                    // It worked!
+                    ClearBuffer();
+                    Status = TRUE;
+                    return TRUE;
+                }
+            }
+        }
+    }
+    fclose(f);
+  }
+
   if (!(hFile=fopen(Name,"rb"))) return FALSE;
 
-  printf("CStdFile::Open: %s, hFile=%p, fCompressed=%d\n", Name, hFile, fCompressed);
 	// Reset buffer
   ClearBuffer();
 	// Set status
@@ -90,7 +119,6 @@ BOOL CStdFile::Close()
   // Close file(s)
   if (hgzFile) if (gzclose(hgzFile)!=Z_OK) rval=FALSE;
 	if (hFile) if (fclose(hFile)!=0) rval=FALSE;
-    printf("CStdFile::Close: hFile=%p, hgzFile=%p\n", hFile, hgzFile);
 	hgzFile=NULL; hFile=NULL;
 	return rval;  
   }

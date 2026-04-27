@@ -1826,15 +1826,15 @@ void C4Object::ClearPointers(C4Object *pObj)
   }
 
 int C4Object::Call(const char *szFunctionCall,
-                   int par0, int par1, int par2, int par3, int par4,
-									 int par5, int par6, int par7, int par8, int par9)
+                   long par0, long par1, long par2, long par3, long par4,
+									 long par5, long par6, long par7, long par8, long par9)
   {
 	return Call(NULL,szFunctionCall,par0,par1,par2,par3,par4,par5,par6,par7,par8,par9);
 	}
 
 int C4Object::Call(C4Thread *pCaller, const char *szFunctionCall,
-                   int par0, int par1, int par2, int par3, int par4,
-									 int par5, int par6, int par7, int par8, int par9)
+                   long par0, long par1, long par2, long par3, long par4,
+									 long par5, long par6, long par7, long par8, long par9)
   {
   if (!Status || !Def || !szFunctionCall || !szFunctionCall[0]) return FALSE;
 	return Def->Script.ObjectCall(pCaller,this,szFunctionCall,par0,par1,par2,par3,par4,par5,par6,par7,par8,par9);

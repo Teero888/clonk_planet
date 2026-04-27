@@ -13,7 +13,7 @@ const int C4SCR_Access_Public			= 0,
 struct C4ScriptFnDef 
   { 
   const char* Identifier;
-  int (*Function)(...);
+  int (*Function)(C4Thread*, long, long, long, long, long, long, long, long, long, long);
 	BOOL Public;
   };  
 

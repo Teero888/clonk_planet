@@ -205,7 +205,6 @@ void C4Console::EditScript() {}
 void C4Console::EditTitle() {}
 BOOL C4Console::CommandLine(const char *szCmdLine) 
 { 
-    if (!szCmdLine || !szCmdLine[0]) return TRUE;
     // Just pass to Game.Init
     if (!Game.Init(szCmdLine)) return FALSE;
     fGameOpen = TRUE;

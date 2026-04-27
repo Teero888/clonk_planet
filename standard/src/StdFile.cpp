@@ -34,9 +34,10 @@ char *GetFilename(const char *szPath)
   {
 	if (!szPath) return NULL;
 	const char *pPos,*pFilename=szPath;
-	for (pPos=szPath; *pPos; pPos++) if (*pPos==Backslash) pFilename = pPos+1;
+	for (pPos=szPath; *pPos; pPos++) if (*pPos=='\\' || *pPos=='/') pFilename = pPos+1;
 	return (char*) pFilename;
   }
+
 
 // Return pointer to last file extension.
 
@@ -68,7 +69,10 @@ BOOL TruncatePath(char *szPath)
   {
   if (!szPath) return FALSE;
   int iBSPos;
-  iBSPos=SCharLastPos(Backslash,szPath); if (iBSPos<0) return FALSE;
+  iBSPos=SCharLastPos('\\',szPath); 
+  int iSPos=SCharLastPos('/',szPath);
+  if (iSPos > iBSPos) iBSPos = iSPos;
+  if (iBSPos<0) return FALSE;
   szPath[iBSPos]=0;
   return TRUE;
   }
@@ -147,7 +151,7 @@ BOOL WildcardMatch(const char *szWildcard, const char *szFilename)
 
 int FileAttributes(const char *szFilename)
   {
-  struct _finddata_t fdt; int shnd;
+  struct _finddata_t fdt; intptr_t shnd;
   if (!szFilename) return 0;
   if ((shnd=_findfirst((char*)szFilename,&fdt))<0) return 0;
   _findclose(shnd);
@@ -156,7 +160,7 @@ int FileAttributes(const char *szFilename)
 
 BOOL FileExists(const char *szFilename, int *lpAttr)
   {
-  struct _finddata_t fdt; int shnd;
+  struct _finddata_t fdt; intptr_t shnd;
   if ((shnd=_findfirst((char*)szFilename,&fdt))<0) return FALSE;
   _findclose(shnd);
   if (lpAttr) *lpAttr=fdt.attrib;
@@ -221,7 +225,7 @@ BOOL CopyDirectory(const char *szSource, const char *szTarget)
   char contents[_MAX_PATH+1];
   SCopy(szSource,contents); AppendBackslash(contents); 
   SAppend("*.*",contents);
-  _finddata_t fdt; int hfdt;
+  _finddata_t fdt; intptr_t hfdt;
   BOOL status=TRUE;
   if ( (hfdt=_findfirst(contents,&fdt)) > -1 )
     {
@@ -342,7 +346,7 @@ int ForEachFile(const char *szPath, int lAttrib, BOOL (*fnCallback)(const char *
   {
   char szFilename[_MAX_PATH+1];
   int iFileCount = 0;
-  struct _finddata_t fdt; int fdthnd;
+  struct _finddata_t fdt; intptr_t fdthnd;
   if (!szPath || !fnCallback) return 0;
   if ((fdthnd=_findfirst( (char*) szPath, &fdt))<0) return 0;
   do

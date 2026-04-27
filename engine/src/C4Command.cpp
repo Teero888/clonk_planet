@@ -762,13 +762,14 @@ void C4Command::Throw()
 		int iDir=+1; if (cObj->x > Tx) iDir=-1;
 
 		// Find throwing position
-		int iTx,iTy;
+		long lx=0,ly=0;
 	  FIXED pthrow=ftofix(4.0*(float)cObj->GetPhysical()->Throw/(float)C4MaxPhysical);
 		int iHeight = cObj->Shape.Hgt;
-		if (!FindThrowingPosition(Tx,Ty,pthrow*iDir,-pthrow,iHeight,iTx,iTy))
-			if (!FindThrowingPosition(Tx,Ty,pthrow*iDir*-1,-pthrow,iHeight,iTx,iTy))
+		if (!FindThrowingPosition(Tx,Ty,pthrow*iDir,-pthrow,iHeight,lx,ly))
+			if (!FindThrowingPosition(Tx,Ty,pthrow*iDir*-1,-pthrow,iHeight,lx,ly))
 				// No throwing position: fail
 				{ Finish(); return; }
+        int iTx = lx, iTy = ly;
 
 		// At throwing position: face target and throw
 		if (Inside(cObj->x-iTx,-MoveToRange,+MoveToRange) && Inside(cObj->y-iTy,-15,+15))
@@ -925,17 +926,18 @@ void C4Command::Get()
 	if (!Target->Contained && (Target->OCF & OCF_InSolid))
 		{
 		// Check for closest free position
-		int iX=Target->x,iY=Target->y;
+		long lx=Target->x,ly=Target->y;
 		// Find all-closest dig-out position
-		if (!FindClosestFree(iX,iY,-120,+120,-1,-1))
+		if (!FindClosestFree(lx,ly,-120,+120,-1,-1))
 			// None found
 			{ Finish(); return; }
+        int iX = lx, iY = ly;
 		// Check good-angle left/right dig-out position
-		int iX2=Target->x,iY2=Target->y;
-		if (FindClosestFree(iX2,iY2,-140,+140,-40,+40))
+		long lx2=Target->x,ly2=Target->y;
+		if (FindClosestFree(lx2,ly2,-140,+140,-40,+40))
 			// Use good-angle position if it's not way worse
-			if ( Distance(Target->x,Target->y,iX2,iY2) < 10*Distance(Target->x,Target->y,iX,iY) )
-				{ iX=iX2; iY=iY2; }
+			if ( Distance(Target->x,Target->y,lx2,ly2) < 10*Distance(Target->x,Target->y,iX,iY) )
+				{ iX=lx2; iY=ly2; }
 		// Move to closest free position (if not in dig-direct range)
 		if (!Inside(cObj->x-iX,-DigOutPositionRange,+DigOutPositionRange)
 		 || !Inside(cObj->y-iY,-DigOutPositionRange,+DigOutPositionRange))
@@ -1198,13 +1200,13 @@ void C4Command::Put()
 				int iTy = Target->y + Target->Def->Collection.y + Target->Def->Collection.Hgt/2;
 				FIXED pthrow=ftofix(4.0*(float)cObj->GetPhysical()->Throw/(float)C4MaxPhysical);
 				int iHeight = cObj->Shape.Hgt;
-				int iPosX,iPosY;
+				long lx=0,ly=0;
 				int iObjDist = Distance(cObj->x,cObj->y,Target->x,Target->y);
-				if ( (FindThrowingPosition(iTx,iTy,pthrow,-pthrow,iHeight,iPosX,iPosY) && (Distance(iPosX,iPosY,cObj->x,cObj->y) < iObjDist))
-					|| (FindThrowingPosition(iTx,iTy,pthrow*-1,-pthrow,iHeight,iPosX,iPosY) && (Distance(iPosX,iPosY,cObj->x,cObj->y) < iObjDist)) )
+				if ( (FindThrowingPosition(iTx,iTy,pthrow,-pthrow,iHeight,lx,ly) && (Distance((int)lx,(int)ly,cObj->x,cObj->y) < iObjDist))
+					|| (FindThrowingPosition(iTx,iTy,pthrow*-1,-pthrow,iHeight,lx,ly) && (Distance((int)lx,(int)ly,cObj->x,cObj->y) < iObjDist)) )
 						{
 						// Throw
-						cObj->AddCommand(C4CMD_Throw,Target2,iTx,iTy,5);
+						cObj->AddCommand(C4CMD_Throw,Target2,(int)lx,(int)ly,5);
 						return;
 						}
 				}
@@ -1393,10 +1395,11 @@ void C4Command::Construct()
 	// No construction site specified: find one
 	if ((Tx==0) && (Ty==0))
 		{
-		Tx=cObj->x; Ty=cObj->y;
-		if (!FindConSiteSpot(Tx,Ty,pDef->Shape.Wdt,pDef->Shape.Hgt,pDef->Category,20))
+		long lx=cObj->x,ly=cObj->y;
+		if (!FindConSiteSpot(lx,ly,pDef->Shape.Wdt,pDef->Shape.Hgt,pDef->Category,20))
 			// No site found: fail
 			{ Finish(); return; }
+        Tx = lx; Ty = ly;
 		}
 
 	// Has no construction kit: acquire one

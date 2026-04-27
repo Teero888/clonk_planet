@@ -4,6 +4,8 @@
 
 const int C4IDListSize = 150;
 
+#pragma pack(push, 1)
+
 class C4IDList 
   {
   public:
@@ -57,3 +59,5 @@ class C4IDList
 		bool operator==(const C4IDList& rhs)
 			{	return MemEqual((BYTE*)this,(BYTE*)&rhs,sizeof(C4IDList)); }
   };
+
+#pragma pack(pop)

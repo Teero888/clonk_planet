@@ -35,11 +35,11 @@ class C4GroupHeader
 	public:
 		C4GroupHeader();
   public:
-    char id[24+1]; 
+    char id[24+4]; // 28 bytes
     int32_t Ver1,Ver2;
     int32_t Entries;  
-    char Maker[C4GroupMaxMaker+1];
-    char Password[C4GroupMaxPassword+1];
+    char Maker[30+2]; // 32 bytes
+    char Password[30+2]; // 32 bytes
 		int32_t Creation,Original;
     BYTE fbuf[92];
   public:
@@ -49,11 +49,11 @@ class C4GroupHeader
 class C4GroupEntryCore  
   { 
   public:
-    char FileName[_MAX_FNAME+1];
+    char FileName[256+4]; // 260 bytes
     int32_t Packed,ChildGroup;
     int32_t Size,EntrySize,Offset;
     int32_t Time;
-    BYTE fbuf[30];
+    BYTE fbuf[30+2]; // 32 bytes
   };
 #pragma pack(pop)
 
@@ -105,7 +105,7 @@ class C4Group
     C4GroupEntry *FirstEntry;
     // Folder only
     struct _finddata_t Fdt; 
-    long hFdt;
+    intptr_t hFdt;
     C4GroupEntry FolderSearchEntry;
     C4GroupEntry LastFolderSearchEntry;
 

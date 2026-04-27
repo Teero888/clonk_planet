@@ -2,7 +2,11 @@
 
 /* Lots of file helpers */
 
+#ifndef _WIN32
+#define Backslash '/'
+#else
 #define Backslash '\\'
+#endif
 #define Wildcard '*'
 
 /* File attribute constants for _findfirst() */

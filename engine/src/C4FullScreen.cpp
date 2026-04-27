@@ -14,6 +14,9 @@ C4FullScreen::~C4FullScreen()
 
 BOOL C4FullScreen::OpenGame(const char *szCmdLine)
 	{
+	// Clear and default game before re-init
+	Game.Clear();
+	Game.Default();
 	// Store command line for restart
 	SCopy(szCmdLine,CommandLine,1024);
 	// Init game
@@ -43,6 +46,20 @@ void C4FullScreen::Default()
 
 void C4FullScreen::Execute()
 	{
+    // Ensure viewport exists
+    ViewportCheck();
+
+	// No scenario loaded: activate scenario menu
+	if (!Game.ScenarioFilename[0])
+		if (!Menu.IsActive())
+        {
+            printf("Activating scenario menu...\n");
+			ActivateMenuScenario();
+        }
+
+	// Execute menu
+	Menu.Execute();
+
 	// Execute game
 	Game.Execute();
 	
@@ -59,9 +76,6 @@ void C4FullScreen::Execute()
 	if (HoldGameOver)
 		if (Game.GamePadCon1.AnyButtonDown())
 			Clear();
-
-	// Execute menu
-	Menu.Execute();
 	}
 
 HWND C4FullScreen::Init(HINSTANCE hInst)
@@ -108,6 +122,15 @@ BOOL C4FullScreen::MenuCommand(const char *szCommand)
 		{
 		if (SEqual(szCommand+13,"NewPlayer")) 
 			ActivateMenuNewPlayer();
+		return TRUE;
+		}
+
+	// LoadScenario
+	if (SEqual2(szCommand,"LoadScenario:"))
+		{
+		char szCmd[1024];
+		sprintf(szCmd, "%s Objects.c4d Twonky.c4p", szCommand+13);
+		OpenGame(szCmd);
 		return TRUE;
 		}
 
@@ -166,3 +189,27 @@ void C4FullScreen::CheckPlayerJoinMenu()
 				if (Game.GraphicsSystem.GetViewport(NO_OWNER))
 					ActivateMenuNewPlayer();
 	}
+BOOL C4FullScreen::ActivateMenuScenario()
+{
+	// Init menu
+	Menu.Init(C4FacetEx(), "Select Scenario", NO_OWNER, C4MN_Extra_None);
+	Menu.SetLocation(100, 100);
+
+	// Open Worlds.c4f
+	C4Group hGroup;
+	if (!hGroup.Open("Worlds.c4f")) return FALSE;
+
+	// Add scenarios
+	char szEntry[_MAX_PATH+1];
+	hGroup.ResetSearch();
+	while (hGroup.FindNextEntry("*.c4s", szEntry))
+	{
+		char szCmd[1024];
+		sprintf(szCmd, "LoadScenario:Worlds.c4f/%s", szEntry);
+		Menu.Add(szEntry, C4FacetEx(), szCmd);
+	}
+	hGroup.Close();
+
+	return TRUE;
+}
+

@@ -191,8 +191,7 @@ inline BOOL GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize) {
     ssize_t len = readlink("/proc/self/exe", buf, sizeof(buf) - 1);
     if (len != -1) {
         buf[len] = '\0';
-        char* dir = dirname(buf);
-        strncpy(lpFilename, dir, nSize);
+        strncpy(lpFilename, buf, nSize);
         lpFilename[nSize-1] = '\0';
         return TRUE;
     }
@@ -225,6 +224,7 @@ inline BOOL CreateDirectory(LPCSTR lpPathName, void* lpSecurityAttributes) {
 #define VK_F11 0x7A
 #define VK_F12 0x7B
 #define VK_ESCAPE 0x1B
+#define VK_TAB 0x09
 #define VK_SCROLL 0x91
 #define VK_MULTIPLY 0x6A
 #define MK_CONTROL 0x0008

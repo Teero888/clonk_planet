@@ -52,16 +52,16 @@ BOOL C4ScriptHost::Execute()
 	}
 
 int C4ScriptHost::Call(C4Thread *pCaller, const char *szFunction,
-											 int par0, int par1, int par2, int par3, int par4,
-											 int par5, int par6, int par7, int par8, int par9)
+											 long par0, long par1, long par2, long par3, long par4,
+											 long par5, long par6, long par7, long par8, long par9)
   {
 	if (!Script || !szFunction) return FALSE;
 	return FunctionCall(pCaller,szFunction,NULL,par0,par1,par2,par3,par4,par5,par6,par7,par8,par9);
 	}
 
 int C4ScriptHost::ObjectCall(C4Thread *pCaller, C4Object *pObj, const char *szFunction,
-											 int par0, int par1, int par2, int par3, int par4,
-											 int par5, int par6, int par7, int par8, int par9)
+											 long par0, long par1, long par2, long par3, long par4,
+											 long par5, long par6, long par7, long par8, long par9)
   {
   if (!Script || !pObj || !szFunction) return FALSE;
   return FunctionCall(pCaller,szFunction,pObj,par0,par1,par2,par3,par4,par5,par6,par7,par8,par9);
@@ -268,7 +268,7 @@ C4ScriptFnRef* C4ScriptHost::GetFunctionRef(int iFunction)
 	return NULL;
 	}
 
-int C4ScriptHost::FunctionCall(C4Thread *pCaller, const char *szFunction, C4Object *pObj, int iPar0, int iPar1, int iPar2, int iPar3, int iPar4, int iPar5, int iPar6, int iPar7, int iPar8, int iPar9)
+int C4ScriptHost::FunctionCall(C4Thread *pCaller, const char *szFunction, C4Object *pObj, long iPar0, long iPar1, long iPar2, long iPar3, long iPar4, long iPar5, long iPar6, long iPar7, long iPar8, long iPar9)
 	{
 
 #ifdef C4ENGINE

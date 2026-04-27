@@ -112,17 +112,14 @@ BOOL C4Game::InitDefs()
 BOOL C4Game::OpenScenario()
   {  
   
-	printf("OpenScenario: %s\n", ScenarioFilename);
 	// Scenario filename check & log
 	if (!ScenarioFilename[0]) { Log(LoadResStr(IDS_PRC_NOC4S)); return FALSE; }
   sprintf(OSTR,LoadResStr(IDS_PRC_LOADC4S),ScenarioFilename); Log(OSTR);
 
-	printf("OpenScenario: ScenarioFile.Open...\n");
 	// Open scenario file
   if (!ScenarioFile.Open(ScenarioFilename)) 
-		{ printf("ScenarioFile.Open failed: %s\n", ScenarioFilename); Log(LoadResStr(IDS_PRC_FILENOTFOUND)); return FALSE; }
+		{ Log(LoadResStr(IDS_PRC_FILENOTFOUND)); return FALSE; }
 
-	printf("OpenScenario: C4S.Load...\n");
   // Read scenario core
   if (!C4S.Load(ScenarioFile))
 		{ printf("C4S.Load failed!\n"); Log(LoadResStr(IDS_PRC_FILEINVALID)); return FALSE; }
@@ -180,11 +177,28 @@ BOOL C4Game::Init(const char *szCmdLine)
 	printf("Game::Init: %s\n", szCmdLine);
 
   // Parse command line
-	ParseCommandLine(szCmdLine);
-
+  ParseCommandLine(szCmdLine);
   // System
 	printf("InitSystem...\n");
 	InitSystem();
+
+    // Minimal init for menu if no scenario
+    if (!ScenarioFilename[0])
+    {
+        printf("Minimal init for menu...\n");
+        // Graphics
+        if (!GraphicsResource.Init()) return FALSE;
+        if (!GraphicsSystem.Init()) return FALSE;
+        GraphicsSystem.SetPalette();
+        GraphicsSystem.SetDarkColorTable();
+        // Sound & Music
+        if (Config.Sound.RXSound) SoundSystem.Init();
+        if (Config.Sound.RXMusic) MusicSystem.Init();
+        // Drive flags
+        GraphicsSystem.GraphicsGo = TRUE;
+        GameGo = TRUE;
+        return TRUE;
+    }
 
 	// Loader screen
 	char szParentfolder[_MAX_PATH+1]; GetParentPath(ScenarioFilename,szParentfolder,_MAX_PATH);
@@ -2191,8 +2205,10 @@ C4Object* C4Game::PlaceVegetation(C4ID id, int iX, int iY, int iWdt, int iHgt, i
 				// Above IFT
 				while ((iTy>0) && GBackIFT(iTx,iTy)) iTy--;
 				// Above semi solid
-				if (!AboveSemiSolid(iTx,iTy) || !Inside(iTy,50,GBackHgt-50))
+                long lx=iTx, ly=iTy;
+				if (!AboveSemiSolid(lx,ly) || !Inside((int)ly,50,GBackHgt-50))
 					continue;
+                iTx=lx; iTy=ly;
 				// Free above
 				if (GBackSemiSolid(iTx,iTy-pDef->Shape.Hgt) || GBackSemiSolid(iTx,iTy-pDef->Shape.Hgt/2))
 					continue;
@@ -2213,11 +2229,16 @@ C4Object* C4Game::PlaceVegetation(C4ID id, int iX, int iY, int iWdt, int iHgt, i
 			// Random range
 			iTx=iX+Random(iWdt); iTy=iY+Random(iHgt);
 			// Find liquid
-			if (!FindSurfaceLiquid(iTx,iTy,pDef->Shape.Wdt,pDef->Shape.Hgt))
-				if (!FindLiquid(iTx,iTy,pDef->Shape.Wdt,pDef->Shape.Hgt))
-					return NULL;
-			// Liquid bottom
-			if (!SemiAboveSolid(iTx,iTy)) return NULL;
+            {
+                long lx=iTx, ly=iTy;
+			    if (!FindSurfaceLiquid(lx,ly,pDef->Shape.Wdt,pDef->Shape.Hgt))
+				    if (!FindLiquid(lx,ly,pDef->Shape.Wdt,pDef->Shape.Hgt))
+					    return NULL;
+                iTx=lx; iTy=ly;
+			    // Liquid bottom
+			    if (!SemiAboveSolid(lx,ly)) return NULL;
+                iTx=lx; iTy=ly;
+            }
 			iTy+=3;
 			// Create object
 			return CreateObjectConstruction(id,NO_OWNER,iTx,iTy,iGrowth);
@@ -2239,14 +2260,22 @@ C4Object* C4Game::PlaceAnimal(C4ID idAnimal)
 		// Running free
 		case C4D_Place_Surface:
 			iX=Random(GBackWdt); iY=Random(GBackHgt);
-			if (!FindSolidGround(iX,iY,pDef->Shape.Wdt)) return NULL;
+            {
+                long lx=iX, ly=iY;
+			    if (!FindSolidGround(lx,ly,pDef->Shape.Wdt)) return NULL;
+                iX=lx; iY=ly;
+            }
 			break;
 		// In liquid
 		case C4D_Place_Liquid:
 			iX=Random(GBackWdt); iY=Random(GBackHgt);
-			if (!FindSurfaceLiquid(iX,iY,pDef->Shape.Wdt,pDef->Shape.Hgt))
-				if (!FindLiquid(iX,iY,pDef->Shape.Wdt,pDef->Shape.Hgt)) 
-					return FALSE;
+            {
+                long lx=iX, ly=iY;
+			    if (!FindSurfaceLiquid(lx,ly,pDef->Shape.Wdt,pDef->Shape.Hgt))
+				    if (!FindLiquid(lx,ly,pDef->Shape.Wdt,pDef->Shape.Hgt)) 
+					    return NULL;
+                iX=lx; iY=ly;
+            }
 			iY+=pDef->Shape.Hgt/2;
 			break;
 		// Floating in air

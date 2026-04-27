@@ -126,24 +126,26 @@ BOOL CStdDDraw::Init(HWND hWnd, BOOL Fullscreen, int iResX, int iResY, BOOL fUse
     glfwSetErrorCallback(glfwErrorCallback);
 
     if (!glfwInit()) return FALSE;
+    printf("glfwInit successful\n");
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
     glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 
-    g_window = glfwCreateWindow(iResX, iResY, "Clonk Planet", Fullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
-    if (!g_window) {
-        DebugLog("Failed to create window, trying windowed fallback");
-        g_window = glfwCreateWindow(iResX, iResY, "Clonk Planet", NULL, NULL);
-        if (!g_window) return FALSE;
-    }
+    printf("glfwCreateWindow(%dx%d)...\n", iResX, iResY);
+    // Force windowed mode to avoid driver crashes reported by user
+    g_window = glfwCreateWindow(iResX, iResY, "Clonk Planet", NULL, NULL);
+    if (!g_window) return FALSE;
+    printf("glfwCreateWindow successful\n");
 
     glfwMakeContextCurrent(g_window);
     glfwSwapInterval(1); 
 
+    printf("glewInit...\n");
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK) return FALSE;
+    printf("glewInit successful\n");
     glGetError(); 
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -194,15 +196,14 @@ BOOL CStdDDraw::Init(HWND hWnd, BOOL Fullscreen, int iResX, int iResY, BOOL fUse
 
 BOOL CStdDDraw::PageFlip() {
     if (std::this_thread::get_id() != g_mainThreadId) return FALSE;
-    if (!g_window || !lpPrimary) return FALSE;
-    
-    CGLSurface* surf = (CGLSurface*)lpPrimary;
+    if (!g_window || !lpBack) return FALSE;
+
+    CGLSurface* surf = (CGLSurface*)lpBack;
     if (surf->w <= 0 || surf->h <= 0) return FALSE;
 
     glViewport(0, 0, surf->w, surf->h);
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
-
     if (surf->dirty && surf->tex) {
         glTextureSubImage2D(surf->tex, 0, 0, 0, surf->w, surf->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, surf->bits);
         surf->dirty = false;
@@ -502,9 +503,31 @@ void CStdDDraw::DrawBox(SURFACE sfcDest, int x1, int y1, int x2, int y2, BYTE co
     dst->dirty = true;
 }
 
-void CStdDDraw::DrawBoxColorTable(SURFACE sfcDest, int x1, int y1, int x2, int y2, BYTE *bypColorTable) { }
+void CStdDDraw::DrawBoxColorTable(SURFACE sfcDest, int x1, int y1, int x2, int y2, BYTE *bypColorTable) {
+    if (!sfcDest || !bypColorTable) return;
+    CGLSurface* dst = (CGLSurface*)sfcDest;
+    int startX = std::max(0, x1);
+    int endX = std::min(dst->w - 1, x2);
+    int startY = std::max(0, y1);
+    int endY = std::min(dst->h - 1, y2);
+    for (int y = startY; y <= endY; y++) {
+        uint8_t* pLine = dst->bits + y * dst->pitch;
+        for (int x = startX; x <= endX; x++) {
+            pLine[x] = bypColorTable[pLine[x]];
+        }
+    }
+    dst->dirty = true;
+}
 
-void CStdDDraw::DrawCircle(SURFACE sfcDest, int x, int y, int r, BYTE col) { }
+void CStdDDraw::DrawCircle(SURFACE sfcDest, int x, int y, int r, BYTE col) {
+    if (!sfcDest) return;
+    for (int i = 0; i < 360; i++) {
+        double angle = i * 3.14159265 / 180.0;
+        int px = x + (int)(r * cos(angle));
+        int py = y + (int)(r * sin(angle));
+        SetPixel(sfcDest, px, py, col);
+    }
+}
 
 void CStdDDraw::DrawHorizontalLine(SURFACE sfcDest, int x1, int x2, int y, BYTE col) {
     DrawBox(sfcDest, x1, y, x2, y, col);

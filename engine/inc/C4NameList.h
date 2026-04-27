@@ -2,6 +2,8 @@
 
 /* A static list of strings and integer values, i.e. for material amounts */
 
+#pragma pack(push, 1)
+
 class C4NameList
   {
   public:
@@ -20,3 +22,5 @@ class C4NameList
 		bool operator==(const C4NameList& rhs)
 			{	return MemEqual((BYTE*)this,(BYTE*)&rhs,sizeof(C4NameList)); }
   };
+
+#pragma pack(pop)

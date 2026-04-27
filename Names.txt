@@ -1,0 +1,1 @@
+ClonkPlanetData/Names.txt

@@ -26,6 +26,7 @@ class C4FullScreen
 		BOOL OpenGame(const char *szCmdLine);
 	protected:
 		BOOL ActivateMenuNewPlayer();
+		BOOL ActivateMenuScenario();
 		BOOL RegisterWindowClass(HINSTANCE hInst);
 	};
 

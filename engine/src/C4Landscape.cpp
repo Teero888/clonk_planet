@@ -927,7 +927,7 @@ void C4Landscape::Synchronize()
 
 
 
-BOOL AboveSemiSolid(int &rx, int &ry) // Nearest free above semi solid
+BOOL AboveSemiSolid(long &rx, long &ry) // Nearest free above semi solid
   {  
 	int cy1=ry,cy2=ry;
 	BOOL UseUpwardsNextFree=FALSE,UseDownwardsNextSolid=FALSE;
@@ -949,7 +949,7 @@ BOOL AboveSemiSolid(int &rx, int &ry) // Nearest free above semi solid
 	return FALSE;
 	}
 
-BOOL AboveSolid(int &rx, int &ry) // Nearest free directly above solid
+BOOL AboveSolid(long &rx, long &ry) // Nearest free directly above solid
   {  
 	int cy1=ry,cy2=ry;
 
@@ -972,7 +972,7 @@ BOOL AboveSolid(int &rx, int &ry) // Nearest free directly above solid
 	return FALSE;
 	}
 
-BOOL SemiAboveSolid(int &rx, int &ry) // Nearest free/semi above solid
+BOOL SemiAboveSolid(long &rx, long &ry) // Nearest free/semi above solid
   {  
 	int cy1=ry,cy2=ry;
 
@@ -995,7 +995,7 @@ BOOL SemiAboveSolid(int &rx, int &ry) // Nearest free/semi above solid
 	return FALSE;
 	}
  
-BOOL FindLiquidHeight(int cx, int &ry, int hgt)
+BOOL FindLiquidHeight(int cx, long &ry, int hgt)
   {  
 	int cy1=ry,cy2=ry,rl1=0,rl2=0;
 
@@ -1022,7 +1022,7 @@ BOOL FindLiquidHeight(int cx, int &ry, int hgt)
 // of solid ground. Returns bottom center
 // of surface space found.
 
-BOOL FindSolidGround(int &rx, int &ry, int width)
+BOOL FindSolidGround(long &rx, long &ry, int width)
   {
   BOOL fFound=FALSE;	
 
@@ -1033,13 +1033,15 @@ BOOL FindSolidGround(int &rx, int &ry, int width)
     // Left search
     if (cx1>=0) // Still going
       {      
-      if (AboveSolid(cx1,cy1)) rl1++; // Run okay
+      long lcx1=cx1, lcy1=cy1;
+      if (AboveSolid(lcx1,lcy1)) { cy1=(int)lcy1; rl1++; } // Run okay
       else rl1=0; // No run
       }
     // Right search
     if (cx2<GBackWdt) // Still going
       {      
-      if (AboveSolid(cx2,cy2)) rl2++; // Run okay
+      long lcx2=cx2, lcy2=cy2;
+      if (AboveSolid(lcx2,lcy2)) { cy2=(int)lcy2; rl2++; } // Run okay
       else rl2=0; // No run
       }
     // Check runs
@@ -1052,7 +1054,7 @@ BOOL FindSolidGround(int &rx, int &ry, int width)
   return fFound;
   }
 
-BOOL FindSurfaceLiquid(int &rx, int &ry, int width, int height)
+BOOL FindSurfaceLiquid(long &rx, long &ry, int width, int height)
   {
   BOOL fFound=FALSE;
 
@@ -1062,22 +1064,30 @@ BOOL FindSurfaceLiquid(int &rx, int &ry, int width, int height)
     {
     // Left search
     if (cx1>0) // Still going
-      if (!AboveSemiSolid(cx1,cy1)) cx1=-1; // Abort left
+      {
+      long lcx1=cx1, lcy1=cy1;
+      if (!AboveSemiSolid(lcx1,lcy1)) cx1=-1; // Abort left
       else 
 				{
+                cy1=(int)lcy1;
 				for (lokay=TRUE,cnt=0; cnt<height; cnt++)	if (!GBackLiquid(cx1,cy1+1+cnt)) lokay=FALSE;
 				if (lokay) rl1++; // Run okay
         else rl1=0; // No run
 				}
+      }
     // Right search
     if (cx2<GBackWdt) // Still going
-      if (!AboveSemiSolid(cx2,cy2)) cx2=GBackWdt; // Abort right
+      {
+      long lcx2=cx2, lcy2=cy2;
+      if (!AboveSemiSolid(lcx2,lcy2)) cx2=GBackWdt; // Abort right
       else
 				{
+                cy2=(int)lcy2;
 				for (lokay=TRUE,cnt=0; cnt<height; cnt++)	if (!GBackLiquid(cx2,cy2+1+cnt)) lokay=FALSE;
 				if (lokay) rl2++; // Run okay
         else rl2=0; // No run
 				}
+      }
     // Check runs
     if (rl1>=width) { rx=cx1+rl1/2; ry=cy1; fFound=TRUE; break; }
     if (rl2>=width) { rx=cx2-rl2/2; ry=cy2; fFound=TRUE; break; }
@@ -1088,7 +1098,7 @@ BOOL FindSurfaceLiquid(int &rx, int &ry, int width, int height)
   return fFound;
   }
 
-BOOL FindLiquid(int &rx, int &ry, int width, int height)
+BOOL FindLiquid(long &rx, long &ry, int width, int height)
   {
   int cx1,cx2,cy1,cy2,rl1=0,rl2=0;
 
@@ -1096,12 +1106,18 @@ BOOL FindLiquid(int &rx, int &ry, int width, int height)
     {
     // Left search
     if (cx1>0) 
-			if (FindLiquidHeight(cx1,cy1,height)) rl1++;
+			{
+            long lcy1=cy1;
+			if (FindLiquidHeight(cx1,lcy1,height)) { cy1=(int)lcy1; rl1++; }
 			else rl1=0;
+            }
     // Right search
     if (cx2<GBackWdt)
-			if (FindLiquidHeight(cx2,cy2,height)) rl2++;
+			{
+            long lcy2=cy2;
+			if (FindLiquidHeight(cx2,lcy2,height)) { cy2=(int)lcy2; rl2++; }
 			else rl2=0;
+            }
     // Check runs
     if (rl1>=width) { rx=cx1+rl1/2; ry=cy1; return TRUE; }
     if (rl2>=width) { rx=cx2-rl2/2; ry=cy2; return TRUE; }
@@ -1116,7 +1132,7 @@ BOOL FindLiquid(int &rx, int &ry, int width, int height)
 //                  exceed hrange.
 //                  Returns bottom center of surface found.
 
-BOOL FindLevelGround(int &rx, int &ry, int width, int hrange)
+BOOL FindLevelGround(long &rx, long &ry, int width, int hrange)
   {
   BOOL fFound=FALSE;
 
@@ -1130,21 +1146,33 @@ BOOL FindLevelGround(int &rx, int &ry, int width, int hrange)
     {
     // Left search
     if (cx1>0) // Still going
-      if (!AboveSemiSolid(cx1,cy1)) cx1=-1; // Abort left
+      {
+      long lcx1=cx1, lcy1=cy1;
+      if (!AboveSemiSolid(lcx1,lcy1)) cx1=-1; // Abort left
       else 
+        {
+        cy1=(int)lcy1;
         if (GBackSolid(cx1,cy1+1) && (Abs(cy1-rh1)<hrange)) 
           rl1++; // Run okay
         else 
           { rl1=0; rh1=cy1; } // No run        
+        }
+      }
     
     // Right search
     if (cx2<GBackWdt) // Still going
-      if (!AboveSemiSolid(cx2,cy2)) cx2=GBackWdt; // Abort right
+      {
+      long lcx2=cx2, lcy2=cy2;
+      if (!AboveSemiSolid(lcx2,lcy2)) cx2=GBackWdt; // Abort right
       else 
+        {
+        cy2=(int)lcy2;
         if (GBackSolid(cx2,cy2+1) && (Abs(cy2-rh2)<hrange))
           rl2++; // Run okay
         else 
           { rl2=0; rh2=cy2; } // No run
+        }
+      }
     
     // Check runs
     if (rl1>=width) { rx=cx1+rl1/2; ry=cy1; fFound=TRUE; break; }
@@ -1162,7 +1190,7 @@ BOOL FindLevelGround(int &rx, int &ry, int width, int hrange)
 // ground with structure clearance (category).
 // Returns bottom center of surface found.
 
-BOOL FindConSiteSpot(int &rx, int &ry, int wdt, int hgt, 
+BOOL FindConSiteSpot(long &rx, long &ry, int wdt, int hgt, 
                      DWORD category, int hrange)
   {
   BOOL fFound=FALSE;
@@ -1173,13 +1201,19 @@ BOOL FindConSiteSpot(int &rx, int &ry, int wdt, int hgt,
   int cx1,cx2,cy1,cy2,rh1,rh2,rl1,rl2;
 
 	// Left offset starting position
-	cx1=Min(rx+wdt/2,GBackWdt-1); cy1=ry;
+	cx1=Min((int)rx+wdt/2,GBackWdt-1); cy1=ry;
 	// No good: use centered starting position
-	if (!AboveSemiSolid(cx1,cy1)) { cx1=Min(rx,GBackWdt-1); cy1=ry; }
+    {
+        long lcx1=cx1, lcy1=cy1;
+	    if (!AboveSemiSolid(lcx1,lcy1)) { cx1=Min((int)rx,GBackWdt-1); cy1=ry; }
+    }
 	// Right offset starting position		
-	cx2=Max(rx-wdt/2,0); cy2=ry;
+	cx2=Max((int)rx-wdt/2,0); cy2=ry;
 	// No good: use centered starting position
-	if (!AboveSemiSolid(cx2,cy2)) { cx2=Min(rx,GBackWdt-1); cy2=ry; }
+    {
+        long lcx2=cx2, lcy2=cy2;
+	    if (!AboveSemiSolid(lcx2,lcy2)) { cx2=Min((int)rx,GBackWdt-1); cy2=ry; }
+    }
 
   rh1=cy1; rh2=cy2; rl1=rl2=0;
 
@@ -1187,23 +1221,35 @@ BOOL FindConSiteSpot(int &rx, int &ry, int wdt, int hgt,
     {
     // Left search
     if (cx1>0) // Still going
-      if (!AboveSemiSolid(cx1,cy1)) 
+      {
+      long lcx1=cx1, lcy1=cy1;
+      if (!AboveSemiSolid(lcx1,lcy1)) 
 				cx1=-1; // Abort left
       else 
+        {
+        cy1=(int)lcy1;
         if (GBackSolid(cx1,cy1+1) && (Abs(cy1-rh1)<hrange)) 
           rl1++; // Run okay
         else 
           { rl1=0; rh1=cy1; } // No run        
+        }
+      }
     
     // Right search
     if (cx2<GBackWdt) // Still going
-      if (!AboveSemiSolid(cx2,cy2)) 
+      {
+      long lcx2=cx2, lcy2=cy2;
+      if (!AboveSemiSolid(lcx2,lcy2)) 
 				cx2=GBackWdt; // Abort right
       else 
+        {
+        cy2=(int)lcy2;
         if (GBackSolid(cx2,cy2+1) && (Abs(cy2-rh2)<hrange))
           rl2++; // Run okay
         else 
           { rl2=0; rh2=cy2; } // No run
+        }
+      }
     
     // Check runs & object overlap
     if (rl1>=wdt) if (cx1>0)
@@ -1249,7 +1295,7 @@ int TrajectoryDistance(int iFx, int iFy, FIXED iXDir, FIXED iYDir, int iTx, int 
 const int C4LSC_Throwing_MaxVertical = 50,
 					C4LSC_Throwing_MaxHorizontal = 60;
 
-BOOL FindThrowingPosition(int iTx, int iTy, FIXED fXDir, FIXED fYDir, int iHeight, int &rX, int &rY)
+BOOL FindThrowingPosition(int iTx, int iTy, FIXED fXDir, FIXED fYDir, int iHeight, long &rX, long &rY)
 	{
 
 	// Start underneath throwing target
@@ -1257,19 +1303,19 @@ BOOL FindThrowingPosition(int iTx, int iTy, FIXED fXDir, FIXED fYDir, int iHeigh
 	if (!SemiAboveSolid(rX,rY)) return FALSE;
 
 	// Target too far above surface
-	if (!Inside(rY-iTy,-C4LSC_Throwing_MaxVertical,+C4LSC_Throwing_MaxVertical)) return FALSE;
+	if (!Inside((int)rY-iTy,-C4LSC_Throwing_MaxVertical,+C4LSC_Throwing_MaxVertical)) return FALSE;
 
 	// Search in direction according to launch fXDir
 	int iDir=+1; if (fXDir>0) iDir=-1;
 
 	// Move along surface
-	for (int cnt=0; Inside(rX,0,GBackWdt-1) && (cnt<=C4LSC_Throwing_MaxHorizontal); rX+=iDir,cnt++)
+	for (int cnt=0; Inside((int)rX,0,GBackWdt-1) && (cnt<=C4LSC_Throwing_MaxHorizontal); rX+=iDir,cnt++)
 		{
 		// Adjust to surface
 		if (!SemiAboveSolid(rX,rY)) return FALSE;
 
 		// Check trajectory distance
-		int itjd = TrajectoryDistance(rX,rY-iHeight,fXDir,fYDir,iTx,iTy);
+		int itjd = TrajectoryDistance((int)rX,(int)rY-iHeight,fXDir,fYDir,iTx,iTy);
 
 		// Hitting range: success
 		if (itjd<=2) return TRUE;
@@ -1283,7 +1329,7 @@ BOOL FindThrowingPosition(int iTx, int iTy, FIXED fXDir, FIXED fYDir, int iHeigh
 const int C4LSC_Closest_MaxRange = 200,
 					C4LSC_Closest_Step		 = 10;
 
-BOOL FindClosestFree(int &rX, int &rY, int iAngle1, int iAngle2, 
+BOOL FindClosestFree(long &rX, long &rY, int iAngle1, int iAngle2, 
 										 int iExcludeAngle1, int iExcludeAngle2)
 	{
   double pi = 3.1415926535;
@@ -1292,8 +1338,8 @@ BOOL FindClosestFree(int &rX, int &rY, int iAngle1, int iAngle2,
 		for (int iAngle=iAngle1; iAngle<iAngle2; iAngle+=C4LSC_Closest_Step)
 			if (!Inside(iAngle,iExcludeAngle1,iExcludeAngle2))
 				{
-				iX = rX+(int)(sin(pi*(double)iAngle/180.0)*(double)iR);
-				iY = rY-(int)(cos(pi*(double)iAngle/180.0)*(double)iR);
+				iX = (int)rX+(int)(sin(pi*(double)iAngle/180.0)*(double)iR);
+				iY = (int)rY-(int)(cos(pi*(double)iAngle/180.0)*(double)iR);
 				if (Inside(iX,0,GBackWdt-1))
 					if (Inside(iY,0,GBackHgt-1))
 						if (!GBackSemiSolid(iX,iY))

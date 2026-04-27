@@ -220,7 +220,6 @@ void C4ConfigGeneral::DeterminePaths()
                 SCopy(dir, ExePath);
             }
         }
-	printf("DeterminePaths: ExePath (from Compat): %s\n", ExePath);
 	// WorkPath (force working directory to exe path)
 	BOOL fOkay = SetCurrentDirectory(ExePath);
     printf("DeterminePaths: SetCurrentDirectory(%s): %d\n", ExePath, fOkay);
@@ -235,7 +234,6 @@ void C4ConfigGeneral::DeterminePaths()
 #ifdef _WIN32
 	if (LogPath[0]) AppendBackslash(LogPath);
 #endif
-	printf("DeterminePaths: LogPath: %s\n", LogPath);
 	// Player path
 	if (PlayerPath[0]) AppendBackslash(PlayerPath);
 	// Round path

@@ -2310,7 +2310,7 @@ C4Object* FnNoContainer()			{ return NO_CONTAINER;	}
 
 //=========================== C4Script Function Map ===================================
 
-#define MkFn (int (*)(...))
+#define MkFn (int (*)(C4Thread*, long, long, long, long, long, long, long, long, long, long))
 
 C4ScriptFnDef C4ScriptFnMap[]={
   

@@ -306,7 +306,11 @@ void C4Player::PlaceReadyCrew(int tx1, int tx2, int ty, C4Object *FirstBase)
 			ctx = tx1 + Random(tx2 - tx1);
 			cty = ty;
 			if (!Game.C4S.PlrStart[PlrStartIndex].EnforcePosition)
-				FindSolidGround(ctx, cty, pDef->Shape.Wdt * 3);
+            {
+                long lctx=ctx, lcty=cty;
+				FindSolidGround(lctx, lcty, pDef->Shape.Wdt * 3);
+                ctx=(int)lctx; cty=(int)lcty;
+            }
 			// Create object
 			if (nobj = Game.CreateInfoObject(pInfo, Number, ctx, cty))
 			{
@@ -346,7 +350,11 @@ void C4Player::PlaceReadyCrew(int tx1, int tx2, int ty, C4Object *FirstBase)
 				ctx = tx1 + Random(tx2 - tx1);
 				cty = ty;
 				if (!Game.C4S.PlrStart[PlrStartIndex].EnforcePosition)
-					FindSolidGround(ctx, cty, pDef->Shape.Wdt * 3);
+                {
+                    long lctx=ctx, lcty=cty;
+					FindSolidGround(lctx, lcty, pDef->Shape.Wdt * 3);
+                    ctx=(int)lctx; cty=(int)lcty;
+                }
 				// Create object
 				if (nobj = Game.CreateInfoObject(pInfo, Number, ctx, cty))
 				{
@@ -387,22 +395,28 @@ void C4Player::PlaceReadyBase(int &tx, int &ty, C4Object **pFirstBase)
 			{
 				ctx = tx;
 				cty = ty;
-				if (Game.C4S.PlrStart[PlrStartIndex].EnforcePosition || FindConSiteSpot(ctx, cty, def->Shape.Wdt, def->Shape.Hgt, def->Category, 20))
-					if (cbase = Game.CreateObjectConstruction(cid, Number, ctx, cty, FullCon, TRUE))
-					{
-						// FirstBase
-						if (!(*pFirstBase))
-							if (cbase->Def->CanBeBase)
-							{
-								*pFirstBase = cbase;
-								tx = (*pFirstBase)->x;
-								ty = (*pFirstBase)->y;
-							}
-						// First power plant
-						if (cbase->Def->LineConnect & C4D_Power_Generator)
-							if (!fpower)
-								fpower = cbase;
-					}
+                {
+                    long lctx=ctx, lcty=cty;
+				    if (Game.C4S.PlrStart[PlrStartIndex].EnforcePosition || FindConSiteSpot(lctx, lcty, def->Shape.Wdt, def->Shape.Hgt, def->Category, 20))
+                    {
+                        ctx=(int)lctx; cty=(int)lcty;
+					    if (cbase = Game.CreateObjectConstruction(cid, Number, ctx, cty, FullCon, TRUE))
+					    {
+						    // FirstBase
+						    if (!(*pFirstBase))
+							    if (cbase->Def->CanBeBase)
+							    {
+								    *pFirstBase = cbase;
+								    tx = (*pFirstBase)->x;
+								    ty = (*pFirstBase)->y;
+							    }
+						    // First power plant
+						    if (cbase->Def->LineConnect & C4D_Power_Generator)
+							    if (!fpower)
+								    fpower = cbase;
+					    }
+                    }
+                }
 			}
 	}
 
@@ -431,7 +445,11 @@ void C4Player::PlaceReadyVehic(int tx1, int tx2, int ty, C4Object *FirstBase)
 				ctx = tx1 + Random(tx2 - tx1);
 				cty = ty;
 				if (!Game.C4S.PlrStart[PlrStartIndex].EnforcePosition)
-					FindLevelGround(ctx, cty, def->Shape.Wdt, 6);
+                {
+                    long lctx=ctx, lcty=cty;
+					FindLevelGround(lctx, lcty, def->Shape.Wdt, 6);
+                    ctx=(int)lctx; cty=(int)lcty;
+                }
 				if (cobj = Game.CreateObject(cid, Number, ctx, cty))
 				{
 					if (FirstBase) // First base overrides target location
@@ -467,7 +485,11 @@ void C4Player::PlaceReadyMaterial(int tx1, int tx2, int ty, C4Object *FirstBase)
 					ctx = tx1 + Random(tx2 - tx1);
 					cty = ty;
 					if (!Game.C4S.PlrStart[PlrStartIndex].EnforcePosition)
-						FindSolidGround(ctx, cty, def->Shape.Wdt);
+                    {
+                        long lctx=ctx, lcty=cty;
+						FindSolidGround(lctx, lcty, def->Shape.Wdt);
+                        ctx=(int)lctx; cty=(int)lcty;
+                    }
 					Game.CreateObject(cid, Number, ctx, cty);
 				}
 		}
@@ -542,7 +564,11 @@ BOOL C4Player::ScenarioInit()
 
 	// Place to solid ground
 	if (!Game.C4S.PlrStart[PlrStartIndex].EnforcePosition)
-		FindSolidGround(ptx, pty, 30);
+    {
+        long lptx=ptx, lpty=pty;
+		FindSolidGround(lptx, lpty, 30);
+        ptx=(int)lptx; pty=(int)lpty;
+    }
 
 	// Place Readies
 	C4Object *FirstBase = NULL;

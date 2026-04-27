@@ -60,31 +60,31 @@ class C4Object
     ~C4Object();
   public:
 		C4ID id;
-		int Number;
-    int Status; // NoSave //
-    int RemovalDelay; // NoSave //
-		int Owner;
-		int Controller;
-    int Category;
-    int x,y,r;
-    int motion_x,motion_y;
-    int NoCollectDelay;
-    int MaskPutMotion;
-    int Base;      
-    int Con;
-    int Mass;
-    int Damage;
-    int Energy;
-		int MagicEnergy;
-		int Alive;
-    int Breath;
-    int FirePhase;
-    int InMat; // SyncClearance-NoSave //
-    int Color;
-		int Timer;
-	  int ViewEnergy; // NoSave //
-		int Audible,LastAudible; // NoSave //
-		int Local[C4MaxVariable];
+		long Number;
+    long Status; // NoSave //
+    long RemovalDelay; // NoSave //
+		long Owner;
+		long Controller;
+    long Category;
+    long x,y,r;
+    long motion_x,motion_y;
+    long NoCollectDelay;
+    long MaskPutMotion;
+    long Base;      
+    long Con;
+    long Mass;
+    long Damage;
+    long Energy;
+		long MagicEnergy;
+		long Alive;
+    long Breath;
+    long FirePhase;
+    long InMat; // SyncClearance-NoSave //
+    long Color;
+		long Timer;
+	  long ViewEnergy; // NoSave //
+		long Audible,LastAudible; // NoSave //
+		long Local[C4MaxVariable];
     FIXED fix_x,fix_y,fix_r; // SyncClearance-Fix //
     FIXED xdir,ydir,rdir;      
     BOOL Mobile;
@@ -145,11 +145,11 @@ class C4Object
 										 int par0=0, int par1=0, int par2=0, int par3=0, int par4=0,
 										 int par5=0, int par6=0, int par7=0, int par8=0, int par9=0);
     int Call(const char *szFunctionCall,
-             int par0=0, int par1=0, int par2=0, int par3=0, int par4=0,
-						 int par5=0, int par6=0, int par7=0, int par8=0, int par9=0);
+             long par0=0, long par1=0, long par2=0, long par3=0, long par4=0,
+						 long par5=0, long par6=0, long par7=0, long par8=0, long par9=0);
     int Call(C4Thread *pCaller, const char *szFunctionCall,
-             int par0=0, int par1=0, int par2=0, int par3=0, int par4=0,
-						 int par5=0, int par6=0, int par7=0, int par8=0, int par9=0);
+             long par0=0, long par1=0, long par2=0, long par3=0, long par4=0,
+						 long par5=0, long par6=0, long par7=0, long par8=0, long par9=0);
 
 
 	  BOOL ContainedControl(BYTE byCom);

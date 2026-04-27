@@ -715,9 +715,11 @@ void C4MouseControl::DragMoving()
 			// Throwing height
 			int iHeight=20; if (pPlayer->Cursor) iHeight=pPlayer->Cursor->Shape.Hgt;
 			// Check throw
-			if (FindThrowingPosition(X,Y,fixThrow*iDir,-fixThrow,iHeight,iX,iY)
-			 || FindThrowingPosition(X,Y,fixThrow*(iDir*=-1),-fixThrow,iHeight,iX,iY))
+            long lx=iX, ly=iY;
+			if (FindThrowingPosition(X,Y,fixThrow*iDir,-fixThrow,iHeight,lx,ly)
+			 || FindThrowingPosition(X,Y,fixThrow*(iDir*=-1),-fixThrow,iHeight,lx,ly))
 				{ 
+                iX=(int)lx; iY=(int)ly;
 				Cursor = (iDir==-1) ? C4MC_Cursor_ThrowLeft : C4MC_Cursor_ThrowRight; 
 				ShowPointX=iX; ShowPointY=iY; 
 				return;

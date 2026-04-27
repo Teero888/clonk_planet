@@ -25,5 +25,14 @@ file(GLOB_RECURSE SRC_FILES
     "standard/src/Compat.cpp"
 )
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined -g")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address,undefined")
+
 add_executable(clonk ${SRC_FILES})
 target_link_libraries(clonk PRIVATE OpenGL::GL GLEW::GLEW glfw z m)
+
+add_executable(test_loading tests/test_loading.cpp)
+target_link_libraries(test_loading PRIVATE z)
+
+add_executable(test_zlib tests/test_zlib.cpp)
+target_link_libraries(test_zlib PRIVATE z)

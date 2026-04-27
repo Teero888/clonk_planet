@@ -164,9 +164,9 @@ bool ForLine(int x1, int y1, int x2, int y2,
 char CharCapital(char cChar)
 	{
   if (Inside(cChar,'a','z')) return (cChar-32);
-  if (cChar=='ä') return 'Ä';
-  if (cChar=='ö') return 'Ö';
-  if (cChar=='ü') return 'Ü';
+  if (cChar=='ï¿½') return 'ï¿½';
+  if (cChar=='ï¿½') return 'ï¿½';
+  if (cChar=='ï¿½') return 'ï¿½';
 	return cChar;
 	}
 
@@ -194,18 +194,18 @@ bool IsWhiteSpace(char cChar)
 bool IsUpperCase(char cChar)
 	{
   if (Inside(cChar,'A','Z')) return true;
-  if (cChar=='Ä') return true;
-  if (cChar=='Ö') return true;
-  if (cChar=='Ü') return true;
+  if (cChar=='ï¿½') return true;
+  if (cChar=='ï¿½') return true;
+  if (cChar=='ï¿½') return true;
 	return false;
 	}
 
 bool IsLowerCase(char cChar)
 	{
   if (Inside(cChar,'a','z')) return true;
-  if (cChar=='ä') return true;
-  if (cChar=='ö') return true;
-  if (cChar=='ü') return true;
+  if (cChar=='ï¿½') return true;
+  if (cChar=='ï¿½') return true;
+  if (cChar=='ï¿½') return true;
 	return false;
 	}
 
@@ -525,7 +525,7 @@ int SClearFrontBack(char *szString, char cClear)
 	char *cpos;
 	if (!szString) return 0;
 	for (cpos=szString; *cpos && (*cpos==cClear); cpos++,cleared++);
-	if (cpos!=szString) SCopy(cpos,szString);
+	if (cpos!=szString) memmove(szString, cpos, strlen(cpos) + 1);
 	for (cpos=szString+SLen(szString)-1; (cpos>szString) && (*cpos==cClear); cpos--,cleared++)
 		*cpos=0x00;
   return cleared;
@@ -564,7 +564,7 @@ void SRemoveComments(char *szScript)
 		if (szScript[1]=='/')
 			{
 			if (pScriptCont = SSearch(szScript+2,LineFeed))
-				SCopy(pScriptCont-SLen(LineFeed),szScript);
+				memmove(szScript, pScriptCont - SLen(LineFeed), strlen(pScriptCont - SLen(LineFeed)) + 1);
 			else
 				szScript[0]=0;
 			}
@@ -572,7 +572,7 @@ void SRemoveComments(char *szScript)
 		else if (szScript[1]=='*')
 			{
 			if (pScriptCont = SSearch(szScript+2,"*/"))
-				SCopy(pScriptCont,szScript);
+				memmove(szScript, pScriptCont, strlen(pScriptCont) + 1);
 			else
 				szScript[0]=0;
 			}

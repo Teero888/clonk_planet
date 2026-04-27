@@ -46,6 +46,7 @@ class CStdFile
 		BOOL Advance(int iOffset, BOOL fPacked=FALSE);
 		BOOL Save(const char *szFilename, BYTE *pBuffer, int iSize, BOOL fCompressed=FALSE);
 		BOOL Load(const char *szFilename, BYTE **ppBuffer, int *ipSize, int iExtra=0, BOOL fCompressed=FALSE);
+        BOOL IsCompressed() { return hgzFile != NULL; }
 	protected:
 		void ClearBuffer();
 		int LoadBuffer();

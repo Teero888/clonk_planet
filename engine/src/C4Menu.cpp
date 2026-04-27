@@ -417,12 +417,13 @@ BOOL C4Menu::ActivateNewPlayer(int iPlayer)
 	// Search player files
 	char szSearch[_MAX_PATH+1],szFilename[_MAX_PATH+1],szCommand[_MAX_PATH+30+1];
 	sprintf(szSearch,"%s*.c4p",Config.General.PlayerPath);
-  struct _finddata_t fdt; int fdthnd;
-  if ((fdthnd=_findfirst(szSearch,&fdt))<0) return FALSE;
-  do
+    struct _finddata_t fdt; intptr_t fdthnd;
+    if ((fdthnd=_findfirst(szSearch,&fdt))>=0)
     {
-    if (fdt.attrib & _A_ALL_FILES)
-      {
+    do
+        {
+        if (fdt.attrib & _A_ALL_FILES)
+        {
 			// Get filename & check usage
       SCopy(szSearch,szFilename); SCopy(fdt.name,GetFilename(szFilename)); 
 			if (Game.Players.FileInUse(szFilename)) continue;
@@ -451,6 +452,7 @@ BOOL C4Menu::ActivateNewPlayer(int iPlayer)
     }
   while (_findnext(fdthnd,&fdt)==0);
   _findclose(fdthnd);
+    }
 	
 	return TRUE;
 	}
