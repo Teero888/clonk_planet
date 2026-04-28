@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.30)
 project(ClonkPlanet)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -13,6 +13,7 @@ add_definitions(-DLINUX -DC4ENGINE)
 include_directories(
     ${CMAKE_SOURCE_DIR}/engine/inc
     ${CMAKE_SOURCE_DIR}/standard/inc
+    ${CMAKE_SOURCE_DIR}/standard/inc/external
     ${CMAKE_SOURCE_DIR}/standard/unibase
     ${CMAKE_SOURCE_DIR}/standard/zlib
 )
