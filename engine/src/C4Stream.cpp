@@ -38,8 +38,7 @@ void C4Stream::Clear() {
   pStream = NULL;
 }
 
-int C4Stream::Connect(const char *szName, int iRole, const char *szAddress,
-                      C4Stream **ppAccept, int iPort) {
+int C4Stream::Connect(const char *szName, int iRole, const char *szAddress, C4Stream **ppAccept, int iPort) {
   C4Packet Packet;
 
   // Set local name (local address is told by client)
@@ -77,8 +76,7 @@ int C4Stream::Connect(const char *szName, int iRole, const char *szAddress,
     if (PutPacket(Packet) != C4STRM_Ok)
       return C4STRM_SendError;
     // Tell host his own address
-    Packet.Set(C4PK_YourAddress, (BYTE *)GetPeerAddress(),
-               SLen(GetPeerAddress()));
+    Packet.Set(C4PK_YourAddress, (BYTE *)GetPeerAddress(), SLen(GetPeerAddress()));
     if (PutPacket(Packet) != C4STRM_Ok)
       return C4STRM_SendError;
     // Receive the host's name
@@ -114,8 +112,7 @@ int C4Stream::Connect(const char *szName, int iRole, const char *szAddress,
       return C4STRM_ReceiveError;
     SCopy((const char *)Packet.Data, (*ppAccept)->LocalAddress, 256);
     // Accepted stream: Send name
-    Packet.Set(C4PK_MyName, (BYTE *)((*ppAccept)->LocalName),
-               SLen((*ppAccept)->LocalName));
+    Packet.Set(C4PK_MyName, (BYTE *)((*ppAccept)->LocalName), SLen((*ppAccept)->LocalName));
     if ((*ppAccept)->PutPacket(Packet) != C4STRM_Ok)
       return C4STRM_SendError;
     break;
@@ -125,9 +122,7 @@ int C4Stream::Connect(const char *szName, int iRole, const char *szAddress,
   return C4STRM_Ok;
 }
 
-const char *C4Stream::GetPeerAddress() {
-  return pStream->getpeername(PeerAddress, 256);
-}
+const char *C4Stream::GetPeerAddress() { return pStream->getpeername(PeerAddress, 256); }
 
 const char *C4Stream::GetPeerName() { return PeerName; }
 
@@ -266,8 +261,7 @@ int C4Stream::SendFile(const char *szFilename, int iType, void (*fnPrcs)(int)) {
   int iResult;
   C4Packet Packet;
   // Send filename
-  Packet.Set(C4PK_Filename, (BYTE *)GetFilename(szFilename),
-             SLen(GetFilename(szFilename)));
+  Packet.Set(C4PK_Filename, (BYTE *)GetFilename(szFilename), SLen(GetFilename(szFilename)));
   if ((iResult = PutPacket(Packet)) != C4STRM_Ok)
     return iResult;
   // Send file
@@ -334,8 +328,7 @@ BOOL C4Stream::CrapRecovery(C4Packet &rPacket) {
     // Move first header byte to recovery buffer
     RecoveryBuffer[iRecovery] = ((BYTE *)&rPacket)[0];
     // Shift header data by one byte
-    MemCopy(((BYTE *)&rPacket) + 1, ((BYTE *)&rPacket),
-            sizeof(C4PacketHeader) - 1);
+    MemCopy(((BYTE *)&rPacket) + 1, ((BYTE *)&rPacket), sizeof(C4PacketHeader) - 1);
     // Put next byte to end of header
     ((BYTE *)&rPacket)[sizeof(C4PacketHeader) - 1] = ch;
     // Check match

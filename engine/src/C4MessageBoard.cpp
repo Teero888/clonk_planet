@@ -76,8 +76,7 @@ void C4MessageBoard::Draw(C4Facet &cgo) {
     return;
 
   // Clipper
-  Engine.DDraw.SetPrimaryClipper(cgo.X, cgo.Y, cgo.X + cgo.Wdt - 1,
-                                 cgo.Y + cgo.Hgt - 1);
+  Engine.DDraw.SetPrimaryClipper(cgo.X, cgo.Y, cgo.X + cgo.Wdt - 1, cgo.Y + cgo.Hgt - 1);
 
   // Startup: full log transparent
   if (Startup) {
@@ -113,8 +112,7 @@ void C4MessageBoard::Draw(C4Facet &cgo) {
   else {
     int iColor = FWhite;
     // Background
-    Engine.DDraw.BlitSurfaceTile(Game.GraphicsResource.fctBackground.Surface,
-                                 cgo.Surface, cgo.X, cgo.Y, cgo.Wdt, cgo.Hgt);
+    Engine.DDraw.BlitSurfaceTile(Game.GraphicsResource.fctBackground.Surface, cgo.Surface, cgo.X, cgo.Y, cgo.Wdt, cgo.Hgt);
     // TypeIn
     if (TypeIn) {
       // Type-in text
@@ -136,8 +134,7 @@ void C4MessageBoard::Draw(C4Facet &cgo) {
         sprintf(OSTR, "%s %i%%", Message, Process);
         Engine.DDraw.StringOut(OSTR, cgo.Surface, cgo.X, cgo.Y + Fader, iColor);
       } else
-        Engine.DDraw.StringOut(Message, cgo.Surface, cgo.X, cgo.Y + Fader,
-                               iColor);
+        Engine.DDraw.StringOut(Message, cgo.Surface, cgo.X, cgo.Y + Fader, iColor);
     }
   }
 
@@ -237,11 +234,9 @@ BOOL C4MessageBoard::Out(const char *szText) {
   C4Player *pPlr = Game.Players.GetLocalByIndex(0);
   // Starts with /me?
   if (SEqual2(szText, "/me"))
-    sprintf(szBuffer, "* %s %s", pPlr ? pPlr->Name : Game.Network.LocalName,
-            szText + 4);
+    sprintf(szBuffer, "* %s %s", pPlr ? pPlr->Name : Game.Network.LocalName, szText + 4);
   else
-    sprintf(szBuffer, "%s: %s", pPlr ? pPlr->Name : Game.Network.LocalName,
-            szText);
+    sprintf(szBuffer, "%s: %s", pPlr ? pPlr->Name : Game.Network.LocalName, szText);
   // Output to control queue
   Game.Input.AddMessage(szBuffer);
   return TRUE;

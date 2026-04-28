@@ -10,9 +10,7 @@ void Splash(int tx, int ty, int amt, C4Object *pByObj) {
   for (cnt = 0; cnt < amt; cnt++) {
     BubbleOut(tx + Random(16) - 8, ty + Random(16) - 6);
     if (GBackLiquid(tx, ty))
-      Game.PXS.Create(Game.Landscape.ExtractMaterial(tx, ty), tx, ty - 10,
-                      (float)(Random(201) - 100) / 100.0,
-                      (float)-Random(250) / 100.0);
+      Game.PXS.Create(Game.Landscape.ExtractMaterial(tx, ty), tx, ty - 10, (float)(Random(201) - 100) / 100.0, (float)-Random(250) / 100.0);
   }
   // Splash sound
   if (amt >= 20)
@@ -46,13 +44,11 @@ void Smoke(int tx, int ty, int level) {
   // Create smoke
   level = BoundBy(level, 3, 32);
   C4Object *pObj;
-  if (pObj = Game.CreateObjectConstruction(C4Id("FXS1"), NO_OWNER, tx, ty,
-                                           FullCon * level / 32))
+  if (pObj = Game.CreateObjectConstruction(C4Id("FXS1"), NO_OWNER, tx, ty, FullCon * level / 32))
     pObj->Call(PSF_Activate);
 }
 
-void Explosion(int tx, int ty, int level, C4Object *inobj, int iCausedBy,
-               C4Object *pByObj) {
+void Explosion(int tx, int ty, int level, C4Object *inobj, int iCausedBy, C4Object *pByObj) {
   int grade = BoundBy((level / 10) - 1, 1, 3);
   // Sound
   SCopy("Blast*", OSTR);
@@ -73,8 +69,7 @@ void Explosion(int tx, int ty, int level, C4Object *inobj, int iCausedBy,
     Game.Landscape.BlastFree(tx, ty, level, grade);
     // Create blast object
     C4Object *pBlast;
-    if (pBlast = Game.CreateObjectConstruction(
-            C4Id("FXB1"), iCausedBy, tx, ty + level, FullCon * level / 20))
+    if (pBlast = Game.CreateObjectConstruction(C4Id("FXB1"), iCausedBy, tx, ty + level, FullCon * level / 20))
       pBlast->Call(PSF_Activate);
   }
   // Blast objects

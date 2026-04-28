@@ -112,8 +112,7 @@ const char *C4TextureMap::GetMaterialTexture(BYTE byIndex) {
   return NULL;
 }
 
-BYTE C4TextureMap::GetIndex(const char *szMaterialTexture,
-                            BOOL fAddIfNotExist) {
+BYTE C4TextureMap::GetIndex(const char *szMaterialTexture, BOOL fAddIfNotExist) {
   C4TexMapEntry *pEntry;
   BYTE byIndex;
   // Find existing
@@ -143,8 +142,7 @@ SURFACE C4TextureMap::GetTexture(const char *szTexture) {
 const char *C4TextureMap::GetTexture(int iIndex) {
   C4Texture *pTexture;
   int cindex;
-  for (pTexture = FirstTexture, cindex = 0; pTexture;
-       pTexture = pTexture->Next, cindex++)
+  for (pTexture = FirstTexture, cindex = 0; pTexture; pTexture = pTexture->Next, cindex++)
     if (cindex == iIndex)
       return pTexture->Name;
   return NULL;
@@ -173,12 +171,9 @@ void C4TextureMap::StoreMapPalette(BYTE *bypPalette, C4MaterialMap &rMaterial) {
       bypPalette[3 * pEntry->Index + 0] = rMaterial.Map[iMaterial].Color[6];
       bypPalette[3 * pEntry->Index + 1] = rMaterial.Map[iMaterial].Color[7];
       bypPalette[3 * pEntry->Index + 2] = rMaterial.Map[iMaterial].Color[8];
-      bypPalette[3 * (pEntry->Index + C4M_MaxTexIndex) + 0] =
-          rMaterial.Map[iMaterial].Color[3];
-      bypPalette[3 * (pEntry->Index + C4M_MaxTexIndex) + 1] =
-          rMaterial.Map[iMaterial].Color[4];
-      bypPalette[3 * (pEntry->Index + C4M_MaxTexIndex) + 2] =
-          rMaterial.Map[iMaterial].Color[5];
+      bypPalette[3 * (pEntry->Index + C4M_MaxTexIndex) + 0] = rMaterial.Map[iMaterial].Color[3];
+      bypPalette[3 * (pEntry->Index + C4M_MaxTexIndex) + 1] = rMaterial.Map[iMaterial].Color[4];
+      bypPalette[3 * (pEntry->Index + C4M_MaxTexIndex) + 2] = rMaterial.Map[iMaterial].Color[5];
     }
   }
 }

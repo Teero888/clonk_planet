@@ -64,16 +64,12 @@ protected:
 public:
   void Clear();
   void Default();
-  void Init(BOOL (*fnPointFree)(int, int, int), int iPointFreeParameter,
-            int iDepth = 50, int iCrawl = 1000, int iRay = 500,
-            int iThreshold = 10);
-  BOOL Find(int iFromX, int iFromY, int iToX, int iToY,
-            BOOL (*fnSetWaypoint)(int, int, int), int iWaypointParameter);
+  void Init(BOOL (*fnPointFree)(int, int, int), int iPointFreeParameter, int iDepth = 50, int iCrawl = 1000, int iRay = 500, int iThreshold = 10);
+  BOOL Find(int iFromX, int iFromY, int iToX, int iToY, BOOL (*fnSetWaypoint)(int, int, int), int iWaypointParameter);
 
 protected:
   BOOL SplitRay(CPathFinderRay *pRay, int iAtX, int iAtY);
-  BOOL AddRay(int iFromX, int iFromY, int iToX, int iToY, int iDepth,
-              int iDirection, CPathFinderRay *pFrom);
+  BOOL AddRay(int iFromX, int iFromY, int iToX, int iToY, int iDepth, int iDirection, CPathFinderRay *pFrom);
   BOOL Execute();
   void Run();
 };

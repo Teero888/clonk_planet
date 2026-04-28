@@ -157,8 +157,7 @@ BOOL CStdFile::Read(void *pBuffer, int iSize, BOOL fPacked, int *ipFSize) {
 
 int CStdFile::LoadBuffer() {
   if (hFile && hgzFile)
-    printf("CRITICAL: Both hFile and hgzFile set in LoadBuffer! %p %p\n", hFile,
-           hgzFile);
+    printf("CRITICAL: Both hFile and hgzFile set in LoadBuffer! %p %p\n", hFile, hgzFile);
   if (hFile)
     BufferLoad = fread(Buffer, 1, CStdFileBufSize, hFile);
   else if (hgzFile)
@@ -241,8 +240,7 @@ BOOL CStdFile::Advance(int iOffset, BOOL fPacked) {
   return TRUE;
 }
 
-BOOL CStdFile::Save(const char *szFilename, BYTE *bpBuf, int iSize,
-                    BOOL fCompressed) {
+BOOL CStdFile::Save(const char *szFilename, BYTE *bpBuf, int iSize, BOOL fCompressed) {
   if (!bpBuf || (iSize < 1))
     return FALSE;
   if (!Create(szFilename, fCompressed))
@@ -254,10 +252,8 @@ BOOL CStdFile::Save(const char *szFilename, BYTE *bpBuf, int iSize,
   return TRUE;
 }
 
-BOOL CStdFile::Load(const char *szFilename, BYTE **lpbpBuf, int *ipSize,
-                    int iAppendZeros, BOOL fCompressed) {
-  int iSize =
-      fCompressed ? UncompressedFileSize(szFilename) : FileSize(szFilename);
+BOOL CStdFile::Load(const char *szFilename, BYTE **lpbpBuf, int *ipSize, int iAppendZeros, BOOL fCompressed) {
+  int iSize = fCompressed ? UncompressedFileSize(szFilename) : FileSize(szFilename);
   if (!lpbpBuf || (iSize < 1))
     return FALSE;
   if (!Open(szFilename, fCompressed))

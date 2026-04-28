@@ -108,8 +108,7 @@ const int C4S_KillTheCaptain = 0, C4S_EliminateCrew = 1, C4S_CaptureTheFlag = 2;
 
 // Cooperative goals
 
-const int C4S_NoGoal = 0, C4S_Goldmine = 1, C4S_Monsterkill = 2,
-          C4S_ValueGain = 3, C4S_Extended = 4;
+const int C4S_NoGoal = 0, C4S_Goldmine = 1, C4S_Monsterkill = 2, C4S_ValueGain = 3, C4S_Extended = 4;
 
 class C4SPlrStart {
 public:
@@ -131,9 +130,7 @@ public:
   bool EquipmentEqual(const C4SPlrStart &rhs);
 
 public:
-  bool operator==(const C4SPlrStart &rhs) {
-    return MemEqual((BYTE *)this, (BYTE *)&rhs, sizeof(C4SPlrStart));
-  }
+  bool operator==(const C4SPlrStart &rhs) { return MemEqual((BYTE *)this, (BYTE *)&rhs, sizeof(C4SPlrStart)); }
 };
 
 class C4SLandscape {

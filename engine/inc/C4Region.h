@@ -24,13 +24,10 @@ protected:
   C4Region *Next;
 
 public:
-  void Set(C4Facet &fctArea, const char *szCaption = NULL,
-           C4Object *pTarget = NULL, C4Menu *pMenu = NULL);
+  void Set(C4Facet &fctArea, const char *szCaption = NULL, C4Object *pTarget = NULL, C4Menu *pMenu = NULL);
   void Clear();
   void Default();
-  void Set(int iX, int iY, int iWdt, int iHgt, const char *szCaption, int iCom,
-           int iMoveOverCom, int iHoldCom, int iData, C4Object *pTarget,
-           C4Menu *pMenu);
+  void Set(int iX, int iY, int iWdt, int iHgt, const char *szCaption, int iCom, int iMoveOverCom, int iHoldCom, int iData, C4Object *pTarget, C4Menu *pMenu);
 
 protected:
   void ClearPointers(C4Object *pObj);
@@ -51,13 +48,9 @@ public:
   void Clear();
   void Default();
   C4Region *Find(int iX, int iY);
-  BOOL Add(int iX, int iY, int iWdt, int iHgt, const char *szCaption = NULL,
-           int iCom = COM_None, C4Object *pTarget = NULL,
-           int iMoveOverCom = COM_None, int iHoldCom = COM_None, int iData = 0,
+  BOOL Add(int iX, int iY, int iWdt, int iHgt, const char *szCaption = NULL, int iCom = COM_None, C4Object *pTarget = NULL, int iMoveOverCom = COM_None, int iHoldCom = COM_None, int iData = 0,
            C4Menu *pMenu = NULL);
-  BOOL Add(C4Facet &fctArea, const char *szCaption = NULL, int iCom = COM_None,
-           C4Object *pTarget = NULL, int iMoveOverCom = COM_None,
-           int iHoldCom = COM_None, int iData = 0, C4Menu *pMenu = NULL);
+  BOOL Add(C4Facet &fctArea, const char *szCaption = NULL, int iCom = COM_None, C4Object *pTarget = NULL, int iMoveOverCom = COM_None, int iHoldCom = COM_None, int iData = 0, C4Menu *pMenu = NULL);
   BOOL Add(C4Region &rRegion);
   BOOL Add(C4RegionList &rRegionList, BOOL fAdjust = TRUE);
 };

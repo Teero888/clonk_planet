@@ -73,8 +73,7 @@ BOOL C4GraphicsResource::Init() {
 
   // Open file
   if (!File.Open(Config.AtExePath(C4CFN_Graphics))) {
-    sprintf(OSTR, LoadResStr(IDS_PRC_NOGFXFILE), C4CFN_Graphics,
-            File.GetError());
+    sprintf(OSTR, LoadResStr(IDS_PRC_NOGFXFILE), C4CFN_Graphics, File.GetError());
     Log(OSTR);
     return FALSE;
   }

@@ -184,13 +184,10 @@ BOOL C4Shape::Attach(int &cx, int &cy, BYTE cnat_pos) {
       }
       xcrng = AttachRange * xcd * (-1);
       ycrng = AttachRange * ycd * (-1);
-      for (xcnt = xcrng, ycnt = ycrng; (xcnt != -xcrng) || (ycnt != -ycrng);
-           xcnt += xcd, ycnt += ycd)
-        if (GBackSolid(cx + VtxX[vtx] + xcnt + xcd,
-                       cy + VtxY[vtx] + ycnt + ycd)) {
+      for (xcnt = xcrng, ycnt = ycrng; (xcnt != -xcrng) || (ycnt != -ycrng); xcnt += xcd, ycnt += ycd)
+        if (GBackSolid(cx + VtxX[vtx] + xcnt + xcd, cy + VtxY[vtx] + ycnt + ycd)) {
 
-          cpix = GBackPix(cx + VtxX[vtx] + xcnt + xcd,
-                          cy + VtxY[vtx] + ycnt + ycd);
+          cpix = GBackPix(cx + VtxX[vtx] + xcnt + xcd, cy + VtxY[vtx] + ycnt + ycd);
           AttachMat = PixCol2Mat(cpix);
           if (AttachMat == MVehic)
             motion_x = PixColMatIndex(cpix) - 1;
@@ -233,8 +230,7 @@ BOOL C4Shape::LineConnect(int tx, int ty, int cvtx, int ld) {
     for (cnt = 0; cnt < 4; cnt++) {
       cix = ix - irange / 2 + irange * (cnt % 2);
       ciy = iy - irange / 2 + irange * (cnt / 2);
-      if (PathFree(cix, ciy, tx, ty) &&
-          PathFree(cix, ciy, VtxX[cvtx + ld], VtxY[cvtx + ld]))
+      if (PathFree(cix, ciy, tx, ty) && PathFree(cix, ciy, VtxX[cvtx + ld], VtxY[cvtx + ld]))
         break;
     }
     if (cnt >= 4)

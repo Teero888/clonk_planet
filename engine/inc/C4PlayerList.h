@@ -30,8 +30,7 @@ public:
   C4Player *GetAtClient(int iClient, int iIndex = 0);
   C4Player *GetAtClient(const char *szName, int iIndex = 0);
   C4Player *GetAtRemoteClient(int iIndex = 0);
-  C4Player *Join(const char *szFilename, BOOL fScenarioInit, int iAtClient,
-                 const char *szAtClientName);
+  C4Player *Join(const char *szFilename, BOOL fScenarioInit, int iAtClient, const char *szAtClientName);
   BOOL FileInUse(const char *szFilename);
   BOOL Retire(C4Player *pPlr);
   BOOL Evaluate();

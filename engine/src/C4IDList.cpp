@@ -130,15 +130,13 @@ BOOL C4IDList::DecreaseIDCount(C4ID c_id, BOOL fRemoveEmptyID) {
 
 // Access by category-sorted index
 
-C4ID C4IDList::GetID(C4DefList &rDefs, DWORD dwCategory, int index,
-                     int *ipCount) {
+C4ID C4IDList::GetID(C4DefList &rDefs, DWORD dwCategory, int index, int *ipCount) {
   int cnt, cindex = -1;
   C4Def *cDef;
   if (ipCount)
     *ipCount = 0;
   for (cnt = 0; cnt < Size; cnt++)
-    if ((dwCategory == C4D_All) ||
-        ((cDef = rDefs.ID2Def(id[cnt])) && (cDef->Category & dwCategory))) {
+    if ((dwCategory == C4D_All) || ((cDef = rDefs.ID2Def(id[cnt])) && (cDef->Category & dwCategory))) {
       cindex++;
       if (cindex == index) {
         if (ipCount)
@@ -153,8 +151,7 @@ int C4IDList::GetCount(C4DefList &rDefs, DWORD dwCategory, int index) {
   int cnt, cindex = -1;
   C4Def *cDef;
   for (cnt = 0; cnt < Size; cnt++)
-    if ((dwCategory == C4D_All) ||
-        ((cDef = rDefs.ID2Def(id[cnt])) && (cDef->Category & dwCategory))) {
+    if ((dwCategory == C4D_All) || ((cDef = rDefs.ID2Def(id[cnt])) && (cDef->Category & dwCategory))) {
       cindex++;
       if (cindex == index)
         return Count[cnt];
@@ -162,13 +159,11 @@ int C4IDList::GetCount(C4DefList &rDefs, DWORD dwCategory, int index) {
   return 0;
 }
 
-BOOL C4IDList::SetCount(C4DefList &rDefs, DWORD dwCategory, int index,
-                        int iCount) {
+BOOL C4IDList::SetCount(C4DefList &rDefs, DWORD dwCategory, int index, int iCount) {
   int cnt, cindex = -1;
   C4Def *cDef;
   for (cnt = 0; cnt < Size; cnt++)
-    if ((dwCategory == C4D_All) ||
-        ((cDef = rDefs.ID2Def(id[cnt])) && (cDef->Category & dwCategory))) {
+    if ((dwCategory == C4D_All) || ((cDef = rDefs.ID2Def(id[cnt])) && (cDef->Category & dwCategory))) {
       cindex++;
       if (cindex == index) {
         Count[cnt] = iCount;
@@ -183,8 +178,7 @@ int C4IDList::GetNumberOfIDs(C4DefList &rDefs, DWORD dwCategory) {
   C4Def *cDef;
   for (cnt = 0; cnt < Size; cnt++)
     if (id[cnt] != C4ID_None)
-      if ((dwCategory == C4D_All) ||
-          ((cDef = rDefs.ID2Def(id[cnt])) && (cDef->Category & dwCategory)))
+      if ((dwCategory == C4D_All) || ((cDef = rDefs.ID2Def(id[cnt])) && (cDef->Category & dwCategory)))
         idnum++;
   return idnum;
 }
@@ -239,10 +233,8 @@ void C4IDList::SortByCategory(C4DefList &rDefs) {
     fBubble = FALSE;
     for (cnt = 0; cnt + 1 < Size; cnt++)
       if ((id[cnt] != C4ID_None) && (id[cnt + 1] != C4ID_None))
-        if ((cdef1 = rDefs.ID2Def(id[cnt])) &&
-            (cdef2 = rDefs.ID2Def(id[cnt + 1])))
-          if ((cdef1->Category & C4D_SortLimit) <
-              (cdef2->Category & C4D_SortLimit)) {
+        if ((cdef1 = rDefs.ID2Def(id[cnt])) && (cdef2 = rDefs.ID2Def(id[cnt + 1])))
+          if ((cdef1->Category & C4D_SortLimit) < (cdef2->Category & C4D_SortLimit)) {
             t_id = id[cnt + 1];
             t_count = Count[cnt + 1];
             id[cnt + 1] = id[cnt];
@@ -264,8 +256,7 @@ void C4IDList::SortByValue(C4DefList &rDefs) {
     fBubble = FALSE;
     for (cnt = 0; cnt + 1 < Size; cnt++)
       if ((id[cnt] != C4ID_None) && (id[cnt + 1] != C4ID_None))
-        if ((cdef1 = rDefs.ID2Def(id[cnt])) &&
-            (cdef2 = rDefs.ID2Def(id[cnt + 1])))
+        if ((cdef1 = rDefs.ID2Def(id[cnt])) && (cdef2 = rDefs.ID2Def(id[cnt + 1])))
           if (cdef1->Value > cdef2->Value) {
             t_id = id[cnt + 1];
             t_count = Count[cnt + 1];
@@ -291,8 +282,7 @@ int C4IDList::GetValue(C4DefList &rDefs) {
 void C4IDList::Load(C4DefList &rDefs, DWORD dwCategory) {
   C4Def *cdef;
   Clear();
-  for (int cnt = 0; (cnt < Size) && (cdef = rDefs.GetDef(cnt, dwCategory));
-       cnt++)
+  for (int cnt = 0; (cnt < Size) && (cdef = rDefs.GetDef(cnt, dwCategory)); cnt++)
     id[cnt] = cdef->id;
 }
 
@@ -335,8 +325,7 @@ BOOL C4IDList::Read(const char *szSource, int iDefValue) {
   return TRUE;
 }
 
-void C4IDList::Draw(C4Facet &cgo, int iSelection, C4DefList &rDefs,
-                    DWORD dwCategory, BOOL fCounts, int iAlign) {
+void C4IDList::Draw(C4Facet &cgo, int iSelection, C4DefList &rDefs, DWORD dwCategory, BOOL fCounts, int iAlign) {
 #ifdef C4ENGINE // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                 // - - - - - - - - -
 
@@ -347,16 +336,12 @@ void C4IDList::Draw(C4Facet &cgo, int iSelection, C4DefList &rDefs,
   C4ID c_id;
   C4Facet cgo2;
   char buf[10];
-  for (int cnt = 0; (cnt < sections) &&
-                    (c_id = GetID(rDefs, dwCategory, firstid + cnt, &idcount));
-       cnt++) {
+  for (int cnt = 0; (cnt < sections) && (c_id = GetID(rDefs, dwCategory, firstid + cnt, &idcount)); cnt++) {
     cgo2 = cgo.TruncateSection(iAlign);
     rDefs.Draw(c_id, cgo2, (firstid + cnt == iSelection), 0);
     sprintf(buf, "%dx", idcount);
     if (fCounts)
-      Engine.DDraw.TextOut(buf, cgo2.Surface, cgo2.X + cgo2.Wdt - 1,
-                           cgo2.Y + cgo2.Hgt - 1 - Engine.DDraw.TextHeight(),
-                           FWhite, FBlack, ARight);
+      Engine.DDraw.TextOut(buf, cgo2.Surface, cgo2.X + cgo2.Wdt - 1, cgo2.Y + cgo2.Hgt - 1 - Engine.DDraw.TextHeight(), FWhite, FBlack, ARight);
   }
 
 #endif // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

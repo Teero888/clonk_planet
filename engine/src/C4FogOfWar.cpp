@@ -4,9 +4,7 @@
 
 #include <C4Include.h>
 
-const int C4FOW_Resolution = 100, C4FOW_Border = 10, C4FOW_View_RangeX = 500,
-          C4FOW_View_RangeY = 300,
-          C4FOW_Visibility_RangeX = C4FOW_View_RangeX / C4FOW_Resolution,
+const int C4FOW_Resolution = 100, C4FOW_Border = 10, C4FOW_View_RangeX = 500, C4FOW_View_RangeY = 300, C4FOW_Visibility_RangeX = C4FOW_View_RangeX / C4FOW_Resolution,
           C4FOW_Visibility_RangeY = C4FOW_View_RangeY / C4FOW_Resolution;
 
 C4FogOfWar::C4FogOfWar() { Default(); }
@@ -26,10 +24,8 @@ void C4FogOfWar::Clear() {
 
 void C4FogOfWar::Init(int iLandscapeWidth, int iLandscapeHeight) {
   // Calculate size and allocate space
-  Width = Max(iLandscapeWidth / C4FOW_Resolution + 1,
-              2 * C4FOW_Visibility_RangeX + 1);
-  Height = Max(iLandscapeHeight / C4FOW_Resolution + 1,
-               2 * C4FOW_Visibility_RangeY + 1);
+  Width = Max(iLandscapeWidth / C4FOW_Resolution + 1, 2 * C4FOW_Visibility_RangeX + 1);
+  Height = Max(iLandscapeHeight / C4FOW_Resolution + 1, 2 * C4FOW_Visibility_RangeY + 1);
   Visibility = new BYTE[Width * Height];
   ClearVisibility();
 }
@@ -38,14 +34,10 @@ void C4FogOfWar::AddVisibility(int iX, int iY) {
   // Mark visible view range
   if (!Visibility)
     return;
-  iX = BoundBy(iX / C4FOW_Resolution, 0 + C4FOW_Visibility_RangeX,
-               Width - 1 - C4FOW_Visibility_RangeX);
-  iY = BoundBy(iY / C4FOW_Resolution, 0 + C4FOW_Visibility_RangeY,
-               Height - 1 - C4FOW_Visibility_RangeY);
-  for (int cy = iY - C4FOW_Visibility_RangeY;
-       cy <= iY + C4FOW_Visibility_RangeY; cy++)
-    for (int cx = iX - C4FOW_Visibility_RangeX;
-         cx <= iX + C4FOW_Visibility_RangeX; cx++)
+  iX = BoundBy(iX / C4FOW_Resolution, 0 + C4FOW_Visibility_RangeX, Width - 1 - C4FOW_Visibility_RangeX);
+  iY = BoundBy(iY / C4FOW_Resolution, 0 + C4FOW_Visibility_RangeY, Height - 1 - C4FOW_Visibility_RangeY);
+  for (int cy = iY - C4FOW_Visibility_RangeY; cy <= iY + C4FOW_Visibility_RangeY; cy++)
+    for (int cx = iX - C4FOW_Visibility_RangeX; cx <= iX + C4FOW_Visibility_RangeX; cx++)
       Visibility[cy * Width + cx] = TRUE;
 }
 
@@ -66,12 +58,7 @@ void C4FogOfWar::Draw(C4FacetEx &cgo) {
     for (int cx = 0; cx < iVisWdt; cx++)
       if (Inside(iVisX + cx, 0, Width - 1) && Inside(iVisY + cy, 0, Height - 1))
         if (!Visibility[(iVisY + cy) * Width + (iVisX + cx)])
-          GfxR->fctFogOfWar.Draw(
-              cgo.Surface,
-              cgo.X - cgo.TargetX + (iVisX + cx) * C4FOW_Resolution -
-                  C4FOW_Border,
-              cgo.Y - cgo.TargetY + (iVisY + cy) * C4FOW_Resolution -
-                  C4FOW_Border);
+          GfxR->fctFogOfWar.Draw(cgo.Surface, cgo.X - cgo.TargetX + (iVisX + cx) * C4FOW_Resolution - C4FOW_Border, cgo.Y - cgo.TargetY + (iVisY + cy) * C4FOW_Resolution - C4FOW_Border);
 }
 
 BOOL C4FogOfWar::IsVisible(int iX, int iY) {

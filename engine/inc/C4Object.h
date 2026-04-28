@@ -130,14 +130,9 @@ public:
   void UpdateAudible();
   void DigOutMaterialCast(BOOL fRequest);
   void AddMaterialContents(int iMaterial, int iAmount);
-  void SetCommand(int iCommand, C4Object *pTarget = NULL, int iTx = 0,
-                  int iTy = 0, C4Object *pTarget2 = NULL, BOOL fControl = FALSE,
-                  int iData = 0, int iRetries = 0, const char *szText = NULL);
-  BOOL AddCommand(int iCommand, C4Object *pTarget = NULL, int iTx = 0,
-                  int iTy = 0, int iUpdateInterval = 0,
-                  C4Object *pTarget2 = NULL, BOOL fInitEvaluation = TRUE,
-                  int iData = 0, BOOL fAppend = FALSE, int iRetries = 0,
-                  const char *szText = NULL);
+  void SetCommand(int iCommand, C4Object *pTarget = NULL, int iTx = 0, int iTy = 0, C4Object *pTarget2 = NULL, BOOL fControl = FALSE, int iData = 0, int iRetries = 0, const char *szText = NULL);
+  BOOL AddCommand(int iCommand, C4Object *pTarget = NULL, int iTx = 0, int iTy = 0, int iUpdateInterval = 0, C4Object *pTarget2 = NULL, BOOL fInitEvaluation = TRUE, int iData = 0,
+                  BOOL fAppend = FALSE, int iRetries = 0, const char *szText = NULL);
   void ClearCommand(C4Command *pUntil);
   void ClearCommands();
   void DrawSelectMark(C4FacetEx &cgo);
@@ -147,15 +142,9 @@ public:
   C4Object *ComposeContents(C4ID id);
   BOOL MenuCommand(const char *szCommand);
 
-  BOOL CallControl(BYTE byCom, int par0 = 0, int par1 = 0, int par2 = 0,
-                   int par3 = 0, int par4 = 0, int par5 = 0, int par6 = 0,
-                   int par7 = 0, int par8 = 0, int par9 = 0);
-  long Call(const char *szFunctionCall, long par0 = 0, long par1 = 0,
-            long par2 = 0, long par3 = 0, long par4 = 0, long par5 = 0,
-            long par6 = 0, long par7 = 0, long par8 = 0, long par9 = 0);
-  long Call(C4Thread *pCaller, const char *szFunctionCall, long par0 = 0,
-            long par1 = 0, long par2 = 0, long par3 = 0, long par4 = 0,
-            long par5 = 0, long par6 = 0, long par7 = 0, long par8 = 0,
+  BOOL CallControl(BYTE byCom, int par0 = 0, int par1 = 0, int par2 = 0, int par3 = 0, int par4 = 0, int par5 = 0, int par6 = 0, int par7 = 0, int par8 = 0, int par9 = 0);
+  long Call(const char *szFunctionCall, long par0 = 0, long par1 = 0, long par2 = 0, long par3 = 0, long par4 = 0, long par5 = 0, long par6 = 0, long par7 = 0, long par8 = 0, long par9 = 0);
+  long Call(C4Thread *pCaller, const char *szFunctionCall, long par0 = 0, long par1 = 0, long par2 = 0, long par3 = 0, long par4 = 0, long par5 = 0, long par6 = 0, long par7 = 0, long par8 = 0,
             long par9 = 0);
 
   BOOL ContainedControl(BYTE byCom);
@@ -164,13 +153,11 @@ public:
   void ClearInfo(C4ObjectInfo *pInfo);
   BOOL AssignInfo();
   BOOL ValidateOwner();
-  void DrawPicture(C4Facet &cgo, BOOL fSelected = FALSE,
-                   C4RegionList *pRegions = NULL);
+  void DrawPicture(C4Facet &cgo, BOOL fSelected = FALSE, C4RegionList *pRegions = NULL);
   void DenumeratePointers();
   void EnumeratePointers();
   void Default();
-  BOOL Init(C4Def *ndef, int owner, C4ObjectInfo *info, int nx, int ny, int nr,
-            FIXED nxdir, FIXED nydir, FIXED nrdir);
+  BOOL Init(C4Def *ndef, int owner, C4ObjectInfo *info, int nx, int ny, int nr, FIXED nxdir, FIXED nydir, FIXED nrdir);
   BOOL Compile(const char *szSource);
   BOOL Decompile(char **ppOutput, int *ipSize);
   void DrawEnergy(C4Facet &cgo);
@@ -178,9 +165,7 @@ public:
   void DrawBreath(C4Facet &cgo);
   void DrawLine(C4FacetEx &cgo);
   void DrawCommands(C4Facet &cgo, C4Facet &cgo2, C4RegionList *pRegions);
-  void DrawCommand(C4Facet &cgoBar, int iAlign, const char *szFunctionFormat,
-                   int iCom, C4RegionList *pRegions, int iPlayer,
-                   const char *szDesc = NULL, C4Facet *pfctImage = NULL);
+  void DrawCommand(C4Facet &cgoBar, int iAlign, const char *szFunctionFormat, int iCom, C4RegionList *pRegions, int iPlayer, const char *szDesc = NULL, C4Facet *pfctImage = NULL);
   BOOL SetPhase(int iPhase);
   void AssignRemoval();
   void Draw(C4FacetEx &cgo);
@@ -211,21 +196,16 @@ public:
   void UpdateFace();
   BOOL At(int ctx, int cty, DWORD &ocf);
   void CloseMenu();
-  BOOL ActivateMenu(int iMenu, int iMenuSelect = 0, int iMenuData = 0,
-                    int iMenuPosition = 0, C4Object *pTarget = NULL);
+  BOOL ActivateMenu(int iMenu, int iMenuSelect = 0, int iMenuData = 0, int iMenuPosition = 0, C4Object *pTarget = NULL);
   int ContactCheck(int atx, int aty);
   BOOL Contact(int cnat);
-  void TargetBounds(int &ctco, int limit_low, int limit_hi, int cnat_low,
-                    int cnat_hi);
-  BOOL SetAction(int iAct, C4Object *pTarget = NULL, C4Object *pTarget2 = NULL,
-                 BOOL fStartCall = TRUE);
-  BOOL SetActionByName(const char *szActName, C4Object *pTarget = NULL,
-                       C4Object *pTarget2 = NULL, BOOL fStartCall = TRUE);
+  void TargetBounds(int &ctco, int limit_low, int limit_hi, int cnat_low, int cnat_hi);
+  BOOL SetAction(int iAct, C4Object *pTarget = NULL, C4Object *pTarget2 = NULL, BOOL fStartCall = TRUE);
+  BOOL SetActionByName(const char *szActName, C4Object *pTarget = NULL, C4Object *pTarget2 = NULL, BOOL fStartCall = TRUE);
   void SetDir(int tdir);
   int GetProcedure();
   BOOL Enter(C4Object *pTarget, BOOL fCalls = TRUE);
-  BOOL Exit(int iX = 0, int iY = 0, int iR = 0, FIXED iXDir = 0,
-            FIXED iYDir = 0, FIXED iRDir = 0, BOOL fCalls = TRUE);
+  BOOL Exit(int iX = 0, int iY = 0, int iR = 0, FIXED iXDir = 0, FIXED iYDir = 0, FIXED iRDir = 0, BOOL fCalls = TRUE);
   void CopyMotion(C4Object *from);
   void ForcePosition(int tx, int ty);
   void DoMotion(int mx, int my);

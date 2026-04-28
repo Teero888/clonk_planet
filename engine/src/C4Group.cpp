@@ -13,28 +13,9 @@
 //------------------------------ File Sort Lists
 //-------------------------------------------
 
-const char *C4CFN_FLS[] = {C4CFN_Mouse,
-                           C4FLS_Mouse,
-                           C4CFN_Keyboard,
-                           C4FLS_Keyboard,
-                           C4CFN_Easy,
-                           C4FLS_Easy,
-                           C4CFN_Material,
-                           C4FLS_Material,
-                           C4CFN_Graphics,
-                           C4FLS_Graphics,
-                           C4CFN_DefFiles,
-                           C4FLS_Def,
-                           C4CFN_PlayerFiles,
-                           C4FLS_Player,
-                           C4CFN_ObjectInfoFiles,
-                           C4FLS_Object,
-                           C4CFN_ScenarioFiles,
-                           C4FLS_Scenario,
-                           C4CFN_FolderFiles,
-                           C4FLS_Folder,
-                           NULL,
-                           NULL};
+const char *C4CFN_FLS[] = {
+    C4CFN_Mouse, C4FLS_Mouse,       C4CFN_Keyboard, C4FLS_Keyboard,        C4CFN_Easy,   C4FLS_Easy,          C4CFN_Material, C4FLS_Material,    C4CFN_Graphics, C4FLS_Graphics, C4CFN_DefFiles,
+    C4FLS_Def,   C4CFN_PlayerFiles, C4FLS_Player,   C4CFN_ObjectInfoFiles, C4FLS_Object, C4CFN_ScenarioFiles, C4FLS_Scenario, C4CFN_FolderFiles, C4FLS_Folder,   NULL,           NULL};
 
 //---------------------------- Global C4Group_Functions
 //-------------------------------------------
@@ -46,13 +27,9 @@ char C4Group_Ignore[_MAX_PATH + 1] = ".;..;cvs";
 const char **C4Group_SortList = NULL;
 BOOL (*C4Group_ProcessCallback)(const char *, int) = NULL;
 
-void C4Group_SetProcessCallback(BOOL (*fnCallback)(const char *, int)) {
-  C4Group_ProcessCallback = fnCallback;
-}
+void C4Group_SetProcessCallback(BOOL (*fnCallback)(const char *, int)) { C4Group_ProcessCallback = fnCallback; }
 
-void C4Group_SetSortList(const char **ppSortList) {
-  C4Group_SortList = ppSortList;
-}
+void C4Group_SetSortList(const char **ppSortList) { C4Group_SortList = ppSortList; }
 
 void C4Group_SetMaker(const char *szMaker) {
   if (!szMaker)
@@ -140,15 +117,11 @@ BOOL C4Group_CopyItem(const char *szSource, const char *szTarget1) {
   MakeTempFilename(szTempFilename);
 
   // Extract source to temp file
-  if (!hSourceParent.Open(szSourceParentPath) ||
-      !hSourceParent.Extract(GetFilename(szSource), szTempFilename) ||
-      !hSourceParent.Close())
+  if (!hSourceParent.Open(szSourceParentPath) || !hSourceParent.Extract(GetFilename(szSource), szTempFilename) || !hSourceParent.Close())
     return FALSE;
 
   // Move temp file to target
-  if (!hTargetParent.Open(szTargetParentPath) ||
-      !hTargetParent.Move(szTempFilename, GetFilename(szTarget)) ||
-      !hTargetParent.Close()) {
+  if (!hTargetParent.Open(szTargetParentPath) || !hTargetParent.Move(szTempFilename, GetFilename(szTarget)) || !hTargetParent.Close()) {
     EraseItem(szTempFilename);
     return FALSE;
   }
@@ -188,23 +161,17 @@ BOOL C4Group_MoveItem(const char *szSource, const char *szTarget1) {
   MakeTempFilename(szTempFilename);
 
   // Extract source to temp file
-  if (!hSourceParent.Open(szSourceParentPath) ||
-      !hSourceParent.Extract(GetFilename(szSource), szTempFilename) ||
-      !hSourceParent.Close())
+  if (!hSourceParent.Open(szSourceParentPath) || !hSourceParent.Extract(GetFilename(szSource), szTempFilename) || !hSourceParent.Close())
     return FALSE;
 
   // Move temp file to target
-  if (!hTargetParent.Open(szTargetParentPath) ||
-      !hTargetParent.Move(szTempFilename, GetFilename(szSource)) ||
-      !hTargetParent.Close()) {
+  if (!hTargetParent.Open(szTargetParentPath) || !hTargetParent.Move(szTempFilename, GetFilename(szSource)) || !hTargetParent.Close()) {
     EraseItem(szTempFilename);
     return FALSE;
   }
 
   // Delete original file
-  if (!hSourceParent.Open(szSourceParentPath) ||
-      !hSourceParent.DeleteEntry(GetFilename(szSource)) ||
-      !hSourceParent.Close())
+  if (!hSourceParent.Open(szSourceParentPath) || !hSourceParent.DeleteEntry(GetFilename(szSource)) || !hSourceParent.Close())
     return FALSE;
 
   return TRUE;
@@ -569,8 +536,7 @@ BOOL C4Group::OpenRealGrpFile() {
   EntryOffset += sizeof(C4GroupHeader);
 
   // Check Header
-  if (!SEqual(Head.id, C4GroupFileID) || (Head.Ver1 != C4GroupFileVer1) ||
-      (Head.Ver2 > C4GroupFileVer2))
+  if (!SEqual(Head.id, C4GroupFileID) || (Head.Ver1 != C4GroupFileVer1) || (Head.Ver2 > C4GroupFileVer2))
     return Error("OpenRealGrpFile: Invalid header");
 
   // Read Entries
@@ -581,20 +547,16 @@ BOOL C4Group::OpenRealGrpFile() {
       return Error("OpenRealGrpFile: Error reading entries");
     if (!StdFile.IsCompressed())
       MemScramble((BYTE *)&corebuf, sizeof(C4GroupEntryCore));
-    printf("  Found entry: %s (%d bytes)%s\n", corebuf.FileName, corebuf.Size,
-           corebuf.ChildGroup ? " [Group]" : "");
+    printf("  Found entry: %s (%d bytes)%s\n", corebuf.FileName, corebuf.Size, corebuf.ChildGroup ? " [Group]" : "");
     EntryOffset += sizeof(C4GroupEntryCore);
-    if (!AddEntry(C4GRES_InGroup, corebuf.ChildGroup, corebuf.FileName,
-                  corebuf.Size, corebuf.Time))
+    if (!AddEntry(C4GRES_InGroup, corebuf.ChildGroup, corebuf.FileName, corebuf.Size, corebuf.Time))
       return Error("OpenRealGrpFile: Cannot add entry");
   }
 
   return TRUE;
 }
 
-BOOL C4Group::AddEntry(int status, BOOL childgroup, const char *fname,
-                       long size, time_t time, const char *entryname,
-                       BYTE *membuf, BOOL fDeleteOnDisk, BOOL fHoldBuffer) {
+BOOL C4Group::AddEntry(int status, BOOL childgroup, const char *fname, long size, time_t time, const char *entryname, BYTE *membuf, BOOL fDeleteOnDisk, BOOL fHoldBuffer) {
 
   // Folder: add file to folder immediately
   if (Status == GRPF_Folder) {
@@ -759,8 +721,7 @@ BOOL C4Group::Close() {
       // Make actual offset
       save_core[cscore].Offset = 0;
       if (cscore > 0)
-        save_core[cscore].Offset =
-            save_core[cscore - 1].Offset + save_core[cscore - 1].Size;
+        save_core[cscore].Offset = save_core[cscore - 1].Offset + save_core[cscore - 1].Size;
       cscore++;
     }
 
@@ -786,9 +747,7 @@ BOOL C4Group::Close() {
   // Save header and core list
   C4GroupHeader headbuf = Head;
   MemScramble((BYTE *)&headbuf, sizeof(C4GroupHeader));
-  if (!tfile.Write((BYTE *)&headbuf, sizeof(C4GroupHeader)) ||
-      !tfile.Write((BYTE *)save_core,
-                   Head.Entries * sizeof(C4GroupEntryCore))) {
+  if (!tfile.Write((BYTE *)&headbuf, sizeof(C4GroupHeader)) || !tfile.Write((BYTE *)save_core, Head.Entries * sizeof(C4GroupEntryCore))) {
     CloseExclusiveMother();
     Clear();
     tfile.Close();
@@ -1128,19 +1087,14 @@ BOOL C4Group::View(const char *szFiles) {
     bcount += centry->Size;
     maxfnlen = Max(maxfnlen, SLen(centry->FileName));
   }
-  sprintf(oformat, "%%%ds %%7ld Bytes %%02d.%%02d.%%02d %%02d:%%02d:%%02d%%s\n",
-          maxfnlen);
+  sprintf(oformat, "%%%ds %%7ld Bytes %%02d.%%02d.%%02d %%02d:%%02d:%%02d%%s\n", maxfnlen);
 
-  printf("Maker: %s  Creation: %i  %s\n\rVersion: %d.%d  Password: %s\n",
-         GetMaker(), Head.Creation, GetOriginal() ? "Original" : "", Head.Ver1,
-         Head.Ver2, GetPassword()[0] ? GetPassword() : "None");
+  printf("Maker: %s  Creation: %i  %s\n\rVersion: %d.%d  Password: %s\n", GetMaker(), Head.Creation, GetOriginal() ? "Original" : "", Head.Ver1, Head.Ver2, GetPassword()[0] ? GetPassword() : "None");
   ResetSearch();
   while (centry = SearchNextEntry(szFiles)) {
     time_t entryTime = centry->Time;
     tm coretm = *localtime(&entryTime);
-    printf(oformat, centry->FileName, centry->Size, coretm.tm_mday,
-           coretm.tm_mon + 1, coretm.tm_year % 100, coretm.tm_hour,
-           coretm.tm_min, coretm.tm_sec, centry->ChildGroup ? " (Group)" : "");
+    printf(oformat, centry->FileName, centry->Size, coretm.tm_mday, coretm.tm_mon + 1, coretm.tm_year % 100, coretm.tm_hour, coretm.tm_min, coretm.tm_sec, centry->ChildGroup ? " (Group)" : "");
   }
   printf("%d Entries, %ld Bytes\n", fcount, bcount);
 
@@ -1229,8 +1183,7 @@ BOOL C4Group::Move(const char *szFiles) {
   return TRUE;
 }
 
-BOOL C4Group::AddEntryOnDisk(const char *szFilename, const char *szAddAs,
-                             BOOL fMove) {
+BOOL C4Group::AddEntryOnDisk(const char *szFilename, const char *szAddAs, BOOL fMove) {
 
   // Do not process yourself
   if (ItemIdentical(szFilename, FileName))
@@ -1270,20 +1223,17 @@ BOOL C4Group::AddEntryOnDisk(const char *szFilename, const char *szAddAs,
 
   // Determine size
   BOOL fIsGroup = C4Group_IsGroup(szFilename);
-  int iSize =
-      fIsGroup ? UncompressedFileSize(szFilename) : FileSize(szFilename);
+  int iSize = fIsGroup ? UncompressedFileSize(szFilename) : FileSize(szFilename);
 
   // AddEntry
-  return AddEntry(C4GRES_OnDisk, fIsGroup, szFilename, iSize,
-                  FileTime(szFilename), szAddAs, NULL, fMove);
+  return AddEntry(C4GRES_OnDisk, fIsGroup, szFilename, iSize, FileTime(szFilename), szAddAs, NULL, fMove);
 }
 
 BOOL C4Group::Add(const char *szFile, const char *szAddAs) {
   BOOL fMove = FALSE;
 
   if (StdOutput)
-    printf("%s %s as %s...\n", fMove ? "Moving" : "Adding", GetFilename(szFile),
-           szAddAs);
+    printf("%s %s as %s...\n", fMove ? "Moving" : "Adding", GetFilename(szFile), szAddAs);
 
   return AddEntryOnDisk(szFile, szAddAs, fMove);
 }
@@ -1292,8 +1242,7 @@ BOOL C4Group::Move(const char *szFile, const char *szAddAs) {
   BOOL fMove = TRUE;
 
   if (StdOutput)
-    printf("%s %s as %s...\n", fMove ? "Moving" : "Adding", GetFilename(szFile),
-           szAddAs);
+    printf("%s %s as %s...\n", fMove ? "Moving" : "Adding", GetFilename(szFile), szAddAs);
 
   return AddEntryOnDisk(szFile, szAddAs, fMove);
 }
@@ -1306,8 +1255,7 @@ BOOL C4Group::Delete(const char *szFiles) {
   if (SCharCount(';', szFiles)) {
     BOOL success = TRUE;
     char filespec[_MAX_FNAME + 1];
-    for (int cseg = 0; SCopySegment(szFiles, cseg, filespec, ';', _MAX_FNAME);
-         cseg++)
+    for (int cseg = 0; SCopySegment(szFiles, cseg, filespec, ';', _MAX_FNAME); cseg++)
       if (!Delete(filespec))
         success = FALSE;
     return success;
@@ -1500,8 +1448,7 @@ BOOL C4Group::ExtractEntry(const char *szFilename, const char *szExtractTo) {
   return TRUE;
 }
 
-BOOL C4Group::OpenAsChild(C4Group *pMother, const char *szEntryName,
-                          BOOL fExclusive) {
+BOOL C4Group::OpenAsChild(C4Group *pMother, const char *szEntryName, BOOL fExclusive) {
 
   if (!pMother)
     return Error("OpenAsChild: No mother specified");
@@ -1561,8 +1508,7 @@ BOOL C4Group::OpenAsChild(C4Group *pMother, const char *szEntryName,
   EntryOffset += sizeof(C4GroupHeader);
 
   // Check Header
-  if (!SEqual(Head.id, C4GroupFileID) || (Head.Ver1 != C4GroupFileVer1) ||
-      (Head.Ver2 > C4GroupFileVer2))
+  if (!SEqual(Head.id, C4GroupFileID) || (Head.Ver1 != C4GroupFileVer1) || (Head.Ver2 > C4GroupFileVer2))
     return Error("OpenAsChild: Invalid Header");
 
   // Read Entries
@@ -1573,8 +1519,7 @@ BOOL C4Group::OpenAsChild(C4Group *pMother, const char *szEntryName,
     if (!Mother->Read(&corebuf, sizeof(C4GroupEntryCore)))
       return Error("OpenAsChild: Entry reading error");
     EntryOffset += sizeof(C4GroupEntryCore);
-    if (!AddEntry(C4GRES_InGroup, corebuf.ChildGroup, corebuf.FileName,
-                  corebuf.Size, corebuf.Time))
+    if (!AddEntry(C4GRES_InGroup, corebuf.ChildGroup, corebuf.FileName, corebuf.Size, corebuf.Time))
       return Error("OpenAsChild: Insufficient memory");
   }
 
@@ -1583,8 +1528,7 @@ BOOL C4Group::OpenAsChild(C4Group *pMother, const char *szEntryName,
   return TRUE;
 }
 
-BOOL C4Group::AccessEntry(const char *szWildCard, int *iSize, char *sFileName,
-                          BOOL *fChild) {
+BOOL C4Group::AccessEntry(const char *szWildCard, int *iSize, char *sFileName, BOOL *fChild) {
   char fname[_MAX_FNAME + 1];
   if (!FindEntry(szWildCard, fname, iSize, fChild))
     return FALSE;
@@ -1595,8 +1539,7 @@ BOOL C4Group::AccessEntry(const char *szWildCard, int *iSize, char *sFileName,
   return TRUE;
 }
 
-BOOL C4Group::AccessNextEntry(const char *szWildCard, int *iSize,
-                              char *sFileName, BOOL *fChild) {
+BOOL C4Group::AccessNextEntry(const char *szWildCard, int *iSize, char *sFileName, BOOL *fChild) {
   char fname[_MAX_FNAME + 1];
   if (!FindNextEntry(szWildCard, fname, iSize, fChild))
     return FALSE;
@@ -1630,14 +1573,12 @@ BOOL C4Group::SetFilePtr2Entry(const char *szName, C4Group *pByChild) {
   return FALSE;
 }
 
-BOOL C4Group::FindEntry(const char *szWildCard, char *sFileName, int *iSize,
-                        BOOL *fChild) {
+BOOL C4Group::FindEntry(const char *szWildCard, char *sFileName, int *iSize, BOOL *fChild) {
   ResetSearch();
   return FindNextEntry(szWildCard, sFileName, iSize, fChild);
 }
 
-BOOL C4Group::FindNextEntry(const char *szWildCard, char *sFileName, int *iSize,
-                            BOOL *fChild, BOOL fStartAtFilename) {
+BOOL C4Group::FindNextEntry(const char *szWildCard, char *sFileName, int *iSize, BOOL *fChild, BOOL fStartAtFilename) {
   C4GroupEntry *centry;
   if (!szWildCard)
     return FALSE;
@@ -1657,19 +1598,15 @@ BOOL C4Group::FindNextEntry(const char *szWildCard, char *sFileName, int *iSize,
   return TRUE;
 }
 
-BOOL C4Group::Add(const char *szName, void *pBuffer, int iSize, BOOL fChild,
-                  BOOL fHoldBuffer) {
-  return AddEntry(C4GRES_InMemory, fChild, szName, iSize, time(NULL), szName,
-                  (BYTE *)pBuffer, FALSE, fHoldBuffer);
+BOOL C4Group::Add(const char *szName, void *pBuffer, int iSize, BOOL fChild, BOOL fHoldBuffer) {
+  return AddEntry(C4GRES_InMemory, fChild, szName, iSize, time(NULL), szName, (BYTE *)pBuffer, FALSE, fHoldBuffer);
 }
 
-HBITMAP C4Group::SubReadDDB(HDC hdc, int sx, int sy, int swdt, int shgt,
-                            int twdt, int thgt, BOOL transcol) {
+HBITMAP C4Group::SubReadDDB(HDC hdc, int sx, int sy, int swdt, int shgt, int twdt, int thgt, BOOL transcol) {
 #ifdef _WIN32
   HBITMAP hbmp;
   BITMAPFILEHEADER fhead;
-  BITMAPINFO *pbmi =
-      (BITMAPINFO *)new BYTE[sizeof(BITMAPINFOHEADER) + 256 * sizeof(RGBQUAD)];
+  BITMAPINFO *pbmi = (BITMAPINFO *)new BYTE[sizeof(BITMAPINFOHEADER) + 256 * sizeof(RGBQUAD)];
   long bfoffs;
   BYTE fbuf;
   BYTE *bmpbits;
@@ -1691,8 +1628,7 @@ HBITMAP C4Group::SubReadDDB(HDC hdc, int sx, int sy, int swdt, int shgt,
     return NULL;
   }
   if (f256Only)
-    if ((pbmi->bmiHeader.biBitCount != 8) ||
-        (pbmi->bmiHeader.biCompression != 0)) {
+    if ((pbmi->bmiHeader.biBitCount != 8) || (pbmi->bmiHeader.biCompression != 0)) {
       delete pbmi;
       return NULL;
     }
@@ -1714,17 +1650,14 @@ HBITMAP C4Group::SubReadDDB(HDC hdc, int sx, int sy, int swdt, int shgt,
   }
 
   // Read offset to pixels
-  for (bfoffs = fhead.bfOffBits - sizeof(BITMAPFILEHEADER) -
-                sizeof(BITMAPINFOHEADER) - 256 * sizeof(RGBQUAD);
-       bfoffs > 0; bfoffs--)
+  for (bfoffs = fhead.bfOffBits - sizeof(BITMAPFILEHEADER) - sizeof(BITMAPINFOHEADER) - 256 * sizeof(RGBQUAD); bfoffs > 0; bfoffs--)
     if (!Read(&fbuf, 1)) {
       delete pbmi;
       return NULL;
     }
 
   // Read the pixels
-  int iBufferSize =
-      pbmi->bmiHeader.biHeight * DWordAligned(pbmi->bmiHeader.biWidth);
+  int iBufferSize = pbmi->bmiHeader.biHeight * DWordAligned(pbmi->bmiHeader.biWidth);
   if (!(bmpbits = new BYTE[iBufferSize])) {
     delete pbmi;
     return NULL;
@@ -1760,8 +1693,7 @@ HBITMAP C4Group::SubReadDDB(HDC hdc, int sx, int sy, int swdt, int shgt,
     BYTE *tbuf;
     if (tbuf = new BYTE[tbufhgt * tbufwdt]) {
       ZeroMem(tbuf, tbufhgt * tbufwdt);
-      BufferBlitAspect(bmpbits, sbufwdt, sbufhgt, sx, sy, swdt, shgt, tbuf,
-                       tbufwdt, tbufhgt, 0, 0, twdt, thgt);
+      BufferBlitAspect(bmpbits, sbufwdt, sbufhgt, sx, sy, swdt, shgt, tbuf, tbufwdt, tbufhgt, 0, 0, twdt, thgt);
       delete[] bmpbits;
       bmpbits = tbuf;
       pbmi->bmiHeader.biSizeImage = tbufwdt * tbufhgt;
@@ -1771,9 +1703,7 @@ HBITMAP C4Group::SubReadDDB(HDC hdc, int sx, int sy, int swdt, int shgt,
   }
 
   // Create the bitmap
-  hbmp = (HBITMAP)CreateDIBitmap(hdc, (BITMAPINFOHEADER *)&(pbmi->bmiHeader),
-                                 CBM_INIT, bmpbits, (BITMAPINFO *)pbmi,
-                                 DIB_RGB_COLORS);
+  hbmp = (HBITMAP)CreateDIBitmap(hdc, (BITMAPINFOHEADER *)&(pbmi->bmiHeader), CBM_INIT, bmpbits, (BITMAPINFO *)pbmi, DIB_RGB_COLORS);
 
   delete[] bmpbits;
   delete pbmi;
@@ -1803,9 +1733,7 @@ BOOL C4Group::ReadDDB(HBITMAP *lphBitmap, HDC hdc) {
   return TRUE;
 }
 
-BOOL C4Group::ReadDDBSection(HBITMAP *lphBitmap, HDC hdc, int iSecX, int iSecY,
-                             int iSecWdt, int iSecHgt, int iImgWdt, int iImgHgt,
-                             BOOL fTransCol) {
+BOOL C4Group::ReadDDBSection(HBITMAP *lphBitmap, HDC hdc, int iSecX, int iSecY, int iSecWdt, int iSecHgt, int iImgWdt, int iImgHgt, BOOL fTransCol) {
   BOOL fOwnHDC = FALSE;
   // Init & argument check
   if (!lphBitmap)
@@ -1816,8 +1744,7 @@ BOOL C4Group::ReadDDBSection(HBITMAP *lphBitmap, HDC hdc, int iSecX, int iSecY,
     fOwnHDC = TRUE;
   }
   // Read bitmap
-  *lphBitmap = SubReadDDB(hdc, iSecX, iSecY, iSecWdt, iSecHgt, iImgWdt, iImgHgt,
-                          fTransCol);
+  *lphBitmap = SubReadDDB(hdc, iSecX, iSecY, iSecWdt, iSecHgt, iImgWdt, iImgHgt, fTransCol);
   // Release DC
   if (fOwnHDC)
     ReleaseDC(NULL, hdc);
@@ -1874,8 +1801,7 @@ int C4Group::EntryTime(const char *szFilename) {
   return iTime;
 }
 
-int C4Group::LoadEntry(const char *szEntryName, BYTE **lpbpBuf, int *ipSize,
-                       int iAppendZeros) {
+int C4Group::LoadEntry(const char *szEntryName, BYTE **lpbpBuf, int *ipSize, int iAppendZeros) {
   int size;
 
   // Access entry, allocate buffer, read data
@@ -1918,9 +1844,7 @@ const char *C4Group::GetPassword() { return Head.Password; }
 
 int C4Group::GetVersion() { return Head.Ver1 * 10 + Head.Ver2; }
 
-void C4Group::SetProcessCallback(BOOL (*fnCallback)(const char *, int)) {
-  fnProcessCallback = fnCallback;
-}
+void C4Group::SetProcessCallback(BOOL (*fnCallback)(const char *, int)) { fnProcessCallback = fnCallback; }
 
 int SortRank(const char *szElement, const char *szSortList) {
   int cnt;
@@ -1948,8 +1872,7 @@ BOOL C4Group::Sort(const char *szSortList) {
 
     for (prev = NULL, centry = FirstEntry; centry; prev = centry, centry = next)
       if (next = centry->Next)
-        if (SortRank(centry->FileName, szSortList) <
-            SortRank(next->FileName, szSortList)) {
+        if (SortRank(centry->FileName, szSortList) < SortRank(next->FileName, szSortList)) {
           nextnext = next->Next;
           if (prev)
             prev->Next = next;

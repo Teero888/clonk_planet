@@ -83,11 +83,9 @@ void ZeroMem(void *lpMem, DWORD dwSize);
 bool MemEqual(void *lpMem1, void *lpMem2, DWORD dwSize);
 void MemCopy(void *lpMem1, void *lpMem2, DWORD dwSize);
 
-bool ForLine(int x1, int y1, int x2, int y2, BOOL (*fnCallback)(int, int, int),
-             int iPar = 0, int *lastx = NULL, int *lasty = NULL);
+bool ForLine(int x1, int y1, int x2, int y2, BOOL (*fnCallback)(int, int, int), int iPar = 0, int *lastx = NULL, int *lasty = NULL);
 
-bool PathMove(int &rX, int &rY, int iTargetX, int iTargetY, int iSteps,
-              int &rDelta);
+bool PathMove(int &rX, int &rY, int iTargetX, int iTargetY, int iSteps, int &rDelta);
 
 char CharCapital(char cChar);
 bool IsIdentifier(char cChar);
@@ -106,18 +104,12 @@ bool SEqualNoCase(const char *szStr1, const char *szStr2, int iLen = -1);
 int SCompare(const char *szStr1, const char *szStr2);
 
 void SCopy(const char *szSource, char *sTarget, int iMaxL = -1);
-void SCopyUntil(const char *szSource, char *sTarget, char cUntil,
-                int iMaxL = -1);
+void SCopyUntil(const char *szSource, char *sTarget, char cUntil, int iMaxL = -1);
 void SCopyIdentifier(const char *szSource, char *sTarget, int iMaxL = 0);
-bool SCopyPrecedingIdentifier(const char *pBegin, const char *pIdentifier,
-                              char *sTarget, int iSize);
-bool SCopySegment(const char *fstr, int segn, char *tstr, char sepa = ';',
-                  int iMaxL = -1);
-bool SCopyNamedSegment(const char *szString, const char *szName, char *sTarget,
-                       char cSeparator = ';', char cNameSeparator = '=',
-                       int iMaxL = -1);
-bool SCopyEnclosed(const char *szSource, char cOpen, char cClose, char *sTarget,
-                   int iSize);
+bool SCopyPrecedingIdentifier(const char *pBegin, const char *pIdentifier, char *sTarget, int iSize);
+bool SCopySegment(const char *fstr, int segn, char *tstr, char sepa = ';', int iMaxL = -1);
+bool SCopyNamedSegment(const char *szString, const char *szName, char *sTarget, char cSeparator = ';', char cNameSeparator = '=', int iMaxL = -1);
+bool SCopyEnclosed(const char *szSource, char cOpen, char cClose, char *sTarget, int iSize);
 
 void SAppend(const char *szSource, char *szTarget);
 void SAppendChar(char cChar, char *szStr);
@@ -141,8 +133,7 @@ const char *SAdvanceSpace(const char *szSPos);
 const char *SAdvancePast(const char *szSPos, char cPast);
 
 bool SGetModule(const char *szList, int iIndex, char *sTarget, int iSize = -1);
-bool SIsModule(const char *szList, const char *szString, int *ipIndex = NULL,
-               bool fCase = false);
+bool SIsModule(const char *szList, const char *szString, int *ipIndex = NULL, bool fCase = false);
 bool SAddModule(char *szList, const char *szModule);
 bool SAddModules(char *szList, const char *szModules);
 bool SRemoveModule(char *szList, const char *szModule, bool fCase = false);
@@ -161,23 +152,18 @@ char *SGetFilename(const char *szFilepath);
 
 void BufferBlit(BYTE *bypSource, int iSourcePitch,
                 int iSrcBufHgt, // Positive: Bottom up
-                int iSrcX, int iSrcY, int iSrcWdt, int iSrcHgt, BYTE *bypTarget,
-                int iTargetPitch,
+                int iSrcX, int iSrcY, int iSrcWdt, int iSrcHgt, BYTE *bypTarget, int iTargetPitch,
                 int iTrgBufHgt, // Positive: Bottom up
                 int iTrgX, int iTrgY, int iTrgWdt, int iTrgHgt);
 
 void BufferBlitAspect(BYTE *bypSource, int iSourcePitch,
                       int iSrcBufHgt, // Positive: Bottom up
-                      int iSrcX, int iSrcY, int iSrcWdt, int iSrcHgt,
-                      BYTE *bypTarget, int iTargetPitch,
+                      int iSrcX, int iSrcY, int iSrcWdt, int iSrcHgt, BYTE *bypTarget, int iTargetPitch,
                       int iTrgBufHgt, // Positive: Bottom up
                       int iTrgX, int iTrgY, int iTrgWdt, int iTrgHgt);
 
-void StdBlit(BYTE *bypSource, int iSourcePitch, int iSrcBufHgt, int iSrcX,
-             int iSrcY, int iSrcWdt, int iSrcHgt, BYTE *bypTarget,
-             int iTargetPitch, int iTrgBufHgt, int iTrgX, int iTrgY,
-             int iTrgWdt, int iTrgHgt, int iBytesPerPixel = 1,
-             bool fFlip = false);
+void StdBlit(BYTE *bypSource, int iSourcePitch, int iSrcBufHgt, int iSrcX, int iSrcY, int iSrcWdt, int iSrcHgt, BYTE *bypTarget, int iTargetPitch, int iTrgBufHgt, int iTrgX, int iTrgY, int iTrgWdt,
+             int iTrgHgt, int iBytesPerPixel = 1, bool fFlip = false);
 
 #include <Fixed.h>
 

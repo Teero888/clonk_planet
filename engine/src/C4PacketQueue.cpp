@@ -21,8 +21,7 @@ void C4PacketQueue::SetChunkSize(int iChunkSize) {
     ChunkSize = iChunkSize;
 }
 
-void C4PacketQueue::Set(int iType, void *pData, int iSize, BOOL fHoldData,
-                        int iDataSize) {
+void C4PacketQueue::Set(int iType, void *pData, int iSize, BOOL fHoldData, int iDataSize) {
   C4Packet::Set(iType, pData, iSize, fHoldData);
   if (iDataSize > 0)
     DataSize = iDataSize;

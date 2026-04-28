@@ -2,8 +2,7 @@
 
 /* Functions mapped by C4Script */
 
-const int C4SCR_Access_Public = 0, C4SCR_Access_Protected = 1,
-          C4SCR_Access_Private = 2;
+const int C4SCR_Access_Public = 0, C4SCR_Access_Protected = 1, C4SCR_Access_Private = 2;
 
 #define C4SCR_Public "public"
 #define C4SCR_Protected "protected"
@@ -11,8 +10,7 @@ const int C4SCR_Access_Public = 0, C4SCR_Access_Protected = 1,
 
 struct C4ScriptFnDef {
   const char *Identifier;
-  long (*Function)(C4Thread *, long, long, long, long, long, long, long, long,
-                   long, long);
+  long (*Function)(C4Thread *, long, long, long, long, long, long, long, long, long, long);
   BOOL Public;
 };
 extern C4ScriptFnDef C4ScriptFnMap[];
@@ -47,18 +45,15 @@ extern C4ScriptFnDef C4ScriptFnMap[];
 #define PSF_Control "~Control%s"            // pByObject
 #define PSF_ContainedControl "~Contained%s" // pByObject
 #define PSF_Contact "~Contact%s"
-#define PSF_ControlCommand "~ControlCommand" // szCommand, pTarget, iTx, iTy
-#define PSF_ControlCommandFinished                                             \
-  "~ControlCommandFinished" // szCommand, pTarget, iTx, iTy
+#define PSF_ControlCommand "~ControlCommand"                 // szCommand, pTarget, iTx, iTy
+#define PSF_ControlCommandFinished "~ControlCommandFinished" // szCommand, pTarget, iTx, iTy
 #define PSF_DeepBreath "~DeepBreath"
 #define PSF_CatchBlow "~CatchBlow" // iLevel, pByObject
 #define PSF_Stuck "~Stuck"
 #define PSF_RejectCollection "~RejectCollect" // idObject, pObject
 #define PSF_LightningStrike "~LightningStrike"
 #define PSF_GrabLost "~GrabLost"
-#define PSF_LineBreak "~LineBreak" // iCause
-#define PSF_BuildNeedsMaterial                                                 \
-  "~BuildNeedsMaterial" // idMat1, iAmount1, idMat2, iAmount2...
-#define PSF_ControlTransfer                                                    \
-  "~ControlTransfer" // C4Object* pObj, int iTx, int iTy
+#define PSF_LineBreak "~LineBreak"                   // iCause
+#define PSF_BuildNeedsMaterial "~BuildNeedsMaterial" // idMat1, iAmount1, idMat2, iAmount2...
+#define PSF_ControlTransfer "~ControlTransfer"       // C4Object* pObj, int iTx, int iTy
 #define PSF_UpdateTransferZone "~UpdateTransferZone"

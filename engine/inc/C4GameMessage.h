@@ -22,8 +22,7 @@ protected:
   C4GameMessage *Next;
 
 protected:
-  void Init(const char *szText, C4Object *pTarget, int iPlayer, int iX, int iY,
-            BYTE bCol);
+  void Init(const char *szText, C4Object *pTarget, int iPlayer, int iX, int iY, BYTE bCol);
   BOOL Execute();
 };
 
@@ -42,6 +41,5 @@ public:
   void Draw(C4FacetEx &cgo, int iPlayer);
   void ClearPlayers(int iPlayer);
   void ClearPointers(C4Object *pObj);
-  BOOL New(const char *szText, C4Object *pTarget, int iPlayer, int iX, int iY,
-           BYTE bCol);
+  BOOL New(const char *szText, C4Object *pTarget, int iPlayer, int iX, int iY, BYTE bCol);
 };

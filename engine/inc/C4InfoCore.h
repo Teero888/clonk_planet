@@ -58,8 +58,7 @@ public:
 public:
   BOOL Save(C4Group &hGroup);
   BOOL Load(C4Group &hGroup);
-  void Default(C4ID n_id = C4ID_None, C4DefList *pDefs = NULL,
-               const char *cpNames = NULL);
+  void Default(C4ID n_id = C4ID_None, C4DefList *pDefs = NULL, const char *cpNames = NULL);
   BOOL LoadNext(C4Group &hGroup);
   BOOL Add(C4Group &hGroup);
   void Promote(int iRank, C4RankSystem &rRanks);

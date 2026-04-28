@@ -5,8 +5,7 @@
 class C4Viewport {
   friend C4GraphicsSystem;
   friend C4MouseControl;
-  friend LRESULT APIENTRY ViewportWinProc(HWND hwnd, UINT uMsg, WPARAM wParam,
-                                          LPARAM lParam);
+  friend LRESULT APIENTRY ViewportWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 public:
   C4Viewport();
@@ -31,8 +30,7 @@ public:
   void Clear();
   void Execute();
   void ClearPointers(C4Object *pObj);
-  void SetOutputSize(int iDrawX, int iDrawY, int iOutX, int iOutY, int iOutWdt,
-                     int iOutHgt);
+  void SetOutputSize(int iDrawX, int iDrawY, int iOutX, int iOutY, int iOutWdt, int iOutHgt);
   BOOL Init(int iPlayer);
   BOOL Init(HWND hParent, HINSTANCE hInst, int iPlayer);
   BOOL DropFiles(HANDLE hDrop);
@@ -53,11 +51,8 @@ protected:
   BOOL UpdateOutputSize();
   BOOL ViewPositionByScrollBars();
   BOOL ScrollBarsByViewPosition();
-  HWND CreateViewportWindow(HWND hParent, HINSTANCE hInst,
-                            const char *szCaption);
+  HWND CreateViewportWindow(HWND hParent, HINSTANCE hInst, const char *szCaption);
 };
 
 #define C4ViewportClassName "C4Viewport"
-#define C4ViewportWindowStyle                                                  \
-  (WS_VISIBLE | WS_POPUP | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX |          \
-   WS_MAXIMIZEBOX | WS_SIZEBOX)
+#define C4ViewportWindowStyle (WS_VISIBLE | WS_POPUP | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SIZEBOX)

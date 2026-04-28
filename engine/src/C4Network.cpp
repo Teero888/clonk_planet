@@ -135,8 +135,7 @@ BOOL C4Network::Execute() {
   return TRUE;
 }
 
-BOOL C4Network::Init(BOOL fHost, const char *szLocalName,
-                     const char *szLocalAddress) {
+BOOL C4Network::Init(BOOL fHost, const char *szLocalName, const char *szLocalAddress) {
 
   // Already initialized
   if (Active) {
@@ -169,13 +168,10 @@ BOOL C4Network::Init(BOOL fHost, const char *szLocalName,
     // Init master server client
     C4ConfigNetwork *pCfg = &Config.Network;
     if (pCfg->MasterServerSignUp)
-      MasterServerClient.Init(Application.hWindow, pCfg->MasterServerAddress,
-                              pCfg->MasterServerPath, pCfg->MasterKeepPeriod,
-                              pCfg->MasterReferencePeriod);
+      MasterServerClient.Init(Application.hWindow, pCfg->MasterServerAddress, pCfg->MasterServerPath, pCfg->MasterKeepPeriod, pCfg->MasterReferencePeriod);
 
     // Create host thread
-    if (!(hHostThread = CreateThread(NULL, 0, &HostThread, Application.hWindow,
-                                     0, &idHostThread))) {
+    if (!(hHostThread = CreateThread(NULL, 0, &HostThread, Application.hWindow, 0, &idHostThread))) {
       Log(LoadResStr(IDS_NET_NOTHREAD));
       return FALSE;
     }
@@ -217,8 +213,7 @@ BOOL C4Network::HandleJoin(C4Stream *pStrm) {
   C4NetworkClient *pClient = new C4NetworkClient;
 
   // Join client
-  if (!(pClient->HandleJoin(Clients.GetFreeNumber(), pStrm, fRuntimeJoin,
-                            fGetJoinReady))) {
+  if (!(pClient->HandleJoin(Clients.GetFreeNumber(), pStrm, fRuntimeJoin, fGetJoinReady))) {
     delete pClient;
     return FALSE;
   }
@@ -235,10 +230,7 @@ BOOL C4Network::HandleJoin(C4Stream *pStrm) {
   return TRUE;
 }
 
-BOOL C4Network::Join(const char *szServerName, const char *szServerAddress,
-                     BOOL fRetrieveNetworkGame) {
-  return Client.Join(szServerName, szServerAddress, fRetrieveNetworkGame);
-}
+BOOL C4Network::Join(const char *szServerName, const char *szServerAddress, BOOL fRetrieveNetworkGame) { return Client.Join(szServerName, szServerAddress, fRetrieveNetworkGame); }
 
 int C4Network::GetClientNumber() { return Client.Number; }
 
@@ -352,8 +344,7 @@ BOOL C4Network::DoLobby() {
         if (Console.hDialog && IsDialogMessage(Console.hDialog, &msg))
           MsgDone = TRUE;
       if (!MsgDone)
-        if (Console.PropertyDlg.hDialog &&
-            IsDialogMessage(Console.PropertyDlg.hDialog, &msg))
+        if (Console.PropertyDlg.hDialog && IsDialogMessage(Console.PropertyDlg.hDialog, &msg))
           MsgDone = TRUE;
       if (!MsgDone) {
         TranslateMessage(&msg);
@@ -427,8 +418,7 @@ BOOL C4Network::HandleReferenceRequest(C4Stream *pStream) {
   BOOL fDenied = Config.Network.NoReferenceRequest;
   // Set reference filename
   char szReferenceFilename[_MAX_PATH + 1];
-  SCopy(Config.AtNetworkPath(GetFilename(Game.ScenarioFilename)),
-        szReferenceFilename);
+  SCopy(Config.AtNetworkPath(GetFilename(Game.ScenarioFilename)), szReferenceFilename);
   // Remove any old duplicates
   EraseItem(szReferenceFilename);
   // Overwrite Network.LocalAddress with value from current stream for reference
@@ -442,8 +432,7 @@ BOOL C4Network::HandleReferenceRequest(C4Stream *pStream) {
   hGroup.Sort(C4FLS_Scenario);
   hGroup.Close();
   // Send reference
-  StreamOk(pStream->SendFile(szReferenceFilename, C4PK_NetworkReference,
-                             &LogProcess));
+  StreamOk(pStream->SendFile(szReferenceFilename, C4PK_NetworkReference, &LogProcess));
   EraseItem(szReferenceFilename);
   Log(LoadResStr(fDenied ? IDS_NET_DENIED : IDS_NET_TRANSFEROK));
   // Receive goodbye
@@ -468,8 +457,7 @@ BOOL C4Network::CreateReference(const char *szLocalAddress) {
   // Set reference filename (using temp path instead of NetworkPath to avoid
   // conflict with HandleReferenceRequest)
   char szReferenceFilename[_MAX_PATH + 1];
-  SCopy(Config.AtTempPath(GetFilename(Game.ScenarioFilename)),
-        szReferenceFilename);
+  SCopy(Config.AtTempPath(GetFilename(Game.ScenarioFilename)), szReferenceFilename);
   // Overwrite any duplicate files
   EraseItem(szReferenceFilename);
   // Overwrite Network.LocalAddress with specified value for reference
@@ -502,11 +490,9 @@ DWORD WINAPI C4Network::HostThread(void *lpPar) {
   // Host thread loop
   while (!fTerminate) {
     // Await client & connect
-    iResult = pListener->Connect(Config.Network.LocalName, C4STRM_Listener,
-                                 NULL, &pStrm);
+    iResult = pListener->Connect(Config.Network.LocalName, C4STRM_Listener, NULL, &pStrm);
     if (iResult == C4STRM_Ok)
-      sprintf(ostr, "Host: Client connected from %s on port %i",
-              pStrm->GetPeerAddress(), pStrm->GetPort());
+      sprintf(ostr, "Host: Client connected from %s on port %i", pStrm->GetPeerAddress(), pStrm->GetPort());
     else
       sprintf(ostr, "Host: Client connection failure");
     NetStatus(ostr);
@@ -540,8 +526,7 @@ DWORD WINAPI C4Network::HostThread(void *lpPar) {
           char szMessage[1024 + 1];
           if (Packet.Size > 256)
             break;
-          sprintf(szMessage, "%s (%s): %s", pStrm->GetPeerName(),
-                  pStrm->GetPeerAddress(), Packet.Data);
+          sprintf(szMessage, "%s (%s): %s", pStrm->GetPeerName(), pStrm->GetPeerAddress(), Packet.Data);
           SendMessage(hAppWnd, WM_USER_LOG, 0, (LPARAM)szMessage);
           break;
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -584,18 +569,14 @@ void C4Network::ToggleReferenceRequest() {
   if (!Active || !Host)
     return;
   Toggle(Config.Network.NoReferenceRequest);
-  Game.GraphicsSystem.FlashMessage(LoadResStr(Config.Network.NoReferenceRequest
-                                                  ? IDS_NET_REFREQUESTBARRED
-                                                  : IDS_NET_REFREQUESTFREE));
+  Game.GraphicsSystem.FlashMessage(LoadResStr(Config.Network.NoReferenceRequest ? IDS_NET_REFREQUESTBARRED : IDS_NET_REFREQUESTFREE));
 }
 
 void C4Network::ToggleRuntimeJoin() {
   if (!Active || !Host)
     return;
   Toggle(Config.Network.NoRuntimeJoin);
-  Game.GraphicsSystem.FlashMessage(LoadResStr(Config.Network.NoRuntimeJoin
-                                                  ? IDS_NET_RUNTIMEJOINBARRED
-                                                  : IDS_NET_RUNTIMEJOINFREE));
+  Game.GraphicsSystem.FlashMessage(LoadResStr(Config.Network.NoRuntimeJoin ? IDS_NET_RUNTIMEJOINBARRED : IDS_NET_RUNTIMEJOINFREE));
   MasterServerClient.ForceReference();
 }
 
@@ -659,8 +640,7 @@ void C4Network::StoreClientNames(C4NameList &rNames) // Including host name
 {
   rNames.Clear();
   rNames.Add(LocalName);
-  for (C4NetworkClient *pClient = Clients.First; pClient;
-       pClient = pClient->Next)
+  for (C4NetworkClient *pClient = Clients.First; pClient; pClient = pClient->Next)
     rNames.Add(pClient->Name, pClient->Number);
 }
 
@@ -669,8 +649,7 @@ C4NetworkClient *C4Network::GetClientByName(const char *szName) {
   if (!Active || !Host)
     return NULL;
   // Check client list
-  for (C4NetworkClient *pClient = Clients.First; pClient;
-       pClient = pClient->Next)
+  for (C4NetworkClient *pClient = Clients.First; pClient; pClient = pClient->Next)
     if (SEqualNoCase(pClient->Name, szName))
       return pClient;
   // No match

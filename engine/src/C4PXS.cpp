@@ -28,10 +28,7 @@ void C4PXS::Execute() {
         return;
       }
     // Incindiary vs. Extinguisher
-    if ((Game.Material.Map[Mat].Incindiary &&
-         Game.Material.Map[inmat].Extinguisher) ||
-        (Game.Material.Map[Mat].Extinguisher &&
-         Game.Material.Map[inmat].Incindiary)) {
+    if ((Game.Material.Map[Mat].Incindiary && Game.Material.Map[inmat].Extinguisher) || (Game.Material.Map[Mat].Extinguisher && Game.Material.Map[inmat].Incindiary)) {
       ClearBackPix((int)x, (int)y);
       Deactivate();
       if (!Rnd3())
@@ -57,8 +54,7 @@ void C4PXS::Execute() {
     ydir = +maxspeed;
 
   // Movement target
-  double wdrift = (double)Game.Weather.GetWind((int)x, (int)y) / 20.0 *
-                  (double)Game.Material.Map[Mat].WindDrift / 100.0;
+  double wdrift = (double)Game.Weather.GetWind((int)x, (int)y) / 20.0 * (double)Game.Material.Map[Mat].WindDrift / 100.0;
 
   double ctcox = x + xdir + wdrift;
   double ctcoy = y + ydir;
@@ -87,8 +83,7 @@ void C4PXS::Execute() {
   // Move by mat path/slide
   ctx = (int)x;
   cty = (int)y;
-  if (Game.Landscape.FindMatSlide(ctx, cty, +1, Game.Material.Map[Mat].Density,
-                                  Game.Material.Map[Mat].MaxSlide)) {
+  if (Game.Landscape.FindMatSlide(ctx, cty, +1, Game.Material.Map[Mat].Density, Game.Material.Map[Mat].MaxSlide)) {
     x = ctx;
     y = cty;
     return;
@@ -166,8 +161,7 @@ C4PXS *C4PXSSystem::New() {
   return NULL;
 }
 
-BOOL C4PXSSystem::Create(int mat, double ix, double iy, double ixdir,
-                         double iydir) {
+BOOL C4PXSSystem::Create(int mat, double ix, double iy, double ixdir, double iydir) {
   C4PXS *pxp;
   if (!MatValid(mat))
     return FALSE;
@@ -223,9 +217,7 @@ void C4PXSSystem::Draw(C4FacetEx &cgo) {
         if (pxp->Mat != MNone)
           if (Inside((int)pxp->x - cgo.TargetX, 0, cgo.Wdt - 1))
             if (Inside((int)pxp->y - cgo.TargetY, 0, cgo.Hgt - 1))
-              psurface[ipitch * ((int)pxp->y - cgo.TargetY + cgo.Y) +
-                       ((int)pxp->x - cgo.TargetX + cgo.X)] =
-                  (BYTE)(Mat2PixCol(pxp->Mat) + SafeRandom(3));
+              psurface[ipitch * ((int)pxp->y - cgo.TargetY + cgo.Y) + ((int)pxp->x - cgo.TargetX + cgo.X)] = (BYTE)(Mat2PixCol(pxp->Mat) + SafeRandom(3));
 
   // Unlock target surface
   UnLockSurface(cgo.Surface);
@@ -234,8 +226,7 @@ void C4PXSSystem::Draw(C4FacetEx &cgo) {
 void C4PXSSystem::Cast(int mat, int num, int tx, int ty, int level) {
   int cnt;
   for (cnt = 0; cnt < num; cnt++)
-    Create(mat, tx, ty, (float)(Random(level + 1) - level / 2) / 10.0,
-           (float)(Random(level + 1) - level) / 10.0);
+    Create(mat, tx, ty, (float)(Random(level + 1) - level / 2) / 10.0, (float)(Random(level + 1) - level) / 10.0);
 }
 
 BOOL C4PXSSystem::Save(C4Group &hGroup) {

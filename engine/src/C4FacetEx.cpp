@@ -4,15 +4,13 @@
 
 #include <C4Include.h>
 
-void C4FacetEx::Set(SURFACE nsfc, int nx, int ny, int nwdt, int nhgt, int ntx,
-                    int nty) {
+void C4FacetEx::Set(SURFACE nsfc, int nx, int ny, int nwdt, int nhgt, int ntx, int nty) {
   C4Facet::Set(nsfc, nx, ny, nwdt, nhgt);
   TargetX = ntx;
   TargetY = nty;
 }
 
-void C4FacetEx::DrawLine(int iX1, int iY1, int iX2, int iY2, BYTE bCol1,
-                         BYTE bCol2) {
+void C4FacetEx::DrawLine(int iX1, int iY1, int iX2, int iY2, BYTE bCol1, BYTE bCol2) {
   if (!lpDDraw || !Surface || !Wdt || !Hgt)
     return;
   // Scroll position
@@ -186,9 +184,7 @@ BOOL C4FacetEx::Load(BYTE *bpBitmap, int iWdt, int iHgt) {
   return TRUE;
 }
 
-void C4FacetEx::SetPalette(BYTE *bpPalette, BOOL fAdapt) {
-  Face.SetPalette(bpPalette, fAdapt);
-}
+void C4FacetEx::SetPalette(BYTE *bpPalette, BOOL fAdapt) { Face.SetPalette(bpPalette, fAdapt); }
 
 BOOL C4FacetEx::ShiftColor(int iShift, int iStart, int iEnd) {
   if (!lpDDraw || !Surface || !Wdt || !Hgt)

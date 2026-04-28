@@ -47,8 +47,7 @@ CSoundObject *DSndObjCreate(BYTE *bpWaveBuf, int iWaveSize, int iConcurrent) {
 
   for (int i = 0; i < pSO->iAlloc; i++) {
     ma_decoder *pDecoder = new ma_decoder();
-    ma_result result = ma_decoder_init_memory(
-        pSO->waveData.data(), pSO->waveData.size(), NULL, pDecoder);
+    ma_result result = ma_decoder_init_memory(pSO->waveData.data(), pSO->waveData.size(), NULL, pDecoder);
     if (result != MA_SUCCESS) {
       delete pDecoder;
       DSndObjDestroy(pSO);
@@ -57,8 +56,7 @@ CSoundObject *DSndObjCreate(BYTE *bpWaveBuf, int iWaveSize, int iConcurrent) {
     pSO->decoders.push_back(pDecoder);
 
     ma_sound *pSound = new ma_sound();
-    result =
-        ma_sound_init_from_data_source(&g_maEngine, pDecoder, 0, NULL, pSound);
+    result = ma_sound_init_from_data_source(&g_maEngine, pDecoder, 0, NULL, pSound);
     if (result != MA_SUCCESS) {
       delete pSound;
       DSndObjDestroy(pSO);
@@ -98,8 +96,7 @@ BOOL DSndObjPlay(CSoundObject *pSO, DWORD dwPlayFlags) {
     }
   }
 
-  ma_sound_set_looping(pSound,
-                       (dwPlayFlags & DSBPLAY_LOOPING) ? MA_TRUE : MA_FALSE);
+  ma_sound_set_looping(pSound, (dwPlayFlags & DSBPLAY_LOOPING) ? MA_TRUE : MA_FALSE);
   ma_sound_seek_to_pcm_frame(pSound, 0);
   ma_result result = ma_sound_start(pSound);
 

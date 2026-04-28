@@ -8,15 +8,13 @@ C4ID C4Id(const char *szId) {
   if (!szId)
     return C4ID_None;
   // Numerical id
-  if (Inside(szId[0], '0', '9') && Inside(szId[1], '0', '9') &&
-      Inside(szId[2], '0', '9') && Inside(szId[3], '0', '9')) {
+  if (Inside(szId[0], '0', '9') && Inside(szId[1], '0', '9') && Inside(szId[2], '0', '9') && Inside(szId[3], '0', '9')) {
     int iResult;
     sscanf(szId, "%d", &iResult);
     return iResult;
   }
   // Literal id
-  return (((DWORD)szId[3]) << 24) + (((DWORD)szId[2]) << 16) +
-         (((DWORD)szId[1]) << 8) + ((DWORD)szId[0]);
+  return (((DWORD)szId[3]) << 24) + (((DWORD)szId[2]) << 16) + (((DWORD)szId[1]) << 8) + ((DWORD)szId[0]);
 }
 
 static char C4IdTextBuffer[5];
@@ -54,8 +52,7 @@ BOOL LooksLikeID(const char *szText) {
   if (SLen(szText) != 4)
     return FALSE;
   for (cnt = 0; cnt < 4; cnt++)
-    if (!(Inside(szText[cnt], 'A', 'Z') || Inside(szText[cnt], '0', '9') ||
-          Inside(szText[cnt], '_', '_')))
+    if (!(Inside(szText[cnt], 'A', 'Z') || Inside(szText[cnt], '0', '9') || Inside(szText[cnt], '_', '_')))
       return FALSE;
   return TRUE;
 }

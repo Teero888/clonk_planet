@@ -6,9 +6,7 @@
 
 const int MaxRefBuf = 100, MaxLineBuf = 4096, MaxCompileBuf = 20000;
 
-BOOL C4Compiler::CompileLine(C4CompilerValue *pRefs, const char *szSection,
-                             const char *szLine, BYTE *pTarget,
-                             const char *szSecExt) {
+BOOL C4Compiler::CompileLine(C4CompilerValue *pRefs, const char *szSection, const char *szLine, BYTE *pTarget, const char *szSecExt) {
   C4CompilerValue *cRef;
   char szRefName[MaxRefBuf + 1];
   char szSegment[MaxRefBuf + 1];
@@ -52,9 +50,7 @@ BOOL C4Compiler::CompileLine(C4CompilerValue *pRefs, const char *szSection,
     break;
 
   case C4CV_Id:
-    for (cnt = 0; (cnt < cRef->Size) &&
-                  SCopySegment(szLine, cnt, szSegment, ',', C4MaxName);
-         cnt++)
+    for (cnt = 0; (cnt < cRef->Size) && SCopySegment(szLine, cnt, szSegment, ',', C4MaxName); cnt++)
       if (SEqual(szSegment, "NONE") || (SLen(szSegment) != 4))
         ((C4ID *)pTarget)[cnt] = C4ID_None;
       else
@@ -62,9 +58,7 @@ BOOL C4Compiler::CompileLine(C4CompilerValue *pRefs, const char *szSection,
     break;
 
   case C4CV_Integer:
-    for (cnt = 0; (cnt < cRef->Size) &&
-                  SCopySegment(szLine, cnt, szSegment, ',', C4MaxName);
-         cnt++)
+    for (cnt = 0; (cnt < cRef->Size) && SCopySegment(szLine, cnt, szSegment, ',', C4MaxName); cnt++)
       sscanf(szSegment, "%i", ((int *)pTarget) + cnt);
     break;
 
@@ -91,8 +85,7 @@ BOOL C4Compiler::CompileLine(C4CompilerValue *pRefs, const char *szSection,
   return TRUE;
 }
 
-BOOL C4Compiler::CompileStructure(C4CompilerValue *pRefs, const char *szSource,
-                                  void *vpTarget, const char *szSecExt) {
+BOOL C4Compiler::CompileStructure(C4CompilerValue *pRefs, const char *szSource, void *vpTarget, const char *szSecExt) {
   char section[MaxRefBuf + 1];
   char valueline[MaxLineBuf + 1];
   const char *cpos;
@@ -136,9 +129,7 @@ BOOL C4Compiler::CompileStructure(C4CompilerValue *pRefs, const char *szSource,
   return TRUE;
 }
 
-BOOL C4Compiler::DecompileStructure(C4CompilerValue *pRefs, void *vpData,
-                                    void *vpDefault, char **ppOutput,
-                                    int *ipSize, const char *szSecExt) {
+BOOL C4Compiler::DecompileStructure(C4CompilerValue *pRefs, void *vpData, void *vpDefault, char **ppOutput, int *ipSize, const char *szSecExt) {
   char ostr[MaxLineBuf + 1], ostr2[MaxLineBuf + 1];
   char secname[MaxRefBuf + 1] = "[Unknown]";
   BOOL secput = FALSE;
@@ -178,8 +169,7 @@ BOOL C4Compiler::DecompileStructure(C4CompilerValue *pRefs, void *vpData,
 
     case C4CV_String:
       // Compare to default
-      if (SEqual((char *)(pData + cRef->Offset),
-                 (char *)(pDefault + cRef->Offset)))
+      if (SEqual((char *)(pData + cRef->Offset), (char *)(pDefault + cRef->Offset)))
         break;
       // Section name check
       if (!secput) {

@@ -48,29 +48,19 @@ BOOL C4ScriptHost::Execute() {
   return FALSE;
 }
 
-long C4ScriptHost::Call(C4Thread *pCaller, const char *szFunction, long par0,
-                        long par1, long par2, long par3, long par4, long par5,
-                        long par6, long par7, long par8, long par9) {
+long C4ScriptHost::Call(C4Thread *pCaller, const char *szFunction, long par0, long par1, long par2, long par3, long par4, long par5, long par6, long par7, long par8, long par9) {
   if (!Script || !szFunction)
     return FALSE;
-  return FunctionCall(pCaller, szFunction, NULL, par0, par1, par2, par3, par4,
-                      par5, par6, par7, par8, par9);
+  return FunctionCall(pCaller, szFunction, NULL, par0, par1, par2, par3, par4, par5, par6, par7, par8, par9);
 }
 
-long C4ScriptHost::ObjectCall(C4Thread *pCaller, C4Object *pObj,
-                              const char *szFunction, long par0, long par1,
-                              long par2, long par3, long par4, long par5,
-                              long par6, long par7, long par8, long par9) {
+long C4ScriptHost::ObjectCall(C4Thread *pCaller, C4Object *pObj, const char *szFunction, long par0, long par1, long par2, long par3, long par4, long par5, long par6, long par7, long par8, long par9) {
   if (!Script || !pObj || !szFunction)
     return FALSE;
-  return FunctionCall(pCaller, szFunction, pObj, par0, par1, par2, par3, par4,
-                      par5, par6, par7, par8, par9);
+  return FunctionCall(pCaller, szFunction, pObj, par0, par1, par2, par3, par4, par5, par6, par7, par8, par9);
 }
 
-BOOL C4ScriptHost::GetFunctionDeclaration(int iIndex, char *sTarget,
-                                          char *sQualifier, const char **ppCode,
-                                          char *sDesc, BOOL fRegular,
-                                          C4ID *pidImage, char *sCondition) {
+BOOL C4ScriptHost::GetFunctionDeclaration(int iIndex, char *sTarget, char *sQualifier, const char **ppCode, char *sDesc, BOOL fRegular, C4ID *pidImage, char *sCondition) {
   if (!Script || !sTarget)
     return FALSE;
   int iLabel = -1;
@@ -83,8 +73,7 @@ BOOL C4ScriptHost::GetFunctionDeclaration(int iIndex, char *sTarget,
     cpColon--;
 
     // Trace back to label
-    for (cpLabel = cpColon;
-         (cpLabel - 1 >= cpPos) && IsIdentifier(*(cpLabel - 1)); cpLabel--)
+    for (cpLabel = cpColon; (cpLabel - 1 >= cpPos) && IsIdentifier(*(cpLabel - 1)); cpLabel--)
       ;
     // Isolated colon: ignore
     if (cpLabel == cpColon) {
@@ -172,9 +161,7 @@ BOOL C4ScriptHost::DenumerateVariablePointers() {
   return TRUE;
 }
 
-BOOL C4ScriptHost::Load(const char *szName, C4Group &hGroup,
-                        const char *szFilename, const char *szLanguage,
-                        C4ID idDefinition) {
+BOOL C4ScriptHost::Load(const char *szName, C4Group &hGroup, const char *szFilename, const char *szLanguage, C4ID idDefinition) {
   // Base load
   if (!C4ComponentHost::Load(szName, hGroup, szFilename, szLanguage))
     return FALSE;
@@ -242,10 +229,7 @@ void C4ScriptHost::MakeFunctionTable() {
   char szCondition[C4SCR_MaxIDLen + 1];
   const char *cpCode;
   C4ID idImage;
-  for (int cnt = 0;
-       GetFunctionDeclaration(cnt, szFunction, szQualifier, &cpCode, szDesc,
-                              FALSE, &idImage, szCondition);
-       cnt++) {
+  for (int cnt = 0; GetFunctionDeclaration(cnt, szFunction, szQualifier, &cpCode, szDesc, FALSE, &idImage, szCondition); cnt++) {
     C4ScriptFnRef *pFn = new C4ScriptFnRef;
     SCopy(szFunction, pFn->Name, C4SCR_MaxIDLen);
     SCopy(szDesc, pFn->Desc, C4SCR_MaxDesc);
@@ -283,10 +267,7 @@ C4ScriptFnRef *C4ScriptHost::GetFunctionRef(int iFunction) {
   return NULL;
 }
 
-long C4ScriptHost::FunctionCall(C4Thread *pCaller, const char *szFunction,
-                                C4Object *pObj, long iPar0, long iPar1,
-                                long iPar2, long iPar3, long iPar4, long iPar5,
-                                long iPar6, long iPar7, long iPar8,
+long C4ScriptHost::FunctionCall(C4Thread *pCaller, const char *szFunction, C4Object *pObj, long iPar0, long iPar1, long iPar2, long iPar3, long iPar4, long iPar5, long iPar6, long iPar7, long iPar8,
                                 long iPar9) {
 
 #ifdef C4ENGINE
@@ -323,8 +304,7 @@ long C4ScriptHost::FunctionCall(C4Thread *pCaller, const char *szFunction,
     // Access by same object or engine only
     case C4SCR_Access_Protected:
       if (pCaller && pCaller->cObj && pCaller->cObj != pObj) {
-        sprintf(szError, "Cannot access protected member '%s' in %s",
-                szFunction, pObj->Def->Name);
+        sprintf(szError, "Cannot access protected member '%s' in %s", szFunction, pObj->Def->Name);
         if (pCaller)
           pCaller->SetError(szError);
         else
@@ -335,8 +315,7 @@ long C4ScriptHost::FunctionCall(C4Thread *pCaller, const char *szFunction,
     // Access by same object only
     case C4SCR_Access_Private:
       if (!(pCaller && (pCaller->cObj == pObj))) {
-        sprintf(szError, "Cannot access private member '%s' in %s", szFunction,
-                pObj->Def->Name);
+        sprintf(szError, "Cannot access private member '%s' in %s", szFunction, pObj->Def->Name);
         if (pCaller)
           pCaller->SetError(szError);
         else
@@ -348,9 +327,7 @@ long C4ScriptHost::FunctionCall(C4Thread *pCaller, const char *szFunction,
 
   // Call code
   C4Thread cthr;
-  return cthr.Execute(pCaller, Script, szFunction, pFn->Code, pObj, iPar0,
-                      iPar1, iPar2, iPar3, iPar4, iPar5, iPar6, iPar7, iPar8,
-                      iPar9);
+  return cthr.Execute(pCaller, Script, szFunction, pFn->Code, pObj, iPar0, iPar1, iPar2, iPar3, iPar4, iPar5, iPar6, iPar7, iPar8, iPar9);
 
 #else
 
@@ -361,8 +338,7 @@ long C4ScriptHost::FunctionCall(C4Thread *pCaller, const char *szFunction,
 
 void C4ScriptHost::SetError(const char *szMessage) {}
 
-const char *C4ScriptHost::GetControlDesc(const char *szFunctionFormat, int iCom,
-                                         C4ID *pidImage) {
+const char *C4ScriptHost::GetControlDesc(const char *szFunctionFormat, int iCom, C4ID *pidImage) {
 #ifdef C4ENGINE
   // Compose script function
   char szFunction[256 + 1];
@@ -386,8 +362,7 @@ const char *C4ScriptHost::GetControlDesc(const char *szFunctionFormat, int iCom,
   return NULL;
 }
 
-BOOL C4ScriptHost::ScanFunctionDesc(const char *szDesc, char *sDesc,
-                                    C4ID *pidImage, char *sCondition) {
+BOOL C4ScriptHost::ScanFunctionDesc(const char *szDesc, char *sDesc, C4ID *pidImage, char *sCondition) {
   // Default zero values
   if (sDesc)
     sDesc[0] = 0;
@@ -397,8 +372,7 @@ BOOL C4ScriptHost::ScanFunctionDesc(const char *szDesc, char *sDesc,
     sCondition[0] = 0;
   // Scan fields
   char szField[C4SCR_MaxDesc + 1];
-  for (int iField = 0;
-       SCopySegment(szDesc, iField, szField, '|', C4SCR_MaxDesc); iField++) {
+  for (int iField = 0; SCopySegment(szDesc, iField, szField, '|', C4SCR_MaxDesc); iField++) {
     // Image field
     if (SEqual2(szField, "Image=")) {
       // Scan image id
@@ -434,8 +408,7 @@ void C4ScriptHost::AddFunctionTable(C4ScriptFnRef *pFunction) {
 #ifdef C4ENGINE // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                 // - - - -
       if (Config.Graphics.VerboseObjectLoading >= 2) {
-        sprintf(OSTR, LoadResStr(IDS_PRC_FUNCTIONOVERLOAD), pFn->Name,
-                C4IdText(idDef));
+        sprintf(OSTR, LoadResStr(IDS_PRC_FUNCTIONOVERLOAD), pFn->Name, C4IdText(idDef));
         Log(OSTR);
       }
 #endif // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -488,8 +461,7 @@ int C4ScriptHost::ResolveIncludes(C4DefList &rDefs) {
     if (!(pDef = rDefs.ID2Def(idInclude))) {
 #ifdef C4ENGINE // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                 // - - - -
-      sprintf(OSTR, LoadResStr(IDS_PRC_UNDEFINEDINCLUDE), C4IdText(idDef),
-              szID);
+      sprintf(OSTR, LoadResStr(IDS_PRC_UNDEFINEDINCLUDE), C4IdText(idDef), szID);
       Log(OSTR);
 #endif // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
        // - - - -

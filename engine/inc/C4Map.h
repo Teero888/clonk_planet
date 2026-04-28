@@ -13,10 +13,8 @@ protected:
   int Exclusive;
 
 public:
-  void Create(BYTE *bypBuffer, int iBufWdt, C4SLandscape &rLScape,
-              C4TextureMap &rTexMap, BOOL fLayers = FALSE, int iPlayerNum = 1);
-  BOOL Load(BYTE **pbypBuffer, int &rBufWdt, int &rMapWdt, int &rMapHgt,
-            C4Group &hGroup, const char *szEntryName, C4TextureMap &rTexMap);
+  void Create(BYTE *bypBuffer, int iBufWdt, C4SLandscape &rLScape, C4TextureMap &rTexMap, BOOL fLayers = FALSE, int iPlayerNum = 1);
+  BOOL Load(BYTE **pbypBuffer, int &rBufWdt, int &rMapWdt, int &rMapHgt, C4Group &hGroup, const char *szEntryName, C4TextureMap &rTexMap);
 
 protected:
   void Reset();

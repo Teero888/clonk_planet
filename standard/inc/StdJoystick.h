@@ -8,7 +8,6 @@ BOOL StdSetGamepadCalibration(int iMinX, int iMaxX, int iMinY, int iMaxY);
 BOOL StdGetGamepadCalibration(int &iMinX, int &iMaxX, int &iMinY, int &iMaxY);
 BOOL StdGetGamepad(int id, BOOL fExtended, DWORD &dwPos, DWORD &dwButtons);
 
-BOOL StdGetJoyPos(int id, BOOL fExtended, DWORD &dwXPos, DWORD &dwYPos,
-                  DWORD &dwButtons);
+BOOL StdGetJoyPos(int id, BOOL fExtended, DWORD &dwXPos, DWORD &dwYPos, DWORD &dwButtons);
 
 int GetFirstSetBit(DWORD dwBitArray); // Returns -1 if no bit is set

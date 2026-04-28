@@ -20,8 +20,7 @@ BOOL C4GamePadControl::Initialize(int iPlr, int iGamepad) {
   Plr = iPlr;
   GamePad = iGamepad;
   // Set calibration
-  StdSetGamepadCalibration(Config.Gamepad.MinX, Config.Gamepad.MaxX,
-                           Config.Gamepad.MinY, Config.Gamepad.MaxY);
+  StdSetGamepadCalibration(Config.Gamepad.MinX, Config.Gamepad.MaxX, Config.Gamepad.MinY, Config.Gamepad.MaxY);
   // Done
   return TRUE;
 }

@@ -26,10 +26,8 @@ public:
   int GetTemperature();
   int GetSeason();
   int GetClimate();
-  BOOL LaunchLightning(int x, int y, int xdir, int xrange, int ydir,
-                       int yrange);
+  BOOL LaunchLightning(int x, int y, int xdir, int xrange, int ydir, int yrange);
   BOOL LaunchVolcano(int mat, int x, int y, int size);
   BOOL LaunchEarthquake(int iX, int iY);
-  BOOL LaunchCloud(int iX, int iY, int iWidth, int iStrength,
-                   const char *szPrecipitation);
+  BOOL LaunchCloud(int iX, int iY, int iWidth, int iStrength, const char *szPrecipitation);
 };

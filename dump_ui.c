@@ -23,8 +23,7 @@ void DumpWindow(HWND hwnd, int indent) {
 
   for (int i = 0; i < indent; i++)
     printf("  ");
-  printf("[%s] Text:'%s' Window:%d,%d,%dx%d Client:%d,%d,%dx%d\n", className,
-         windowText, wx, wy, ww, wh, cx, cy, cw, ch);
+  printf("[%s] Text:'%s' Window:%d,%d,%dx%d Client:%d,%d,%dx%d\n", className, windowText, wx, wy, ww, wh, cx, cy, cw, ch);
 
   HWND child = GetWindow(hwnd, GW_CHILD);
   while (child) {

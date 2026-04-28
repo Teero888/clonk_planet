@@ -17,13 +17,11 @@ BOOL C4Engine::Init(HINSTANCE hinst, HWND hwnd, BOOL fFullscreen) {
   DeleteFile(Config.AtLogPath(C4CFN_Log));
 #endif
   Log(C4EngineInfo);
-  sprintf(OSTR, C4XVer4 ? "Version: %d.%d%d.%d" : "Version: %d.%d%d", C4XVer1,
-          C4XVer2, C4XVer3, C4XVer4);
+  sprintf(OSTR, C4XVer4 ? "Version: %d.%d%d.%d" : "Version: %d.%d%d", C4XVer1, C4XVer2, C4XVer3, C4XVer4);
   Log(OSTR);
 
   // Initialize DirectDraw
-  if (!DDraw.Init(hwnd, fFullscreen, Config.Graphics.ResX, Config.Graphics.ResY,
-                  FALSE)) {
+  if (!DDraw.Init(hwnd, fFullscreen, Config.Graphics.ResX, Config.Graphics.ResY, FALSE)) {
     Log(LoadResStr(IDS_ERR_DDRAW));
     return FALSE;
   }
@@ -40,12 +38,10 @@ BOOL C4Engine::Init(HINSTANCE hinst, HWND hwnd, BOOL fFullscreen) {
   // DirectDraw software emulation mode (set in fullscreen only, developer mode
   // needs to use same as frontend)
   if (fFullscreen) {
-    if (GetRegistryDWord(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\DirectDraw",
-                         "EmulationOnly", &DDrawEmulationState))
+    if (GetRegistryDWord(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\DirectDraw", "EmulationOnly", &DDrawEmulationState))
       fDDrawEmulationState = TRUE;
     if (!Config.Graphics.DDrawAccel)
-      SetRegistryDWord(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\DirectDraw",
-                       "EmulationOnly", 1);
+      SetRegistryDWord(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\DirectDraw", "EmulationOnly", 1);
   }
 #else
   // On Linux, we need some way to drive Game.GameGo and GraphicsGo
@@ -73,8 +69,7 @@ void C4Engine::Clear() {
 #ifdef _WIN32
   // Restore DirectDraw emulation state
   if (fDDrawEmulationState)
-    SetRegistryDWord(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\DirectDraw",
-                     "EmulationOnly", DDrawEmulationState);
+    SetRegistryDWord(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\DirectDraw", "EmulationOnly", DDrawEmulationState);
   // Close timers
   CloseCriticalTimer();
 #endif
@@ -87,8 +82,7 @@ void C4Engine::Clear() {
 #endif
 }
 
-void CALLBACK EngineCriticalTimer(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1,
-                                  DWORD dw2) {
+void CALLBACK EngineCriticalTimer(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2) {
   Game.GameGo = TRUE;
   Game.GraphicsSystem.GraphicsGo = TRUE;
 }
@@ -100,8 +94,7 @@ BOOL C4Engine::SetCriticalTimer(HWND hwnd) {
     return FALSE;
   fTimePeriod = TRUE;
   // Set critical timer
-  if (!(idCriticalTimer = timeSetEvent(CRITICAL_MSEC, CRITICAL_MSEC,
-                                       &EngineCriticalTimer, 0, TIME_PERIODIC)))
+  if (!(idCriticalTimer = timeSetEvent(CRITICAL_MSEC, CRITICAL_MSEC, &EngineCriticalTimer, 0, TIME_PERIODIC)))
     return FALSE;
 #endif
   return TRUE;

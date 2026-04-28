@@ -8,8 +8,7 @@ C4ComponentHost *pCmpHost = NULL;
 
 #if defined(C4ENGINE) && defined(_WIN32)
 
-BOOL CALLBACK ComponentDlgProc(HWND hDlg, UINT Msg, WPARAM wParam,
-                               LPARAM lParam) {
+BOOL CALLBACK ComponentDlgProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam) {
 
   if (!pCmpHost)
     return FALSE;
@@ -21,14 +20,12 @@ BOOL CALLBACK ComponentDlgProc(HWND hDlg, UINT Msg, WPARAM wParam,
     break;
   //-------------------------------------------------------------------------------------------------
   case WM_DESTROY:
-    StoreWindowPosition(hDlg, "Component",
-                        "Software\\RedWolf Design\\Clonk 4\\Console", FALSE);
+    StoreWindowPosition(hDlg, "Component", "Software\\RedWolf Design\\Clonk 4\\Console", FALSE);
     break;
   //-------------------------------------------------------------------------------------------------
   case WM_INITDIALOG:
     pCmpHost->InitDialog(hDlg);
-    RestoreWindowPosition(hDlg, "Component",
-                          "Software\\RedWolf Design\\Clonk 4\\Console");
+    RestoreWindowPosition(hDlg, "Component", "Software\\RedWolf Design\\Clonk 4\\Console");
     return TRUE;
   //-------------------------------------------------------------------------------------------------
   case WM_COMMAND:
@@ -91,8 +88,7 @@ void C4ComponentHost::Clear() {
   hDialog = NULL;
 }
 
-BOOL C4ComponentHost::Load(const char *szName, C4Group &hGroup,
-                           const char *szFilename, const char *szLanguage) {
+BOOL C4ComponentHost::Load(const char *szName, C4Group &hGroup, const char *szFilename, const char *szLanguage) {
   Clear();
 
   // Store name & filename
@@ -127,16 +123,14 @@ void C4ComponentHost::Open() {
 
 #if defined(C4ENGINE) && defined(_WIN32)
 
-  DialogBox(Application.hInstance, MAKEINTRESOURCE(IDD_COMPONENT),
-            Application.hWindow, (DLGPROC)ComponentDlgProc);
+  DialogBox(Application.hInstance, MAKEINTRESOURCE(IDD_COMPONENT), Application.hWindow, (DLGPROC)ComponentDlgProc);
 
 #endif
 
   pCmpHost = NULL;
 }
 
-BOOL C4ComponentHost::GetLanguageString(const char *szLanguage, char *sTarget,
-                                        int iMaxLen) {
+BOOL C4ComponentHost::GetLanguageString(const char *szLanguage, char *sTarget, int iMaxLen) {
   char langindex[4];
   const char *cptr;
   // No good parameters
@@ -177,14 +171,12 @@ void C4ComponentHost::InitDialog(HWND hDlg) {
 
 const char *C4ComponentHost::GetData() { return Data; }
 
-BOOL C4ComponentHost::SetLanguageString(const char *szLanguage,
-                                        const char *szString) {
+BOOL C4ComponentHost::SetLanguageString(const char *szLanguage, const char *szString) {
   // Safety
   if (!szLanguage || !szString)
     return FALSE;
   // Allocate temp buffer
-  char *cpBuffer =
-      new char[Size + SLen(szLanguage) + 1 + SLen(szString) + 2 + 1];
+  char *cpBuffer = new char[Size + SLen(szLanguage) + 1 + SLen(szString) + 2 + 1];
   cpBuffer[0] = 0;
   // Copy all lines except language line
   const char *cpPos = Data;

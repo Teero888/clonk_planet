@@ -15,10 +15,7 @@
 
 BOOL Log(const char *szMessage);
 
-void HResultErrorString(long hresult, char *tstr) {
-  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, hresult, LANG_SYSTEM_DEFAULT,
-                tstr, 255, NULL);
-}
+void HResultErrorString(long hresult, char *tstr) { FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, hresult, LANG_SYSTEM_DEFAULT, tstr, 255, NULL); }
 
 #define DINPUT_BUFFERSIZE 16
 
@@ -175,8 +172,7 @@ void DirectInputCritical() {
   while (TRUE) {
     DIDEVICEOBJECTDATA od;
     DWORD dwElements = 1;
-    HRESULT hr = g_pMouse->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), &od,
-                                         &dwElements, 0);
+    HRESULT hr = g_pMouse->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), &od, &dwElements, 0);
     MouseStatus = hr;
     if (hr == DIERR_INPUTLOST) {
       DirectInputSyncAcquire(TRUE);

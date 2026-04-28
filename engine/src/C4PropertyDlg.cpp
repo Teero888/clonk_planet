@@ -17,8 +17,7 @@ BOOL C4PropertyDlg::Update() { return FALSE; }
 BOOL C4PropertyDlg::Update(C4ObjectList &rSelection) { return FALSE; }
 #else
 
-BOOL CALLBACK PropertyDlgProc(HWND hDlg, UINT Msg, WPARAM wParam,
-                              LPARAM lParam) {
+BOOL CALLBACK PropertyDlgProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam) {
 
   switch (Msg) {
   //------------------------------------------------------------------------------------------------
@@ -27,8 +26,7 @@ BOOL CALLBACK PropertyDlgProc(HWND hDlg, UINT Msg, WPARAM wParam,
     break;
   //------------------------------------------------------------------------------------------------
   case WM_DESTROY:
-    StoreWindowPosition(hDlg, "Property",
-                        "Software\\RedWolf Design\\Clonk 4\\Console", FALSE);
+    StoreWindowPosition(hDlg, "Property", "Software\\RedWolf Design\\Clonk 4\\Console", FALSE);
     break;
   //------------------------------------------------------------------------------------------------
   case WM_INITDIALOG:
@@ -69,8 +67,7 @@ C4PropertyDlg::~C4PropertyDlg() { Clear(); }
 BOOL C4PropertyDlg::Open() {
   if (hDialog)
     return TRUE;
-  hDialog = CreateDialog(Application.hInstance, MAKEINTRESOURCE(IDD_PROPERTIES),
-                         Application.hWindow, (DLGPROC)PropertyDlgProc);
+  hDialog = CreateDialog(Application.hInstance, MAKEINTRESOURCE(IDD_PROPERTIES), Application.hWindow, (DLGPROC)PropertyDlgProc);
   if (!hDialog)
     return FALSE;
   // Set text
@@ -80,8 +77,7 @@ BOOL C4PropertyDlg::Open() {
   EnableWindow(GetDlgItem(hDialog, IDC_COMBOINPUT), Console.Editing);
   EnableWindow(GetDlgItem(hDialog, IDC_BUTTONRELOADDEF), Console.Editing);
   // Show window
-  RestoreWindowPosition(hDialog, "Property",
-                        "Software\\RedWolf Design\\Clonk 4\\Console");
+  RestoreWindowPosition(hDialog, "Property", "Software\\RedWolf Design\\Clonk 4\\Console");
   SetWindowPos(hDialog, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
   ShowWindow(hDialog, SW_SHOWNORMAL | SW_SHOWNA);
 
@@ -125,14 +121,12 @@ BOOL C4PropertyDlg::Update() {
   case 1:
     cobj = Selection.GetObject();
     // Type
-    sprintf(OSTR, LoadResStr(IDS_CNS_TYPE), cobj->Def->Name,
-            C4IdText(cobj->Def->id));
+    sprintf(OSTR, LoadResStr(IDS_CNS_TYPE), cobj->Def->Name, C4IdText(cobj->Def->id));
     SAppend(OSTR, output);
     SAppend(LineFeed, output);
     // Owner
     if (ValidPlr(cobj->Owner)) {
-      sprintf(OSTR, LoadResStr(IDS_CNS_OWNER),
-              Game.Players.Get(cobj->Owner)->Name);
+      sprintf(OSTR, LoadResStr(IDS_CNS_OWNER), Game.Players.Get(cobj->Owner)->Name);
       SAppend(OSTR, output);
       SAppend(LineFeed, output);
     }
@@ -163,8 +157,7 @@ BOOL C4PropertyDlg::Update() {
         }
         // C4Object*
         if (IsObjectPointer(iValue)) {
-          sprintf(OSTR + SLen(OSTR), "[%d] %s ", cnt,
-                  ((C4Object *)(long)iValue)->GetName());
+          sprintf(OSTR + SLen(OSTR), "[%d] %s ", cnt, ((C4Object *)(long)iValue)->GetName());
           continue;
         }
         // int
@@ -184,11 +177,9 @@ BOOL C4PropertyDlg::Update() {
     break;
   }
   // Update info edit control
-  int iLine = SendDlgItemMessage(hDialog, IDC_EDITOUTPUT,
-                                 EM_GETFIRSTVISIBLELINE, (WPARAM)0, (LPARAM)0);
+  int iLine = SendDlgItemMessage(hDialog, IDC_EDITOUTPUT, EM_GETFIRSTVISIBLELINE, (WPARAM)0, (LPARAM)0);
   SetDlgItemText(hDialog, IDC_EDITOUTPUT, output);
-  SendDlgItemMessage(hDialog, IDC_EDITOUTPUT, EM_LINESCROLL, (WPARAM)0,
-                     (LPARAM)iLine);
+  SendDlgItemMessage(hDialog, IDC_EDITOUTPUT, EM_LINESCROLL, (WPARAM)0, (LPARAM)iLine);
   UpdateWindow(GetDlgItem(hDialog, IDC_EDITOUTPUT));
 
   return TRUE;
@@ -253,8 +244,6 @@ void C4PropertyDlg::Execute() {
     Update();
 }
 
-void C4PropertyDlg::ClearPointers(C4Object *pObj) {
-  Selection.ClearPointers(pObj);
-}
+void C4PropertyDlg::ClearPointers(C4Object *pObj) { Selection.ClearPointers(pObj); }
 
 #endif // _WIN32

@@ -3,8 +3,7 @@
 /* Holds a single text file component from a group */
 
 class C4ComponentHost {
-  friend BOOL CALLBACK ComponentDlgProc(HWND hDlg, UINT Msg, WPARAM wParam,
-                                        LPARAM lParam);
+  friend BOOL CALLBACK ComponentDlgProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 public:
   C4ComponentHost();
@@ -25,8 +24,7 @@ public:
   void InitDialog(HWND hDlg);
   const char *GetData();
   virtual void Close();
-  BOOL Load(const char *szName, C4Group &hGroup, const char *szFilename,
-            const char *szLanguage = NULL);
+  BOOL Load(const char *szName, C4Group &hGroup, const char *szFilename, const char *szLanguage = NULL);
   BOOL Save(C4Group &hGroup);
   BOOL GetLanguageString(const char *szLanguage, char *sTarget, int iMaxLen);
   BOOL SetLanguageString(const char *szLanguage, const char *szString);

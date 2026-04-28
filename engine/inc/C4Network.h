@@ -49,8 +49,7 @@ public:
   BOOL SetClientOutOfSync(int iClient);
   BOOL RemoveClient(int iClient, const char *szName);
   BOOL SendJoinReady();
-  BOOL Join(const char *szServerName, const char *szServerAddress,
-            BOOL fRetrieveNetworkGame);
+  BOOL Join(const char *szServerName, const char *szServerAddress, BOOL fRetrieveNetworkGame);
   BOOL HandleJoin(C4Stream *pStrm);
   const char *GetClientName(int iClient);
   int GetClientCount();

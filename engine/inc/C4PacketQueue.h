@@ -14,8 +14,7 @@ protected:
 public:
   void Default();
   void Clear();
-  void Set(int iType, void *pData = NULL, int iSize = 0, BOOL fHoldData = FALSE,
-           int iDataSize = 0);
+  void Set(int iType, void *pData = NULL, int iSize = 0, BOOL fHoldData = FALSE, int iDataSize = 0);
   void SetChunkSize(int iChunkSize);
   BOOL AddStatic(C4Packet &rPacket);
   BOOL AddStaticHead(C4Packet &rPacket);

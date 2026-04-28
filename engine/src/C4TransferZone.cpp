@@ -98,15 +98,10 @@ void C4TransferZones::Draw(C4FacetEx &cgo) {
 void C4TransferZone::Draw(C4FacetEx &cgo, BOOL fHighlight) {
   if (Used)
     fHighlight = TRUE;
-  lpDDraw->DrawFrame(cgo.Surface, cgo.X + X - cgo.TargetX,
-                     cgo.Y + Y - cgo.TargetY, cgo.X + X - cgo.TargetX + Wdt - 1,
-                     cgo.Y + Y - cgo.TargetY + Hgt - 1,
-                     fHighlight ? CGreen : CRed);
+  lpDDraw->DrawFrame(cgo.Surface, cgo.X + X - cgo.TargetX, cgo.Y + Y - cgo.TargetY, cgo.X + X - cgo.TargetX + Wdt - 1, cgo.Y + Y - cgo.TargetY + Hgt - 1, fHighlight ? CGreen : CRed);
 }
 
-BOOL C4TransferZone::At(int iX, int iY) {
-  return (Inside(iX - X, 0, Wdt - 1) && Inside(iY - Y, 0, Hgt - 1));
-}
+BOOL C4TransferZone::At(int iX, int iY) { return (Inside(iX - X, 0, Wdt - 1) && Inside(iY - Y, 0, Hgt - 1)); }
 
 int C4TransferZones::RemoveNullZones() {
   int iResult = 0;

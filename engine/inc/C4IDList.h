@@ -32,8 +32,7 @@ public:
   BOOL DecreaseIDCount(C4ID c_id, BOOL fRemoveEmptyID = TRUE);
   int GetNumberOfIDs();
   // Access by category-sorted index
-  C4ID GetID(C4DefList &rDefs, DWORD dwCategory, int index,
-             int *ipCount = NULL);
+  C4ID GetID(C4DefList &rDefs, DWORD dwCategory, int index, int *ipCount = NULL);
   int GetCount(C4DefList &rDefs, DWORD dwCategory, int index);
   BOOL SetCount(C4DefList &rDefs, DWORD dwCategory, int index, int iCount);
   int GetNumberOfIDs(C4DefList &rDefs, DWORD dwCategory);
@@ -54,13 +53,10 @@ public:
   BOOL Read(const char *szSource, int iDefValue = 0);
   BOOL Write(char *szTarget, BOOL fValues = TRUE);
   // Graphics
-  void Draw(C4Facet &cgo, int iSelection, C4DefList &rDefs, DWORD dwCategory,
-            BOOL fCounts = TRUE, int iAlign = 0);
+  void Draw(C4Facet &cgo, int iSelection, C4DefList &rDefs, DWORD dwCategory, BOOL fCounts = TRUE, int iAlign = 0);
 
 public:
-  bool operator==(const C4IDList &rhs) {
-    return MemEqual((BYTE *)this, (BYTE *)&rhs, sizeof(C4IDList));
-  }
+  bool operator==(const C4IDList &rhs) { return MemEqual((BYTE *)this, (BYTE *)&rhs, sizeof(C4IDList)); }
 };
 
 #pragma pack(pop)

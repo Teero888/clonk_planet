@@ -4,10 +4,7 @@
 
 const int C4MC_MaxCaption = 1024;
 
-const int C4MC_Button_None = 0, C4MC_Button_LeftDown = 1,
-          C4MC_Button_LeftUp = 2, C4MC_Button_RightDown = 3,
-          C4MC_Button_RightUp = 4, C4MC_Button_LeftDouble = 5,
-          C4MC_Button_RightDouble = 6;
+const int C4MC_Button_None = 0, C4MC_Button_LeftDown = 1, C4MC_Button_LeftUp = 2, C4MC_Button_RightDown = 3, C4MC_Button_RightUp = 4, C4MC_Button_LeftDouble = 5, C4MC_Button_RightDouble = 6;
 
 class C4MouseControl {
 public:
@@ -87,9 +84,7 @@ protected:
   void UpdateScrolling();
   void CreateDragImage(C4ID id);
   void UpdateCursorTarget();
-  void SendCommand(int iCommand, int iX = 0, int iY = 0,
-                   C4Object *pTarget = NULL, C4Object *pTarget2 = NULL,
-                   int iData = 0, int iAddMode = C4P_Command_Set);
+  void SendCommand(int iCommand, int iX = 0, int iY = 0, C4Object *pTarget = NULL, C4Object *pTarget2 = NULL, int iData = 0, int iAddMode = C4P_Command_Set);
   int UpdateObjectSelection();
   int UpdateCrewSelection();
   int UpdateSingleSelection();

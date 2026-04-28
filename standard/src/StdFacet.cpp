@@ -30,8 +30,4 @@ void CFacet::Set(SURFACE nsfc, int nx, int ny, int nwdt, int nhgt) {
   Hgt = nhgt;
 }
 
-void CFacet::Draw(SURFACE sfcSurface, int iX, int iY, int iPhaseX,
-                  int iPhaseY) {
-  lpDDraw->Blit(Surface, X + Wdt * iPhaseX, Y + Hgt * iPhaseY, Wdt, Hgt,
-                sfcSurface, iX, iY, Wdt, Hgt, TRUE);
-}
+void CFacet::Draw(SURFACE sfcSurface, int iX, int iY, int iPhaseX, int iPhaseY) { lpDDraw->Blit(Surface, X + Wdt * iPhaseX, Y + Hgt * iPhaseY, Wdt, Hgt, sfcSurface, iX, iY, Wdt, Hgt, TRUE); }

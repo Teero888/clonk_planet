@@ -4,8 +4,7 @@
 
 #include <C4Include.h>
 
-LRESULT APIENTRY ViewportWinProc(HWND hwnd, UINT uMsg, WPARAM wParam,
-                                 LPARAM lParam);
+LRESULT APIENTRY ViewportWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 volatile BOOL C4GraphicsSystem::GraphicsGo;
 
@@ -120,9 +119,7 @@ void C4GraphicsSystem::Execute() {
       sprintf(OSTR,
               "%s|Behind %i ms|ScreenRate %i|ControlRate %i|Input %i "
               "Bytes|Control %i Bytes|Game speed %i FPS|Control queue %i/%i",
-              Game.AsynchronousControl ? "Asynchronous" : "Synchronous",
-              Game.ControlTimeBehind, ScreenRate, Game.ControlRate,
-              Game.Input.Size, iLastControlSize, Game.FPS, ControlQueueSize,
+              Game.AsynchronousControl ? "Asynchronous" : "Synchronous", Game.ControlTimeBehind, ScreenRate, Game.ControlRate, Game.Input.Size, iLastControlSize, Game.FPS, ControlQueueSize,
               ControlQueueDataSize);
       Engine.DDraw.TextOut(OSTR, Engine.DDraw.lpBack, 20, 40, FWhite, FBlack);
     }
@@ -236,12 +233,8 @@ void C4GraphicsSystem::Default() {
 }
 
 void C4GraphicsSystem::DrawFullscreenBackground() {
-  Engine.DDraw.BlitSurfaceTile(Game.GraphicsResource.fctBackground.Surface,
-                               Engine.DDraw.lpPrimary, 0, 0,
-                               Config.Graphics.ResX, Config.Graphics.ResY);
-  Engine.DDraw.BlitSurfaceTile(Game.GraphicsResource.fctBackground.Surface,
-                               Engine.DDraw.lpBack, 0, 0, Config.Graphics.ResX,
-                               Config.Graphics.ResY);
+  Engine.DDraw.BlitSurfaceTile(Game.GraphicsResource.fctBackground.Surface, Engine.DDraw.lpPrimary, 0, 0, Config.Graphics.ResX, Config.Graphics.ResY);
+  Engine.DDraw.BlitSurfaceTile(Game.GraphicsResource.fctBackground.Surface, Engine.DDraw.lpBack, 0, 0, Config.Graphics.ResX, Config.Graphics.ResY);
   RedrawBackground = FALSE;
 }
 
@@ -256,8 +249,7 @@ BOOL C4GraphicsSystem::InitLoaderScreen(const char *szGroup) {
     sprintf(OSTR, "Loader%d.bmp", 1 + SafeRandom(iLoaders));
     if (fctLoader.Load(hGroup, OSTR)) {
       Engine.DDraw.SetPrimaryPalette(fctLoader.GetPalette());
-      cgo.Set(Engine.DDraw.lpPrimary, 0, 0, Config.Graphics.ResX,
-              Config.Graphics.ResY);
+      cgo.Set(Engine.DDraw.lpPrimary, 0, 0, Config.Graphics.ResX, Config.Graphics.ResY);
       fctLoader.Draw(cgo, FALSE);
       hGroup.Close();
       return TRUE;
@@ -284,8 +276,7 @@ void C4GraphicsSystem::ColorAnimation() {
         MemCopy(pPalette + 3 * (mcol + 1), pPalette + 3 * (mcol + 0), 6);
         MemCopy(buf, pPalette + 3 * (mcol + 2), 3);
         MemCopy(pPalette + 3 * (mcol + IFT + 0), buf, 3);
-        MemCopy(pPalette + 3 * (mcol + IFT + 1),
-                pPalette + 3 * (mcol + IFT + 0), 6);
+        MemCopy(pPalette + 3 * (mcol + IFT + 1), pPalette + 3 * (mcol + IFT + 0), 6);
         MemCopy(buf, pPalette + 3 * (mcol + IFT + 2), 3);
       }
     // Force field color animation
@@ -330,8 +321,7 @@ void C4GraphicsSystem::RecalculateViewports() {
   SortViewportsByPlayerControl();
 
   // Viewport area
-  ViewportArea.Set(Engine.DDraw.lpBack, 0, 0, Config.Graphics.ResX,
-                   Config.Graphics.ResY - MessageBoard.Output.Hgt);
+  ViewportArea.Set(Engine.DDraw.lpBack, 0, 0, Config.Graphics.ResX, Config.Graphics.ResY - MessageBoard.Output.Hgt);
 
   // Redraw flag
   RedrawBackground = TRUE;
@@ -369,9 +359,7 @@ void C4GraphicsSystem::RecalculateViewports() {
         if (cViewH < iViewsH - 1)
           cOffHgt = 4;
       }
-      cvp->SetOutputSize(cOffX + cViewX * cViewWdt, cOffY + cViewH * cViewHgt,
-                         cOffX + cViewX * cViewWdt, cOffY + cViewH * cViewHgt,
-                         cViewWdt - cOffWdt, cViewHgt - cOffHgt);
+      cvp->SetOutputSize(cOffX + cViewX * cViewWdt, cOffY + cViewH * cViewHgt, cOffX + cViewX * cViewWdt, cOffY + cViewH * cViewHgt, cViewWdt - cOffWdt, cViewHgt - cOffHgt);
       cvp = cvp->Next;
     }
   }
@@ -414,14 +402,12 @@ void C4GraphicsSystem::SortViewportsByPlayerControl() {
   C4Viewport *pView, *pNext, *pPrev;
   do {
     fSorted = TRUE;
-    for (pPrev = NULL, pView = FirstViewport; pView && (pNext = pView->Next);
-         pView = pNext) {
+    for (pPrev = NULL, pView = FirstViewport; pView && (pNext = pView->Next); pView = pNext) {
       // Get players
       pPlr1 = Game.Players.Get(pView->Player);
       pPlr2 = Game.Players.Get(pNext->Player);
       // Swap order
-      if (pPlr1 && pPlr2 &&
-          (LayoutOrder(pPlr1->Control) > LayoutOrder(pPlr2->Control))) {
+      if (pPlr1 && pPlr2 && (LayoutOrder(pPlr1->Control) > LayoutOrder(pPlr2->Control))) {
         if (pPrev)
           pPrev->Next = pNext;
         else
@@ -444,9 +430,7 @@ void C4GraphicsSystem::MouseMove(int iButton, int iX, int iY, WORD wKeyParam) {
   // Pass on to mouse controlled viewport
   for (C4Viewport *cvp = FirstViewport; cvp; cvp = cvp->Next)
     if (Game.MouseControl.IsViewport(cvp))
-      Game.MouseControl.Move(
-          iButton, BoundBy(iX - cvp->OutX, 0, cvp->ViewWdt - 1),
-          BoundBy(iY - cvp->OutY, 0, cvp->ViewHgt - 1), wKeyParam);
+      Game.MouseControl.Move(iButton, BoundBy(iX - cvp->OutX, 0, cvp->ViewWdt - 1), BoundBy(iY - cvp->OutY, 0, cvp->ViewHgt - 1), wKeyParam);
 }
 
 BOOL C4GraphicsSystem::SaveScreenshot() {
@@ -460,8 +444,7 @@ BOOL C4GraphicsSystem::SaveScreenshot() {
     sprintf(szFilename, "Screenshot%03i.bmp", iScreenshotIndex++);
   } while (FileExists(szFilename));
   // Save primary surface
-  if (!SaveSurface(szFilename, Engine.DDraw.lpBack,
-                   Game.GraphicsResource.GamePalette))
+  if (!SaveSurface(szFilename, Engine.DDraw.lpBack, Game.GraphicsResource.GamePalette))
     Log(LoadResStr(IDS_PRC_SCREENSHOTERROR));
   else
     Log(LoadResStr(IDS_PRC_SCREENSHOT));
@@ -479,25 +462,17 @@ void C4GraphicsSystem::DeactivateDebugOutput() {
 void C4GraphicsSystem::DrawHoldMessages() {
   if (Application.Fullscreen) {
     if (FullScreen.HoldAbort)
-      Engine.DDraw.TextOut(LoadResStr(IDS_HOLD_ABORT), Engine.DDraw.lpBack,
-                           Config.Graphics.ResX / 2, Config.Graphics.ResY / 2,
-                           FWhite, FBlack, ACenter);
+      Engine.DDraw.TextOut(LoadResStr(IDS_HOLD_ABORT), Engine.DDraw.lpBack, Config.Graphics.ResX / 2, Config.Graphics.ResY / 2, FWhite, FBlack, ACenter);
     if (FullScreen.HoldGameOver)
-      Engine.DDraw.TextOut(LoadResStr(IDS_HOLD_GAMEOVER), Engine.DDraw.lpBack,
-                           Config.Graphics.ResX / 2, Config.Graphics.ResY / 2,
-                           FWhite, FBlack, ACenter);
+      Engine.DDraw.TextOut(LoadResStr(IDS_HOLD_GAMEOVER), Engine.DDraw.lpBack, Config.Graphics.ResX / 2, Config.Graphics.ResY / 2, FWhite, FBlack, ACenter);
   }
 }
 
 BYTE FindPaletteColor(BYTE *bypPalette, int iRed, int iGreen, int iBlue) {
   int iClosest = 0;
   for (int iColor = 1; iColor < 256; iColor++)
-    if (Abs(bypPalette[iColor * 3 + 0] - iRed) +
-            Abs(bypPalette[iColor * 3 + 1] - iGreen) +
-            Abs(bypPalette[iColor * 3 + 2] - iBlue) <
-        Abs(bypPalette[iClosest * 3 + 0] - iRed) +
-            Abs(bypPalette[iClosest * 3 + 1] - iGreen) +
-            Abs(bypPalette[iClosest * 3 + 2] - iBlue))
+    if (Abs(bypPalette[iColor * 3 + 0] - iRed) + Abs(bypPalette[iColor * 3 + 1] - iGreen) + Abs(bypPalette[iColor * 3 + 2] - iBlue) <
+        Abs(bypPalette[iClosest * 3 + 0] - iRed) + Abs(bypPalette[iClosest * 3 + 1] - iGreen) + Abs(bypPalette[iClosest * 3 + 2] - iBlue))
       iClosest = iColor;
   return iClosest;
 }
@@ -507,10 +482,8 @@ void C4GraphicsSystem::SetDarkColorTable() {
   // Using GamePalette
   BYTE *bypPalette = Game.GraphicsResource.GamePalette;
   for (int iColor = 0; iColor < 256; iColor++)
-    DarkColorTable[iColor] = FindPaletteColor(
-        bypPalette, Max(bypPalette[iColor * 3 + 0] - iDarkening, 0),
-        Max(bypPalette[iColor * 3 + 1] - iDarkening, 0),
-        Max(bypPalette[iColor * 3 + 2] - iDarkening, 0));
+    DarkColorTable[iColor] =
+        FindPaletteColor(bypPalette, Max(bypPalette[iColor * 3 + 0] - iDarkening, 0), Max(bypPalette[iColor * 3 + 1] - iDarkening, 0), Max(bypPalette[iColor * 3 + 2] - iDarkening, 0));
 }
 
 // FlashMessage is not designed for multi-viewports (status text mix / border
@@ -528,11 +501,8 @@ void C4GraphicsSystem::DrawFlashMessage() {
     return;
   if (!Application.Fullscreen)
     return;
-  Engine.DDraw.TextOut(
-      FlashMessageText, Engine.DDraw.lpBack,
-      (FlashMessageX == -1) ? Config.Graphics.ResX / 2 : FlashMessageX,
-      (FlashMessageY == -1) ? Config.Graphics.ResY / 2 : FlashMessageY, FWhite,
-      FBlack, (FlashMessageX == -1) ? ACenter : ALeft);
+  Engine.DDraw.TextOut(FlashMessageText, Engine.DDraw.lpBack, (FlashMessageX == -1) ? Config.Graphics.ResX / 2 : FlashMessageX, (FlashMessageY == -1) ? Config.Graphics.ResY / 2 : FlashMessageY,
+                       FWhite, FBlack, (FlashMessageX == -1) ? ACenter : ALeft);
   FlashMessageTime--;
   // if (!FlashMessageTime) RedrawBackground=TRUE;
 }
@@ -541,12 +511,6 @@ int C4GraphicsSystem::GetAudibility(int iX, int iY) {
   // Accumulate audibility by viewports
   int iAudible = 0;
   for (C4Viewport *cvp = FirstViewport; cvp; cvp = cvp->Next)
-    iAudible =
-        Max(iAudible,
-            BoundBy(100 - 100 *
-                              Distance(cvp->ViewX + cvp->ViewWdt / 2,
-                                       cvp->ViewY + cvp->ViewHgt / 2, iX, iY) /
-                              700,
-                    0, 100));
+    iAudible = Max(iAudible, BoundBy(100 - 100 * Distance(cvp->ViewX + cvp->ViewWdt / 2, cvp->ViewY + cvp->ViewHgt / 2, iX, iY) / 700, 0, 100));
   return iAudible;
 }

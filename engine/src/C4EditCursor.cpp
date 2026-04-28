@@ -17,8 +17,7 @@ void C4EditCursor::Execute() {
     C4Object *cobj;
     C4ObjectLink *clnk;
     if (Hold)
-      for (clnk = Selection.First; clnk && (cobj = clnk->Obj);
-           clnk = clnk->Next) {
+      for (clnk = Selection.First; clnk && (cobj = clnk->Obj); clnk = clnk->Next) {
         cobj->ForcePosition(cobj->x, cobj->y);
         cobj->xdir = cobj->ydir = 0;
       }
@@ -117,15 +116,12 @@ BOOL C4EditCursor::UpdateStatusBar() {
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // - - - - - - - - - - - - -
   case C4CNS_ModeEdit:
-    sprintf(OSTR, "%i/%i (%s)", X, Y,
-            Target ? Target->GetName() : LoadResStr(IDS_CNS_NOTHING));
+    sprintf(OSTR, "%i/%i (%s)", X, Y, Target ? Target->GetName() : LoadResStr(IDS_CNS_NOTHING));
     break;
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // - - - - - - - - - - - - -
   case C4CNS_ModeDraw:
-    sprintf(OSTR, "%i/%i (%s)", X, Y,
-            MatValid(GBackMat(X, Y)) ? Game.Material.Map[GBackMat(X, Y)].Name
-                                     : LoadResStr(IDS_CNS_NOTHING));
+    sprintf(OSTR, "%i/%i (%s)", X, Y, MatValid(GBackMat(X, Y)) ? Game.Material.Map[GBackMat(X, Y)].Name : LoadResStr(IDS_CNS_NOTHING));
     break;
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // - - - - - - - - - - - - - -
@@ -275,8 +271,7 @@ BOOL C4EditCursor::LeftButtonUp() {
 
 BOOL SetMenuItemEnable(HMENU hMenu, WORD id, BOOL fEnable) {
 #ifdef _WIN32
-  return EnableMenuItem(hMenu, id,
-                        MF_BYCOMMAND | MF_ENABLED | (fEnable ? 0 : MF_GRAYED));
+  return EnableMenuItem(hMenu, id, MF_BYCOMMAND | MF_ENABLED | (fEnable ? 0 : MF_GRAYED));
 #else
   return FALSE;
 #endif
@@ -355,27 +350,18 @@ void C4EditCursor::Draw(C4FacetEx &cgo) {
   C4ObjectLink *clnk;
   C4Facet frame;
   for (clnk = Selection.First; clnk && (cobj = clnk->Obj); clnk = clnk->Next) {
-    frame.Set(cgo.Surface, cobj->x + cobj->Shape.x + cgo.X - cgo.TargetX,
-              cobj->y + cobj->Shape.y + cgo.Y - cgo.TargetY, cobj->Shape.Wdt,
-              cobj->Shape.Hgt);
+    frame.Set(cgo.Surface, cobj->x + cobj->Shape.x + cgo.X - cgo.TargetX, cobj->y + cobj->Shape.y + cgo.Y - cgo.TargetY, cobj->Shape.Wdt, cobj->Shape.Hgt);
     DrawSelectMark(frame);
   }
   // Draw drag frame
   if (DragFrame)
-    Engine.DDraw.DrawFrame(cgo.Surface, Min(X, X2) + cgo.X - cgo.TargetX,
-                           Min(Y, Y2) + cgo.Y - cgo.TargetY,
-                           Max(X, X2) + cgo.X - cgo.TargetX,
-                           Max(Y, Y2) + cgo.Y - cgo.TargetY, CWhite);
+    Engine.DDraw.DrawFrame(cgo.Surface, Min(X, X2) + cgo.X - cgo.TargetX, Min(Y, Y2) + cgo.Y - cgo.TargetY, Max(X, X2) + cgo.X - cgo.TargetX, Max(Y, Y2) + cgo.Y - cgo.TargetY, CWhite);
   // Draw drag line
   if (DragLine)
-    Engine.DDraw.DrawLine(cgo.Surface, X + cgo.X - cgo.TargetX,
-                          Y + cgo.Y - cgo.TargetY, X2 + cgo.X - cgo.TargetX,
-                          Y2 + cgo.Y - cgo.TargetY, CWhite);
+    Engine.DDraw.DrawLine(cgo.Surface, X + cgo.X - cgo.TargetX, Y + cgo.Y - cgo.TargetY, X2 + cgo.X - cgo.TargetX, Y2 + cgo.Y - cgo.TargetY, CWhite);
   // Draw drop target
   if (DropTarget)
-    Game.GraphicsResource.fctDropTarget.Draw(
-        cgo.Surface, DropTarget->x + cgo.X - cgo.TargetX - 5,
-        DropTarget->y + DropTarget->Shape.y + cgo.Y - cgo.TargetY - 17);
+    Game.GraphicsResource.fctDropTarget.Draw(cgo.Surface, DropTarget->x + cgo.X - cgo.TargetX - 5, DropTarget->y + DropTarget->Shape.y + cgo.Y - cgo.TargetY - 17);
 }
 
 void C4EditCursor::DrawSelectMark(C4Facet &cgo) {
@@ -394,12 +380,9 @@ void C4EditCursor::DrawSelectMark(C4Facet &cgo) {
   Engine.DDraw.SetPixel(cgo.Surface, cgo.X + cgo.Wdt - 2, cgo.Y, CWhite);
   Engine.DDraw.SetPixel(cgo.Surface, cgo.X + cgo.Wdt - 1, cgo.Y + 1, CWhite);
 
-  Engine.DDraw.SetPixel(cgo.Surface, cgo.X + cgo.Wdt - 1, cgo.Y + cgo.Hgt - 1,
-                        CWhite);
-  Engine.DDraw.SetPixel(cgo.Surface, cgo.X + cgo.Wdt - 2, cgo.Y + cgo.Hgt - 1,
-                        CWhite);
-  Engine.DDraw.SetPixel(cgo.Surface, cgo.X + cgo.Wdt - 1, cgo.Y + cgo.Hgt - 2,
-                        CWhite);
+  Engine.DDraw.SetPixel(cgo.Surface, cgo.X + cgo.Wdt - 1, cgo.Y + cgo.Hgt - 1, CWhite);
+  Engine.DDraw.SetPixel(cgo.Surface, cgo.X + cgo.Wdt - 2, cgo.Y + cgo.Hgt - 1, CWhite);
+  Engine.DDraw.SetPixel(cgo.Surface, cgo.X + cgo.Wdt - 1, cgo.Y + cgo.Hgt - 2, CWhite);
 }
 
 void C4EditCursor::MoveSelection(int iXOff, int iYOff) {
@@ -418,8 +401,7 @@ void C4EditCursor::FrameSelection() {
   for (clnk = Game.Objects.First; clnk && (cobj = clnk->Obj); clnk = clnk->Next)
     if (cobj->Status)
       if (cobj->OCF & OCF_NotContained)
-        if (Inside(cobj->x, Min(X, X2), Max(X, X2)) &&
-            Inside(cobj->y, Min(Y, Y2), Max(Y, Y2)))
+        if (Inside(cobj->x, Min(X, X2), Max(X, X2)) && Inside(cobj->y, Min(Y, Y2), Max(Y, Y2)))
           Selection.Add(cobj);
   Console.PropertyDlg.Update(Selection);
 }
@@ -548,8 +530,7 @@ void C4EditCursor::ApplyToolBrush() {
   if (!EditingOK())
     return;
   C4ToolsDlg *pTools = &Console.ToolsDlg;
-  if (!Game.Landscape.DrawBrush(X, Y, pTools->Grade, pTools->Material,
-                                pTools->Texture, pTools->ModeIFT)) {
+  if (!Game.Landscape.DrawBrush(X, Y, pTools->Grade, pTools->Material, pTools->Texture, pTools->ModeIFT)) {
     ToolFailure();
     return;
   }
@@ -560,8 +541,7 @@ void C4EditCursor::ApplyToolLine() {
   if (!EditingOK())
     return;
   C4ToolsDlg *pTools = &Console.ToolsDlg;
-  if (!Game.Landscape.DrawLine(X, Y, X2, Y2, pTools->Grade, pTools->Material,
-                               pTools->Texture, pTools->ModeIFT)) {
+  if (!Game.Landscape.DrawLine(X, Y, X2, Y2, pTools->Grade, pTools->Material, pTools->Texture, pTools->ModeIFT)) {
     ToolFailure();
     return;
   }
@@ -572,8 +552,7 @@ void C4EditCursor::ApplyToolRect() {
   if (!EditingOK())
     return;
   C4ToolsDlg *pTools = &Console.ToolsDlg;
-  if (!Game.Landscape.DrawBox(X, Y, X2, Y2, pTools->Grade, pTools->Material,
-                              pTools->Texture, pTools->ModeIFT)) {
+  if (!Game.Landscape.DrawBox(X, Y, X2, Y2, pTools->Grade, pTools->Material, pTools->Texture, pTools->ModeIFT)) {
     ToolFailure();
     return;
   }
@@ -588,8 +567,7 @@ void C4EditCursor::ApplyToolFill() {
     return;
   int grade = Console.ToolsDlg.Grade;
   for (int cnt = 0; cnt < grade; cnt++)
-    Game.Landscape.InsertMaterial(iMat, X + Random(grade) - grade / 2,
-                                  Y + Random(grade) - grade / 2);
+    Game.Landscape.InsertMaterial(iMat, X + Random(grade) - grade / 2, Y + Random(grade) - grade / 2);
 }
 
 BOOL C4EditCursor::SetToolPatCol(BYTE &bCol) {
@@ -603,8 +581,7 @@ BOOL C4EditCursor::SetToolPatCol(BYTE &bCol) {
     bCol = Mat2PixCol(iMat);
     if (Console.ToolsDlg.ModeIFT)
       bCol += IFT;
-    Engine.DDraw.DefinePattern(
-        Game.TextureMap.GetTexture(Console.ToolsDlg.Texture));
+    Engine.DDraw.DefinePattern(Game.TextureMap.GetTexture(Console.ToolsDlg.Texture));
   }
   return TRUE;
 }
@@ -615,27 +592,15 @@ BOOL C4EditCursor::DoContextMenu() {
   GetCursorPos(&point);
   HMENU hContext = GetSubMenu(hMenu, 0);
   BOOL fObjectSelected = Selection.ObjectCount();
-  SetMenuItemEnable(hContext, IDM_VIEWPORT_DELETE,
-                    fObjectSelected && Console.Editing);
-  SetMenuItemEnable(hContext, IDM_VIEWPORT_DUPLICATE,
-                    fObjectSelected && Console.Editing);
-  SetMenuItemEnable(hContext, IDM_VIEWPORT_CONTENTS,
-                    fObjectSelected &&
-                        Selection.GetObject()->Contents.ObjectCount() &&
-                        Console.Editing);
+  SetMenuItemEnable(hContext, IDM_VIEWPORT_DELETE, fObjectSelected && Console.Editing);
+  SetMenuItemEnable(hContext, IDM_VIEWPORT_DUPLICATE, fObjectSelected && Console.Editing);
+  SetMenuItemEnable(hContext, IDM_VIEWPORT_CONTENTS, fObjectSelected && Selection.GetObject()->Contents.ObjectCount() && Console.Editing);
   SetMenuItemEnable(hContext, IDM_VIEWPORT_PROPERTIES, Mode != C4CNS_ModePlay);
   SetMenuItemText(hContext, IDM_VIEWPORT_DELETE, LoadResStr(IDS_MNU_DELETE));
-  SetMenuItemText(hContext, IDM_VIEWPORT_DUPLICATE,
-                  LoadResStr(IDS_MNU_DUPLICATE));
-  SetMenuItemText(hContext, IDM_VIEWPORT_CONTENTS,
-                  LoadResStr(IDS_MNU_CONTENTS));
-  SetMenuItemText(hContext, IDM_VIEWPORT_PROPERTIES,
-                  LoadResStr((Mode == C4CNS_ModeEdit) ? IDS_CNS_PROPERTIES
-                                                      : IDS_CNS_TOOLS));
-  int iItem = TrackPopupMenu(hContext,
-                             TPM_LEFTALIGN | TPM_TOPALIGN | TPM_RETURNCMD |
-                                 TPM_LEFTBUTTON | TPM_NONOTIFY,
-                             point.x, point.y, 0, Application.hWindow, NULL);
+  SetMenuItemText(hContext, IDM_VIEWPORT_DUPLICATE, LoadResStr(IDS_MNU_DUPLICATE));
+  SetMenuItemText(hContext, IDM_VIEWPORT_CONTENTS, LoadResStr(IDS_MNU_CONTENTS));
+  SetMenuItemText(hContext, IDM_VIEWPORT_PROPERTIES, LoadResStr((Mode == C4CNS_ModeEdit) ? IDS_CNS_PROPERTIES : IDS_CNS_TOOLS));
+  int iItem = TrackPopupMenu(hContext, TPM_LEFTALIGN | TPM_TOPALIGN | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_NONOTIFY, point.x, point.y, 0, Application.hWindow, NULL);
   switch (iItem) {
   case IDM_VIEWPORT_DELETE:
     Delete();
@@ -676,8 +641,7 @@ void C4EditCursor::UpdateDropTarget(WORD wKeyFlags) {
 #ifdef _WIN32
   if (wKeyFlags & MK_CONTROL)
     if (Selection.GetObject())
-      for (clnk = Game.Objects.First; clnk && (cobj = clnk->Obj);
-           clnk = clnk->Next)
+      for (clnk = Game.Objects.First; clnk && (cobj = clnk->Obj); clnk = clnk->Next)
         if (cobj->Status)
           if (!cobj->Contained)
             if (Inside(X - (cobj->x + cobj->Shape.x), 0, cobj->Shape.Wdt - 1))
@@ -715,8 +679,7 @@ int C4EditCursor::GetMode() { return Mode; }
 void C4EditCursor::ToolFailure() {
   C4ToolsDlg *pTools = &Console.ToolsDlg;
   Hold = FALSE;
-  sprintf(OSTR, LoadResStr(IDS_CNS_NOMATDEF), pTools->Material,
-          pTools->Texture);
+  sprintf(OSTR, LoadResStr(IDS_CNS_NOMATDEF), pTools->Material, pTools->Texture);
   Console.Message(OSTR);
 }
 
@@ -727,10 +690,8 @@ void C4EditCursor::ApplyToolPicker() {
   switch (Game.Landscape.Mode) {
   case C4LSC_Static:
     // Material-texture from map
-    if (byIndex = Game.Landscape.GetMapIndex(X / Game.Landscape.MapZoom,
-                                             Y / Game.Landscape.MapZoom)) {
-      szMaterialTexture =
-          Game.TextureMap.GetMaterialTexture(byIndex & (C4M_MaxTexIndex - 1));
+    if (byIndex = Game.Landscape.GetMapIndex(X / Game.Landscape.MapZoom, Y / Game.Landscape.MapZoom)) {
+      szMaterialTexture = Game.TextureMap.GetMaterialTexture(byIndex & (C4M_MaxTexIndex - 1));
       SCopySegment(szMaterialTexture, 0, OSTR, '-');
       Console.ToolsDlg.SelectMaterial(OSTR);
       SCopySegment(szMaterialTexture, 1, OSTR, '-');

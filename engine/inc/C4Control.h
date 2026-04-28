@@ -94,9 +94,7 @@ public:
   BOOL AddRemovePlayer(int iPlayer);
   BOOL AddSurrenderPlayer(int iPlayer);
   BOOL AddSetHostility(int iPlayer, int iOpponent, int iHostility);
-  BOOL AddPlayerCommand(int iPlayer, int iCommand, int iX, int iY,
-                        C4Object *pTarget, C4Object *pTarget2 = NULL,
-                        int iData = 0, int iAddMode = C4P_Command_Set);
+  BOOL AddPlayerCommand(int iPlayer, int iCommand, int iX, int iY, C4Object *pTarget, C4Object *pTarget2 = NULL, int iData = 0, int iAddMode = C4P_Command_Set);
   BOOL AddControlTime();
 };
 

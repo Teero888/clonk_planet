@@ -33,8 +33,7 @@ C4CompilerValue C4CR_Game[] = {
     {"Tick500", C4CV_Integer, offsC4G(iTick500), 1},
     {"Tick1000", C4CV_Integer, offsC4G(iTick1000), 1},
     {"StartupPlayerCount", C4CV_Integer, offsC4G(StartupPlayerCount), 1},
-    {"ObjectEnumerationIndex", C4CV_Integer, offsC4G(ObjectEnumerationIndex),
-     1},
+    {"ObjectEnumerationIndex", C4CV_Integer, offsC4G(ObjectEnumerationIndex), 1},
     {"Rules", C4CV_Integer, offsC4G(Rules), 1},
 
     {"Script", C4CV_Section, 0, 0},
@@ -83,16 +82,14 @@ BOOL C4Game::InitDefs() {
     DefinitionFilenamesFromSaveGame();
 
   // Load specified defs
-  iDefs += Defs.Load(DefinitionFilenames, C4D_Load_RX, Config.General.Language,
-                     &SoundSystem, TRUE);
+  iDefs += Defs.Load(DefinitionFilenames, C4D_Load_RX, Config.General.Language, &SoundSystem, TRUE);
 
   // Def load failure
   if (Defs.LoadFailure)
     return FALSE;
 
   // Load scenario local defs
-  iDefs += Defs.Load(ScenarioFile, C4D_Load_RX, Config.General.Language,
-                     &SoundSystem, TRUE, TRUE);
+  iDefs += Defs.Load(ScenarioFile, C4D_Load_RX, Config.General.Language, &SoundSystem, TRUE, TRUE);
 
   // Absolutely no defs: we don't like that
   if (!iDefs) {
@@ -144,20 +141,16 @@ BOOL C4Game::OpenScenario() {
   }
 
   // Check minimum engine version
-  if (C4S.Head.C4XVer1 * 100 + C4S.Head.C4XVer2 * 10 + C4S.Head.C4XVer3 >
-      C4XVer1 * 100 + C4XVer2 * 10 + C4XVer3) {
-    sprintf(OSTR, LoadResStr(IDS_PRC_NOREQC4X), C4S.Head.C4XVer1,
-            C4S.Head.C4XVer2, C4S.Head.C4XVer3);
+  if (C4S.Head.C4XVer1 * 100 + C4S.Head.C4XVer2 * 10 + C4S.Head.C4XVer3 > C4XVer1 * 100 + C4XVer2 * 10 + C4XVer3) {
+    sprintf(OSTR, LoadResStr(IDS_PRC_NOREQC4X), C4S.Head.C4XVer1, C4S.Head.C4XVer2, C4S.Head.C4XVer3);
     Log(OSTR);
     return FALSE;
   }
 
   // Network reference: check exact engine version
   if (C4S.Head.NetworkReference)
-    if (C4S.Head.C4XVer1 * 100 + C4S.Head.C4XVer2 * 10 + C4S.Head.C4XVer3 !=
-        C4XVer1 * 100 + C4XVer2 * 10 + C4XVer3) {
-      sprintf(OSTR, LoadResStr(IDS_PRC_NOEXACTC4X), C4S.Head.C4XVer1,
-              C4S.Head.C4XVer2, C4S.Head.C4XVer3);
+    if (C4S.Head.C4XVer1 * 100 + C4S.Head.C4XVer2 * 10 + C4S.Head.C4XVer3 != C4XVer1 * 100 + C4XVer2 * 10 + C4XVer3) {
+      sprintf(OSTR, LoadResStr(IDS_PRC_NOEXACTC4X), C4S.Head.C4XVer1, C4S.Head.C4XVer2, C4S.Head.C4XVer3);
       Log(OSTR);
       return FALSE;
     }
@@ -189,8 +182,7 @@ BOOL C4Game::OpenScenario() {
 
   // Title
   Title.Load(LoadResStr(IDS_CNS_TITLE), ScenarioFile, C4CFN_Title);
-  if (!Title.GetLanguageString(Config.General.Language, ScenarioTitle,
-                               C4MaxTitle))
+  if (!Title.GetLanguageString(Config.General.Language, ScenarioTitle, C4MaxTitle))
     SCopy(C4S.Head.Title, ScenarioTitle);
 
   return TRUE;
@@ -240,8 +232,7 @@ BOOL C4Game::Init(const char *szCmdLine) {
   if (Application.Fullscreen)
     if (Config.Graphics.ShowStartupMessages || Config.Network.Active) {
       C4Facet cgo;
-      cgo.Set(Engine.DDraw.lpBack, 0, 0, Config.Graphics.ResX,
-              Config.Graphics.ResY);
+      cgo.Set(Engine.DDraw.lpBack, 0, 0, Config.Graphics.ResX, Config.Graphics.ResY);
       GraphicsSystem.MessageBoard.Init(C4LogBuf, cgo, TRUE);
     }
 
@@ -287,17 +278,13 @@ BOOL C4Game::Init(const char *szCmdLine) {
   // Message board
   if (Application.Fullscreen) {
     C4Facet cgo;
-    cgo.Set(Engine.DDraw.lpBack, 0,
-            Config.Graphics.ResY - Engine.DDraw.TextHeight(),
-            Config.Graphics.ResX, Engine.DDraw.TextHeight());
+    cgo.Set(Engine.DDraw.lpBack, 0, Config.Graphics.ResY - Engine.DDraw.TextHeight(), Config.Graphics.ResX, Engine.DDraw.TextHeight());
     GraphicsSystem.MessageBoard.Init(C4LogBuf + SLen(C4LogBuf), cgo, FALSE);
     GraphicsSystem.RecalculateViewports();
   }
 
   // Start message
-  Log(LoadResStr(C4S.Head.NetworkGame ? IDS_PRC_JOIN
-                 : C4S.Head.SaveGame  ? IDS_PRC_RESUME
-                                      : IDS_PRC_START));
+  Log(LoadResStr(C4S.Head.NetworkGame ? IDS_PRC_JOIN : C4S.Head.SaveGame ? IDS_PRC_RESUME : IDS_PRC_START));
 
   return TRUE;
 }
@@ -418,8 +405,7 @@ BOOL C4Game::GameOverCheck() {
         condition_valid = TRUE;
         if (Game.Landscape.MatCountValid) // Valid
         {
-          if (Game.Landscape.MatCount[mat] >
-              (DWORD)C4S.Game.ClearMaterial.Count[cnt])
+          if (Game.Landscape.MatCount[mat] > (DWORD)C4S.Game.ClearMaterial.Count[cnt])
             condition_true = FALSE;
         } else // No valid mat count available, wait
         {
@@ -500,9 +486,7 @@ BOOL C4Game::InitMaterialTexture() {
   if (ScenarioFile.FindEntry(C4CFN_Material, OSTR)) {
     if (!hMatFile.OpenAsChild(&ScenarioFile, C4CFN_Material))
       return FALSE;
-    sprintf(OSTR, LoadResStr(IDS_PRC_LOCALMAT),
-            GetFilename(ScenarioFile.GetName()),
-            GetFilename(hMatFile.GetName()));
+    sprintf(OSTR, LoadResStr(IDS_PRC_LOCALMAT), GetFilename(ScenarioFile.GetName()), GetFilename(hMatFile.GetName()));
     Log(OSTR);
   }
   // Use global Material.c4g
@@ -563,9 +547,7 @@ void C4Game::ClearPointers(C4Object *pObj) {
   TransferZones.ClearPointers(pObj);
 }
 
-C4Object *C4Game::NewObject(C4Def *pDef, int iOwner, C4ObjectInfo *pInfo,
-                            int iX, int iY, int iR, FIXED xdir, FIXED ydir,
-                            FIXED rdir, int iCon) {
+C4Object *C4Game::NewObject(C4Def *pDef, int iOwner, C4ObjectInfo *pInfo, int iX, int iY, int iR, FIXED xdir, FIXED ydir, FIXED rdir, int iCon) {
   // Safety
   if (!pDef)
     return NULL;
@@ -598,8 +580,7 @@ void C4Game::DeleteObjects() {
   }
 }
 
-C4Object *C4Game::CreateObject(C4ID id, int iOwner, int x, int y, int r,
-                               FIXED xdir, FIXED ydir, FIXED rdir) {
+C4Object *C4Game::CreateObject(C4ID id, int iOwner, int x, int y, int r, FIXED xdir, FIXED ydir, FIXED rdir) {
   C4Def *pDef;
   // Get pDef
   if (!(pDef = C4Id2Def(id)))
@@ -608,8 +589,7 @@ C4Object *C4Game::CreateObject(C4ID id, int iOwner, int x, int y, int r,
   return NewObject(pDef, iOwner, NULL, x, y, r, xdir, ydir, rdir, FullCon);
 }
 
-C4Object *C4Game::CreateInfoObject(C4ObjectInfo *cinf, int iOwner, int tx,
-                                   int ty) {
+C4Object *C4Game::CreateInfoObject(C4ObjectInfo *cinf, int iOwner, int tx, int ty) {
   C4Def *def;
   // Valid check
   if (!cinf)
@@ -621,8 +601,7 @@ C4Object *C4Game::CreateInfoObject(C4ObjectInfo *cinf, int iOwner, int tx,
   return NewObject(def, iOwner, cinf, tx, ty, 0, 0, 0, 0, FullCon);
 }
 
-C4Object *C4Game::CreateObjectConstruction(C4ID id, int iOwner, int iX, int iBY,
-                                           int iCon, BOOL fTerrain) {
+C4Object *C4Game::CreateObjectConstruction(C4ID id, int iOwner, int iX, int iBY, int iCon, BOOL fTerrain) {
   C4Def *pDef;
   C4Object *pObj;
 
@@ -648,16 +627,12 @@ C4Object *C4Game::CreateObjectConstruction(C4ID id, int iOwner, int iX, int iBY,
       const int BasementStrength = 8;
       // Border basement
       if (pDef->Basement > 1) {
-        Landscape.DrawMaterialRect(MGranite, dx, dy + dhgt,
-                                   Min(pDef->Basement, dwdt), BasementStrength);
-        Landscape.DrawMaterialRect(
-            MGranite, dx + dwdt - Min(pDef->Basement, dwdt), dy + dhgt,
-            Min(pDef->Basement, dwdt), BasementStrength);
+        Landscape.DrawMaterialRect(MGranite, dx, dy + dhgt, Min(pDef->Basement, dwdt), BasementStrength);
+        Landscape.DrawMaterialRect(MGranite, dx + dwdt - Min(pDef->Basement, dwdt), dy + dhgt, Min(pDef->Basement, dwdt), BasementStrength);
       }
       // Normal basement
       else
-        Landscape.DrawMaterialRect(MGranite, dx, dy + dhgt, dwdt,
-                                   BasementStrength);
+        Landscape.DrawMaterialRect(MGranite, dx, dy + dhgt, dwdt, BasementStrength);
     }
   }
 
@@ -668,8 +643,7 @@ C4Object *C4Game::CreateObjectConstruction(C4ID id, int iOwner, int iX, int iBY,
   return pObj;
 }
 
-void C4Game::BlastObjects(int tx, int ty, int level, C4Object *inobj,
-                          int iCausedBy) {
+void C4Game::BlastObjects(int tx, int ty, int level, C4Object *inobj, int iCausedBy) {
   C4Object *cObj;
   C4ObjectLink *clnk;
 
@@ -688,10 +662,8 @@ void C4Game::BlastObjects(int tx, int ty, int level, C4Object *inobj,
       if (cObj->Status)
         if (!cObj->Contained) {
           // Direct hit (5 pixel range to all sides)
-          if (Inside(ty - (cObj->y + cObj->Shape.y), -5,
-                     cObj->Shape.Hgt - 1 + 10))
-            if (Inside(tx - (cObj->x + cObj->Shape.x), -5,
-                       cObj->Shape.Wdt - 1 + 10))
+          if (Inside(ty - (cObj->y + cObj->Shape.y), -5, cObj->Shape.Hgt - 1 + 10))
+            if (Inside(tx - (cObj->x + cObj->Shape.x), -5, cObj->Shape.Wdt - 1 + 10))
               cObj->Blast(level, iCausedBy);
           // Shock wave hit (if in level range, living only)
           if (cObj->Category & C4D_Living)
@@ -699,10 +671,7 @@ void C4Game::BlastObjects(int tx, int ty, int level, C4Object *inobj,
               if (Abs(tx - cObj->x) <= level) {
                 cObj->DoEnergy(-level / 2);
                 cObj->DoDamage(level / 2, iCausedBy);
-                cObj->Fling(
-                    itofix(Sign(cObj->x - tx) * (level - Abs(tx - cObj->x))) /
-                        5,
-                    itofix(-level + Abs(ty - cObj->y)) / 5);
+                cObj->Fling(itofix(Sign(cObj->x - tx) * (level - Abs(tx - cObj->x))) / 5, itofix(-level + Abs(ty - cObj->y)) / 5);
               }
         }
   }
@@ -783,43 +752,32 @@ void C4Game::CrossCheckObjects() // Every Tick1 by ExecObjects
     for (clnk = Objects.First; clnk && (obj1 = clnk->Obj); clnk = clnk->Next)
       if (obj1->Status && !obj1->Contained)
         if (obj1->OCF & focf) {
-          for (clnk2 = Objects.First; clnk2 && (obj2 = clnk2->Obj);
-               clnk2 = clnk2->Next)
+          for (clnk2 = Objects.First; clnk2 && (obj2 = clnk2->Obj); clnk2 = clnk2->Next)
             if (obj2->Status && !obj2->Contained && (obj2 != obj1))
               if (obj2->OCF & tocf)
-                if (Inside(obj2->x - (obj1->x + obj1->Shape.x), 0,
-                           obj1->Shape.Wdt - 1))
-                  if (Inside(obj2->y - (obj1->y + obj1->Shape.y), 0,
-                             obj1->Shape.Hgt - 1)) {
+                if (Inside(obj2->x - (obj1->x + obj1->Shape.x), 0, obj1->Shape.Wdt - 1))
+                  if (Inside(obj2->y - (obj1->y + obj1->Shape.y), 0, obj1->Shape.Hgt - 1)) {
                     // Hit
                     if ((obj2->OCF & OCF_HitSpeed2) && (obj1->OCF & OCF_Living))
                       if (obj2->Category & C4D_Object) {
                         obj1->DoEnergy(-obj2->Mass / 5);
                         int tmass = Max(obj1->Mass, 50);
-                        obj1->Fling(obj2->xdir * 50 / tmass,
-                                    -Abs(obj2->ydir / 2) * 50 / tmass);
+                        obj1->Fling(obj2->xdir * 50 / tmass, -Abs(obj2->ydir / 2) * 50 / tmass);
                         obj1->Call(PSF_CatchBlow, -obj2->Mass / 5, (long)obj2);
                         continue;
                       }
                     // Collection
-                    if ((obj1->OCF & OCF_Collection) &&
-                        (obj2->OCF & OCF_Carryable))
-                      if (Inside(obj2->x - (obj1->x + obj1->Def->Collection.x),
-                                 0, obj1->Def->Collection.Wdt - 1))
-                        if (Inside(obj2->y -
-                                       (obj1->y + obj1->Def->Collection.y),
-                                   0, obj1->Def->Collection.Hgt - 1)) {
+                    if ((obj1->OCF & OCF_Collection) && (obj2->OCF & OCF_Carryable))
+                      if (Inside(obj2->x - (obj1->x + obj1->Def->Collection.x), 0, obj1->Def->Collection.Wdt - 1))
+                        if (Inside(obj2->y - (obj1->y + obj1->Def->Collection.y), 0, obj1->Def->Collection.Hgt - 1)) {
                           // Special: attached Flag may not be collectable
                           if (obj2->Def->id == C4ID_Flag)
                             if (!(Game.Rules & C4RULE_FlagRemoveable))
                               if (obj2->Action.Act > ActIdle)
-                                if (SEqual(obj2->Def->ActMap[obj2->Action.Act]
-                                               .Name,
-                                           "FlyBase"))
+                                if (SEqual(obj2->Def->ActMap[obj2->Action.Act].Name, "FlyBase"))
                                   continue;
                           // Check for collect rejection
-                          if (obj1->Call(PSF_RejectCollection,
-                                         (long)obj2->Def->id, (long)obj2))
+                          if (obj1->Call(PSF_RejectCollection, (long)obj2->Def->id, (long)obj2))
                             continue;
                           // Object enter container
                           obj2->Enter(obj1);
@@ -850,8 +808,7 @@ void C4Game::CrossCheckObjects() // Every Tick1 by ExecObjects
     for (clnk = Objects.First; clnk && (obj1 = clnk->Obj); clnk = clnk->Next)
       if (obj1->Status && obj1->Contained)
         if (obj1->OCF & focf) {
-          for (clnk2 = Objects.First; clnk2 && (obj2 = clnk2->Obj);
-               clnk2 = clnk2->Next)
+          for (clnk2 = Objects.First; clnk2 && (obj2 = clnk2->Obj); clnk2 = clnk2->Next)
             if (obj2->Status && obj2->Contained && (obj2 != obj1))
               if (obj2->OCF & tocf)
                 if (obj1->Contained == obj2->Contained) {
@@ -891,8 +848,7 @@ C4Object *C4Game::AtObject(int ctx, int cty, DWORD &ocf, C4Object *exclude) {
   return NULL;
 }
 
-C4Object *C4Game::OverlapObject(int tx, int ty, int wdt, int hgt,
-                                int category) {
+C4Object *C4Game::OverlapObject(int tx, int ty, int wdt, int hgt, int category) {
   C4Object *cObj;
   C4ObjectLink *clnk;
   C4Rect rect1, rect2;
@@ -913,10 +869,7 @@ C4Object *C4Game::OverlapObject(int tx, int ty, int wdt, int hgt,
   return NULL;
 }
 
-C4Object *C4Game::FindObject(C4ID id, int iX, int iY, int iWdt, int iHgt,
-                             DWORD ocf, const char *szAction,
-                             C4Object *pActionTarget, C4Object *pExclude,
-                             C4Object *pContainer, int iOwner,
+C4Object *C4Game::FindObject(C4ID id, int iX, int iY, int iWdt, int iHgt, DWORD ocf, const char *szAction, C4Object *pActionTarget, C4Object *pExclude, C4Object *pContainer, int iOwner,
                              C4Object *pFindNext) {
 
   C4Object *pClosest = NULL;
@@ -926,8 +879,7 @@ C4Object *C4Game::FindObject(C4ID id, int iX, int iY, int iWdt, int iHgt,
 
   // Finding next closest: find closest but further away than last closest
   if (pFindNext && (iWdt == -1) && (iHgt == -1)) {
-    iFartherThan = (int)sqrt((pFindNext->x - iX) * (pFindNext->x - iX) +
-                             (pFindNext->y - iY) * (pFindNext->y - iY));
+    iFartherThan = (int)sqrt((pFindNext->x - iX) * (pFindNext->x - iX) + (pFindNext->y - iY) * (pFindNext->y - iY));
     pFindNext = NULL;
   }
 
@@ -946,14 +898,10 @@ C4Object *C4Game::FindObject(C4ID id, int iX, int iY, int iWdt, int iHgt,
             if (cObj != pExclude)
               // Action
               if (!szAction || !szAction[0] ||
-                  ((cObj->Action.Act > ActIdle) &&
-                   SEqual(szAction, cObj->Def->ActMap[cObj->Action.Act].Name) &&
-                   (!pActionTarget ||
-                    ((cObj->Action.Target == pActionTarget) ||
-                     (cObj->Action.Target2 == pActionTarget)))))
+                  ((cObj->Action.Act > ActIdle) && SEqual(szAction, cObj->Def->ActMap[cObj->Action.Act].Name) &&
+                   (!pActionTarget || ((cObj->Action.Target == pActionTarget) || (cObj->Action.Target2 == pActionTarget)))))
                 // Container
-                if (!pContainer || (cObj->Contained == pContainer) ||
-                    ((pContainer == NO_CONTAINER) && !cObj->Contained))
+                if (!pContainer || (cObj->Contained == pContainer) || ((pContainer == NO_CONTAINER) && !cObj->Contained))
                   // Owner
                   if ((iOwner == ANY_OWNER) || (cObj->Owner == iOwner))
                   // Area
@@ -963,17 +911,14 @@ C4Object *C4Game::FindObject(C4ID id, int iX, int iY, int iWdt, int iHgt,
                       return cObj;
                     // Point
                     if ((iWdt == 0) && (iHgt == 0)) {
-                      if (Inside(iX - (cObj->x + cObj->Shape.x), 0,
-                                 cObj->Shape.Wdt - 1))
-                        if (Inside(iY - (cObj->y + cObj->Shape.y), 0,
-                                   cObj->Shape.Hgt - 1))
+                      if (Inside(iX - (cObj->x + cObj->Shape.x), 0, cObj->Shape.Wdt - 1))
+                        if (Inside(iY - (cObj->y + cObj->Shape.y), 0, cObj->Shape.Hgt - 1))
                           return cObj;
                       continue;
                     }
                     // Closest
                     if ((iWdt == -1) && (iHgt == -1)) {
-                      iDistance = (int)sqrt((cObj->x - iX) * (cObj->x - iX) +
-                                            (cObj->y - iY) * (cObj->y - iY));
+                      iDistance = (int)sqrt((cObj->x - iX) * (cObj->x - iX) + (cObj->y - iY) * (cObj->y - iY));
                       if (!pClosest || (iDistance < iClosest))
                         if (iDistance > iFartherThan) {
                           pClosest = cObj;
@@ -982,8 +927,7 @@ C4Object *C4Game::FindObject(C4ID id, int iX, int iY, int iWdt, int iHgt,
                       continue;
                     }
                     // Range
-                    if (Inside(cObj->x - iX, 0, iWdt - 1) &&
-                        Inside(cObj->y - iY, 0, iHgt - 1))
+                    if (Inside(cObj->x - iX, 0, iWdt - 1) && Inside(cObj->y - iY, 0, iHgt - 1))
                       return cObj;
                   }
 
@@ -995,9 +939,7 @@ C4Object *C4Game::FindObject(C4ID id, int iX, int iY, int iWdt, int iHgt,
   return pClosest;
 }
 
-int C4Game::ObjectCount(C4ID id, int x, int y, int wdt, int hgt, DWORD ocf,
-                        const char *szAction, C4Object *pActionTarget,
-                        C4Object *pExclude, C4Object *pContainer, int iOwner) {
+int C4Game::ObjectCount(C4ID id, int x, int y, int wdt, int hgt, DWORD ocf, const char *szAction, C4Object *pActionTarget, C4Object *pExclude, C4Object *pContainer, int iOwner) {
   int iResult = 0;
   C4Object *cObj;
   C4ObjectLink *clnk;
@@ -1012,13 +954,10 @@ int C4Game::ObjectCount(C4ID id, int x, int y, int wdt, int hgt, DWORD ocf,
           if (cObj != pExclude)
             // Action
             if (!szAction || !szAction[0] ||
-                ((cObj->Action.Act > ActIdle) &&
-                 SEqual(szAction, cObj->Def->ActMap[cObj->Action.Act].Name) &&
-                 (!pActionTarget || ((cObj->Action.Target == pActionTarget) ||
-                                     (cObj->Action.Target2 == pActionTarget)))))
+                ((cObj->Action.Act > ActIdle) && SEqual(szAction, cObj->Def->ActMap[cObj->Action.Act].Name) &&
+                 (!pActionTarget || ((cObj->Action.Target == pActionTarget) || (cObj->Action.Target2 == pActionTarget)))))
               // Container
-              if (!pContainer || (cObj->Contained == pContainer) ||
-                  ((pContainer == NO_CONTAINER) && !cObj->Contained))
+              if (!pContainer || (cObj->Contained == pContainer) || ((pContainer == NO_CONTAINER) && !cObj->Contained))
                 // Owner
                 if ((iOwner == ANY_OWNER) || (cObj->Owner == iOwner))
                 // Area
@@ -1030,18 +969,15 @@ int C4Game::ObjectCount(C4ID id, int x, int y, int wdt, int hgt, DWORD ocf,
                   }
                   // Point
                   if ((wdt == 0) && (hgt == 0)) {
-                    if (Inside(x - (cObj->x + cObj->Shape.x), 0,
-                               cObj->Shape.Wdt - 1))
-                      if (Inside(y - (cObj->y + cObj->Shape.y), 0,
-                                 cObj->Shape.Hgt - 1)) {
+                    if (Inside(x - (cObj->x + cObj->Shape.x), 0, cObj->Shape.Wdt - 1))
+                      if (Inside(y - (cObj->y + cObj->Shape.y), 0, cObj->Shape.Hgt - 1)) {
                         iResult++;
                         continue;
                       }
                     continue;
                   }
                   // Range
-                  if (Inside(cObj->x - x, 0, wdt - 1) &&
-                      Inside(cObj->y - y, 0, hgt - 1)) {
+                  if (Inside(cObj->x - x, 0, wdt - 1) && Inside(cObj->y - y, 0, hgt - 1)) {
                     iResult++;
                     continue;
                   }
@@ -1125,9 +1061,7 @@ int C4Game::CommandLine(const char *szScript) {
   return cthr.Execute(NULL, szScript, NULL, NULL, NULL);
 }
 
-BOOL C4Game::CreateViewport(int iPlayer) {
-  return GraphicsSystem.CreateViewport(iPlayer);
-}
+BOOL C4Game::CreateViewport(int iPlayer) { return GraphicsSystem.CreateViewport(iPlayer); }
 
 C4ID DefFileGetID(const char *szFilename) {
   C4Group hDef;
@@ -1151,10 +1085,7 @@ BOOL C4Game::DropFile(const char *szFilename, int iX, int iY) {
     // Get id from file
     if (c_id = DefFileGetID(szFilename))
       // Get loaded def or try to load def from file
-      if ((cdef = C4Id2Def(c_id)) ||
-          (Defs.Load(szFilename, C4D_Load_RX, Config.General.Language,
-                     &SoundSystem) &&
-           (cdef = C4Id2Def(c_id)))) {
+      if ((cdef = C4Id2Def(c_id)) || (Defs.Load(szFilename, C4D_Load_RX, Config.General.Language, &SoundSystem) && (cdef = C4Id2Def(c_id)))) {
         // Building construction
         if (cdef->Category & C4D_Structure) {
           if (CreateObjectConstruction(c_id, NO_OWNER, iX, iY, FullCon, TRUE)) {
@@ -1233,33 +1164,23 @@ BOOL C4Game::EnumerateMaterials() {
   for (mat = 0; mat < Game.Material.Num; mat++)
     for (col = 0; col < C4M_ColsPerMat; col++)
       for (rgb = 0; rgb < 3; rgb++) {
-        GraphicsResource
-            .GamePalette[(GBM + mat * C4M_ColsPerMat + col) * 3 + rgb] =
-            Material.Map[mat].Color[col * 3 + rgb];
-        GraphicsResource
-            .GamePalette[(GBM + IFT + mat * C4M_ColsPerMat + col) * 3 + rgb] =
-            Material.Map[mat].Color[col * 3 + rgb];
+        GraphicsResource.GamePalette[(GBM + mat * C4M_ColsPerMat + col) * 3 + rgb] = Material.Map[mat].Color[col * 3 + rgb];
+        GraphicsResource.GamePalette[(GBM + IFT + mat * C4M_ColsPerMat + col) * 3 + rgb] = Material.Map[mat].Color[col * 3 + rgb];
       }
 
   return TRUE;
 }
 
-void C4Game::CastObjects(C4ID id, int num, int level, int tx, int ty,
-                         int iOwner) {
+void C4Game::CastObjects(C4ID id, int num, int level, int tx, int ty, int iOwner) {
   int cnt;
   for (cnt = 0; cnt < num; cnt++)
-    CreateObject(id, iOwner, tx, ty, Random(360),
-                 itofix(Random(2 * level + 1) - level) / 10,
-                 itofix(Random(2 * level + 1) - level) / 10,
-                 itofix(Random(3) + 1));
+    CreateObject(id, iOwner, tx, ty, Random(360), itofix(Random(2 * level + 1) - level) / 10, itofix(Random(2 * level + 1) - level) / 10, itofix(Random(3) + 1));
 }
 
 void C4Game::BlastCastObjects(C4ID id, int num, int tx, int ty) {
   int cnt;
   for (cnt = 0; cnt < num; cnt++)
-    CreateObject(id, NO_OWNER, tx, ty, Random(360),
-                 itofix(Random(61) - 30) / 10, itofix(Random(61) - 40) / 10,
-                 itofix(Random(3) + 1));
+    CreateObject(id, NO_OWNER, tx, ty, Random(360), itofix(Random(61) - 30) / 10, itofix(Random(61) - 40) / 10, itofix(Random(3) + 1));
 }
 
 BOOL C4Game::Save(C4Group &hGroup, BOOL fSaveGame, BOOL fNetwork) {
@@ -1404,8 +1325,7 @@ void C4Game::Default() {
   FPS = cFPS = 0;
   fScriptCreatedObjects = FALSE;
   fLobby = FALSE;
-  iTick2 = iTick3 = iTick5 = iTick10 = iTick35 = iTick255 = iTick500 =
-      iTick1000 = 0;
+  iTick2 = iTick3 = iTick5 = iTick10 = iTick35 = iTick255 = iTick500 = iTick1000 = 0;
   ControlTick = 0;
   ControlRate = -1;
   DoControl = TRUE;
@@ -1471,25 +1391,19 @@ void C4Game::DrawCursors(C4FacetEx &cgo) {
         if (pPlr->Cursor) {
           cursor = pPlr->Cursor;
           cox = cursor->x - fctCursor.Wdt / 2 - cgo.TargetX;
-          coy = cursor->y - cursor->Def->Shape.Hgt / 2 - fctCursor.Hgt -
-                cgo.TargetY;
-          if (Inside(cox, 1 - fctCursor.Wdt, cgo.Wdt) &&
-              Inside(coy, 1 - fctCursor.Hgt, cgo.Hgt)) {
+          coy = cursor->y - cursor->Def->Shape.Hgt / 2 - fctCursor.Hgt - cgo.TargetY;
+          if (Inside(cox, 1 - fctCursor.Wdt, cgo.Wdt) && Inside(coy, 1 - fctCursor.Hgt, cgo.Hgt)) {
             cphase = 0;
             if (cursor->Contained)
               cphase = 1;
             fctCursor.Draw(cgo.Surface, cgo.X + cox, cgo.Y + coy, cphase);
             if (cursor->Info) {
               if (cursor->Info->Rank > 0)
-                sprintf(OSTR, "%s|%s", cursor->Info->RankName,
-                        cursor->Info->Name);
+                sprintf(OSTR, "%s|%s", cursor->Info->RankName, cursor->Info->Name);
               else
                 SCopy(cursor->Info->Name, OSTR);
 
-              Engine.DDraw.TextOut(
-                  OSTR, cgo.Surface, cgo.X + cox + fctCursor.Wdt / 2,
-                  cgo.Y + coy - 2 - Engine.DDraw.TextHeight(OSTR), FRed, FBlack,
-                  ACenter);
+              Engine.DDraw.TextOut(OSTR, cgo.Surface, cgo.X + cox + fctCursor.Wdt / 2, cgo.Y + coy - 2 - Engine.DDraw.TextHeight(OSTR), FRed, FBlack, ACenter);
             }
           }
         }
@@ -1579,8 +1493,7 @@ BOOL C4Game::Decompile(char **ppOutput, int *ipSize) {
   SAppend(LineFeed, *ppOutput);
   C4Player *pPlr;
   int iPlrIndex;
-  for (pPlr = Players.First, iPlrIndex = 1; pPlr;
-       pPlr = pPlr->Next, iPlrIndex++) {
+  for (pPlr = Players.First, iPlrIndex = 1; pPlr; pPlr = pPlr->Next, iPlrIndex++) {
     char szPlayerFilename[_MAX_PATH + 1];
     // Set player filename
     SCopy(pPlr->Filename, szPlayerFilename);
@@ -1601,20 +1514,17 @@ BOOL C4Game::Decompile(char **ppOutput, int *ipSize) {
   SAppend(LineFeed, *ppOutput);
   char szDefinition[_MAX_PATH + 1];
   int iDef = 1;
-  for (int iSeg = 0; SCopySegment(DefinitionFilenames, iSeg, szDefinition);
-       iSeg++) {
+  for (int iSeg = 0; SCopySegment(DefinitionFilenames, iSeg, szDefinition); iSeg++) {
     SClearFrontBack(szDefinition);
     if (!szDefinition[0])
       continue;
-    sprintf(OSTR, "Definition%i=%s", iDef++,
-            Config.AtExeRelativePath(szDefinition));
+    sprintf(OSTR, "Definition%i=%s", iDef++, Config.AtExeRelativePath(szDefinition));
     SAppend(LineFeed, OSTR);
     SAppend(OSTR, *ppOutput);
   }
 
   // Append player sections
-  for (pPlr = Players.First, iPlrIndex = 1; pPlr;
-       pPlr = pPlr->Next, iPlrIndex++) {
+  for (pPlr = Players.First, iPlrIndex = 1; pPlr; pPlr = pPlr->Next, iPlrIndex++) {
     sprintf(OSTR, "%i", iPlrIndex);
     pPlr->Decompile(ppOutput, NULL, OSTR);
   }
@@ -1685,8 +1595,7 @@ BOOL C4Game::LoadPlayerFilenames(C4Group &hGroup) {
   return FALSE;
 }
 
-BOOL C4Game::SaveDesc(C4Group &hGroup, BOOL fSaveGame, BOOL fReference,
-                      BOOL fLobby) {
+BOOL C4Game::SaveDesc(C4Group &hGroup, BOOL fSaveGame, BOOL fReference, BOOL fLobby) {
   char *buffer;
   if (!(buffer = new char[10000]))
     return FALSE;
@@ -1707,8 +1616,7 @@ BOOL C4Game::SaveDesc(C4Group &hGroup, BOOL fSaveGame, BOOL fReference,
 
   // Network game host
   if (fReference) {
-    sprintf(OSTR, LoadResStr(IDS_DESC_HOST), Network.LocalName,
-            Network.LocalAddress);
+    sprintf(OSTR, LoadResStr(IDS_DESC_HOST), Network.LocalName, Network.LocalAddress);
     SAppend(OSTR, buffer);
     SAppend("\\par", buffer);
     SAppend(LineFeed, buffer);
@@ -1720,10 +1628,7 @@ BOOL C4Game::SaveDesc(C4Group &hGroup, BOOL fSaveGame, BOOL fReference,
     time(&tTime);
     struct tm *pLocalTime;
     pLocalTime = localtime(&tTime);
-    sprintf(OSTR, LoadResStr(Network.Active ? IDS_DESC_DATENET : IDS_DESC_DATE),
-            pLocalTime->tm_mday, pLocalTime->tm_mon + 1,
-            pLocalTime->tm_year + 1900, pLocalTime->tm_hour,
-            pLocalTime->tm_min);
+    sprintf(OSTR, LoadResStr(Network.Active ? IDS_DESC_DATENET : IDS_DESC_DATE), pLocalTime->tm_mday, pLocalTime->tm_mon + 1, pLocalTime->tm_year + 1900, pLocalTime->tm_hour, pLocalTime->tm_min);
     SAppend(OSTR, buffer);
     SAppend("\\par", buffer);
     SAppend(LineFeed, buffer);
@@ -1731,8 +1636,7 @@ BOOL C4Game::SaveDesc(C4Group &hGroup, BOOL fSaveGame, BOOL fReference,
 
   // Duration
   if (Time) {
-    sprintf(OSTR, LoadResStr(IDS_DESC_DURATION), Time / 3600,
-            (Time % 3600) / 60, Time % 60);
+    sprintf(OSTR, LoadResStr(IDS_DESC_DURATION), Time / 3600, (Time % 3600) / 60, Time % 60);
     SAppend(OSTR, buffer);
     SAppend("\\par", buffer);
     SAppend(LineFeed, buffer);
@@ -1744,11 +1648,9 @@ BOOL C4Game::SaveDesc(C4Group &hGroup, BOOL fSaveGame, BOOL fReference,
     int iFilesize = FileSize(ScenarioFilename) / 1024;
     // Print filename
     if (iFilesize)
-      sprintf(OSTR, LoadResStr(IDS_DESC_FILE),
-              Config.AtExeRelativePath(ScenarioFilename), iFilesize);
+      sprintf(OSTR, LoadResStr(IDS_DESC_FILE), Config.AtExeRelativePath(ScenarioFilename), iFilesize);
     else
-      sprintf(OSTR, LoadResStr(IDS_DESC_FILE2),
-              Config.AtExeRelativePath(ScenarioFilename));
+      sprintf(OSTR, LoadResStr(IDS_DESC_FILE2), Config.AtExeRelativePath(ScenarioFilename));
     // Convert rtf backslashes
     for (char *cpos = OSTR; cpos = (char *)SSearch(cpos, "\\"); cpos++)
       SInsert(cpos, "\\");
@@ -1788,8 +1690,7 @@ BOOL C4Game::SaveDesc(C4Group &hGroup, BOOL fSaveGame, BOOL fReference,
     // Host name
     SAppend(Network.LocalName, buffer);
     // Client names
-    for (C4NetworkClient *pClient = Game.Network.Clients.First; pClient;
-         pClient = pClient->Next) {
+    for (C4NetworkClient *pClient = Game.Network.Clients.First; pClient; pClient = pClient->Next) {
       SAppend(", ", buffer);
       SAppend(pClient->Name, buffer);
     }
@@ -1893,9 +1794,7 @@ BOOL C4Game::RecreatePlayerFiles() {
   // Check and recreate files
   char szPlayerFilename[_MAX_PATH + 1];
   char szNewPlayerFilenames[20 * _MAX_PATH + 1] = "";
-  for (int iPar = 0;
-       SCopySegment(PlayerFilenames, iPar, szPlayerFilename, ';', _MAX_PATH);
-       iPar++)
+  for (int iPar = 0; SCopySegment(PlayerFilenames, iPar, szPlayerFilename, ';', _MAX_PATH); iPar++)
     if (szPlayerFilename[0]) {
       // Network game join or active resume: recreate in network path
       if (C4S.Head.NetworkGame || Network.Active) {
@@ -1903,26 +1802,20 @@ BOOL C4Game::RecreatePlayerFiles() {
            be used since modified files on different clients would lead to sync
            loss. Player files will not be restored to keep in player path, so no
            original files are overwritten and lost. */
-        sprintf(OSTR, "%s%s", Config.Network.WorkPath,
-                GetFilename(szPlayerFilename));
+        sprintf(OSTR, "%s%s", Config.Network.WorkPath, GetFilename(szPlayerFilename));
         SCopy(OSTR, szPlayerFilename);
-        sprintf(OSTR, LoadResStr(IDS_PRC_RECREATE),
-                GetFilename(szPlayerFilename));
+        sprintf(OSTR, LoadResStr(IDS_PRC_RECREATE), GetFilename(szPlayerFilename));
         Log(OSTR);
-        if (!ScenarioFile.Extract(GetFilename(szPlayerFilename),
-                                  szPlayerFilename))
+        if (!ScenarioFile.Extract(GetFilename(szPlayerFilename), szPlayerFilename))
           return FALSE;
       }
       // Recreate in player path for regular game (reuse original is present)
       else if (!FileExists(szPlayerFilename)) {
-        sprintf(OSTR, "%s%s", Config.General.PlayerPath,
-                GetFilename(szPlayerFilename));
+        sprintf(OSTR, "%s%s", Config.General.PlayerPath, GetFilename(szPlayerFilename));
         SCopy(OSTR, szPlayerFilename);
-        sprintf(OSTR, LoadResStr(IDS_PRC_RECREATE),
-                GetFilename(szPlayerFilename));
+        sprintf(OSTR, LoadResStr(IDS_PRC_RECREATE), GetFilename(szPlayerFilename));
         Log(OSTR);
-        if (!ScenarioFile.Extract(GetFilename(szPlayerFilename),
-                                  szPlayerFilename))
+        if (!ScenarioFile.Extract(GetFilename(szPlayerFilename), szPlayerFilename))
           return FALSE;
       }
       // Compose new player file list
@@ -1952,12 +1845,9 @@ BOOL C4Game::SaveGameTitle(C4Group &hGroup) {
       return FALSE;
 
     // Fullscreen
-    Engine.DDraw.Blit(Engine.DDraw.lpBack, 0, 0, Config.Graphics.ResX,
-                      Config.Graphics.ResY - Engine.DDraw.TextHeight(), sfcPic,
-                      0, 0, iSfcWdt, iSfcHgt);
+    Engine.DDraw.Blit(Engine.DDraw.lpBack, 0, 0, Config.Graphics.ResX, Config.Graphics.ResY - Engine.DDraw.TextHeight(), sfcPic, 0, 0, iSfcWdt, iSfcHgt);
 
-    if (!SaveSurface(Config.AtTempPath(C4CFN_TempTitle), sfcPic,
-                     GraphicsResource.GamePalette)) {
+    if (!SaveSurface(Config.AtTempPath(C4CFN_TempTitle), sfcPic, GraphicsResource.GamePalette)) {
       DestroySurface(sfcPic);
       return FALSE;
     }
@@ -2095,8 +1985,7 @@ void C4Game::KeyboardInput(WORD vk_code, BOOL fAlt) {
   // Fullscreen menu control
   if (Application.Fullscreen)
     if (FullScreen.Menu.IsActive()) {
-      FullScreen.Menu.Control(
-          VkCode2FullScreenCom(vk_code, FullScreen.Menu.IsMultiline()), 0);
+      FullScreen.Menu.Control(VkCode2FullScreenCom(vk_code, FullScreen.Menu.IsMultiline()), 0);
       return;
     }
 
@@ -2104,8 +1993,7 @@ void C4Game::KeyboardInput(WORD vk_code, BOOL fAlt) {
   C4Player *pPlr;
   int iKdbSet, iCtrl;
   if (!GraphicsSystem.MessageBoard.TypeIn)
-    for (iKdbSet = C4P_Control_Keyboard1; iKdbSet <= C4P_Control_Keyboard4;
-         iKdbSet++)
+    for (iKdbSet = C4P_Control_Keyboard1; iKdbSet <= C4P_Control_Keyboard4; iKdbSet++)
       for (iCtrl = 0; iCtrl < C4MaxKey; iCtrl++)
         if (Config.Keyboard[iKdbSet][iCtrl] == vk_code)
           if (pPlr = Players.GetLocalByKbdSet(iKdbSet))
@@ -2131,13 +2019,10 @@ BOOL C4Game::QuickSave(BOOL fSaveGame) {
   GraphicsSystem.MessageBoard.EnsureLastMessage();
 
   // Target save folder
-  Config.General.CheckSaveFolders(IDS_GAME_SAVEGAMEFOLDER,
-                                  IDS_GAME_SAVESCENARIOFOLDER);
+  Config.General.CheckSaveFolders(IDS_GAME_SAVEGAMEFOLDER, IDS_GAME_SAVESCENARIOFOLDER);
   char szFilename[_MAX_FNAME + 1];
   SCopy(Config.General.RoundPath, szFilename);
-  SAppend(fSaveGame ? Config.General.SaveGameFolder
-                    : Config.General.SaveScenarioFolder,
-          szFilename);
+  SAppend(fSaveGame ? Config.General.SaveGameFolder : Config.General.SaveScenarioFolder, szFilename);
 
   // Check save folder
   if (!FileExists(szFilename)) {
@@ -2264,8 +2149,7 @@ BOOL C4Game::InitGame() {
       Log(LoadResStr(IDS_PRC_NOMUSIC));
 
   // Rank system
-  Rank.Init("Software\\RedWolf Design\\Clonk 4\\ClonkRanks",
-            LoadResStr(IDS_GAME_DEFRANKS), 1000);
+  Rank.Init("Software\\RedWolf Design\\Clonk 4\\ClonkRanks", LoadResStr(IDS_GAME_DEFRANKS), 1000);
 
   // Definitions
   if (!InitDefs())
@@ -2387,8 +2271,7 @@ BOOL C4Game::InitGameFinal() {
       if (C4S.Head.NetworkClients.Name[cnt][0])
         if (!SEqualNoCase(C4S.Head.NetworkClients.Name[cnt], Network.LocalName))
           if (!Network.GetClientByName(C4S.Head.NetworkClients.Name[cnt]))
-            Input.AddRemoveClient(C4NET_NoClient,
-                                  C4S.Head.NetworkClients.Name[cnt]);
+            Input.AddRemoveClient(C4NET_NoClient, C4S.Head.NetworkClients.Name[cnt]);
 
   return TRUE;
 }
@@ -2411,20 +2294,15 @@ BOOL C4Game::InitPlayers() {
 
   // Join players (start immediate)
   char szPlayerFilename[_MAX_PATH + 1];
-  for (int iPar = 0;
-       SCopySegment(PlayerFilenames, iPar, szPlayerFilename, ';', _MAX_PATH);
-       iPar++)
+  for (int iPar = 0; SCopySegment(PlayerFilenames, iPar, szPlayerFilename, ';', _MAX_PATH); iPar++)
     if (szPlayerFilename[0])
-      if (!Players.Join(szPlayerFilename, !C4S.Head.SaveGame,
-                        Network.GetClientNumber(), Network.LocalName))
+      if (!Players.Join(szPlayerFilename, !C4S.Head.SaveGame, Network.GetClientNumber(), Network.LocalName))
         return FALSE;
 
   // Join local players to network game (control queue)
   if (NetworkJoinPlayerFilenames[0]) {
     int iPar;
-    for (iPar = 0; SCopySegment(NetworkJoinPlayerFilenames, iPar,
-                                szPlayerFilename, ';', _MAX_PATH);
-         iPar++)
+    for (iPar = 0; SCopySegment(NetworkJoinPlayerFilenames, iPar, szPlayerFilename, ';', _MAX_PATH); iPar++)
       if (szPlayerFilename[0])
         Input.AddJoinPlayer(szPlayerFilename);
   }
@@ -2477,8 +2355,7 @@ BOOL C4Game::PlaceInEarth(C4ID id) {
   return FALSE;
 }
 
-C4Object *C4Game::PlaceVegetation(C4ID id, int iX, int iY, int iWdt, int iHgt,
-                                  int iGrowth) {
+C4Object *C4Game::PlaceVegetation(C4ID id, int iX, int iY, int iWdt, int iHgt, int iGrowth) {
   int cnt, iTx, iTy, iMaterial;
 
   // Get definition
@@ -2513,8 +2390,7 @@ C4Object *C4Game::PlaceVegetation(C4ID id, int iX, int iY, int iWdt, int iHgt,
       iTx = lx;
       iTy = ly;
       // Free above
-      if (GBackSemiSolid(iTx, iTy - pDef->Shape.Hgt) ||
-          GBackSemiSolid(iTx, iTy - pDef->Shape.Hgt / 2))
+      if (GBackSemiSolid(iTx, iTy - pDef->Shape.Hgt) || GBackSemiSolid(iTx, iTy - pDef->Shape.Hgt / 2))
         continue;
       // Soil check
       iTy += 3; // two pix into ground
@@ -2609,8 +2485,7 @@ void C4Game::InitInEarth() {
   int cnt, vidnum;
   C4ID vidlist[maxvid];
   // Amount
-  int amt = (GBackWdt * GBackHgt / 5000) *
-            C4S.Landscape.InEarthLevel.Evaluate() / 100;
+  int amt = (GBackWdt * GBackHgt / 5000) * C4S.Landscape.InEarthLevel.Evaluate() / 100;
   // List all valid IDs from C4S
   vidnum = ListExpandValids(C4S.Landscape.InEarth, vidlist, maxvid);
   // Place
@@ -2669,8 +2544,7 @@ BOOL C4Game::SaveNetworkReference(C4Group &hGroup, BOOL fDenied) {
   SCopy(ScenarioTitle, sC4S.Head.Title, C4MaxTitle);
   SCopy(Network.LocalName, sC4S.Head.NetworkHostName, C4MaxTitle);
   SCopy(Network.LocalAddress, sC4S.Head.NetworkHostAddress, C4MaxTitle);
-  SCopy(Config.AtExeRelativePath(ScenarioFilename), sC4S.Head.NetworkFilename,
-        C4MaxTitle);
+  SCopy(Config.AtExeRelativePath(ScenarioFilename), sC4S.Head.NetworkFilename, C4MaxTitle);
   sC4S.Definitions.SetModules(DefinitionFilenames, Config.General.ExePath);
 
   // Save scenario core
@@ -2719,12 +2593,9 @@ void C4Game::ParseCommandLine(const char *szCmdLine) {
   cSeparator = ' ';
   if (SCharCount('"', szCmdLine))
     cSeparator = '"';
-  for (int iPar = 0;
-       SCopySegment(szCmdLine, iPar, szParameter, cSeparator, _MAX_PATH);
-       iPar++) {
+  for (int iPar = 0; SCopySegment(szCmdLine, iPar, szParameter, cSeparator, _MAX_PATH); iPar++) {
     // Scenario file / folder
-    if (SEqualNoCase(GetExtension(szParameter), "c4s") ||
-        SEqualNoCase(GetExtension(szParameter), "c4f")) {
+    if (SEqualNoCase(GetExtension(szParameter), "c4s") || SEqualNoCase(GetExtension(szParameter), "c4f")) {
       SCopy(szParameter, ScenarioFilename, _MAX_PATH);
       continue;
     }
@@ -2771,8 +2642,7 @@ BOOL C4Game::LoadScenarioComponents() {
   // Info
   Info.Load(LoadResStr(IDS_CNS_INFO), ScenarioFile, C4CFN_Info);
   // Script
-  Script.Load(LoadResStr(IDS_CNS_SCRIPT), ScenarioFile, C4CFN_Script,
-              Config.General.Language);
+  Script.Load(LoadResStr(IDS_CNS_SCRIPT), ScenarioFile, C4CFN_Script, Config.General.Language);
   // Names
   Names.Load(LoadResStr(IDS_CNS_NAMES), ScenarioFile, C4CFN_Names);
   // Game (runtime data)
@@ -2803,8 +2673,7 @@ void C4Game::InitSystem() {
   ControlRate = 1;
 }
 
-BOOL C4Game::JoinPlayer(const char *szFilename, int iAtClient,
-                        const char *szAtClientName) {
+BOOL C4Game::JoinPlayer(const char *szFilename, int iAtClient, const char *szAtClientName) {
   C4Player *pPlr;
   // Join
   if (!(pPlr = Players.Join(szFilename, TRUE, iAtClient, szAtClientName)))
@@ -2869,11 +2738,9 @@ BOOL C4Game::DefinitionFilenamesFromSaveGame() {
         SCopyUntil(szPos, szLinebuf, 0x0D, 30 + _MAX_PATH);
         szPos += SLen(szLinebuf);
         // Add definition file name
-        if (SEqual2(szLinebuf, "Definition") &&
-            (SCharPos('=', szLinebuf) > -1)) {
+        if (SEqual2(szLinebuf, "Definition") && (SCharPos('=', szLinebuf) > -1)) {
           SNewSegment(szDefinitionFilenames);
-          SAppend(szLinebuf + SCharPos('=', szLinebuf) + 1,
-                  szDefinitionFilenames);
+          SAppend(szLinebuf + SCharPos('=', szLinebuf) + 1, szDefinitionFilenames);
         } else
           break;
       }
@@ -2951,23 +2818,20 @@ C4Object *C4Game::FindBase(int iPlayer, int iIndex) {
   return NULL;
 }
 
-C4Object *C4Game::FindObjectByCommand(int iCommand, C4Object *pTarget, int iTx,
-                                      int iTy, C4Object *pTarget2) {
+C4Object *C4Game::FindObjectByCommand(int iCommand, C4Object *pTarget, int iTx, int iTy, C4Object *pTarget2) {
   C4Object *cObj;
   C4ObjectLink *clnk;
   for (clnk = Objects.First; clnk && (cObj = clnk->Obj); clnk = clnk->Next)
     // Status
     if (cObj->Status)
       // Check commands
-      for (C4Command *pCommand = cObj->Command; pCommand;
-           pCommand = pCommand->Next)
+      for (C4Command *pCommand = cObj->Command; pCommand; pCommand = pCommand->Next)
         // Command
         if (pCommand->Command == iCommand)
           // Target
           if (!pTarget || (pCommand->Target == pTarget))
             // Position
-            if ((!iTx && !iTy) ||
-                ((pCommand->Tx == iTx) && (pCommand->Ty == iTy)))
+            if ((!iTx && !iTy) || ((pCommand->Tx == iTx) && (pCommand->Ty == iTy)))
               // Target2
               if (!pTarget2 || (pCommand->Target2 == pTarget2))
                 // Found
@@ -2982,8 +2846,7 @@ BOOL C4Game::ReloadDef(C4ID id) {
   if (!pDef)
     return FALSE;
   // Message
-  sprintf(OSTR, "Reloading %s from %s", C4IdText(pDef->id),
-          GetFilename(pDef->Filename));
+  sprintf(OSTR, "Reloading %s from %s", C4IdText(pDef->id), GetFilename(pDef->Filename));
   Log(OSTR);
   // Reload def
   if (Defs.Reload(pDef, C4D_Load_RX, Config.General.Language, &SoundSystem)) {
@@ -3024,8 +2887,7 @@ BOOL C4Game::InitNetworkScenario() {
       Log(LoadResStr(IDS_NET_NOTACTIVE));
       return FALSE;
     }
-    if (!Network.Init(FALSE, Config.Network.LocalName,
-                      Config.Network.LocalAddress))
+    if (!Network.Init(FALSE, Config.Network.LocalName, Config.Network.LocalAddress))
       return FALSE;
     // Store local join player filenames for later control queue join
     SCopy(PlayerFilenames, NetworkJoinPlayerFilenames);
@@ -3033,8 +2895,7 @@ BOOL C4Game::InitNetworkScenario() {
     // Lobby join: check local scenario file
     BOOL fRetrieveScenario = TRUE;
     if (fJoiningLobby)
-      if (LocalFileMatch(C4S.Head.NetworkFilename,
-                         C4S.Head.NetworkFileCreation)) {
+      if (LocalFileMatch(C4S.Head.NetworkFilename, C4S.Head.NetworkFileCreation)) {
         Log(LoadResStr(IDS_NET_USINGLOCALFILE));
         // Use local scenario file
         fRetrieveScenario = FALSE;
@@ -3042,8 +2903,7 @@ BOOL C4Game::InitNetworkScenario() {
         SCopy(Config.AtExePath(C4S.Head.NetworkFilename), ScenarioFilename);
       }
     // Join network game
-    if (!Network.Join(C4S.Head.NetworkHostName, C4S.Head.NetworkHostAddress,
-                      fRetrieveScenario))
+    if (!Network.Join(C4S.Head.NetworkHostName, C4S.Head.NetworkHostAddress, fRetrieveScenario))
       return FALSE;
     // Reopen scenario
     if (!OpenScenario()) {
@@ -3061,8 +2921,7 @@ BOOL C4Game::InitNetworkScenario() {
   else {
     // Init network as host (if desired)
     if (Config.Network.Active)
-      if (!Network.Init(TRUE, Config.Network.LocalName,
-                        Config.Network.LocalAddress))
+      if (!Network.Init(TRUE, Config.Network.LocalName, Config.Network.LocalAddress))
         return FALSE;
     // Init input handler (if asynchronous)
     if (AsynchronousControl)
@@ -3105,12 +2964,10 @@ BOOL C4Game::CheckObjectEnumeration() {
     if (cObj->Number > iMax)
       iMax = cObj->Number;
     // Duplicate
-    for (clnk2 = Objects.First; clnk2 && (cObj2 = clnk2->Obj);
-         clnk2 = clnk2->Next)
+    for (clnk2 = Objects.First; clnk2 && (cObj2 = clnk2->Obj); clnk2 = clnk2->Next)
       if (cObj2 != cObj)
         if (cObj->Number == cObj2->Number) {
-          sprintf(OSTR, "Duplicate object enumeration number %d (%s and %s)",
-                  cObj2->Number, cObj->GetName(), cObj2->GetName());
+          sprintf(OSTR, "Duplicate object enumeration number %d (%s and %s)", cObj2->Number, cObj->GetName(), cObj2->GetName());
           Log(OSTR);
           return FALSE;
         }
@@ -3154,8 +3011,7 @@ BOOL C4Game::DirectJoinGetReference() {
   Log(OSTR);
 
   // Init network as client (reinit in InitNetworkScenario)
-  if (!Network.Init(FALSE, Config.Network.LocalName,
-                    Config.Network.LocalAddress)) {
+  if (!Network.Init(FALSE, Config.Network.LocalName, Config.Network.LocalAddress)) {
     Log(LoadResStr(IDS_NET_NODIRECTJOIN));
     ScenarioFilename[0] = 0;
     return FALSE;
@@ -3261,9 +3117,7 @@ const char *C4Game::FoldersWithLocalsDefs(const char *szPath) {
   int cnt, iBackslash;
   char szFoldername[_MAX_PATH + 1];
   C4Group hGroup;
-  for (cnt = 0; (iBackslash = SCharPos('\\', Config.AtExeRelativePath(szPath),
-                                       cnt)) > -1;
-       cnt++) {
+  for (cnt = 0; (iBackslash = SCharPos('\\', Config.AtExeRelativePath(szPath), cnt)) > -1; cnt++) {
     // Get folder name
     SCopy(Config.AtExeRelativePath(szPath), szFoldername, iBackslash);
     // Open folder
@@ -3348,8 +3202,7 @@ BOOL C4Game::SaveDeniedDesc(C4Group &hGroup) {
   SAppend(LineFeed, buffer);
 
   // Network game host
-  sprintf(OSTR, LoadResStr(IDS_DESC_HOST), Network.LocalName,
-          Network.LocalAddress);
+  sprintf(OSTR, LoadResStr(IDS_DESC_HOST), Network.LocalName, Network.LocalAddress);
   SAppend(OSTR, buffer);
   SAppend("\\par", buffer);
   SAppend(LineFeed, buffer);

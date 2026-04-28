@@ -114,12 +114,9 @@ bool C4Video::Start(const char *szFilename) {
   ((BITMAPINFO *)pInfo)->bmiHeader.biCompression = 0;
   ((BITMAPINFO *)pInfo)->bmiHeader.biSizeImage = DWordAligned(Width) * Height;
   for (int cnt = 0; cnt < 256; cnt++) {
-    ((BITMAPINFO *)pInfo)->bmiColors[cnt].rgbRed =
-        Game.GraphicsResource.GamePalette[cnt * 3 + 0];
-    ((BITMAPINFO *)pInfo)->bmiColors[cnt].rgbGreen =
-        Game.GraphicsResource.GamePalette[cnt * 3 + 1];
-    ((BITMAPINFO *)pInfo)->bmiColors[cnt].rgbBlue =
-        Game.GraphicsResource.GamePalette[cnt * 3 + 2];
+    ((BITMAPINFO *)pInfo)->bmiColors[cnt].rgbRed = Game.GraphicsResource.GamePalette[cnt * 3 + 0];
+    ((BITMAPINFO *)pInfo)->bmiColors[cnt].rgbGreen = Game.GraphicsResource.GamePalette[cnt * 3 + 1];
+    ((BITMAPINFO *)pInfo)->bmiColors[cnt].rgbBlue = Game.GraphicsResource.GamePalette[cnt * 3 + 2];
   }
   // Recording flag
   Recording = true;
@@ -148,17 +145,13 @@ void C4Video::Draw(C4FacetEx &cgo) {
   if (!ShowFlash)
     return;
   // Draw frame
-  Engine.DDraw.DrawFrame(cgo.Surface, X + cgo.X, Y + cgo.Y,
-                         X + cgo.X + Width - 1, Y + cgo.Y + Height - 1,
-                         Recording ? CRed : CWhite);
+  Engine.DDraw.DrawFrame(cgo.Surface, X + cgo.X, Y + cgo.Y, X + cgo.X + Width - 1, Y + cgo.Y + Height - 1, Recording ? CRed : CWhite);
   // Draw status
   if (Recording)
     sprintf(OSTR, "%dx%d Frame %d", Width, Height, AviFrame);
   else
     sprintf(OSTR, "%dx%d", Width, Height, AviFrame);
-  Engine.DDraw.TextOut(OSTR, cgo.Surface, cgo.X + X,
-                       cgo.Y + Y - Engine.DDraw.TextHeight() - 3,
-                       Recording ? FRed : FWhite);
+  Engine.DDraw.TextOut(OSTR, cgo.Surface, cgo.X + X, cgo.Y + Y - Engine.DDraw.TextHeight() - 3, Recording ? FRed : FWhite);
 }
 
 bool C4Video::AdjustPosition() {
@@ -197,13 +190,11 @@ bool C4Video::RecordFrame() {
     return false;
   }
   // Blit screen to buffer
-  StdBlit(bypBits, iPitch, -iHeight, X, Y, Width, Height, Buffer + InfoSize,
-          DWordAligned(Width), Height, 0, 0, Width, Height, 1);
+  StdBlit(bypBits, iPitch, -iHeight, X, Y, Width, Height, Buffer + InfoSize, DWordAligned(Width), Height, 0, 0, Width, Height, 1);
   // Unlock source
   UnLockSurface(Surface);
   // Write frame to file
-  if (!AVIPutFrame(pAviStream, AviFrame, Buffer, InfoSize, Buffer + InfoSize,
-                   BufferSize - InfoSize)) {
+  if (!AVIPutFrame(pAviStream, AviFrame, Buffer, InfoSize, Buffer + InfoSize, BufferSize - InfoSize)) {
     Log("AVIPutFrame failure");
     Stop();
     return false;
@@ -224,8 +215,7 @@ void C4Video::Draw() {
   C4Viewport *pViewport;
   if (pViewport = Game.GraphicsSystem.GetViewport(0)) {
     C4FacetEx cgo;
-    cgo.Set(Surface, pViewport->DrawX, pViewport->DrawY, pViewport->ViewWdt,
-            pViewport->ViewHgt, pViewport->ViewX, pViewport->ViewY);
+    cgo.Set(Surface, pViewport->DrawX, pViewport->DrawY, pViewport->ViewWdt, pViewport->ViewHgt, pViewport->ViewX, pViewport->ViewY);
     Draw(cgo);
   }
 }

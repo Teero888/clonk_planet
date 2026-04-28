@@ -102,8 +102,7 @@ C4ObjectInfo *C4ObjectInfoList::GetIdle(C4ID c_id, C4DefList &rDefs) {
   return NULL;
 }
 
-C4ObjectInfo *C4ObjectInfoList::New(C4ID n_id, C4DefList *pDefs,
-                                    const char *cpNames) {
+C4ObjectInfo *C4ObjectInfoList::New(C4ID n_id, C4DefList *pDefs, const char *cpNames) {
   C4ObjectInfo *pInfo;
   if (!(pInfo = new C4ObjectInfo))
     return NULL;

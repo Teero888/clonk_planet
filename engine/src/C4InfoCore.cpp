@@ -32,8 +32,7 @@ const char *GetAName(const char *szNameFile) {
       rewind(hNamefile);
       iLoops++;
     }
-  } while ((iLoops < 2) && (!GetANameBuffer[0] || (GetANameBuffer[0] == '#') ||
-                            (GetANameBuffer[0] == ' ')));
+  } while ((iLoops < 2) && (!GetANameBuffer[0] || (GetANameBuffer[0] == '#') || (GetANameBuffer[0] == ' ')));
   fclose(hNamefile);
   if (iLoops >= 2)
     return "Clonk";
@@ -160,8 +159,7 @@ BOOL C4PlayerInfoCore::Decompile(char **ppOutput, int *ipSize) {
   C4Compiler Compiler;
   C4PlayerInfoCore dC4P;
   *ppOutput = NULL;
-  return Compiler.DecompileStructure(C4CR_PlayerInfoCore, this, &dC4P, ppOutput,
-                                     ipSize);
+  return Compiler.DecompileStructure(C4CR_PlayerInfoCore, this, &dC4P, ppOutput, ipSize);
 }
 
 //------------------------------- Physical Info
@@ -233,8 +231,7 @@ C4CompilerValue C4CR_ObjectInfoCore[] = {
 
 C4ObjectInfoCore::C4ObjectInfoCore() { Default(); }
 
-void C4ObjectInfoCore::Default(C4ID n_id, C4DefList *pDefs,
-                               const char *cpNames) {
+void C4ObjectInfoCore::Default(C4ID n_id, C4DefList *pDefs, const char *cpNames) {
 
   // Def
   C4Def *pDef = NULL;
@@ -265,8 +262,7 @@ void C4ObjectInfoCore::Default(C4ID n_id, C4DefList *pDefs,
       SCopy(GetAName(cpNames), Name, C4MaxName);
     // Name list
     else {
-      SCopySegment(cpNames, Random(SCharCount(0x0A, cpNames)), Name, 0x0A,
-                   C4MaxName + 1);
+      SCopySegment(cpNames, Random(SCharCount(0x0A, cpNames)), Name, 0x0A, C4MaxName + 1);
       SClearFrontBack(Name);
       SReplaceChar(Name, 0x0D, 0x00);
       if (!Name[0])
@@ -349,8 +345,7 @@ BOOL C4ObjectInfoCore::Decompile(char **ppOutput, int *ipSize) {
   C4Compiler Compiler;
   C4ObjectInfoCore dC4O;
   *ppOutput = NULL;
-  return Compiler.DecompileStructure(C4CR_ObjectInfoCore, this, &dC4O, ppOutput,
-                                     ipSize);
+  return Compiler.DecompileStructure(C4CR_ObjectInfoCore, this, &dC4O, ppOutput, ipSize);
 }
 
 //------------------------------- Round Info

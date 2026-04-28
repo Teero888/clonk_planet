@@ -4,18 +4,14 @@
 
 const int C4MN_Style_Normal = 0, C4MN_Style_Context = 1, C4MN_Style_Info = 2;
 
-const int C4MN_None = 0, C4MN_Construction = 1, C4MN_Bridge = 2, C4MN_Take = 3,
-          C4MN_Buy = 4, C4MN_Sell = 5, C4MN_Activate = 6, C4MN_Hostility = 7,
-          C4MN_Surrender = 8, C4MN_Put = 9, C4MN_Magic = 10, C4MN_Main = 12,
-          C4MN_Get = 13, C4MN_Context = 14, C4MN_Info = 15;
+const int C4MN_None = 0, C4MN_Construction = 1, C4MN_Bridge = 2, C4MN_Take = 3, C4MN_Buy = 4, C4MN_Sell = 5, C4MN_Activate = 6, C4MN_Hostility = 7, C4MN_Surrender = 8, C4MN_Put = 9, C4MN_Magic = 10,
+          C4MN_Main = 12, C4MN_Get = 13, C4MN_Context = 14, C4MN_Info = 15;
 
 const int C4MN_MaxMenu = C4MN_Context;
 
-const int C4MN_Extra_None = 0, C4MN_Extra_Components = 1, C4MN_Extra_Value = 2,
-          C4MN_Extra_MagicValue = 3, C4MN_Extra_Info = 4;
+const int C4MN_Extra_None = 0, C4MN_Extra_Components = 1, C4MN_Extra_Value = 2, C4MN_Extra_MagicValue = 3, C4MN_Extra_Info = 4;
 
-const int C4MN_Align_Left = 1, C4MN_Align_Right = 2, C4MN_Align_Top = 4,
-          C4MN_Align_Bottom = 8, C4MN_Align_Free = 16;
+const int C4MN_Align_Left = 1, C4MN_Align_Right = 2, C4MN_Align_Top = 4, C4MN_Align_Bottom = 8, C4MN_Align_Free = 16;
 
 const int C4MN_Symbol_Close = 0, C4MN_Symbol_Help = 2, C4MN_Symbol_Player = 4;
 
@@ -43,11 +39,8 @@ protected:
   C4MenuItem *Next;
 
 protected:
-  void Draw(C4Facet &cgo, int iIndex, BOOL fSelected, int iStyle, C4Menu *pMenu,
-            C4RegionList *pRegions);
-  void Set(const char *szCaption, C4FacetEx &fctSymbol, const char *szCommand,
-           int iCount, C4Object *pObject, int iParameter,
-           const char *szInfoCaption, C4ID idID, const char *szCommand2);
+  void Draw(C4Facet &cgo, int iIndex, BOOL fSelected, int iStyle, C4Menu *pMenu, C4RegionList *pRegions);
+  void Set(const char *szCaption, C4FacetEx &fctSymbol, const char *szCommand, int iCount, C4Object *pObject, int iParameter, const char *szInfoCaption, C4ID idID, const char *szCommand2);
   void Clear();
   void Default();
 };
@@ -114,19 +107,12 @@ public:
   void SetLocation(int iX, int iY);
   BOOL Enter(BOOL fRight = FALSE);
   BOOL IsActive();
-  BOOL Draw(C4Facet &cgo, C4RegionList *pRegions = NULL,
-            BOOL fResetLocation = FALSE);
+  BOOL Draw(C4Facet &cgo, C4RegionList *pRegions = NULL, BOOL fResetLocation = FALSE);
   BOOL Control(BYTE byCom, int iData);
-  BOOL Add(const char *szCaption, C4FacetEx fctSymbol, const char *szCommand,
-           int iCount = C4MN_Item_NoCount, C4Object *pObject = NULL,
-           int iParameter = 0, const char *szInfoCaption = NULL,
+  BOOL Add(const char *szCaption, C4FacetEx fctSymbol, const char *szCommand, int iCount = C4MN_Item_NoCount, C4Object *pObject = NULL, int iParameter = 0, const char *szInfoCaption = NULL,
            C4ID idID = C4ID_None, const char *szCommand2 = NULL);
-  BOOL Init(C4FacetEx fctSymbol, const char *szEmpty, int iPlayer,
-            int iExtra = C4MN_Extra_None, int iExtraData = 0, int iId = 0,
-            int iStyle = C4MN_Style_Normal);
-  BOOL Init(C4FacetEx fctSymbol, const char *szEmpty, C4Object *pObject,
-            int iExtra = C4MN_Extra_None, int iExtraData = 0, int iId = 0,
-            int iStyle = C4MN_Style_Normal);
+  BOOL Init(C4FacetEx fctSymbol, const char *szEmpty, int iPlayer, int iExtra = C4MN_Extra_None, int iExtraData = 0, int iId = 0, int iStyle = C4MN_Style_Normal);
+  BOOL Init(C4FacetEx fctSymbol, const char *szEmpty, C4Object *pObject, int iExtra = C4MN_Extra_None, int iExtraData = 0, int iId = 0, int iStyle = C4MN_Style_Normal);
   BOOL ActivateNewPlayer(int iPlayer);
   void Close();
   void Clear();
@@ -142,8 +128,7 @@ protected:
   BOOL CheckBuffer();
   BOOL RefillInternal();
   void DrawButton(C4Facet &cgo);
-  void DrawScrollbar(C4Facet &cgo, int iTotal, int iVisible, int iPosition,
-                     C4RegionList *pRegions = NULL);
+  void DrawScrollbar(C4Facet &cgo, int iTotal, int iVisible, int iPosition, C4RegionList *pRegions = NULL);
   void DrawFrame(C4Facet &cgo, int iAlign);
   void DrawFrame(SURFACE sfcSurface, int iX, int iY, int iWdt, int iHgt);
   void InitLocation(C4Facet &cgo);

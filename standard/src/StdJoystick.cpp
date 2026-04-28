@@ -63,15 +63,13 @@ BOOL StdGetGamepad(int id, BOOL fExtended, DWORD &dwPos, DWORD &dwButtons) {
   return TRUE;
 }
 
-BOOL StdGetJoyPos(int id, BOOL fExtended, DWORD &dwXPos, DWORD &dwYPos,
-                  DWORD &dwButtons) {
+BOOL StdGetJoyPos(int id, BOOL fExtended, DWORD &dwXPos, DWORD &dwYPos, DWORD &dwButtons) {
   MMRESULT lResult;
 
   if (fExtended) {
     JOYINFOEX joyInfoEx;
     joyInfoEx.dwSize = sizeof(joyInfoEx);
-    joyInfoEx.dwFlags =
-        JOY_RETURNBUTTONS | JOY_RETURNRAWDATA | JOY_RETURNX | JOY_RETURNY;
+    joyInfoEx.dwFlags = JOY_RETURNBUTTONS | JOY_RETURNRAWDATA | JOY_RETURNX | JOY_RETURNY;
     if ((lResult = joyGetPosEx(JOYSTICKID1, &joyInfoEx)) == JOYERR_NOERROR) {
       dwXPos = joyInfoEx.dwXpos;
       dwYPos = joyInfoEx.dwYpos;
@@ -104,11 +102,6 @@ int GetFirstSetBit(DWORD dwBitArray) {
 #endif
 
 #ifndef _WIN32
-BOOL StdSetGamepadCalibration(int iMinX, int iMaxX, int iMinY, int iMaxY) {
-  return FALSE;
-}
-BOOL StdGetGamepad(int iGamepad, int iAxis, DWORD &rdwButtons,
-                   DWORD &rdwStatus) {
-  return FALSE;
-}
+BOOL StdSetGamepadCalibration(int iMinX, int iMaxX, int iMinY, int iMaxY) { return FALSE; }
+BOOL StdGetGamepad(int iGamepad, int iAxis, DWORD &rdwButtons, DWORD &rdwStatus) { return FALSE; }
 #endif

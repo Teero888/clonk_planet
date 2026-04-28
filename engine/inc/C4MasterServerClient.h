@@ -26,13 +26,11 @@ public:
   void Default();
   void Clear();
   void ForceReference();
-  BOOL Init(HWND hwnd, const char *szAddress, const char *szDirectory,
-            int iKeepPeriod, int iReferencePeriod);
+  BOOL Init(HWND hwnd, const char *szAddress, const char *szDirectory, int iKeepPeriod, int iReferencePeriod);
 
 protected:
   int Run();
-  BOOL Send(const char *szAction, const char *szFilename = ".ip",
-            BYTE *bpData = NULL, int iSize = 0);
+  BOOL Send(const char *szAction, const char *szFilename = ".ip", BYTE *bpData = NULL, int iSize = 0);
   void Message(WORD idMsg, const char *szMsgPar = NULL);
 
 private:

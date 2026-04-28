@@ -56,9 +56,7 @@ void C4MasterServerClient::Clear() {
   hThread = NULL;
 }
 
-BOOL C4MasterServerClient::Init(HWND hwnd, const char *szAddress,
-                                const char *szDirectory, int iKeepPeriod,
-                                int iReferencePeriod) {
+BOOL C4MasterServerClient::Init(HWND hwnd, const char *szAddress, const char *szDirectory, int iKeepPeriod, int iReferencePeriod) {
 
   // Store data
   hWnd = hwnd;
@@ -89,12 +87,9 @@ DWORD WINAPI C4MasterServerClient::ThreadFunction(void *lpPar) {
   return pClient->Run();
 }
 
-void C4MasterServerClient::Message(WORD idMsg, const char *szMsgPar) {
-  PostMessage(hWnd, WM_USER_LOG, idMsg, (LPARAM)szMsgPar);
-}
+void C4MasterServerClient::Message(WORD idMsg, const char *szMsgPar) { PostMessage(hWnd, WM_USER_LOG, idMsg, (LPARAM)szMsgPar); }
 
-BOOL C4MasterServerClient::Send(const char *szAction, const char *szFilename,
-                                BYTE *bpData, int iSize) {
+BOOL C4MasterServerClient::Send(const char *szAction, const char *szFilename, BYTE *bpData, int iSize) {
   // Safety
   if (!Address || !Address[0])
     return FALSE;
@@ -113,8 +108,7 @@ BOOL C4MasterServerClient::Send(const char *szAction, const char *szFilename,
     return FALSE;
   // Post message
   char szMessage[1024 + 1];
-  sprintf(szMessage, "version=%d.%d%d.0&action=%s&filename=%s\r\n", C4XVer1,
-          C4XVer2, C4XVer3, szAction, szFilename);
+  sprintf(szMessage, "version=%d.%d%d.0&action=%s&filename=%s\r\n", C4XVer1, C4XVer2, C4XVer3, szAction, szFilename);
   if (!StdHttp.Post(szMessage, bpData, iSize))
     return FALSE;
   // Receive answer

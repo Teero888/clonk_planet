@@ -103,16 +103,14 @@ int main(int argc, char **argv) {
     // Order 1: Swap then XOR
     memcpy(buf, data.data() + i, 64);
     MemUnscramble(buf, 64);
-    if (memcmp(buf, "RedWolf", 7) == 0 || strstr((char *)buf, ".txt") ||
-        strstr((char *)buf, ".c4s") || strstr((char *)buf, ".c4f")) {
+    if (memcmp(buf, "RedWolf", 7) == 0 || strstr((char *)buf, ".txt") || strstr((char *)buf, ".c4s") || strstr((char *)buf, ".c4f")) {
       printf("Found at offset %d (Swap then XOR): %.48s\n", i, buf);
     }
 
     // Order 2: XOR then Swap
     memcpy(buf, data.data() + i, 64);
     MemUnscramble2(buf, 64);
-    if (memcmp(buf, "RedWolf", 7) == 0 || memcmp(buf, "Title.txt", 9) == 0 ||
-        memcmp(buf, "Scenario.txt", 12) == 0) {
+    if (memcmp(buf, "RedWolf", 7) == 0 || memcmp(buf, "Title.txt", 9) == 0 || memcmp(buf, "Scenario.txt", 12) == 0) {
       printf("Found at offset %d (XOR then Swap): %.32s\n", i, buf);
     }
 
@@ -120,8 +118,7 @@ int main(int argc, char **argv) {
     memcpy(buf, data.data() + i, 64);
     for (int j = 0; j < 64; j++)
       buf[j] ^= 237;
-    if (memcmp(buf, "RedWolf", 7) == 0 || memcmp(buf, "Title.txt", 9) == 0 ||
-        memcmp(buf, "Scenario.txt", 12) == 0) {
+    if (memcmp(buf, "RedWolf", 7) == 0 || memcmp(buf, "Title.txt", 9) == 0 || memcmp(buf, "Scenario.txt", 12) == 0) {
       printf("Found at offset %d (Pure XOR): %.32s\n", i, buf);
     }
   }

@@ -12,8 +12,7 @@ const int C4CNS_ModePlay = 0, C4CNS_ModeEdit = 1, C4CNS_ModeDraw = 2;
 #define IDM_VIEWPORT_NEW2 10500
 
 class C4Console {
-  friend BOOL CALLBACK ConsoleDlgProc(HWND hDlg, UINT Msg, WPARAM wParam,
-                                      LPARAM lParam);
+  friend BOOL CALLBACK ConsoleDlgProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 public:
   C4Console();
@@ -80,8 +79,7 @@ protected:
   BOOL UpdateStatusBars();
   void ViewportNew();
   void HelpAbout();
-  BOOL FileSelect(char *sFilename, int iSize, const char *szFilter,
-                  DWORD dwFlags, BOOL fSave = FALSE);
+  BOOL FileSelect(char *sFilename, int iSize, const char *szFilter, DWORD dwFlags, BOOL fSave = FALSE);
   BOOL OpenGame(const char *szCmdLine);
   BOOL CloseGame();
   BOOL SaveGame(BOOL fSaveGame);
@@ -92,8 +90,7 @@ protected:
   BOOL FileClose();
   BOOL FileQuit();
   void EnableControls(BOOL fEnable);
-  BOOL AddMenuItem(HMENU hMenu, DWORD dwID, const char *szString,
-                   BOOL fEnabled = TRUE);
+  BOOL AddMenuItem(HMENU hMenu, DWORD dwID, const char *szString, BOOL fEnabled = TRUE);
   void ClearViewportMenu();
   BOOL UpdateViewportMenu();
   BOOL RegisterConsoleWindowClass(HINSTANCE hInst);

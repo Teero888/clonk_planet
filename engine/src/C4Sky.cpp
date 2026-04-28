@@ -9,9 +9,7 @@ void C4Sky::SetFadePalette(int *ipColors) {
   iStart = 0;
   iEnd = 19;
   // If colors all zero, use game palette default blue
-  if (ipColors[0] + ipColors[1] + ipColors[2] + ipColors[3] + ipColors[4] +
-          ipColors[5] ==
-      0) {
+  if (ipColors[0] + ipColors[1] + ipColors[2] + ipColors[3] + ipColors[4] + ipColors[5] == 0) {
     MemCopy(Game.GraphicsResource.GamePalette + 3 * CSkyDef1, Palette, 3 * 20);
     return;
   }
@@ -24,15 +22,9 @@ void C4Sky::SetFadePalette(int *ipColors) {
   Palette[3 * iEnd + 2] = ipColors[5];
   // Fade mean colors
   for (cnt = iStart + 1; cnt < iEnd; cnt++) {
-    Palette[3 * cnt + 0] = Palette[3 * iStart + 0] +
-                           (Palette[3 * iEnd + 0] - Palette[3 * iStart + 0]) *
-                               (cnt - iStart) / (iEnd - iStart + 1);
-    Palette[3 * cnt + 1] = Palette[3 * iStart + 1] +
-                           (Palette[3 * iEnd + 1] - Palette[3 * iStart + 1]) *
-                               (cnt - iStart) / (iEnd - iStart + 1);
-    Palette[3 * cnt + 2] = Palette[3 * iStart + 2] +
-                           (Palette[3 * iEnd + 2] - Palette[3 * iStart + 2]) *
-                               (cnt - iStart) / (iEnd - iStart + 1);
+    Palette[3 * cnt + 0] = Palette[3 * iStart + 0] + (Palette[3 * iEnd + 0] - Palette[3 * iStart + 0]) * (cnt - iStart) / (iEnd - iStart + 1);
+    Palette[3 * cnt + 1] = Palette[3 * iStart + 1] + (Palette[3 * iEnd + 1] - Palette[3 * iStart + 1]) * (cnt - iStart) / (iEnd - iStart + 1);
+    Palette[3 * cnt + 2] = Palette[3 * iStart + 2] + (Palette[3 * iEnd + 2] - Palette[3 * iStart + 2]) * (cnt - iStart) / (iEnd - iStart + 1);
   }
 }
 
@@ -67,8 +59,7 @@ SURFACE C4Sky::CreateColorFadeSky() {
 
   // Below horizon
   if (horizon < GBackHgt)
-    FillMem(sfcbuf + sfcpitch * horizon, sfcpitch * (GBackHgt - horizon),
-            CSkyDef2);
+    FillMem(sfcbuf + sfcpitch * horizon, sfcpitch * (GBackHgt - horizon), CSkyDef2);
 
   UnLockSurface(nsfc);
 
@@ -156,8 +147,7 @@ BOOL C4Sky::Save(C4Group &hGroup) {
     return TRUE;
   }
   // Shift sky bitmap back to original palette index
-  Engine.DDraw.SurfaceShiftColorRange(Surface, CSkyDef1, CSkyDef1 + 19,
-                                      -CSkyDef1);
+  Engine.DDraw.SurfaceShiftColorRange(Surface, CSkyDef1, CSkyDef1 + 19, -CSkyDef1);
   // Save surface to temp file with sky palette
   if (!SaveSurface(Config.AtTempPath(C4CFN_TempSky), Surface, Palette))
     return FALSE;

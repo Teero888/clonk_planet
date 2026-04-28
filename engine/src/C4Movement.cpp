@@ -115,8 +115,7 @@ void C4Object::DoMotion(int mx, int my) {
   motion_y += my;
 }
 
-void C4Object::TargetBounds(int &ctco, int limit_low, int limit_hi,
-                            int cnat_low, int cnat_hi) {
+void C4Object::TargetBounds(int &ctco, int limit_low, int limit_hi, int cnat_low, int cnat_hi) {
   switch (ForceLimits(ctco, limit_low, limit_hi)) {
   case -1:
     Contact(cnat_low);
@@ -164,8 +163,7 @@ void C4Object::DoMovement() {
       if (Def->ActMap[Action.Act].DigFree == 1) {
         ctcox = fixtoi(fix_x + xdir);
         ctcoy = fixtoi(fix_y + ydir);
-        Game.Landscape.DigFreeRect(ctcox + Shape.x, ctcoy + Shape.y, Shape.Wdt,
-                                   Shape.Hgt, Action.Data, this);
+        Game.Landscape.DigFreeRect(ctcox + Shape.x, ctcoy + Shape.y, Shape.Wdt, Shape.Hgt, Action.Data, this);
       }
       // Free size round (variable size)
       else {
@@ -192,8 +190,7 @@ void C4Object::DoMovement() {
 
     // Movement bounds (horiz)
     if (Def->BorderBound & C4D_Border_Sides)
-      TargetBounds(ctcox, 0 - Shape.x, GBackWdt + Shape.x, CNAT_Left,
-                   CNAT_Right);
+      TargetBounds(ctcox, 0 - Shape.x, GBackWdt + Shape.x, CNAT_Left, CNAT_Right);
 
     // Move to target
     while (x != ctcox) {
@@ -324,8 +321,7 @@ void C4Object::DoMovement() {
 
     // Movement bounds (horiz + verti)
     if (Def->BorderBound & C4D_Border_Sides)
-      TargetBounds(ctcox, 0 - Shape.x, GBackWdt + Shape.x, CNAT_Left,
-                   CNAT_Right);
+      TargetBounds(ctcox, 0 - Shape.x, GBackWdt + Shape.x, CNAT_Left, CNAT_Right);
     if (Def->BorderBound & C4D_Border_Top)
       TargetBounds(ctcoy, 0 - Shape.y, +1000000, CNAT_Top, CNAT_Bottom);
     if (Def->BorderBound & C4D_Border_Bottom)

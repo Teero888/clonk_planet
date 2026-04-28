@@ -55,8 +55,7 @@ public:
 };
 #pragma pack(pop)
 
-const int C4GRES_InGroup = 0, C4GRES_OnDisk = 1, C4GRES_InMemory = 2,
-          C4GRES_Deleted = 3;
+const int C4GRES_InGroup = 0, C4GRES_OnDisk = 1, C4GRES_InMemory = 2, C4GRES_Deleted = 3;
 
 class C4GroupEntry : public C4GroupEntryCore {
 public:
@@ -111,12 +110,10 @@ protected:
 public:
   BOOL Open(const char *szGroupName, BOOL fCreate = FALSE);
   BOOL Close();
-  BOOL OpenAsChild(C4Group *pMother, const char *szEntryName,
-                   BOOL fExclusive = FALSE);
+  BOOL OpenAsChild(C4Group *pMother, const char *szEntryName, BOOL fExclusive = FALSE);
   BOOL Add(const char *szFiles);
   BOOL Add(const char *szFile, const char *szAddAs);
-  BOOL Add(const char *szName, void *pBuffer, int iSize, BOOL fChild = FALSE,
-           BOOL fHoldBuffer = FALSE);
+  BOOL Add(const char *szName, void *pBuffer, int iSize, BOOL fChild = FALSE, BOOL fHoldBuffer = FALSE);
   BOOL Add(const char *szEntryname, C4Group &hSource);
   BOOL Move(const char *szFiles);
   BOOL Move(const char *szFile, const char *szAddAs);
@@ -130,23 +127,15 @@ public:
   BOOL View(const char *szFiles);
   BOOL GetOriginal();
   BOOL LoadIcon(const char *szEntryname, HICON *lphIcon);
-  BOOL AccessEntry(const char *szWildCard, int *iSize = NULL,
-                   char *sFileName = NULL, BOOL *fChild = NULL);
-  BOOL AccessNextEntry(const char *szWildCard, int *iSize = NULL,
-                       char *sFileName = NULL, BOOL *fChild = NULL);
-  BOOL LoadEntry(const char *szEntryName, BYTE **lpbpBuf, int *ipSize = NULL,
-                 int iAppendZeros = 0);
-  BOOL FindEntry(const char *szWildCard, char *sFileName = NULL,
-                 int *iSize = NULL, BOOL *fChild = NULL);
-  BOOL FindNextEntry(const char *szWildCard, char *sFileName = NULL,
-                     int *iSize = NULL, BOOL *fChild = NULL,
-                     BOOL fStartAtFilename = FALSE);
+  BOOL AccessEntry(const char *szWildCard, int *iSize = NULL, char *sFileName = NULL, BOOL *fChild = NULL);
+  BOOL AccessNextEntry(const char *szWildCard, int *iSize = NULL, char *sFileName = NULL, BOOL *fChild = NULL);
+  BOOL LoadEntry(const char *szEntryName, BYTE **lpbpBuf, int *ipSize = NULL, int iAppendZeros = 0);
+  BOOL FindEntry(const char *szWildCard, char *sFileName = NULL, int *iSize = NULL, BOOL *fChild = NULL);
+  BOOL FindNextEntry(const char *szWildCard, char *sFileName = NULL, int *iSize = NULL, BOOL *fChild = NULL, BOOL fStartAtFilename = FALSE);
   BOOL Read(void *pBuffer, int iSize);
   BOOL Advance(int iOffset);
   BOOL ReadDDB(HBITMAP *lphBitmap, HDC hdc = NULL);
-  BOOL ReadDDBSection(HBITMAP *lphBitmap, HDC hdc, int iSecX, int iSecY,
-                      int iSecWdt, int iSecHgt, int iImgWdt = -1,
-                      int iImgHgt = -1, BOOL fTransCol = FALSE);
+  BOOL ReadDDBSection(HBITMAP *lphBitmap, HDC hdc, int iSecX, int iSecY, int iSecWdt, int iSecHgt, int iImgWdt = -1, int iImgHgt = -1, BOOL fTransCol = FALSE);
   void SetMaker(const char *szMaker);
   void SetPassword(const char *szPassword);
   void SetStdOutput(BOOL fStatus);
@@ -178,17 +167,12 @@ protected:
   BOOL SetFilePtr(int iOffset);
   BOOL RewindFilePtr();
   BOOL AdvanceFilePtr(int iOffset, C4Group *pByChild = NULL);
-  BOOL AddEntry(int status, BOOL childgroup, const char *fname, long size,
-                time_t time, const char *entryname = NULL, BYTE *membuf = NULL,
-                BOOL fDeleteOnDisk = FALSE, BOOL fHoldBuffer = FALSE);
-  BOOL AddEntryOnDisk(const char *szFilename, const char *szAddAs = NULL,
-                      BOOL fMove = FALSE);
+  BOOL AddEntry(int status, BOOL childgroup, const char *fname, long size, time_t time, const char *entryname = NULL, BYTE *membuf = NULL, BOOL fDeleteOnDisk = FALSE, BOOL fHoldBuffer = FALSE);
+  BOOL AddEntryOnDisk(const char *szFilename, const char *szAddAs = NULL, BOOL fMove = FALSE);
   BOOL SetFilePtr2Entry(const char *szName, C4Group *pByChild = NULL);
   BOOL AppendEntry2StdFile(C4GroupEntry *centry, CStdFile &stdfile);
   C4GroupEntry *GetEntry(const char *szName);
   C4GroupEntry *SearchNextEntry(const char *szName);
   C4GroupEntry *GetNextFolderEntry();
-  HBITMAP SubReadDDB(HDC hdc, int sx = -1, int sy = -1, int swdt = -1,
-                     int shgt = -1, int twdt = -1, int thgt = -1,
-                     BOOL transcol = FALSE);
+  HBITMAP SubReadDDB(HDC hdc, int sx = -1, int sy = -1, int swdt = -1, int shgt = -1, int twdt = -1, int thgt = -1, BOOL transcol = FALSE);
 };

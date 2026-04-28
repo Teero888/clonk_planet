@@ -5,8 +5,7 @@
 #include <C4Include.h>
 
 BYTE SimFlightHitsLiquid(FIXED fcx, FIXED fcy, FIXED xdir, FIXED ydir);
-BOOL CreateConstructionSite(int ctx, int bty, C4ID strid, int owner,
-                            C4Object *pByObj);
+BOOL CreateConstructionSite(int ctx, int bty, C4ID strid, int owner, C4Object *pByObj);
 
 BOOL ObjectActionWalk(C4Object *cObj) {
   if (!cObj->SetActionByName("Walk"))
@@ -98,8 +97,7 @@ BOOL ObjectActionThrow(C4Object *cObj, C4Object *pThing) {
   if (!pThing)
     return FALSE;
   // Force and direction
-  FIXED pthrow =
-      ftofix(4.0 * (float)cObj->GetPhysical()->Throw / (float)C4MaxPhysical);
+  FIXED pthrow = ftofix(4.0 * (float)cObj->GetPhysical()->Throw / (float)C4MaxPhysical);
   int iDir = 1;
   if (cObj->Action.Dir == DIR_Left)
     iDir = -1;
@@ -107,8 +105,7 @@ BOOL ObjectActionThrow(C4Object *cObj, C4Object *pThing) {
   if (!cObj->SetActionByName("Throw"))
     return FALSE;
   // Exit object
-  pThing->Exit(cObj->x, cObj->y + cObj->Shape.y - 1, Random(360), pthrow * iDir,
-               -pthrow, pthrow * iDir);
+  pThing->Exit(cObj->x, cObj->y + cObj->Shape.y - 1, Random(360), pthrow * iDir, -pthrow, pthrow * iDir);
   // Success
   return TRUE;
 }
@@ -121,21 +118,13 @@ BOOL ObjectActionDig(C4Object *cObj, int tcomdir) {
   return TRUE;
 }
 
-BOOL ObjectActionBuild(C4Object *cObj, C4Object *target) {
-  return cObj->SetActionByName("Build", target);
-}
+BOOL ObjectActionBuild(C4Object *cObj, C4Object *target) { return cObj->SetActionByName("Build", target); }
 
-BOOL ObjectActionPush(C4Object *cObj, C4Object *target) {
-  return cObj->SetActionByName("Push", target);
-}
+BOOL ObjectActionPush(C4Object *cObj, C4Object *target) { return cObj->SetActionByName("Push", target); }
 
-BOOL ObjectActionFight(C4Object *cObj, C4Object *target) {
-  return cObj->SetActionByName("Fight", target);
-}
+BOOL ObjectActionFight(C4Object *cObj, C4Object *target) { return cObj->SetActionByName("Fight", target); }
 
-BOOL ObjectActionChop(C4Object *cObj, C4Object *target) {
-  return cObj->SetActionByName("Chop", target);
-}
+BOOL ObjectActionChop(C4Object *cObj, C4Object *target) { return cObj->SetActionByName("Chop", target); }
 
 BOOL CornerScaleOkay(C4Object *cObj, int iRangeX, int iRangeY) {
   int ctx, cty;
@@ -245,10 +234,8 @@ BOOL ObjectComJump(C4Object *cObj) // by ObjectComUp, ExecCMDFMoveTo, FnJump
   // Calculate direction & forces
   FIXED TXDir = 0;
   C4PhysicalInfo *pPhysical = cObj->GetPhysical();
-  FIXED iPhysicalWalk =
-      ftofix(2.8 * (float)pPhysical->Walk / (float)C4MaxPhysical);
-  FIXED iPhysicalJump =
-      ftofix(10.0 * (float)pPhysical->Jump / (float)C4MaxPhysical);
+  FIXED iPhysicalWalk = ftofix(2.8 * (float)pPhysical->Walk / (float)C4MaxPhysical);
+  FIXED iPhysicalJump = ftofix(10.0 * (float)pPhysical->Jump / (float)C4MaxPhysical);
   if (cObj->Action.ComDir == COMD_Left)
     TXDir = -iPhysicalWalk;
   if (cObj->Action.ComDir == COMD_Right)
@@ -362,22 +349,17 @@ BOOL ObjectComLineConstruction(C4Object *cObj) {
   // Check for linekit
   if (!(linekit = cObj->Contents.Find(C4ID_Linekit))) {
     // Check for collection limit
-    if (cObj->Def->CollectionLimit &&
-        (cObj->Contents.ObjectCount() >= cObj->Def->CollectionLimit))
+    if (cObj->Def->CollectionLimit && (cObj->Contents.ObjectCount() >= cObj->Def->CollectionLimit))
       return FALSE;
     // Check line pickup
     ocf = OCF_LineConstruct;
     tstruct = Game.AtObject(cObj->x, cObj->y, ocf);
     if (!tstruct || !(ocf & OCF_LineConstruct))
       return FALSE;
-    if (!(cline = Game.FindObject(C4ID_None, 0, 0, 0, 0, OCF_All, "Connect",
-                                  tstruct)))
+    if (!(cline = Game.FindObject(C4ID_None, 0, 0, 0, 0, OCF_All, "Connect", tstruct)))
       return FALSE;
     // Check line connected to linekit at other end
-    if ((cline->Action.Target &&
-         (cline->Action.Target->Def->id == C4ID_Linekit)) ||
-        (cline->Action.Target2 &&
-         (cline->Action.Target2->Def->id == C4ID_Linekit))) {
+    if ((cline->Action.Target && (cline->Action.Target->Def->id == C4ID_Linekit)) || (cline->Action.Target2 && (cline->Action.Target2->Def->id == C4ID_Linekit))) {
       SoundEffect("Error", 0, 100, cObj);
       sprintf(OSTR, LoadResStr(IDS_OBJ_NODOUBLEKIT), cline->GetName());
       GameMsgObject(OSTR, cObj);
@@ -394,8 +376,7 @@ BOOL ObjectComLineConstruction(C4Object *cObj) {
     if (cline->Action.Target2 == tstruct)
       cline->Action.Target2 = linekit;
 
-    sprintf(OSTR, LoadResStr(IDS_OBJ_DISCONNECT), cline->GetName(),
-            tstruct->GetName());
+    sprintf(OSTR, LoadResStr(IDS_OBJ_DISCONNECT), cline->GetName(), tstruct->GetName());
     GameMsgObject(OSTR, tstruct);
 
     return TRUE;
@@ -405,8 +386,7 @@ BOOL ObjectComLineConstruction(C4Object *cObj) {
   // - - - - -
 
   // Active line construction
-  if (cline =
-          Game.FindObject(C4ID_None, 0, 0, 0, 0, OCF_All, "Connect", linekit)) {
+  if (cline = Game.FindObject(C4ID_None, 0, 0, 0, 0, OCF_All, "Connect", linekit)) {
 
     // Check for structure connection
     ocf = OCF_LineConstruct;
@@ -421,8 +401,7 @@ BOOL ObjectComLineConstruction(C4Object *cObj) {
     }
 
     // Check short circuit -> removal
-    if ((cline->Action.Target == tstruct) ||
-        (cline->Action.Target2 == tstruct)) {
+    if ((cline->Action.Target == tstruct) || (cline->Action.Target2 == tstruct)) {
       SoundEffect("Connect", 0, 100, cObj);
       sprintf(OSTR, LoadResStr(IDS_OBJ_LINEREMOVAL), cline->GetName());
       GameMsgObject(OSTR, tstruct);
@@ -452,8 +431,7 @@ BOOL ObjectComLineConstruction(C4Object *cObj) {
     }
     if (!connect_okay) {
       SoundEffect("Error", 0, 100, cObj);
-      sprintf(OSTR, LoadResStr(IDS_OBJ_NOCONNECTTYPE), cline->GetName(),
-              tstruct->GetName());
+      sprintf(OSTR, LoadResStr(IDS_OBJ_NOCONNECTTYPE), cline->GetName(), tstruct->GetName());
       GameMsgObject(OSTR, tstruct);
       return FALSE;
     }
@@ -467,8 +445,7 @@ BOOL ObjectComLineConstruction(C4Object *cObj) {
     linekit->Exit();
     linekit->AssignRemoval();
 
-    sprintf(OSTR, LoadResStr(IDS_OBJ_CONNECT), cline->GetName(),
-            tstruct->GetName());
+    sprintf(OSTR, LoadResStr(IDS_OBJ_CONNECT), cline->GetName(), tstruct->GetName());
     GameMsgObject(OSTR, tstruct);
 
     return TRUE;
@@ -492,14 +469,12 @@ BOOL ObjectComLineConstruction(C4Object *cObj) {
   // Check source pipe
   if (linetype == C4ID_None)
     if (tstruct->Def->LineConnect & C4D_Liquid_Pump)
-      if (!Game.FindObject(C4ID_SourcePipe, 0, 0, 0, 0, OCF_All, "Connect",
-                           tstruct))
+      if (!Game.FindObject(C4ID_SourcePipe, 0, 0, 0, 0, OCF_All, "Connect", tstruct))
         linetype = C4ID_SourcePipe;
   // Check drain pipe
   if (linetype == C4ID_None)
     if (tstruct->Def->LineConnect & C4D_Liquid_Output)
-      if (!Game.FindObject(C4ID_DrainPipe, 0, 0, 0, 0, OCF_All, "Connect",
-                           tstruct))
+      if (!Game.FindObject(C4ID_DrainPipe, 0, 0, 0, 0, OCF_All, "Connect", tstruct))
         linetype = C4ID_DrainPipe;
   // Check power
   if (linetype == C4ID_None)
@@ -524,8 +499,7 @@ BOOL ObjectComLineConstruction(C4Object *cObj) {
   return TRUE;
 }
 
-void ObjectComDigDouble(
-    C4Object *cObj) // "Activation" by DFA_WALK, DFA_DIG, DFA_SWIM
+void ObjectComDigDouble(C4Object *cObj) // "Activation" by DFA_WALK, DFA_DIG, DFA_SWIM
 {
   C4Object *pTarget;
   DWORD ocf;
@@ -537,8 +511,7 @@ void ObjectComDigDouble(
       return;
 
   // Linekit: Line construction (move to linekit script...)
-  if (cObj->Contents.GetObject() &&
-      (cObj->Contents.GetObject()->id == C4ID_Linekit)) {
+  if (cObj->Contents.GetObject() && (cObj->Contents.GetObject()->id == C4ID_Linekit)) {
     ObjectComLineConstruction(cObj);
     return;
   }
@@ -608,8 +581,7 @@ BOOL ObjectComPut(C4Object *cObj, C4Object *pTarget, C4Object *pThing) {
   if (!(pTarget->OCF & OCF_FullCon))
     return FALSE;
   // Check target collection limit
-  if (pTarget->Def->CollectionLimit &&
-      (pTarget->Contents.ObjectCount() >= pTarget->Def->CollectionLimit))
+  if (pTarget->Def->CollectionLimit && (pTarget->Contents.ObjectCount() >= pTarget->Def->CollectionLimit))
     return FALSE;
   // Check for collect rejection
   if (pTarget->Call(PSF_RejectCollection, (long)pThing->Def->id, (long)pThing))
@@ -654,18 +626,14 @@ BOOL ObjectComDrop(C4Object *cObj, C4Object *pThing) {
   if (!pThing)
     return FALSE;
   // Force and direction
-  FIXED pthrow =
-      ftofix(4.0 * (float)cObj->GetPhysical()->Throw / (float)C4MaxPhysical);
+  FIXED pthrow = ftofix(4.0 * (float)cObj->GetPhysical()->Throw / (float)C4MaxPhysical);
   int tdir = 0;
   if (cObj->Action.ComDir == COMD_Left)
     tdir = -1;
   if (cObj->Action.ComDir == COMD_Right)
     tdir = +1;
   // Exit object
-  pThing->Exit(cObj->x,
-               cObj->y + cObj->Shape.y + cObj->Shape.Hgt +
-                   pThing->Shape.y * (cObj->GetProcedure() != DFA_SWIM),
-               0, pthrow * tdir, 0, 0);
+  pThing->Exit(cObj->x, cObj->y + cObj->Shape.y + cObj->Shape.Hgt + pThing->Shape.y * (cObj->GetProcedure() != DFA_SWIM), 0, pthrow * tdir, 0, 0);
   // NoCollectDelay
   cObj->NoCollectDelay = 2;
   // Update OCF
@@ -739,8 +707,7 @@ BOOL ObjectComActivate(C4Object *cObj, C4ID c_id,
   C4Object *pObj;
   C4ObjectLink *cLnk;
   if (!pThing)
-    for (cLnk = pTarget->Contents.First; cLnk && (pObj = cLnk->Obj);
-         cLnk = cLnk->Next)
+    for (cLnk = pTarget->Contents.First; cLnk && (pObj = cLnk->Obj); cLnk = cLnk->Next)
       if (pObj->Status && (pObj->Def->id == c_id))
         if (!pObj->Command || (pObj->Command->Command != C4CMD_Exit)) {
           pThing = pObj;
@@ -776,9 +743,7 @@ BOOL ObjectComPunch(C4Object *cObj, C4Object *pTarget, int punch) {
     return FALSE;
   if (!punch)
     if (pTarget->GetPhysical()->Fight)
-      punch = BoundBy(5 * cObj->GetPhysical()->Fight /
-                          pTarget->GetPhysical()->Fight,
-                      0, 10);
+      punch = BoundBy(5 * cObj->GetPhysical()->Fight / pTarget->GetPhysical()->Fight, 0, 10);
   if (!punch)
     return TRUE;
   pTarget->DoEnergy(-punch);
@@ -789,8 +754,7 @@ BOOL ObjectComPunch(C4Object *cObj, C4Object *pTarget, int punch) {
   pTarget->Action.ComDir = COMD_Stop;
   // Hard punch
   if (punch >= 10)
-    if (ObjectActionTumble(pTarget, pTarget->Action.Dir, ftofix(1.5) * tdir,
-                           ftofix(-2.0))) {
+    if (ObjectActionTumble(pTarget, pTarget->Action.Dir, ftofix(1.5) * tdir, ftofix(-2.0))) {
       pTarget->Call(PSF_CatchBlow, punch, (long)cObj);
       return TRUE;
     }
@@ -818,12 +782,9 @@ void ObjectComStopDig(C4Object *cObj) {
 }
 
 int ComOrder(int iIndex) {
-  static BYTE bComOrder[ComOrderNum] = {
-      COM_Left,       COM_Right,   COM_Up,        COM_Down,      COM_Throw,
-      COM_Dig,        COM_Special, COM_Special2,  COM_Left_S,    COM_Right_S,
-      COM_Up_S,       COM_Down_S,  COM_Throw_S,   COM_Dig_S,     COM_Special_S,
-      COM_Special2_S, COM_Left_D,  COM_Right_D,   COM_Up_D,      COM_Down_D,
-      COM_Throw_D,    COM_Dig_D,   COM_Special_D, COM_Special2_D};
+  static BYTE bComOrder[ComOrderNum] = {COM_Left,   COM_Right,   COM_Up,   COM_Down,   COM_Throw,   COM_Dig,   COM_Special,   COM_Special2,
+                                        COM_Left_S, COM_Right_S, COM_Up_S, COM_Down_S, COM_Throw_S, COM_Dig_S, COM_Special_S, COM_Special2_S,
+                                        COM_Left_D, COM_Right_D, COM_Up_D, COM_Down_D, COM_Throw_D, COM_Dig_D, COM_Special_D, COM_Special2_D};
 
   if (Inside(iIndex, 0, ComOrderNum - 1))
     return bComOrder[iIndex];
@@ -933,10 +894,7 @@ int VkCode2FullScreenCom(WORD dwCode, BOOL fMultiline) {
 }
 
 int Control2Com(int iControl) {
-  static BYTE con2com[C4MaxKey] = {
-      COM_CursorLeft, COM_CursorToggle, COM_CursorRight, COM_Throw,
-      COM_Up,         COM_Dig,          COM_Left,        COM_Down,
-      COM_Right,      COM_PlayerMenu,   COM_Special,     COM_Special2};
+  static BYTE con2com[C4MaxKey] = {COM_CursorLeft, COM_CursorToggle, COM_CursorRight, COM_Throw, COM_Up, COM_Dig, COM_Left, COM_Down, COM_Right, COM_PlayerMenu, COM_Special, COM_Special2};
 
   if (Inside(iControl, 0, C4MaxKey - 1))
     return con2com[iControl];
@@ -964,22 +922,16 @@ int Com2MenuCom(int iCom, BOOL fMultiline) {
 
 void DrawCommandKey(C4Facet &cgo, int iCom, BOOL fPressed, const char *szText) {
   Game.GraphicsResource.fctKey.Draw(cgo, FALSE, fPressed);
-  Game.GraphicsResource.fctCommand.Draw(cgo, TRUE, Com2Control(iCom),
-                                        ((iCom & COM_Double) != 0));
+  Game.GraphicsResource.fctCommand.Draw(cgo, TRUE, Com2Control(iCom), ((iCom & COM_Double) != 0));
   if (szText)
-    Engine.DDraw.TextOut(szText, cgo.Surface, cgo.X + cgo.Wdt / 2,
-                         cgo.Y + cgo.Hgt - Engine.DDraw.TextHeight() - 2,
-                         FWhite, FBlack, ACenter);
+    Engine.DDraw.TextOut(szText, cgo.Surface, cgo.X + cgo.Wdt / 2, cgo.Y + cgo.Hgt - Engine.DDraw.TextHeight() - 2, FWhite, FBlack, ACenter);
 }
 
-void DrawControlKey(C4Facet &cgo, int iControl, BOOL fPressed,
-                    const char *szText) {
+void DrawControlKey(C4Facet &cgo, int iControl, BOOL fPressed, const char *szText) {
   Game.GraphicsResource.fctKey.Draw(cgo, FALSE, fPressed);
   Game.GraphicsResource.fctCommand.Draw(cgo, TRUE, iControl);
   if (szText)
-    Engine.DDraw.TextOut(szText, cgo.Surface, cgo.X + cgo.Wdt / 2,
-                         cgo.Y + cgo.Hgt - Engine.DDraw.TextHeight() - 2,
-                         FWhite, FBlack, ACenter);
+    Engine.DDraw.TextOut(szText, cgo.Surface, cgo.X + cgo.Wdt / 2, cgo.Y + cgo.Hgt - Engine.DDraw.TextHeight() - 2, FWhite, FBlack, ACenter);
 }
 
 BOOL SellFromBase(int iPlr, C4Object *pBaseObj, C4ID id) {
@@ -992,16 +944,14 @@ BOOL SellFromBase(int iPlr, C4Object *pBaseObj, C4ID id) {
   // Base owner eliminated
   if (Game.Players.Get(pBaseObj->Base)->Eliminated) {
     SoundEffect("Error", 0, 100, pBaseObj);
-    sprintf(OSTR, LoadResStr(IDS_PLR_ELIMINATED),
-            Game.Players.Get(pBaseObj->Base)->Name);
+    sprintf(OSTR, LoadResStr(IDS_PLR_ELIMINATED), Game.Players.Get(pBaseObj->Base)->Name);
     GameMsgPlayer(OSTR, iPlr);
     return FALSE;
   }
   // Base owner hostile
   if (Hostile(iPlr, pBaseObj->Base)) {
     SoundEffect("Error", 0, 100, pBaseObj);
-    sprintf(OSTR, LoadResStr(IDS_PLR_HOSTILE),
-            Game.Players.Get(pBaseObj->Base)->Name);
+    sprintf(OSTR, LoadResStr(IDS_PLR_HOSTILE), Game.Players.Get(pBaseObj->Base)->Name);
     GameMsgPlayer(OSTR, iPlr);
     return FALSE;
   }
@@ -1024,16 +974,14 @@ BOOL Buy2Base(int iPlr, C4Object *pBase, C4ID id) {
   // Base owner eliminated
   if (Game.Players.Get(pBase->Base)->Eliminated) {
     SoundEffect("Error", 0, 100, pBase);
-    sprintf(OSTR, LoadResStr(IDS_PLR_ELIMINATED),
-            Game.Players.Get(pBase->Base)->Name);
+    sprintf(OSTR, LoadResStr(IDS_PLR_ELIMINATED), Game.Players.Get(pBase->Base)->Name);
     GameMsgPlayer(OSTR, iPlr);
     return FALSE;
   }
   // Base owner hostile
   if (Hostile(iPlr, pBase->Base)) {
     SoundEffect("Error", 0, 100, pBase);
-    sprintf(OSTR, LoadResStr(IDS_PLR_HOSTILE),
-            Game.Players.Get(pBase->Base)->Name);
+    sprintf(OSTR, LoadResStr(IDS_PLR_HOSTILE), Game.Players.Get(pBase->Base)->Name);
     GameMsgPlayer(OSTR, iPlr);
     return FALSE;
   }
@@ -1051,8 +999,7 @@ BOOL Buy2Base(int iPlr, C4Object *pBase, C4ID id) {
     return FALSE;
   }
   // Decrease homebase material count
-  if (!Game.Players.Get(pBase->Base)
-           ->HomeBaseMaterial.DecreaseIDCount(id, FALSE))
+  if (!Game.Players.Get(pBase->Base)->HomeBaseMaterial.DecreaseIDCount(id, FALSE))
     return FALSE;
   // Reduce wealth
   Game.Players.Get(pBase->Base)->DoWealth(-pDef->Value);

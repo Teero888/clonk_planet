@@ -21,9 +21,7 @@ public:
 
 public:
   BOOL IsEmpty();
-  bool operator==(const C4NameList &rhs) {
-    return MemEqual((BYTE *)this, (BYTE *)&rhs, sizeof(C4NameList));
-  }
+  bool operator==(const C4NameList &rhs) { return MemEqual((BYTE *)this, (BYTE *)&rhs, sizeof(C4NameList)); }
 };
 
 #pragma pack(pop)

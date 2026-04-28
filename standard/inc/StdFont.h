@@ -23,16 +23,13 @@ protected:
 
 protected:
   BOOL TextExtent(const char *szText, int &rWdt, int &rHgt);
-  BOOL TextOut(const char *szText, SURFACE sfcDest, int iTx, int iTy,
-               int iFCol = FWhite, int iBCol = FBlack, BYTE byForm = ALeft);
-  BOOL StringOut(const char *szText, SURFACE sfcDest, int iTx, int iTy,
-                 int iFCol = FWhite, int iBCol = FBlack, BYTE byForm = ALeft);
+  BOOL TextOut(const char *szText, SURFACE sfcDest, int iTx, int iTy, int iFCol = FWhite, int iBCol = FBlack, BYTE byForm = ALeft);
+  BOOL StringOut(const char *szText, SURFACE sfcDest, int iTx, int iTy, int iFCol = FWhite, int iBCol = FBlack, BYTE byForm = ALeft);
   BOOL CharOut(BYTE chChar, SURFACE sfcSurface, int iX, int iY, int iColor);
   int GetTextHeight(const char *szText = NULL);
   int GetTextWidth(const char *szText);
   BOOL Init(HDC hDC, const char *szFontname, int iSize);
   void Clear();
   void Default();
-  HFONT CreateFont(HDC hdc, const char *szFacename, int iPtHeight,
-                   int iAttributes);
+  HFONT CreateFont(HDC hdc, const char *szFacename, int iPtHeight, int iAttributes);
 };

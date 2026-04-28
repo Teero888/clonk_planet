@@ -36,8 +36,7 @@ SURFACE GroupReadSurface(C4Group &hGroup, BYTE *bpPalette) {
     ladd = 4 - BitmapInfo.Info.biWidth % 4;
 
   // Create and lock sfcSurface
-  if (!(tsurf =
-            CreateSurface(BitmapInfo.Info.biWidth, BitmapInfo.Info.biHeight)))
+  if (!(tsurf = CreateSurface(BitmapInfo.Info.biWidth, BitmapInfo.Info.biHeight)))
     return NULL;
   if (!(timgbuf = LockSurface(tsurf, pitch))) {
     DestroySurface(tsurf);
@@ -99,10 +98,8 @@ BOOL SaveSurface(const char *szFilename, SURFACE sfcSurface, BYTE *bpPalette) {
   // Set header
   ZeroMem((BYTE *)&bmphead, sizeof(BITMAPFILEHEADER));
   bmphead.bfType = *((WORD *)"BM");
-  bmphead.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) +
-                   256 * sizeof(RGBQUAD) + (imgwdt + ladd) * imghgt;
-  bmphead.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) +
-                      256 * sizeof(RGBQUAD);
+  bmphead.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + 256 * sizeof(RGBQUAD) + (imgwdt + ladd) * imghgt;
+  bmphead.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + 256 * sizeof(RGBQUAD);
 
   if (!hFile.Create(szFilename, FALSE)) {
     UnLockSurface(sfcSurface);

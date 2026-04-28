@@ -33,8 +33,7 @@ C4ID C4ObjectList::GetListID(DWORD dwCategory, int Index) {
     TempListID[clid] = C4ID_None;
   for (clnk = First; clnk && clnk->Obj; clnk = clnk->Next)
     if (clnk->Obj->Status)
-      if ((dwCategory == C4D_All) || ((cdef = C4Id2Def(clnk->Obj->Def->id)) &&
-                                      (cdef->Category & dwCategory)))
+      if ((dwCategory == C4D_All) || ((cdef = C4Id2Def(clnk->Obj->Def->id)) && (cdef->Category & dwCategory)))
         for (clid = 0; clid < MaxTempListID; clid++) {
           // Already there
           if (TempListID[clid] == clnk->Obj->Def->id)
@@ -63,8 +62,7 @@ int C4ObjectList::ListIDCount(DWORD dwCategory) {
     TempListID[clid] = C4ID_None;
   for (clnk = First; clnk && clnk->Obj; clnk = clnk->Next)
     if (clnk->Obj->Status)
-      if ((dwCategory == C4D_All) || ((cdef = C4Id2Def(clnk->Obj->Def->id)) &&
-                                      (cdef->Category & dwCategory)))
+      if ((dwCategory == C4D_All) || ((cdef = C4Id2Def(clnk->Obj->Def->id)) && (cdef->Category & dwCategory)))
         for (clid = 0; clid < MaxTempListID; clid++) {
           // Already there
           if (TempListID[clid] == clnk->Obj->Def->id)
@@ -104,8 +102,7 @@ BOOL C4ObjectList::Add(C4Object *nObj, BOOL fSorted) {
       if (!(nObj->Category & C4D_StaticBack))
         for (cLnk = First; cLnk; cLnk = cLnk->Next)
           if (cLnk->Obj->Status && !cLnk->Obj->Unsorted)
-            if ((cLnk->Obj->Category & C4D_SortLimit) ==
-                (nObj->Category & C4D_SortLimit))
+            if ((cLnk->Obj->Category & C4D_SortLimit) == (nObj->Category & C4D_SortLimit))
               if (cLnk->Obj->id == nObj->id)
                 break;
 
@@ -114,8 +111,7 @@ BOOL C4ObjectList::Add(C4Object *nObj, BOOL fSorted) {
     if (!cLnk)
       for (cLnk = First; cLnk; cLnk = cLnk->Next)
         if (cLnk->Obj->Status && !cLnk->Obj->Unsorted)
-          if ((cLnk->Obj->Category & C4D_SortLimit) <=
-              (nObj->Category & C4D_SortLimit))
+          if ((cLnk->Obj->Category & C4D_SortLimit) <= (nObj->Category & C4D_SortLimit))
             break;
 
   // Line object: enforce add to very end
@@ -248,14 +244,11 @@ int C4ObjectList::MassCount() {
   return iMass;
 }
 
-void C4ObjectList::DrawIDList(C4Facet &cgo, int iSelection, C4DefList &rDefs,
-                              DWORD dwCategory, C4RegionList *pRegions,
-                              int iRegionCom, BOOL fDrawOneCounts) {
+void C4ObjectList::DrawIDList(C4Facet &cgo, int iSelection, C4DefList &rDefs, DWORD dwCategory, C4RegionList *pRegions, int iRegionCom, BOOL fDrawOneCounts) {
   // Calculations & variables
   int iSections = cgo.GetSectionCount();
   int iItems = ListIDCount(dwCategory);
-  int iFirstItem =
-      BoundBy(iSelection - iSections / 2, 0, Max(iItems - iSections, 0));
+  int iFirstItem = BoundBy(iSelection - iSections / 2, 0, Max(iItems - iSections, 0));
   int cSec = 0;
   int cPos, iCount;
   C4ID c_id;
@@ -276,13 +269,10 @@ void C4ObjectList::DrawIDList(C4Facet &cgo, int iSelection, C4DefList &rDefs,
       // Draw count
       sprintf(szCount, "%dx", iCount);
       if ((iCount != 1) || fDrawOneCounts)
-        Engine.DDraw.TextOut(szCount, cgo2.Surface, cgo2.X + cgo2.Wdt - 1,
-                             cgo2.Y + cgo2.Hgt - 1 - Engine.DDraw.TextHeight(),
-                             FWhite, FBlack, ARight);
+        Engine.DDraw.TextOut(szCount, cgo2.Surface, cgo2.X + cgo2.Wdt - 1, cgo2.Y + cgo2.Hgt - 1 - Engine.DDraw.TextHeight(), FWhite, FBlack, ARight);
       // Region
       if (pRegions)
-        pRegions->Add(cgo2.X, cgo2.Y, cgo2.Wdt, cgo2.Hgt, pFirstObj->GetName(),
-                      iRegionCom, pFirstObj, COM_None, COM_None, pFirstObj->id);
+        pRegions->Add(cgo2.X, cgo2.Y, cgo2.Wdt, cgo2.Hgt, pFirstObj->GetName(), iRegionCom, pFirstObj, COM_None, COM_None, pFirstObj->id);
       // Next section
       cSec++;
     }
@@ -463,8 +453,7 @@ C4Object *C4ObjectList::ObjectPointer(int iNumber) {
   return NULL;
 }
 
-BOOL C4ObjectList::WriteNameList(char *szTarget, C4DefList &rDefs,
-                                 DWORD dwCategory) {
+BOOL C4ObjectList::WriteNameList(char *szTarget, C4DefList &rDefs, DWORD dwCategory) {
   int cpos, idcount;
   C4ID c_id;
   C4Def *cdef;
@@ -523,8 +512,7 @@ C4Object *C4ObjectList::Denumerated(C4Object *pObj) {
 void C4ObjectList::DrawList(C4Facet &cgo, int iSelection, DWORD dwCategory) {
   int iSections = cgo.GetSectionCount();
   int iObjects = ObjectCount(C4ID_None, dwCategory);
-  int iFirstVisible =
-      BoundBy(iSelection - iSections / 2, 0, Max(iObjects - iSections, 0));
+  int iFirstVisible = BoundBy(iSelection - iSections / 2, 0, Max(iObjects - iSections, 0));
   C4Facet cgo2;
   int iObj = 0, iSec = 0;
   C4ObjectLink *cLnk;
@@ -613,8 +601,7 @@ BOOL C4ObjectList::Save(const char *szFilename, BOOL fSaveGame) {
   C4ObjectLink *clnk;
 
   // Decompile objects to buffer, add to file
-  for (clnk = Last; clnk && (cobj = clnk->Obj);
-       clnk = clnk->Prev) // Back to front
+  for (clnk = Last; clnk && (cobj = clnk->Obj); clnk = clnk->Prev) // Back to front
     if (cobj->Status)
       if (!cobj->Info || fSaveGame) // Info-objects in savegame only
       {
@@ -657,8 +644,7 @@ void C4ObjectList::GetIDList(C4IDList &rList, DWORD dwCategory) {
   rList.Clear();
   for (clnk = First; clnk && clnk->Obj; clnk = clnk->Next)
     if (clnk->Obj->Status)
-      if ((dwCategory == C4D_All) || ((pDef = C4Id2Def(clnk->Obj->Def->id)) &&
-                                      (pDef->Category & dwCategory)))
+      if ((dwCategory == C4D_All) || ((pDef = C4Id2Def(clnk->Obj->Def->id)) && (pDef->Category & dwCategory)))
         rList.IncreaseIDCount(clnk->Obj->Def->id);
 }
 
@@ -711,8 +697,7 @@ void C4ObjectList::SortByCategory() {
   do {
     fSorted = TRUE;
     for (cLnk = First; cLnk && cLnk->Next; cLnk = cLnk->Next)
-      if ((cLnk->Obj->Category & C4D_SortLimit) <
-          (cLnk->Next->Obj->Category & C4D_SortLimit)) {
+      if ((cLnk->Obj->Category & C4D_SortLimit) < (cLnk->Next->Obj->Category & C4D_SortLimit)) {
         RemoveLink(cLnk);
         InsertLink(cLnk, cLnk->Next);
         fSorted = FALSE;

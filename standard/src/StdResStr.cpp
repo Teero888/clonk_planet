@@ -20,16 +20,13 @@ void SetStringResource(HINSTANCE hResInst, BOOL fExtended) {
     ResourceStringExtension = 0;
 }
 
-void SetResourceStringUnscramble(void (*pResourceStringUnscramble)(char *)) {
-  ResourceStringUnscramble = pResourceStringUnscramble;
-}
+void SetResourceStringUnscramble(void (*pResourceStringUnscramble)(char *)) { ResourceStringUnscramble = pResourceStringUnscramble; }
 
 char *LoadResStr(WORD id) {
   // Set empty string
   ResourceString[0] = 0;
   // Load string (try to load extended string / second language)
-  if (!LoadString(ResourceInstance, id + ResourceStringExtension,
-                  ResourceString, 500))
+  if (!LoadString(ResourceInstance, id + ResourceStringExtension, ResourceString, 500))
     // Load normal string
     LoadString(ResourceInstance, id, ResourceString, 500);
   // String is scrambled

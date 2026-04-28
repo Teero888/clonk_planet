@@ -225,8 +225,7 @@ BOOL CSurface::Polygon(int iNum, int *ipVtx, int iCol) {
         active_edges = remove_edge(active_edges, edge);
       } else {
         edge->x += edge->dx;
-        while ((edge->prev) &&
-               (edge->x + edge->w / 2 < edge->prev->x + edge->prev->w / 2)) {
+        while ((edge->prev) && (edge->x + edge->w / 2 < edge->prev->x + edge->prev->w / 2)) {
           if (edge->next)
             edge->next->prev = edge->prev;
           edge->prev->next = edge->next;
@@ -324,8 +323,7 @@ BOOL CSurface::Save(const char *szFilename) {
   // Create file & write info
   CStdFile hFile;
 
-  if (!hFile.Create(szFilename) ||
-      !hFile.Write(&BitmapInfo, sizeof(BitmapInfo))) {
+  if (!hFile.Create(szFilename) || !hFile.Write(&BitmapInfo, sizeof(BitmapInfo))) {
     Unlock();
     return FALSE;
   }
@@ -426,11 +424,7 @@ BOOL CSurface::SetPalette(int iColor, int iRed, int iGreen, int iBlue) {
   return TRUE;
 }
 
-double ColorDistance(BYTE *bpRGB1, BYTE *bpRGB2) {
-  return (double)(Abs(bpRGB1[0] - bpRGB2[0]) + Abs(bpRGB1[1] - bpRGB2[1]) +
-                  Abs(bpRGB1[2] - bpRGB2[2])) /
-         6.0;
-}
+double ColorDistance(BYTE *bpRGB1, BYTE *bpRGB2) { return (double)(Abs(bpRGB1[0] - bpRGB2[0]) + Abs(bpRGB1[1] - bpRGB2[1]) + Abs(bpRGB1[2] - bpRGB2[2])) / 6.0; }
 
 void CSurface::SetPalette(BYTE *bpPalette, BOOL fAdapt) {
 
@@ -442,8 +436,7 @@ void CSurface::SetPalette(BYTE *bpPalette, BOOL fAdapt) {
     {
       int iToCol = 1;
       for (int cToCol = iToCol + 1; cToCol < 256; cToCol++)
-        if (ColorDistance(&Palette[iFromCol * 3], &bpPalette[cToCol * 3]) <
-            ColorDistance(&Palette[iFromCol * 3], &bpPalette[iToCol * 3]))
+        if (ColorDistance(&Palette[iFromCol * 3], &bpPalette[cToCol * 3]) < ColorDistance(&Palette[iFromCol * 3], &bpPalette[iToCol * 3]))
           iToCol = cToCol;
 
       AdaptMap[iFromCol] = iToCol;

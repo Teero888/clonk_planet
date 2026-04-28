@@ -38,23 +38,16 @@ void C4RegionList::Clear() {
   First = NULL;
 }
 
-BOOL C4RegionList::Add(int iX, int iY, int iWdt, int iHgt,
-                       const char *szCaption, int iCom, C4Object *pTarget,
-                       int iMoveOverCom, int iHoldCom, int iData,
-                       C4Menu *pMenu) {
+BOOL C4RegionList::Add(int iX, int iY, int iWdt, int iHgt, const char *szCaption, int iCom, C4Object *pTarget, int iMoveOverCom, int iHoldCom, int iData, C4Menu *pMenu) {
   C4Region *pRgn = new C4Region;
-  pRgn->Set(iX + AdjustX, iY + AdjustY, iWdt, iHgt, szCaption, iCom,
-            iMoveOverCom, iHoldCom, iData, pTarget, pMenu);
+  pRgn->Set(iX + AdjustX, iY + AdjustY, iWdt, iHgt, szCaption, iCom, iMoveOverCom, iHoldCom, iData, pTarget, pMenu);
   pRgn->Next = First;
   First = pRgn;
   return TRUE;
 }
 
-BOOL C4RegionList::Add(C4Facet &fctArea, const char *szCaption, int iCom,
-                       C4Object *pTarget, int iMoveOverCom, int iHoldCom,
-                       int iData, C4Menu *pMenu) {
-  return Add(fctArea.X, fctArea.Y, fctArea.Wdt, fctArea.Hgt, szCaption, iCom,
-             pTarget, iMoveOverCom, iHoldCom, iData, pMenu);
+BOOL C4RegionList::Add(C4Facet &fctArea, const char *szCaption, int iCom, C4Object *pTarget, int iMoveOverCom, int iHoldCom, int iData, C4Menu *pMenu) {
+  return Add(fctArea.X, fctArea.Y, fctArea.Wdt, fctArea.Hgt, szCaption, iCom, pTarget, iMoveOverCom, iHoldCom, iData, pMenu);
 }
 
 BOOL C4RegionList::Add(C4Region &rRegion) {
@@ -67,9 +60,7 @@ BOOL C4RegionList::Add(C4Region &rRegion) {
   return TRUE;
 }
 
-void C4Region::Set(int iX, int iY, int iWdt, int iHgt, const char *szCaption,
-                   int iCom, int iMoveOverCom, int iHoldCom, int iData,
-                   C4Object *pTarget, C4Menu *pMenu) {
+void C4Region::Set(int iX, int iY, int iWdt, int iHgt, const char *szCaption, int iCom, int iMoveOverCom, int iHoldCom, int iData, C4Object *pTarget, C4Menu *pMenu) {
   X = iX;
   Y = iY;
   Wdt = iWdt;
@@ -106,8 +97,7 @@ void C4RegionList::ClearPointers(C4Object *pObj) {
     pRgn->ClearPointers(pObj);
 }
 
-void C4Region::Set(C4Facet &fctArea, const char *szCaption, C4Object *pTarget,
-                   C4Menu *pMenu) {
+void C4Region::Set(C4Facet &fctArea, const char *szCaption, C4Object *pTarget, C4Menu *pMenu) {
   X = fctArea.X;
   Y = fctArea.Y;
   Wdt = fctArea.Wdt;

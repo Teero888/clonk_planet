@@ -1,10 +1,7 @@
 #include <C4Include.h>
 
 #ifndef _WIN32
-LRESULT APIENTRY ViewportWinProc(HWND hwnd, UINT uMsg, WPARAM wParam,
-                                 LPARAM lParam) {
-  return 0;
-}
+LRESULT APIENTRY ViewportWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) { return 0; }
 void UpdateWindowLayout(HWND hwnd) {}
 #endif
 
@@ -63,8 +60,7 @@ void C4Viewport::Draw() {
   Game.Landscape.Draw(cgo);
 
   // Set clippers
-  Engine.DDraw.SetPrimaryClipper(DrawX, DrawY, DrawX + ViewWdt - 1,
-                                 DrawY + ViewHgt - 1);
+  Engine.DDraw.SetPrimaryClipper(DrawX, DrawY, DrawX + ViewWdt - 1, DrawY + ViewHgt - 1);
 
   // Draw game
   Game.Draw(cgo);
@@ -88,12 +84,8 @@ void C4Viewport::DrawOverlay(C4FacetEx &cgo) {
 void C4Viewport::DrawMenu(C4FacetEx &cgo) {
   C4Player *pPlr = Game.Players.Get(Player);
   if (pPlr && pPlr->Eliminated) {
-    sprintf(OSTR,
-            LoadResStr(pPlr->Surrendered ? IDS_PLR_SURRENDERED
-                                         : IDS_PLR_ELIMINATED),
-            pPlr->Name);
-    Engine.DDraw.TextOut(OSTR, cgo.Surface, cgo.X + cgo.Wdt / 2,
-                         cgo.Y + 2 * cgo.Hgt / 3, FRed, FBlack, ACenter);
+    sprintf(OSTR, LoadResStr(pPlr->Surrendered ? IDS_PLR_SURRENDERED : IDS_PLR_ELIMINATED), pPlr->Name);
+    Engine.DDraw.TextOut(OSTR, cgo.Surface, cgo.X + cgo.Wdt / 2, cgo.Y + 2 * cgo.Hgt / 3, FRed, FBlack, ACenter);
     return;
   }
   if (pPlr && pPlr->Cursor && pPlr->Cursor->Menu)
@@ -113,10 +105,8 @@ void C4Viewport::DrawCursorInfo(C4FacetEx &cgo) {
     return;
 
   if (Config.Graphics.ShowPlayerInfoAlways && cursor->Info) {
-    ccgo.Set(cgo.Surface, cgo.X + C4SymbolBorder, cgo.Y + C4SymbolBorder,
-             3 * C4SymbolSize, C4SymbolSize);
-    cursor->Info->Draw(ccgo, Config.Graphics.ShowPortraits,
-                       (cursor == Game.Players.Get(Player)->Captain));
+    ccgo.Set(cgo.Surface, cgo.X + C4SymbolBorder, cgo.Y + C4SymbolBorder, 3 * C4SymbolSize, C4SymbolSize);
+    cursor->Info->Draw(ccgo, Config.Graphics.ShowPortraits, (cursor == Game.Players.Get(Player)->Captain));
   }
 }
 
@@ -124,12 +114,9 @@ void C4Viewport::DrawPlayerInfo(C4FacetEx &cgo) {
   if (!ValidPlr(Player))
     return;
   C4Facet ccgo;
-  if (Game.Players.Get(Player)->ViewWealth ||
-      Config.Graphics.ShowPlayerInfoAlways) {
-    ccgo.Set(cgo.Surface, cgo.X + cgo.Wdt - C4SymbolSize - C4SymbolBorder,
-             cgo.Y + C4SymbolBorder, C4SymbolSize, C4SymbolSize / 2);
-    Game.GraphicsResource.fctWealthSymbol.DrawValue(
-        ccgo, Game.Players.Get(Player)->Wealth);
+  if (Game.Players.Get(Player)->ViewWealth || Config.Graphics.ShowPlayerInfoAlways) {
+    ccgo.Set(cgo.Surface, cgo.X + cgo.Wdt - C4SymbolSize - C4SymbolBorder, cgo.Y + C4SymbolBorder, C4SymbolSize, C4SymbolSize / 2);
+    Game.GraphicsResource.fctWealthSymbol.DrawValue(ccgo, Game.Players.Get(Player)->Wealth);
   }
 }
 
@@ -140,8 +127,7 @@ void C4Viewport::AdjustPosition() {
   ViewY = BoundBy(ViewY, 0, GBackHgt - ViewHgt);
 }
 
-void C4Viewport::SetOutputSize(int iDrawX, int iDrawY, int iOutX, int iOutY,
-                               int iOutWdt, int iOutHgt) {
+void C4Viewport::SetOutputSize(int iDrawX, int iDrawY, int iOutX, int iOutY, int iOutWdt, int iOutHgt) {
   DrawX = iDrawX;
   DrawY = iDrawY;
   OutX = iOutX;
@@ -164,16 +150,12 @@ BOOL C4Viewport::Init(int iPlayer) {
   return TRUE;
 }
 
-BOOL C4Viewport::Init(HWND hParent, HINSTANCE hInst, int iPlayer) {
-  return Init(iPlayer);
-}
+BOOL C4Viewport::Init(HWND hParent, HINSTANCE hInst, int iPlayer) { return Init(iPlayer); }
 
 void C4Viewport::BlitOutput() {
 #ifdef _WIN32
   if (hWnd)
-    Engine.DDraw.BlitSurface2Window(Engine.DDraw.lpBack, DrawX, DrawY, ViewWdt,
-                                    ViewHgt, hWnd, OutX, OutY, ViewWdt,
-                                    ViewHgt);
+    Engine.DDraw.BlitSurface2Window(Engine.DDraw.lpBack, DrawX, DrawY, ViewWdt, ViewHgt, hWnd, OutX, OutY, ViewWdt, ViewHgt);
 #endif
 }
 

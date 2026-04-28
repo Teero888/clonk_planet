@@ -28,13 +28,11 @@ C4Facet C4Facet::GetSection(int iSection) {
   return rval;
 }
 
-void C4Facet::Draw(SURFACE sfcTarget, int iX, int iY, int iPhaseX,
-                   int iPhaseY) {
+void C4Facet::Draw(SURFACE sfcTarget, int iX, int iY, int iPhaseX, int iPhaseY) {
   if (!lpDDraw || !Surface || !sfcTarget || !Wdt || !Hgt)
     return;
 
-  lpDDraw->Blit(Surface, X + Wdt * iPhaseX, Y + Hgt * iPhaseY, Wdt, Hgt,
-                sfcTarget, iX, iY, Wdt, Hgt, TRUE);
+  lpDDraw->Blit(Surface, X + Wdt * iPhaseX, Y + Hgt * iPhaseY, Wdt, Hgt, sfcTarget, iX, iY, Wdt, Hgt, TRUE);
 }
 
 void C4Facet::Draw(C4Facet &cgo, BOOL fAspect, int iPhaseX, int iPhaseY) {
@@ -57,8 +55,7 @@ void C4Facet::Draw(C4Facet &cgo, BOOL fAspect, int iPhaseX, int iPhaseY) {
     }
   }
   // Blit
-  lpDDraw->Blit(Surface, X + Wdt * iPhaseX, Y + Hgt * iPhaseY, Wdt, Hgt,
-                ccgo.Surface, ccgo.X, ccgo.Y, ccgo.Wdt, ccgo.Hgt, TRUE);
+  lpDDraw->Blit(Surface, X + Wdt * iPhaseX, Y + Hgt * iPhaseY, Wdt, Hgt, ccgo.Surface, ccgo.X, ccgo.Y, ccgo.Wdt, ccgo.Hgt, TRUE);
 }
 
 C4Facet C4Facet::TruncateSection(int iAlign, BOOL fHalf) {
@@ -170,14 +167,12 @@ void C4Facet::DrawSectionSelect(C4Facet &cgo, int iSelection, int iMaxSelect) {
   for (int cnt = 0; (cnt < sections) && (firstid + cnt < idnum); cnt++) {
     cgo2 = cgo.GetSection(cnt);
     if (iSelection == firstid + cnt)
-      lpDDraw->DrawBox(cgo2.Surface, cgo2.X, cgo2.Y, cgo2.X + cgo2.Wdt - 1,
-                       cgo2.Y + cgo2.Hgt - 1, CRed);
+      lpDDraw->DrawBox(cgo2.Surface, cgo2.X, cgo2.Y, cgo2.X + cgo2.Wdt - 1, cgo2.Y + cgo2.Hgt - 1, CRed);
     Draw(cgo2, TRUE, firstid + cnt, 0);
   }
 }
 
-void C4Facet::DrawValue(C4Facet &cgo, int iValue, int iSectionX, int iSectionY,
-                        int iAlign) {
+void C4Facet::DrawValue(C4Facet &cgo, int iValue, int iSectionX, int iSectionY, int iAlign) {
   if (!lpDDraw)
     return;
   char ostr[25];
@@ -185,22 +180,17 @@ void C4Facet::DrawValue(C4Facet &cgo, int iValue, int iSectionX, int iSectionY,
   switch (iAlign) {
   case C4FCT_Center:
     Draw(cgo, TRUE, iSectionX, iSectionY);
-    lpDDraw->TextOut(ostr, cgo.Surface, cgo.X + cgo.Wdt - 1,
-                     cgo.Y + cgo.Hgt - 1, FWhite, FBlack, ARight);
+    lpDDraw->TextOut(ostr, cgo.Surface, cgo.X + cgo.Wdt - 1, cgo.Y + cgo.Hgt - 1, FWhite, FBlack, ARight);
     break;
   case C4FCT_Right:
-    lpDDraw->TextOut(ostr, cgo.Surface, cgo.X + cgo.Wdt - 1, cgo.Y, FWhite,
-                     FBlack, ARight);
-    cgo.Set(cgo.Surface,
-            cgo.X + cgo.Wdt - 1 - lpDDraw->TextWidth(ostr) - 2 * cgo.Hgt, cgo.Y,
-            2 * cgo.Hgt, cgo.Hgt);
+    lpDDraw->TextOut(ostr, cgo.Surface, cgo.X + cgo.Wdt - 1, cgo.Y, FWhite, FBlack, ARight);
+    cgo.Set(cgo.Surface, cgo.X + cgo.Wdt - 1 - lpDDraw->TextWidth(ostr) - 2 * cgo.Hgt, cgo.Y, 2 * cgo.Hgt, cgo.Hgt);
     Draw(cgo, TRUE, iSectionX, iSectionY);
     break;
   }
 }
 
-void C4Facet::DrawValue2(C4Facet &cgo, int iValue1, int iValue2, int iSectionX,
-                         int iSectionY, int iAlign) {
+void C4Facet::DrawValue2(C4Facet &cgo, int iValue1, int iValue2, int iSectionX, int iSectionY, int iAlign) {
   if (!lpDDraw)
     return;
   char ostr[25];
@@ -208,26 +198,20 @@ void C4Facet::DrawValue2(C4Facet &cgo, int iValue1, int iValue2, int iSectionX,
   switch (iAlign) {
   case C4FCT_Center:
     Draw(cgo, TRUE, iSectionX, iSectionY);
-    lpDDraw->TextOut(ostr, cgo.Surface, cgo.X + cgo.Wdt - 1,
-                     cgo.Y + cgo.Hgt - 1, FWhite, FBlack, ARight);
+    lpDDraw->TextOut(ostr, cgo.Surface, cgo.X + cgo.Wdt - 1, cgo.Y + cgo.Hgt - 1, FWhite, FBlack, ARight);
     break;
   case C4FCT_Right:
-    lpDDraw->TextOut(ostr, cgo.Surface, cgo.X + cgo.Wdt - 1, cgo.Y, FWhite,
-                     FBlack, ARight);
-    cgo.Set(cgo.Surface,
-            cgo.X + cgo.Wdt - 1 - lpDDraw->TextWidth(ostr) - 2 * cgo.Hgt, cgo.Y,
-            2 * cgo.Hgt, cgo.Hgt);
+    lpDDraw->TextOut(ostr, cgo.Surface, cgo.X + cgo.Wdt - 1, cgo.Y, FWhite, FBlack, ARight);
+    cgo.Set(cgo.Surface, cgo.X + cgo.Wdt - 1 - lpDDraw->TextWidth(ostr) - 2 * cgo.Hgt, cgo.Y, 2 * cgo.Hgt, cgo.Hgt);
     Draw(cgo, TRUE, iSectionX, iSectionY);
     break;
   }
 }
 
-void C4Facet::DrawX(SURFACE sfcTarget, int iX, int iY, int iWdt, int iHgt,
-                    int iSectionX, int iSectionY) {
+void C4Facet::DrawX(SURFACE sfcTarget, int iX, int iY, int iWdt, int iHgt, int iSectionX, int iSectionY) {
   if (!lpDDraw || !Surface || !sfcTarget || !Wdt || !Hgt)
     return;
-  lpDDraw->Blit(Surface, X + Wdt * iSectionX, Y + Hgt * iSectionY, Wdt, Hgt,
-                sfcTarget, iX, iY, iWdt, iHgt, TRUE);
+  lpDDraw->Blit(Surface, X + Wdt * iSectionX, Y + Hgt * iSectionY, Wdt, Hgt, sfcTarget, iX, iY, iWdt, iHgt, TRUE);
 }
 
 void C4Facet::DrawEnergyLevel(int iLevel, int iRange, int iColor) {
@@ -235,17 +219,12 @@ void C4Facet::DrawEnergyLevel(int iLevel, int iRange, int iColor) {
     return;
   iLevel = BoundBy(iLevel, 0, iRange);
   lpDDraw->DrawBox(Surface, X, Y, X + Wdt - 1, Y + Hgt - 1, 40);
-  lpDDraw->DrawBox(Surface, X + 1,
-                   Y + 1 + (Hgt - 2) - (Hgt - 2) * iLevel / Max(iRange, 1),
-                   X + Wdt - 2, Y + Hgt - 2, iColor);
+  lpDDraw->DrawBox(Surface, X + 1, Y + 1 + (Hgt - 2) - (Hgt - 2) * iLevel / Max(iRange, 1), X + Wdt - 2, Y + Hgt - 2, iColor);
 }
 
-void C4Facet::Set(CSurface &rSfc) {
-  Set(rSfc.Surface, 0, 0, rSfc.Wdt, rSfc.Hgt);
-}
+void C4Facet::Set(CSurface &rSfc) { Set(rSfc.Surface, 0, 0, rSfc.Wdt, rSfc.Hgt); }
 
-void C4Facet::Draw(HWND hWnd, int iTx, int iTy, int iTWdt, int iTHgt,
-                   BOOL fAspect, int iPhaseX, int iPhaseY) {
+void C4Facet::Draw(HWND hWnd, int iTx, int iTy, int iTWdt, int iTHgt, BOOL fAspect, int iPhaseX, int iPhaseY) {
   if (!lpDDraw || !Surface || !hWnd || !Wdt || !Hgt)
     return;
 
@@ -262,15 +241,13 @@ void C4Facet::Draw(HWND hWnd, int iTx, int iTy, int iTWdt, int iTHgt,
       iTx2 += (iTWdt - iTWdt2) / 2;
     }
     // Blit
-    lpDDraw->BlitSurface2Window(Surface, X + Wdt * iPhaseX, Y + Hgt * iPhaseY,
-                                Wdt, Hgt, hWnd, iTx2, iTy2, iTWdt2, iTHgt2
+    lpDDraw->BlitSurface2Window(Surface, X + Wdt * iPhaseX, Y + Hgt * iPhaseY, Wdt, Hgt, hWnd, iTx2, iTy2, iTWdt2, iTHgt2
                                 /*TRUE*/);
   }
 
   else {
     // Blit
-    lpDDraw->BlitSurface2Window(Surface, X + Wdt * iPhaseX, Y + Hgt * iPhaseY,
-                                Wdt, Hgt, hWnd, iTx, iTy, iTWdt, iTHgt
+    lpDDraw->BlitSurface2Window(Surface, X + Wdt * iPhaseX, Y + Hgt * iPhaseY, Wdt, Hgt, hWnd, iTx, iTy, iTWdt, iTHgt
                                 /*TRUE*/);
   }
 }

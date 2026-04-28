@@ -71,21 +71,15 @@ BOOL DeleteRegistryValue(const char *szSubKey, const char *szValueName) {
   SaveRegistry();
   return TRUE;
 }
-BOOL DeleteRegistryValue(HKEY hKey, const char *szSubKey,
-                         const char *szValueName) {
-  return DeleteRegistryValue(szSubKey, szValueName);
-}
+BOOL DeleteRegistryValue(HKEY hKey, const char *szSubKey, const char *szValueName) { return DeleteRegistryValue(szSubKey, szValueName); }
 
-BOOL SetRegistryDWord(const char *szSubKey, const char *szValueName,
-                      DWORD dwValue) {
+BOOL SetRegistryDWord(const char *szSubKey, const char *szValueName, DWORD dwValue) {
   LoadRegistry();
-  GetRegistryMap()[std::string(szSubKey) + "\\" + szValueName] =
-      std::to_string(dwValue);
+  GetRegistryMap()[std::string(szSubKey) + "\\" + szValueName] = std::to_string(dwValue);
   SaveRegistry();
   return TRUE;
 }
-BOOL GetRegistryDWord(const char *szSubKey, const char *szValueName,
-                      DWORD *lpdwValue) {
+BOOL GetRegistryDWord(const char *szSubKey, const char *szValueName, DWORD *lpdwValue) {
   LoadRegistry();
   std::string key = std::string(szSubKey) + "\\" + szValueName;
   auto &reg = GetRegistryMap();
@@ -95,17 +89,10 @@ BOOL GetRegistryDWord(const char *szSubKey, const char *szValueName,
   }
   return FALSE;
 }
-BOOL GetRegistryDWord(HKEY hKey, const char *szSubKey, const char *szValueName,
-                      DWORD *lpdwValue) {
-  return GetRegistryDWord(szSubKey, szValueName, lpdwValue);
-}
-BOOL SetRegistryDWord(HKEY hKey, const char *szSubKey, const char *szValueName,
-                      DWORD dwValue) {
-  return SetRegistryDWord(szSubKey, szValueName, dwValue);
-}
+BOOL GetRegistryDWord(HKEY hKey, const char *szSubKey, const char *szValueName, DWORD *lpdwValue) { return GetRegistryDWord(szSubKey, szValueName, lpdwValue); }
+BOOL SetRegistryDWord(HKEY hKey, const char *szSubKey, const char *szValueName, DWORD dwValue) { return SetRegistryDWord(szSubKey, szValueName, dwValue); }
 
-BOOL GetRegistryString(const char *szSubKey, const char *szValueName,
-                       char *szValue, DWORD dwValSize) {
+BOOL GetRegistryString(const char *szSubKey, const char *szValueName, char *szValue, DWORD dwValSize) {
   LoadRegistry();
   std::string key = std::string(szSubKey) + "\\" + szValueName;
   auto &reg = GetRegistryMap();
@@ -115,32 +102,15 @@ BOOL GetRegistryString(const char *szSubKey, const char *szValueName,
   }
   return FALSE;
 }
-BOOL SetRegistryString(const char *szSubKey, const char *szValueName,
-                       const char *szValue) {
+BOOL SetRegistryString(const char *szSubKey, const char *szValueName, const char *szValue) {
   LoadRegistry();
   GetRegistryMap()[std::string(szSubKey) + "\\" + szValueName] = szValue;
   SaveRegistry();
   return TRUE;
 }
-BOOL SetRegClassesRoot(const char *szSubKey, const char *szValueName,
-                       const char *szStringValue) {
-  return FALSE;
-}
-BOOL SetRegClassesRootString(const char *szSubKey, const char *szValueName,
-                             const char *szStringValue) {
-  return FALSE;
-}
-BOOL StoreWindowPosition(HWND hwnd, const char *szWindowName,
-                         const char *szSubKey, BOOL fStoreSize) {
-  return FALSE;
-}
-BOOL RestoreWindowPosition(HWND hwnd, const char *szWindowName,
-                           const char *szSubKey) {
-  return FALSE;
-}
-BOOL SetRegFileClass(const char *szClassRoot, const char *szExtension,
-                     const char *szClassName, const char *szIconPath,
-                     int iIconIndex, const char *szContentType) {
-  return FALSE;
-}
+BOOL SetRegClassesRoot(const char *szSubKey, const char *szValueName, const char *szStringValue) { return FALSE; }
+BOOL SetRegClassesRootString(const char *szSubKey, const char *szValueName, const char *szStringValue) { return FALSE; }
+BOOL StoreWindowPosition(HWND hwnd, const char *szWindowName, const char *szSubKey, BOOL fStoreSize) { return FALSE; }
+BOOL RestoreWindowPosition(HWND hwnd, const char *szWindowName, const char *szSubKey) { return FALSE; }
+BOOL SetRegFileClass(const char *szClassRoot, const char *szExtension, const char *szClassName, const char *szIconPath, int iIconIndex, const char *szContentType) { return FALSE; }
 #endif

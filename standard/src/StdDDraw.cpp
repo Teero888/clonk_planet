@@ -116,8 +116,7 @@ void CStdDDraw::Clear() {
   glfwTerminate();
 }
 
-BOOL CStdDDraw::Init(HWND hWnd, BOOL Fullscreen, int iResX, int iResY,
-                     BOOL fUsePageLock) {
+BOOL CStdDDraw::Init(HWND hWnd, BOOL Fullscreen, int iResX, int iResY, BOOL fUsePageLock) {
   // Note: ignore hWnd, we use GLFW
   g_mainThreadId = std::this_thread::get_id();
   DebugLog("DDraw Init Start");
@@ -166,8 +165,7 @@ BOOL CStdDDraw::Init(HWND hWnd, BOOL Fullscreen, int iResX, int iResY,
   glTextureParameteri(g_paletteTex, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTextureParameteri(g_paletteTex, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   uint8_t dummyPal[768] = {0};
-  glTextureSubImage1D(g_paletteTex, 0, 0, 256, GL_RGB, GL_UNSIGNED_BYTE,
-                      dummyPal);
+  glTextureSubImage1D(g_paletteTex, 0, 0, 256, GL_RGB, GL_UNSIGNED_BYTE, dummyPal);
 
   GLuint vs = CompileShader(GL_VERTEX_SHADER, vertexShaderSrc);
   GLuint fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShaderSrc);
@@ -219,8 +217,7 @@ BOOL CStdDDraw::PageFlip() {
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT);
   if (surf->dirty && surf->tex) {
-    glTextureSubImage2D(surf->tex, 0, 0, 0, surf->w, surf->h, GL_RED_INTEGER,
-                        GL_UNSIGNED_BYTE, surf->bits);
+    glTextureSubImage2D(surf->tex, 0, 0, 0, surf->w, surf->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, surf->bits);
     surf->dirty = false;
   }
 
@@ -231,9 +228,7 @@ BOOL CStdDDraw::PageFlip() {
   glBindTextureUnit(1, g_paletteTex);
   glUniform1i(glGetUniformLocation(g_shaderProgram, "texPalette"), 1);
 
-  float vertices[] = {-1.0f, -1.0f, 0.0f, 1.0f, 1.0f,  -1.0f, 1.0f, 1.0f,
-                      1.0f,  1.0f,  1.0f, 0.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-                      1.0f,  1.0f,  1.0f, 0.0f, -1.0f, 1.0f,  0.0f, 0.0f};
+  float vertices[] = {-1.0f, -1.0f, 0.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f};
 
   glBindVertexArray(g_vao);
   glNamedBufferData(g_vbo, sizeof(vertices), vertices, GL_STREAM_DRAW);
@@ -306,8 +301,7 @@ BOOL CStdDDraw::NoPrimaryClipper() {
 BOOL CStdDDraw::ApplyPrimaryClipper(SURFACE sfcSurface) { return TRUE; }
 BOOL CStdDDraw::DetachPrimaryClipper(SURFACE sfcSurface) { return TRUE; }
 
-BYTE *CStdDDraw::LockSurface(SURFACE sfcSurface, int &lPitch, int *lpSfcWdt,
-                             int *lpSfcHgt) {
+BYTE *CStdDDraw::LockSurface(SURFACE sfcSurface, int &lPitch, int *lpSfcWdt, int *lpSfcHgt) {
   if (!sfcSurface)
     return NULL;
   CGLSurface *s = (CGLSurface *)sfcSurface;
@@ -386,8 +380,7 @@ SURFACE CStdDDraw::CreateSurface(int iWdt, int iHgt) {
     glTextureParameteri(s->tex, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTextureParameteri(s->tex, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTextureParameteri(s->tex, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTextureSubImage2D(s->tex, 0, 0, 0, s->w, s->h, GL_RED_INTEGER,
-                        GL_UNSIGNED_BYTE, s->bits);
+    glTextureSubImage2D(s->tex, 0, 0, 0, s->w, s->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, s->bits);
   } else {
     s->tex = 0;
   }
@@ -406,8 +399,7 @@ void CStdDDraw::SurfaceShiftColor(SURFACE sfcSfc, int iShift) {
   s->dirty = true;
 }
 
-void CStdDDraw::SurfaceShiftColorRange(SURFACE sfcSfc, int iRngLo, int iRngHi,
-                                       int iShift) {
+void CStdDDraw::SurfaceShiftColorRange(SURFACE sfcSfc, int iRngLo, int iRngHi, int iShift) {
   if (!sfcSfc)
     return;
   CGLSurface *s = (CGLSurface *)sfcSfc;
@@ -419,21 +411,15 @@ void CStdDDraw::SurfaceShiftColorRange(SURFACE sfcSfc, int iRngLo, int iRngHi,
   s->dirty = true;
 }
 
-void CStdDDraw::SurfaceAllowColor(SURFACE sfcSfc, BYTE iRngLo, BYTE iRngHi,
-                                  BOOL fAllowZero) {
+void CStdDDraw::SurfaceAllowColor(SURFACE sfcSfc, BYTE iRngLo, BYTE iRngHi, BOOL fAllowZero) {
   // This was likely used in DirectDraw to manage color keys or palette usage.
   // In our OpenGL software blitter, we don't have a direct equivalent but we
   // can at least ensure the surface is marked dirty if needed.
 }
 
-BOOL CStdDDraw::BlitFast(SURFACE sfcSource, int fx, int fy, SURFACE sfcTarget,
-                         int tx, int ty, int wdt, int hgt) {
-  return Blit(sfcSource, fx, fy, wdt, hgt, sfcTarget, tx, ty, wdt, hgt, TRUE);
-}
+BOOL CStdDDraw::BlitFast(SURFACE sfcSource, int fx, int fy, SURFACE sfcTarget, int tx, int ty, int wdt, int hgt) { return Blit(sfcSource, fx, fy, wdt, hgt, sfcTarget, tx, ty, wdt, hgt, TRUE); }
 
-BOOL CStdDDraw::Blit(SURFACE sfcSource, int fx, int fy, int fwdt, int fhgt,
-                     SURFACE sfcTarget, int tx, int ty, int twdt, int thgt,
-                     BOOL fSrcColKey) {
+BOOL CStdDDraw::Blit(SURFACE sfcSource, int fx, int fy, int fwdt, int fhgt, SURFACE sfcTarget, int tx, int ty, int twdt, int thgt, BOOL fSrcColKey) {
   if (!sfcSource || !sfcTarget)
     return FALSE;
   if (twdt <= 0 || thgt <= 0 || twdt > 4096 || thgt > 4096)
@@ -470,9 +456,7 @@ BOOL CStdDDraw::Blit(SURFACE sfcSource, int fx, int fy, int fwdt, int fhgt,
   return TRUE;
 }
 
-BOOL CStdDDraw::BlitRotate(SURFACE sfcSource, int fx, int fy, int fwdt,
-                           int fhgt, SURFACE sfcTarget, int tx, int ty,
-                           int twdt, int thgt, int iAngle) {
+BOOL CStdDDraw::BlitRotate(SURFACE sfcSource, int fx, int fy, int fwdt, int fhgt, SURFACE sfcTarget, int tx, int ty, int twdt, int thgt, int iAngle) {
   if (!sfcSource || !sfcTarget)
     return FALSE;
   CGLSurface *src = (CGLSurface *)sfcSource;
@@ -512,24 +496,18 @@ BOOL CStdDDraw::BlitRotate(SURFACE sfcSource, int fx, int fy, int fwdt,
   return TRUE;
 }
 
-BOOL CStdDDraw::BlitRotateOriginal(SURFACE sfcSource, int fx, int fy, int fwdt,
-                                   int fhgt, SURFACE sfcTarget, int tx, int ty,
-                                   int twdt, int thgt, int iAngle) {
-  return BlitRotate(sfcSource, fx, fy, fwdt, fhgt, sfcTarget, tx, ty, twdt,
-                    thgt, iAngle);
+BOOL CStdDDraw::BlitRotateOriginal(SURFACE sfcSource, int fx, int fy, int fwdt, int fhgt, SURFACE sfcTarget, int tx, int ty, int twdt, int thgt, int iAngle) {
+  return BlitRotate(sfcSource, fx, fy, fwdt, fhgt, sfcTarget, tx, ty, twdt, thgt, iAngle);
 }
 
-BOOL CStdDDraw::BlitSurface(SURFACE sfcSurface, SURFACE sfcTarget, int tx,
-                            int ty) {
+BOOL CStdDDraw::BlitSurface(SURFACE sfcSurface, SURFACE sfcTarget, int tx, int ty) {
   int w, h;
   if (!GetSurfaceSize(sfcSurface, w, h))
     return FALSE;
   return Blit(sfcSurface, 0, 0, w, h, sfcTarget, tx, ty, w, h, TRUE);
 }
 
-BOOL CStdDDraw::BlitSurfaceTile(SURFACE sfcSurface, SURFACE sfcTarget, int iToX,
-                                int iToY, int iToWdt, int iToHgt, int iOffsetX,
-                                int iOffsetY, BOOL fSrcColKey) {
+BOOL CStdDDraw::BlitSurfaceTile(SURFACE sfcSurface, SURFACE sfcTarget, int iToX, int iToY, int iToWdt, int iToHgt, int iOffsetX, int iOffsetY, BOOL fSrcColKey) {
   int sw, sh;
   if (!GetSurfaceSize(sfcSurface, sw, sh))
     return FALSE;
@@ -554,32 +532,14 @@ BOOL CStdDDraw::BlitSurfaceTile(SURFACE sfcSurface, SURFACE sfcTarget, int iToX,
   return TRUE;
 }
 
-BOOL CStdDDraw::BlitSurface2Window(SURFACE sfcSource, int fX, int fY, int fWdt,
-                                   int fHgt, HWND hWnd, int tX, int tY,
-                                   int tWdt, int tHgt) {
-  return TRUE;
-}
+BOOL CStdDDraw::BlitSurface2Window(SURFACE sfcSource, int fX, int fY, int fWdt, int fHgt, HWND hWnd, int tX, int tY, int tWdt, int tHgt) { return TRUE; }
 
-BOOL CStdDDraw::InitFont(const char *szFontName, int iSize) {
-  return Font.Init(NULL, szFontName, iSize);
-}
-BOOL CStdDDraw::TextExtent(const char *szString, int &rWdt, int &rHgt) {
-  return Font.TextExtent(szString, rWdt, rHgt);
-}
-int CStdDDraw::TextHeight(const char *szText) {
-  return Font.GetTextHeight(szText);
-}
-int CStdDDraw::TextWidth(const char *szText) {
-  return Font.GetTextWidth(szText);
-}
-BOOL CStdDDraw::TextOut(const char *szText, SURFACE sfcDest, int iTx, int iTy,
-                        int iFCol, int iBCol, BYTE byForm) {
-  return Font.TextOut(szText, sfcDest, iTx, iTy, iFCol, iBCol, byForm);
-}
-BOOL CStdDDraw::StringOut(const char *szText, SURFACE sfcDest, int iTx, int iTy,
-                          int iFCol, int iBCol, BYTE byForm) {
-  return Font.StringOut(szText, sfcDest, iTx, iTy, iFCol, iBCol, byForm);
-}
+BOOL CStdDDraw::InitFont(const char *szFontName, int iSize) { return Font.Init(NULL, szFontName, iSize); }
+BOOL CStdDDraw::TextExtent(const char *szString, int &rWdt, int &rHgt) { return Font.TextExtent(szString, rWdt, rHgt); }
+int CStdDDraw::TextHeight(const char *szText) { return Font.GetTextHeight(szText); }
+int CStdDDraw::TextWidth(const char *szText) { return Font.GetTextWidth(szText); }
+BOOL CStdDDraw::TextOut(const char *szText, SURFACE sfcDest, int iTx, int iTy, int iFCol, int iBCol, BYTE byForm) { return Font.TextOut(szText, sfcDest, iTx, iTy, iFCol, iBCol, byForm); }
+BOOL CStdDDraw::StringOut(const char *szText, SURFACE sfcDest, int iTx, int iTy, int iFCol, int iBCol, BYTE byForm) { return Font.StringOut(szText, sfcDest, iTx, iTy, iFCol, iBCol, byForm); }
 
 BOOL CStdDDraw::SetPixel(SURFACE sfcDest, int tx, int ty, BYTE col) {
   if (!sfcDest)
@@ -602,8 +562,7 @@ BYTE CStdDDraw::GetPixel(SURFACE sfcSource, int fx, int fy) {
   return 0;
 }
 
-void CStdDDraw::DrawBox(SURFACE sfcDest, int x1, int y1, int x2, int y2,
-                        BYTE col) {
+void CStdDDraw::DrawBox(SURFACE sfcDest, int x1, int y1, int x2, int y2, BYTE col) {
   if (!sfcDest)
     return;
   CGLSurface *dst = (CGLSurface *)sfcDest;
@@ -620,8 +579,7 @@ void CStdDDraw::DrawBox(SURFACE sfcDest, int x1, int y1, int x2, int y2,
   dst->dirty = true;
 }
 
-void CStdDDraw::DrawBoxColorTable(SURFACE sfcDest, int x1, int y1, int x2,
-                                  int y2, BYTE *bypColorTable) {
+void CStdDDraw::DrawBoxColorTable(SURFACE sfcDest, int x1, int y1, int x2, int y2, BYTE *bypColorTable) {
   if (!sfcDest || !bypColorTable)
     return;
   CGLSurface *dst = (CGLSurface *)sfcDest;
@@ -649,29 +607,20 @@ void CStdDDraw::DrawCircle(SURFACE sfcDest, int x, int y, int r, BYTE col) {
   }
 }
 
-void CStdDDraw::DrawHorizontalLine(SURFACE sfcDest, int x1, int x2, int y,
-                                   BYTE col) {
-  DrawBox(sfcDest, x1, y, x2, y, col);
-}
+void CStdDDraw::DrawHorizontalLine(SURFACE sfcDest, int x1, int x2, int y, BYTE col) { DrawBox(sfcDest, x1, y, x2, y, col); }
 
-void CStdDDraw::DrawVerticalLine(SURFACE sfcDest, int x, int y1, int y2,
-                                 BYTE col) {
-  DrawBox(sfcDest, x, y1, x, y2, col);
-}
+void CStdDDraw::DrawVerticalLine(SURFACE sfcDest, int x, int y1, int y2, BYTE col) { DrawBox(sfcDest, x, y1, x, y2, col); }
 
-void CStdDDraw::DrawFrame(SURFACE sfcDest, int x1, int y1, int x2, int y2,
-                          BYTE col) {
+void CStdDDraw::DrawFrame(SURFACE sfcDest, int x1, int y1, int x2, int y2, BYTE col) {
   DrawHorizontalLine(sfcDest, x1, x2, y1, col);
   DrawHorizontalLine(sfcDest, x1, x2, y2, col);
   DrawVerticalLine(sfcDest, x1, y1, y2, col);
   DrawVerticalLine(sfcDest, x2, y1, y2, col);
 }
 
-void CStdDDraw::DrawInline(SURFACE sfcDest, int iX1, int iY1, int iX2, int iY2,
-                           BYTE byCol, BYTE byOnCol, BYTE byAdjacentCol) {}
+void CStdDDraw::DrawInline(SURFACE sfcDest, int iX1, int iY1, int iX2, int iY2, BYTE byCol, BYTE byOnCol, BYTE byAdjacentCol) {}
 
-BOOL CStdDDraw::DrawLine(SURFACE sfcTarget, int x1, int y1, int x2, int y2,
-                         BYTE byCol) {
+BOOL CStdDDraw::DrawLine(SURFACE sfcTarget, int x1, int y1, int x2, int y2, BYTE byCol) {
   int dx = abs(x2 - x1);
   int dy = abs(y2 - y1);
   int sx = (x1 < x2) ? 1 : -1;
@@ -713,11 +662,8 @@ BOOL CStdDDraw::DrawPolygon(SURFACE sfcTarget, int iNum, int *ipVtx, int iCol) {
     std::vector<int> nodes;
     int j = iNum - 1;
     for (int i = 0; i < iNum; i++) {
-      if ((ipVtx[i * 2 + 1] < y && ipVtx[j * 2 + 1] >= y) ||
-          (ipVtx[j * 2 + 1] < y && ipVtx[i * 2 + 1] >= y)) {
-        nodes.push_back(ipVtx[i * 2] +
-                        (y - ipVtx[i * 2 + 1]) * (ipVtx[j * 2] - ipVtx[i * 2]) /
-                            (ipVtx[j * 2 + 1] - ipVtx[i * 2 + 1]));
+      if ((ipVtx[i * 2 + 1] < y && ipVtx[j * 2 + 1] >= y) || (ipVtx[j * 2 + 1] < y && ipVtx[i * 2 + 1] >= y)) {
+        nodes.push_back(ipVtx[i * 2] + (y - ipVtx[i * 2 + 1]) * (ipVtx[j * 2] - ipVtx[i * 2]) / (ipVtx[j * 2 + 1] - ipVtx[i * 2 + 1]));
       }
       j = i;
     }
@@ -738,12 +684,8 @@ BOOL CStdDDraw::CreatePrimaryPalette(SURFACE sfcAttachTo) { return TRUE; }
 BOOL CStdDDraw::CreatePrimaryClipper() { return TRUE; }
 BOOL CStdDDraw::CreatePrimarySurfaces(BOOL fFlipAttach) { return TRUE; }
 BOOL CStdDDraw::Error(const char *szMsg) { return FALSE; }
-BOOL CStdDDraw::SetDisplayMode(int iResX, int iResY, int iColorDepth) {
-  return TRUE;
-}
+BOOL CStdDDraw::SetDisplayMode(int iResX, int iResY, int iColorDepth) { return TRUE; }
 BOOL CStdDDraw::SetCooperativeLevel(HWND hWnd, DWORD dwLevel) { return TRUE; }
 BOOL CStdDDraw::CreateDirectDraw() { return TRUE; }
 int CStdDDraw::SfcCall(HRESULT ddrval) { return 0; }
-BOOL CStdDDraw::SurfaceSetColorKey(SURFACE sfcSurface, BYTE byCol) {
-  return TRUE;
-}
+BOOL CStdDDraw::SurfaceSetColorKey(SURFACE sfcSurface, BYTE byCol) { return TRUE; }

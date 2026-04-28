@@ -21,9 +21,7 @@ void C4Weather::ScenarioInit() {
   if (!Game.C4S.Head.NoInitialize)
     if (Game.C4S.Weather.Rain.Evaluate())
       for (int iClouds = Min(GBackWdt / 500, 5); iClouds > 0; iClouds--)
-        LaunchCloud(Random(GBackWdt), -1, GBackWdt / 15 + Random(320),
-                    Game.C4S.Weather.Rain.Evaluate(),
-                    Game.C4S.Weather.Precipitation);
+        LaunchCloud(Random(GBackWdt), -1, GBackWdt / 15 + Random(320), Game.C4S.Weather.Rain.Evaluate(), Game.C4S.Weather.Precipitation);
   // Lightning
   LightningLevel = Game.C4S.Weather.Lightning.Evaluate();
   // Disasters
@@ -45,8 +43,7 @@ void C4Weather::Execute() {
   }
   // Temperature
   if (!Tick35) {
-    int iTemperature =
-        Climate - (int)(TemperatureRange * cos(6.28 * (float)Season / 100.0));
+    int iTemperature = Climate - (int)(TemperatureRange * cos(6.28 * (float)Season / 100.0));
     if (Temperature < iTemperature)
       Temperature++;
     else if (Temperature > iTemperature)
@@ -56,8 +53,7 @@ void C4Weather::Execute() {
   if (!Tick1000)
     TargetWind = Game.C4S.Weather.Wind.Evaluate();
   if (!Tick3)
-    Wind = BoundBy(Wind + Sign(TargetWind - Wind), Game.C4S.Weather.Wind.Min,
-                   Game.C4S.Weather.Wind.Max);
+    Wind = BoundBy(Wind + Sign(TargetWind - Wind), Game.C4S.Weather.Wind.Min, Game.C4S.Weather.Wind.Max);
   if (!Tick10)
     SoundLevel("Wind", Max(Abs(Wind) - 30, 0) * 2);
   // Disaster launch
@@ -66,10 +62,7 @@ void C4Weather::Execute() {
     if (!Random(60))
       if (Random(100) < MeteoriteLevel) {
         C4Object *meto;
-        meto =
-            Game.CreateObject(C4ID_Meteor, NO_OWNER, Random(GBackWdt), -10, 0,
-                              ftofix((float)(Random(100 + 1) - 50) / 10.0),
-                              ftofix(0.0), ftofix(0.2));
+        meto = Game.CreateObject(C4ID_Meteor, NO_OWNER, Random(GBackWdt), -10, 0, ftofix((float)(Random(100 + 1) - 50) / 10.0), ftofix(0.0), ftofix(0.2));
       }
     // Lightning
     if (!Random(35))
@@ -82,15 +75,13 @@ void C4Weather::Execute() {
     // Volcano
     if (!Random(60))
       if (Random(100) < VolcanoLevel)
-        LaunchVolcano(Game.Material.Get("Lava"), Random(GBackWdt), GBackHgt - 1,
-                      BoundBy(15 * GBackHgt / 500 + Random(10), 10, 60));
+        LaunchVolcano(Game.Material.Get("Lava"), Random(GBackWdt), GBackHgt - 1, BoundBy(15 * GBackHgt / 500 + Random(10), 10, 60));
   }
 }
 
 void C4Weather::Clear() {}
 
-BOOL C4Weather::LaunchLightning(int x, int y, int xdir, int xrange, int ydir,
-                                int yrange) {
+BOOL C4Weather::LaunchLightning(int x, int y, int xdir, int xrange, int ydir, int yrange) {
   C4Object *pObj;
   if (pObj = Game.CreateObject(C4Id("FXL1")))
     pObj->Call(PSF_Activate, x, y, xdir, xrange, ydir, yrange);
@@ -130,14 +121,12 @@ BOOL C4Weather::LaunchEarthquake(int iX, int iY) {
   return FALSE;
 }
 
-BOOL C4Weather::LaunchCloud(int iX, int iY, int iWidth, int iStrength,
-                            const char *szPrecipitation) {
+BOOL C4Weather::LaunchCloud(int iX, int iY, int iWidth, int iStrength, const char *szPrecipitation) {
   if (Game.Material.Get(szPrecipitation) == MNone)
     return FALSE;
   C4Object *pObj;
   if (pObj = Game.CreateObject(C4Id("FXP1"), NO_OWNER, iX, iY))
-    if (pObj->Call(PSF_Activate, Game.Material.Get(szPrecipitation), iWidth,
-                   iStrength))
+    if (pObj->Call(PSF_Activate, Game.Material.Get(szPrecipitation), iWidth, iStrength))
       return TRUE;
   return FALSE;
 }
@@ -147,16 +136,12 @@ void C4Weather::SetWind(int iWind) {
   TargetWind = BoundBy(iWind, -100, +100);
 }
 
-void C4Weather::SetTemperature(int iTemperature) {
-  Temperature = BoundBy(iTemperature, -100, 100);
-}
+void C4Weather::SetTemperature(int iTemperature) { Temperature = BoundBy(iTemperature, -100, 100); }
 
 void C4Weather::SetSeason(int iSeason) { Season = BoundBy(iSeason, 0, 100); }
 
 int C4Weather::GetSeason() { return Season; }
 
-void C4Weather::SetClimate(int iClimate) {
-  Climate = BoundBy(iClimate, -50, +50);
-}
+void C4Weather::SetClimate(int iClimate) { Climate = BoundBy(iClimate, -50, +50); }
 
 int C4Weather::GetClimate() { return Climate; }

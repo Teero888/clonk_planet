@@ -8,8 +8,7 @@ C4GameMessage::C4GameMessage() {}
 
 C4GameMessage::~C4GameMessage() {}
 
-void C4GameMessage::Init(const char *szText, C4Object *pTarget, int iPlayer,
-                         int iX, int iY, BYTE bCol) {
+void C4GameMessage::Init(const char *szText, C4Object *pTarget, int iPlayer, int iX, int iY, BYTE bCol) {
   // Set data
   SCopy(szText, Text, C4GM_MaxText);
   Target = pTarget;
@@ -45,8 +44,7 @@ BOOL C4GameMessage::Execute() {
 void C4GameMessage::Draw(C4FacetEx &cgo, int iPlayer) {
   // Globals or player
   if ((Player == ANY_OWNER) || ((Player != NO_OWNER) && (Player == iPlayer)))
-    Engine.DDraw.TextOut(Text, cgo.Surface, cgo.X + cgo.Wdt / 2,
-                         cgo.Y + 2 * cgo.Hgt / 3, Color, FBlack, ACenter);
+    Engine.DDraw.TextOut(Text, cgo.Surface, cgo.X + cgo.Wdt / 2, cgo.Y + 2 * cgo.Hgt / 3, Color, FBlack, ACenter);
   // Positioned
   else if (Inside(X - cgo.TargetX, 0, cgo.Wdt - 1))
     if (Inside(Y - cgo.TargetY, 0, cgo.Hgt - 1)) {
@@ -61,8 +59,7 @@ void C4GameMessage::Draw(C4FacetEx &cgo, int iPlayer) {
       iTX = BoundBy(X - cgo.TargetX, iTWdt / 2, cgo.Wdt - iTWdt / 2);
       iTY = BoundBy(Y - cgo.TargetY - iTHgt, 0, cgo.Hgt - iTHgt);
       // Draw
-      Engine.DDraw.TextOut(szText, cgo.Surface, cgo.X + iTX, cgo.Y + iTY, Color,
-                           FBlack, ACenter);
+      Engine.DDraw.TextOut(szText, cgo.Surface, cgo.X + iTX, cgo.Y + iTY, Color, FBlack, ACenter);
     }
 }
 
@@ -111,8 +108,7 @@ void C4GameMessageList::Execute() {
   }
 }
 
-BOOL C4GameMessageList::New(const char *szText, C4Object *pTarget, int iPlayer,
-                            int iX, int iY, BYTE bCol) {
+BOOL C4GameMessageList::New(const char *szText, C4Object *pTarget, int iPlayer, int iX, int iY, BYTE bCol) {
 
   // Clear messages with same target
   if (pTarget)

@@ -4,8 +4,7 @@
 
 #include <C4Include.h>
 
-const int C4NET_Transfer_None = 0, C4NET_Transfer_Cease = 1,
-          C4NET_Transfer_GetNetReady = 2, C4NET_Transfer_SendNetGo = 3;
+const int C4NET_Transfer_None = 0, C4NET_Transfer_Cease = 1, C4NET_Transfer_GetNetReady = 2, C4NET_Transfer_SendNetGo = 3;
 
 //--------------------------------- C4NetworkClientList
 //--------------------------------------------
@@ -131,8 +130,7 @@ void C4NetworkClientList::RemoveDeactivated() {
   for (C4NetworkClient *pClient = First; pClient; pClient = pClient->Next)
     if (!pClient->Active)
       if (!pClient->Deactivated) {
-        Game.Input.AddRemoveClient(pClient->Number,
-                                   Game.Network.GetClientName(pClient->Number));
+        Game.Input.AddRemoveClient(pClient->Number, Game.Network.GetClientName(pClient->Number));
         pClient->Deactivated = TRUE;
       }
 }
@@ -191,8 +189,7 @@ struct C4ControlJoin {
   int RandomSeed;
 };
 
-BOOL C4NetworkClient::HandleJoin(int iNumber, C4Stream *pStream,
-                                 BOOL fRuntimeJoin, BOOL fGetJoinReady) {
+BOOL C4NetworkClient::HandleJoin(int iNumber, C4Stream *pStream, BOOL fRuntimeJoin, BOOL fGetJoinReady) {
   C4Packet Packet;
   C4Group hGroup;
 
@@ -209,8 +206,7 @@ BOOL C4NetworkClient::HandleJoin(int iNumber, C4Stream *pStream,
   // Block runtime join
   if (fRuntimeJoin && Config.Network.NoRuntimeJoin) {
     // Denial message
-    sprintf(OSTR, LoadResStr(IDS_NET_NORUNTIMEJOIN),
-            pControlStream->GetPeerName());
+    sprintf(OSTR, LoadResStr(IDS_NET_NORUNTIMEJOIN), pControlStream->GetPeerName());
     Log(OSTR);
     // Send deny & abort
     Packet.Set(C4PK_JoinDenied);
@@ -251,8 +247,7 @@ BOOL C4NetworkClient::HandleJoin(int iNumber, C4Stream *pStream,
     // - - - - - - - - - - -
     case C4PK_RequestNetworkGame:
       // Log network game request
-      sprintf(OSTR, LoadResStr(IDS_NET_REQUESTGAME),
-              pControlStream->GetPeerName());
+      sprintf(OSTR, LoadResStr(IDS_NET_REQUESTGAME), pControlStream->GetPeerName());
       Log(OSTR);
       Game.GraphicsSystem.MessageBoard.EnsureLastMessage();
       // Game data temp filename
@@ -279,8 +274,7 @@ BOOL C4NetworkClient::HandleJoin(int iNumber, C4Stream *pStream,
       }
       // Send network game
       // NetLog("Sending network game...");
-      if (!StreamOk(pControlStream->SendFile(szFilename, C4PK_NetworkGame,
-                                             &LogProcess)))
+      if (!StreamOk(pControlStream->SendFile(szFilename, C4PK_NetworkGame, &LogProcess)))
         return FALSE;
       // NetLog("Ok");
       Log(LoadResStr(IDS_NET_TRANSFEROK));
@@ -317,9 +311,7 @@ BOOL C4NetworkClient::StreamOk(int iResult) {
   return FALSE;
 }
 
-BOOL C4NetworkClient::Join(const char *szServerName,
-                           const char *szServerAddress,
-                           BOOL fRetrieveNetworkGame) {
+BOOL C4NetworkClient::Join(const char *szServerName, const char *szServerAddress, BOOL fRetrieveNetworkGame) {
   C4Packet Packet;
 
   // Set local name and address
@@ -332,13 +324,11 @@ BOOL C4NetworkClient::Join(const char *szServerName,
   // Connect to server
   sprintf(OSTR, LoadResStr(IDS_NET_CONNECTING), szServerName, szServerAddress);
   Log(OSTR);
-  if (!StreamOk(
-          pControlStream->Connect(Name, C4STRM_Client, szServerAddress))) {
+  if (!StreamOk(pControlStream->Connect(Name, C4STRM_Client, szServerAddress))) {
     Log(LoadResStr(IDS_NET_NOCONNECT));
     return FALSE;
   }
-  sprintf(OSTR, "Connected to %s on port %i", pControlStream->GetPeerAddress(),
-          pControlStream->GetPort());
+  sprintf(OSTR, "Connected to %s on port %i", pControlStream->GetPeerAddress(), pControlStream->GetPort());
   NetLog(OSTR);
 
   // Request join
@@ -355,15 +345,13 @@ BOOL C4NetworkClient::Join(const char *szServerName,
   Number = ((C4ControlJoin *)Packet.Data)->Number;
   Game.AsynchronousControl = ((C4ControlJoin *)Packet.Data)->Asynchronous;
   // Adjust control time start to match host start
-  Game.ControlTimeStart =
-      time_msecs() - ((C4ControlJoin *)Packet.Data)->ControlTime;
+  Game.ControlTimeStart = time_msecs() - ((C4ControlJoin *)Packet.Data)->ControlTime;
   // Set random seed from host and refix random
   Game.RandomSeed = ((C4ControlJoin *)Packet.Data)->RandomSeed;
   Game.FixRandom(Game.RandomSeed);
 
   // Log
-  sprintf(OSTR, "Joined as client %i %s", Number,
-          Game.AsynchronousControl ? "(asynchronous)" : "");
+  sprintf(OSTR, "Joined as client %i %s", Number, Game.AsynchronousControl ? "(asynchronous)" : "");
   NetLog(OSTR);
 
   // Retrieve network game (if desired)
@@ -379,8 +367,7 @@ BOOL C4NetworkClient::Join(const char *szServerName,
   // Connect secondary (input) stream
   if (Game.AsynchronousControl) {
     pInputStream = new C4Stream;
-    if (!StreamOk(pInputStream->Connect(Name, C4STRM_Client, szServerAddress,
-                                        NULL, C4PORT_Input))) {
+    if (!StreamOk(pInputStream->Connect(Name, C4STRM_Client, szServerAddress, NULL, C4PORT_Input))) {
       Log(LoadResStr(IDS_NET_NOINPUTSTREAM));
       return FALSE;
     }
@@ -553,8 +540,7 @@ BOOL C4NetworkClient::RetrieveNetworkGame() // Overwrites Game.ScenarioFilename
   // Receive network game
   NetLog("Receiving network game");
   SCopy(Config.Network.WorkPath, Game.ScenarioFilename);
-  if (!StreamOk(
-          pControlStream->ReceiveFile(Game.ScenarioFilename, C4PK_NetworkGame)))
+  if (!StreamOk(pControlStream->ReceiveFile(Game.ScenarioFilename, C4PK_NetworkGame)))
     return FALSE;
   // Success
   return TRUE;

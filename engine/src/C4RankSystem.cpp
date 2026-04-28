@@ -10,8 +10,7 @@ C4RankSystem::C4RankSystem() {
   RankBase = 1000;
 }
 
-int C4RankSystem::Init(const char *szRegister, const char *szDefRanks,
-                       int iRankBase) {
+int C4RankSystem::Init(const char *szRegister, const char *szDefRanks, int iRankBase) {
   int crank = 0;
 
   // Init
@@ -28,8 +27,7 @@ int C4RankSystem::Init(const char *szRegister, const char *szDefRanks,
       crank++;
     } else {
       // Rank not defined, check for default
-      if (SCopySegment(szDefRanks, crank, rankname, '|', C4MaxName) &&
-          SetRegistryString(Register, keyname, rankname))
+      if (SCopySegment(szDefRanks, crank, rankname, '|', C4MaxName) && SetRegistryString(Register, keyname, rankname))
         crank++;
       else
         Checking = FALSE;

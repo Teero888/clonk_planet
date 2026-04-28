@@ -29,8 +29,7 @@ void C4MassMoverSet::Execute() {
   Count = 0;
   // Execute & count
   for (speed; speed > 0; speed--)
-    for (cnt = 0, cmm = &(Set[C4MassMoverChunk - 1]); cnt < C4MassMoverChunk;
-         cnt++, cmm--)
+    for (cnt = 0, cmm = &(Set[C4MassMoverChunk - 1]); cnt < C4MassMoverChunk; cnt++, cmm--)
       if (cmm->Mat != MNone) {
         Count++;
         cmm->Execute();
@@ -124,9 +123,7 @@ BOOL C4MassMover::Execute() {
     }
 
   // Transfer mass
-  SBackPix(tx, ty,
-           Mat2PixColRnd(Game.Landscape.ExtractMaterial(x, y)) +
-               GBackIFT(tx, ty));
+  SBackPix(tx, ty, Mat2PixColRnd(Game.Landscape.ExtractMaterial(x, y)) + GBackIFT(tx, ty));
 
   // Create new mover at target
   Game.MassMover.Create(tx, ty, !Rnd3());
@@ -137,10 +134,7 @@ BOOL C4MassMover::Execute() {
 BOOL C4MassMover::Corrosion(int dx, int dy) {
   int tmat = GBackMat(x + dx, y + dy);
   if (MatValid(tmat))
-    if ((Game.Material.Map[Mat].Incindiary &&
-         Game.Material.Map[tmat].Extinguisher) ||
-        ((Random(100) < Game.Material.Map[Mat].Corrosive) &&
-         (Random(100) < Game.Material.Map[tmat].Corrode))) {
+    if ((Game.Material.Map[Mat].Incindiary && Game.Material.Map[tmat].Extinguisher) || ((Random(100) < Game.Material.Map[Mat].Corrosive) && (Random(100) < Game.Material.Map[tmat].Corrode))) {
       Game.Landscape.ExtractMaterial(x, y);
       ClearBackPix(x + dx, y + dy);
       if (!Random(5))
@@ -194,8 +188,7 @@ BOOL C4MassMoverSet::Load(C4Group &hGroup) {
 void C4MassMoverSet::Consolidate() {
   // Consolidate set
   int iSpot, iPtr, iConsolidated;
-  for (iSpot = -1, iPtr = 0, iConsolidated = 0; iPtr < C4MassMoverChunk;
-       iPtr++) {
+  for (iSpot = -1, iPtr = 0, iConsolidated = 0; iPtr < C4MassMoverChunk; iPtr++) {
     // Empty: set new spot if needed
     if (Set[iPtr].Mat == MNone) {
       if (iSpot == -1)

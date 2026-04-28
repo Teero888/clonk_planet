@@ -19,7 +19,7 @@ class C4TexMapEntry {
   friend C4TextureMap;
 
 protected:
-  BYTE Index; // Range 0-127, Bit 8 means IFT ("in-front-of-tunnel")
+  BYTE Index;                               // Range 0-127, Bit 8 means IFT ("in-front-of-tunnel")
   char MaterialTexture[C4M_MaxDefName + 1]; // "Material-Texture"
   C4TexMapEntry *Next;
 };

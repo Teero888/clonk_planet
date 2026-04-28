@@ -3,8 +3,7 @@
 /* Console mode dialog for object properties and script interface */
 
 class C4PropertyDlg {
-  friend BOOL CALLBACK PropertyDlgProc(HWND hDlg, UINT Msg, WPARAM wParam,
-                                       LPARAM lParam);
+  friend BOOL CALLBACK PropertyDlgProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 public:
   C4PropertyDlg();

@@ -28,9 +28,7 @@ public:
   void Copy(C4ObjectList &rList);
   void Draw(C4FacetEx &cgo);
   void DrawList(C4Facet &cgo, int iSelection = -1, DWORD dwCategory = C4D_All);
-  void DrawIDList(C4Facet &cgo, int iSelection, C4DefList &rDefs,
-                  DWORD dwCategory, C4RegionList *pRegions = NULL,
-                  int iRegionCom = COM_None, BOOL fDrawOneCounts = TRUE);
+  void DrawIDList(C4Facet &cgo, int iSelection, C4DefList &rDefs, DWORD dwCategory, C4RegionList *pRegions = NULL, int iRegionCom = COM_None, BOOL fDrawOneCounts = TRUE);
   void DrawSelectMark(C4FacetEx &cgo);
   void CloseMenus();
   void UpdateFaces();
@@ -49,8 +47,7 @@ public:
   BOOL Save(C4Group &hGroup, BOOL fSaveGame);
   BOOL AssignInfo();
   BOOL ValidateOwners();
-  BOOL WriteNameList(char *szTarget, C4DefList &rDefs,
-                     DWORD dwCategory = C4D_All);
+  BOOL WriteNameList(char *szTarget, C4DefList &rDefs, DWORD dwCategory = C4D_All);
   BOOL IsClear();
   BOOL ReadEnumerated(const char *szSource);
   BOOL DenumerateRead();

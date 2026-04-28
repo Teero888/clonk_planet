@@ -55,8 +55,7 @@ BYTE C4MapCreator::GetPix(int x, int y) {
   return MapBuf[MapBufWdt * y + x];
 }
 
-void C4MapCreator::Create(BYTE *bypBuffer, int iBufWdt, C4SLandscape &rLScape,
-                          C4TextureMap &rTexMap, BOOL fLayers, int iPlayerNum) {
+void C4MapCreator::Create(BYTE *bypBuffer, int iBufWdt, C4SLandscape &rLScape, C4TextureMap &rTexMap, BOOL fLayers, int iPlayerNum) {
   double pi = 3.1415926535;
   double fullperiod = 20.0 * pi;
   BYTE ccol;
@@ -111,12 +110,9 @@ void C4MapCreator::Create(BYTE *bypBuffer, int iBufWdt, C4SLandscape &rLScape,
       rnd_tend -= 0.01;
 
     cy_natural = rnd_cy * natural / 100.0;
-    cy_curve = sin(fullperiod * period / 100.0 * (float)cx / (float)MapWdt +
-                   2.0 * pi * phase / 100.0) *
-               amplitude / 100.0;
+    cy_curve = sin(fullperiod * period / 100.0 * (float)cx / (float)MapWdt + 2.0 * pi * phase / 100.0) * amplitude / 100.0;
 
-    cy = level0 + BoundBy((int)((float)maxrange * (cy_curve + cy_natural)),
-                          -maxrange, +maxrange);
+    cy = level0 + BoundBy((int)((float)maxrange * (cy_curve + cy_natural)), -maxrange, +maxrange);
 
     SetPix(cx, cy, ccol);
   }
@@ -161,8 +157,7 @@ void C4MapCreator::Create(BYTE *bypBuffer, int iBufWdt, C4SLandscape &rLScape,
         for (cnt = 0; cnt < layer_num; cnt++) {
           // Place layer
           sptx = Random(MapWdt);
-          for (spty = 0; (spty < MapHgt) && (GetPix(sptx, spty) != Exclusive);
-               spty++)
+          for (spty = 0; (spty < MapHgt) && (GetPix(sptx, spty) != Exclusive); spty++)
             ;
           spty += 5 + Random((MapHgt - spty) - 10);
 
@@ -174,9 +169,7 @@ void C4MapCreator::Create(BYTE *bypBuffer, int iBufWdt, C4SLandscape &rLScape,
   }
 }
 
-BOOL C4MapCreator::Load(BYTE **pbypBuffer, int &rBufWdt, int &rMapWdt,
-                        int &rMapHgt, C4Group &hGroup, const char *szEntryName,
-                        C4TextureMap &rTexMap) {
+BOOL C4MapCreator::Load(BYTE **pbypBuffer, int &rBufWdt, int &rMapWdt, int &rMapHgt, C4Group &hGroup, const char *szEntryName, C4TextureMap &rTexMap) {
   BOOL fOwnBuf = FALSE;
 
   CBitmap256Info Bmp;

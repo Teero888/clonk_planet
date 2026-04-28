@@ -130,8 +130,7 @@ void C4ObjectInfo::Draw(C4Facet &cgo, BOOL fShowPortrait, BOOL fCaptain) {
       C4Facet fctPortrait;
       fctPortrait.Set(Portrait);
       C4Facet ccgo;
-      ccgo.Set(cgo.Surface, cgo.X + iX, cgo.Y, 4 * cgo.Hgt / 3 + 10,
-               cgo.Hgt + 10);
+      ccgo.Set(cgo.Surface, cgo.X + iX, cgo.Y, 4 * cgo.Hgt / 3 + 10, cgo.Hgt + 10);
       fctPortrait.Draw(ccgo);
       iX += 4 * cgo.Hgt / 3;
     }
@@ -143,8 +142,7 @@ void C4ObjectInfo::Draw(C4Facet &cgo, BOOL fShowPortrait, BOOL fCaptain) {
   }
 
   // Rank symbol
-  Game.GraphicsResource.fctRank.Draw(cgo.Surface, cgo.X + iX, cgo.Y,
-                                     BoundBy(Rank, 0, 23), 0);
+  Game.GraphicsResource.fctRank.Draw(cgo.Surface, cgo.X + iX, cgo.Y, BoundBy(Rank, 0, 23), 0);
   iX += Game.GraphicsResource.fctRank.Wdt;
 
   // Rank & Name
@@ -152,8 +150,7 @@ void C4ObjectInfo::Draw(C4Facet &cgo, BOOL fShowPortrait, BOOL fCaptain) {
     sprintf(OSTR, "%s|%s", RankName, Name);
   else
     sprintf(OSTR, "%s", Name);
-  Engine.DDraw.TextOut(OSTR, cgo.Surface, cgo.X + iX, cgo.Y, FWhite, FBlack,
-                       ALeft);
+  Engine.DDraw.TextOut(OSTR, cgo.Surface, cgo.X + iX, cgo.Y, FWhite, FBlack, ALeft);
 
 #endif // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
        // - - - - -

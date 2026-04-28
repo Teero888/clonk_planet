@@ -45,8 +45,7 @@ char *GetExtension(const char *szFilename) {
   for (end = 0; szFilename[end]; end++)
     ;
   pos = end;
-  while ((pos > 0) && (szFilename[pos - 1] != '.') &&
-         (szFilename[pos - 1] != Backslash))
+  while ((pos > 0) && (szFilename[pos - 1] != '.') && (szFilename[pos - 1] != Backslash))
     pos--;
   if (pos > 0 && szFilename[pos - 1] == '.')
     return (char *)szFilename + pos;
@@ -201,9 +200,7 @@ BOOL EraseFile(const char *szFilename) {
   return (remove(szFilename) == 0);
 }
 
-BOOL EraseFiles(const char *szFilePath) {
-  return ForEachFile(szFilePath, _A_ALL_FILES, &EraseFile);
-}
+BOOL EraseFiles(const char *szFilePath) { return ForEachFile(szFilePath, _A_ALL_FILES, &EraseFile); }
 
 BOOL RenameFile(const char *szFilename, const char *szNewFileName) {
   if (rename(szFilename, szNewFileName) < 0)
@@ -262,8 +259,7 @@ BOOL CopyDirectory(const char *szSource, const char *szTarget) {
 
 BOOL EraseDirectory(const char *szDirName) {
   // Do not process system navigation directories
-  if (SEqual(GetFilename(szDirName), ".") ||
-      SEqual(GetFilename(szDirName), ".."))
+  if (SEqual(GetFilename(szDirName), ".") || SEqual(GetFilename(szDirName), ".."))
     return TRUE;
   // Get path to directory contents
   char szPath[_MAX_PATH + 1];
@@ -291,17 +287,11 @@ BOOL EraseDirectory(const char *szDirName) {
 //--------------------------------- Items
 //--------------------------------------------------------------------------------------------------------
 
-int ItemAttributes(const char *szItemName) {
-  return FileAttributes(szItemName);
-}
+int ItemAttributes(const char *szItemName) { return FileAttributes(szItemName); }
 
-BOOL ItemExists(const char *szItemName, int *lpAttr) {
-  return FileExists(szItemName, lpAttr);
-}
+BOOL ItemExists(const char *szItemName, int *lpAttr) { return FileExists(szItemName, lpAttr); }
 
-BOOL RenameItem(const char *szItemName, const char *szNewItemName) {
-  return RenameFile(szItemName, szNewItemName);
-}
+BOOL RenameItem(const char *szItemName, const char *szNewItemName) { return RenameFile(szItemName, szNewItemName); }
 
 BOOL EraseItem(const char *szItemName) {
   if (FileAttributes(szItemName) & _A_SUBDIR)
@@ -321,9 +311,7 @@ BOOL CreateItem(const char *szItemname) {
   return TRUE;
 }
 
-BOOL EraseItems(const char *szItemPath) {
-  return ForEachFile(szItemPath, _A_ALL, &EraseItem);
-}
+BOOL EraseItems(const char *szItemPath) { return ForEachFile(szItemPath, _A_ALL, &EraseItem); }
 
 BOOL CopyItem(const char *szSource, const char *szTarget) {
   // Check for identical source and target
@@ -358,8 +346,7 @@ BOOL ItemIdentical(const char *szFilename1, const char *szFilename2) {
 //------------------------- Multi File Processing
 //--------------------------------------------------------------------------------------------------------
 
-int ForEachFile(const char *szPath, int lAttrib,
-                BOOL (*fnCallback)(const char *)) {
+int ForEachFile(const char *szPath, int lAttrib, BOOL (*fnCallback)(const char *)) {
   char szFilename[_MAX_PATH + 1];
   int iFileCount = 0;
   struct _finddata_t fdt;
@@ -453,8 +440,7 @@ BOOL ReadFileLine(FILE *fhnd, char *tobuf, int maxlen) {
 
 // Reads remaining line contents following string *info to target buffer.
 
-BOOL ReadFileInfoLine(FILE *fhnd, char *info, char *tbuf, int maxlen,
-                      int wrap) {
+BOOL ReadFileInfoLine(FILE *fhnd, char *info, char *tbuf, int maxlen, int wrap) {
   tbuf[0] = 0;
   if (!LocateInFile(fhnd, info, wrap, 1))
     return 0;

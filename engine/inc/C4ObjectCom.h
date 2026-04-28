@@ -2,11 +2,9 @@
 
 /* Lots of handler functions for object action */
 
-void DrawCommandKey(C4Facet &cgo, int iCom, BOOL fPressed = FALSE,
-                    const char *szText = NULL);
+void DrawCommandKey(C4Facet &cgo, int iCom, BOOL fPressed = FALSE, const char *szText = NULL);
 
-void DrawControlKey(C4Facet &cgo, int iControl, BOOL fPressed = FALSE,
-                    const char *szText = NULL);
+void DrawControlKey(C4Facet &cgo, int iControl, BOOL fPressed = FALSE, const char *szText = NULL);
 
 int Control2Com(int iControl);
 int Com2Control(int iCom);
@@ -18,8 +16,7 @@ const char *PlrControlKeyName(int iPlayer, int iControl);
 
 const int ComOrderNum = 24;
 
-BOOL PlayerObjectCommand(int plr, int cmdf, C4Object *pTarget = NULL,
-                         int tx = 0, int ty = 0);
+BOOL PlayerObjectCommand(int plr, int cmdf, C4Object *pTarget = NULL, int tx = 0, int ty = 0);
 
 BOOL ObjectActionWalk(C4Object *cObj);
 BOOL ObjectActionStand(C4Object *cObj);
@@ -54,8 +51,7 @@ BOOL ObjectComChop(C4Object *cObj, C4Object *pTarget);
 BOOL ObjectComBuild(C4Object *cObj, C4Object *pTarget);
 BOOL ObjectComEnter(C4Object *cObj);
 BOOL ObjectComDownDouble(C4Object *cObj);
-BOOL ObjectComPutTake(C4Object *cObj, C4Object *pTarget,
-                      C4Object *pThing = NULL);
+BOOL ObjectComPutTake(C4Object *cObj, C4Object *pTarget, C4Object *pThing = NULL);
 BOOL ObjectComTake(C4Object *cObj, C4ID id);
 BOOL ObjectComPunch(C4Object *cObj, C4Object *pTarget, int iPunch = 0);
 BOOL ObjectComActivate(C4Object *cObj, C4ID id, C4Object *pThing = NULL);

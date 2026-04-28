@@ -15,9 +15,7 @@ void C4SVal::Set(int std, int rnd, int min, int max) {
   Max = max;
 }
 
-int C4SVal::Evaluate() {
-  return BoundBy(Std + Random(2 * Rnd + 1) - Rnd, Min, Max);
-}
+int C4SVal::Evaluate() { return BoundBy(Std + Random(2 * Rnd + 1) - Rnd, Min, Max); }
 
 void C4SVal::Default() { Set(); }
 
@@ -41,14 +39,11 @@ C4CompilerValue C4CR_Scenario[] = {
     {"NetworkReference", C4CV_Integer, offsC4S(Head.NetworkReference), 1},
     {"NetworkLobby", C4CV_Integer, offsC4S(Head.NetworkLobby), 1},
     {"NetworkHostName", C4CV_String, offsC4S(Head.NetworkHostName), C4MaxTitle},
-    {"NetworkHostAddress", C4CV_String, offsC4S(Head.NetworkHostAddress),
-     C4MaxTitle},
+    {"NetworkHostAddress", C4CV_String, offsC4S(Head.NetworkHostAddress), C4MaxTitle},
     {"NetworkFilename", C4CV_String, offsC4S(Head.NetworkFilename), C4MaxTitle},
     {"NetworkFileCreation", C4CV_Integer, offsC4S(Head.NetworkFileCreation), 1},
-    {"NetworkDeveloperMode", C4CV_Integer, offsC4S(Head.NetworkDeveloperMode),
-     1},
-    {"NetworkNoRuntimeJoin", C4CV_Integer, offsC4S(Head.NetworkNoRuntimeJoin),
-     1},
+    {"NetworkDeveloperMode", C4CV_Integer, offsC4S(Head.NetworkDeveloperMode), 1},
+    {"NetworkNoRuntimeJoin", C4CV_Integer, offsC4S(Head.NetworkNoRuntimeJoin), 1},
     {"NetworkClients", C4CV_NameList, offsC4S(Head.NetworkClients), 1},
 
     {"Definitions", C4CV_Section, 0, 0},
@@ -62,8 +57,7 @@ C4CompilerValue C4CR_Scenario[] = {
     {"Definition7", C4CV_String, offsC4S(Definitions.Definition[6]), _MAX_PATH},
     {"Definition8", C4CV_String, offsC4S(Definitions.Definition[7]), _MAX_PATH},
     {"Definition9", C4CV_String, offsC4S(Definitions.Definition[8]), _MAX_PATH},
-    {"Definition10", C4CV_String, offsC4S(Definitions.Definition[9]),
-     _MAX_PATH},
+    {"Definition10", C4CV_String, offsC4S(Definitions.Definition[9]), _MAX_PATH},
 
     {"Game", C4CV_Section, 0, 0},
     {"Mode", C4CV_Integer, offsC4S(Game.Mode), 1},
@@ -75,10 +69,8 @@ C4CompilerValue C4CR_Scenario[] = {
     {"ValueGain", C4CV_Integer, offsC4S(Game.ValueGain), 1},
     {"EnableRemoveFlag", C4CV_Integer, offsC4S(Game.EnableRemoveFlag), 1},
     {"EnableSurrender", C4CV_Integer, offsC4S(Game.EnableSurrender), 1},
-    {"StructNeedMaterial", C4CV_Integer,
-     offsC4S(Realism.ConstructionNeedsMaterial), 1},
-    {"StructNeedEnergy", C4CV_Integer, offsC4S(Realism.StructuresNeedEnergy),
-     1},
+    {"StructNeedMaterial", C4CV_Integer, offsC4S(Realism.ConstructionNeedsMaterial), 1},
+    {"StructNeedEnergy", C4CV_Integer, offsC4S(Realism.StructuresNeedEnergy), 1},
     {"Goals", C4CV_IdList, offsC4S(Game.Goals), 1},
     {"Rules", C4CV_IdList, offsC4S(Game.Rules), 1},
 
@@ -94,8 +86,7 @@ C4CompilerValue C4CR_Scenario[] = {
     {"Material", C4CV_IdList, offsC4S(PlrStart[0].ReadyMaterial), 1},
     {"Knowledge", C4CV_IdList, offsC4S(PlrStart[0].BuildKnowledge), 1},
     {"HomeBaseMaterial", C4CV_IdList, offsC4S(PlrStart[0].HomeBaseMaterial), 1},
-    {"HomeBaseProduction", C4CV_IdList, offsC4S(PlrStart[0].HomeBaseProduction),
-     1},
+    {"HomeBaseProduction", C4CV_IdList, offsC4S(PlrStart[0].HomeBaseProduction), 1},
     {"Magic", C4CV_IdList, offsC4S(PlrStart[0].Magic), 1},
 
     {"Player2", C4CV_Section, 0, 0},
@@ -110,8 +101,7 @@ C4CompilerValue C4CR_Scenario[] = {
     {"Material", C4CV_IdList, offsC4S(PlrStart[1].ReadyMaterial), 1},
     {"Knowledge", C4CV_IdList, offsC4S(PlrStart[1].BuildKnowledge), 1},
     {"HomeBaseMaterial", C4CV_IdList, offsC4S(PlrStart[1].HomeBaseMaterial), 1},
-    {"HomeBaseProduction", C4CV_IdList, offsC4S(PlrStart[1].HomeBaseProduction),
-     1},
+    {"HomeBaseProduction", C4CV_IdList, offsC4S(PlrStart[1].HomeBaseProduction), 1},
     {"Magic", C4CV_IdList, offsC4S(PlrStart[1].Magic), 1},
 
     {"Player3", C4CV_Section, 0, 0},
@@ -126,8 +116,7 @@ C4CompilerValue C4CR_Scenario[] = {
     {"Material", C4CV_IdList, offsC4S(PlrStart[2].ReadyMaterial), 1},
     {"Knowledge", C4CV_IdList, offsC4S(PlrStart[2].BuildKnowledge), 1},
     {"HomeBaseMaterial", C4CV_IdList, offsC4S(PlrStart[2].HomeBaseMaterial), 1},
-    {"HomeBaseProduction", C4CV_IdList, offsC4S(PlrStart[2].HomeBaseProduction),
-     1},
+    {"HomeBaseProduction", C4CV_IdList, offsC4S(PlrStart[2].HomeBaseProduction), 1},
     {"Magic", C4CV_IdList, offsC4S(PlrStart[2].Magic), 1},
 
     {"Player4", C4CV_Section, 0, 0},
@@ -142,8 +131,7 @@ C4CompilerValue C4CR_Scenario[] = {
     {"Material", C4CV_IdList, offsC4S(PlrStart[3].ReadyMaterial), 1},
     {"Knowledge", C4CV_IdList, offsC4S(PlrStart[3].BuildKnowledge), 1},
     {"HomeBaseMaterial", C4CV_IdList, offsC4S(PlrStart[3].HomeBaseMaterial), 1},
-    {"HomeBaseProduction", C4CV_IdList, offsC4S(PlrStart[3].HomeBaseProduction),
-     1},
+    {"HomeBaseProduction", C4CV_IdList, offsC4S(PlrStart[3].HomeBaseProduction), 1},
     {"Magic", C4CV_IdList, offsC4S(PlrStart[3].Magic), 1},
 
     {"Landscape", C4CV_Section, 0, 0},
@@ -387,8 +375,7 @@ BOOL C4Scenario::Decompile(char **ppOutput, int *ipSize) {
   C4Compiler Compiler;
   C4Scenario dC4S;
   *ppOutput = NULL;
-  return Compiler.DecompileStructure(C4CR_Scenario, this, &dC4S, ppOutput,
-                                     ipSize);
+  return Compiler.DecompileStructure(C4CR_Scenario, this, &dC4S, ppOutput, ipSize);
 }
 
 void C4Scenario::Clear() {}
@@ -436,8 +423,7 @@ BOOL C4SDefinitions::GetModules(char *sList) {
   return TRUE;
 }
 
-void C4SDefinitions::SetModules(const char *szList,
-                                const char *szRelativeToPath) {
+void C4SDefinitions::SetModules(const char *szList, const char *szRelativeToPath) {
   int cnt;
 
   // Empty list: local only
@@ -454,8 +440,7 @@ void C4SDefinitions::SetModules(const char *szList,
     SGetModule(szList, cnt, Definition[cnt], _MAX_PATH);
     // Make relative path
     if (szRelativeToPath)
-      if (SEqualNoCase(Definition[cnt], szRelativeToPath,
-                       SLen(szRelativeToPath)))
+      if (SEqualNoCase(Definition[cnt], szRelativeToPath, SLen(szRelativeToPath)))
         SCopy(Definition[cnt] + SLen(szRelativeToPath), Definition[cnt]);
   }
 }
@@ -566,6 +551,4 @@ void C4SGame::ClearOldGoals() {
   ValueGain = 0;
 }
 
-BOOL C4SGame::IsMelee() {
-  return (Goals.GetIDCount(C4Id("MELE")) || Goals.GetIDCount(C4Id("MEL2")));
-}
+BOOL C4SGame::IsMelee() { return (Goals.GetIDCount(C4Id("MELE")) || Goals.GetIDCount(C4Id("MEL2"))); }

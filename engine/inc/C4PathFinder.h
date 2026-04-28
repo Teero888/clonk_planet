@@ -37,8 +37,7 @@ protected:
   BOOL CrawlTargetFree(int iX, int iY, int iAttach, int iDirection);
   BOOL PointFree(int iX, int iY);
   BOOL Crawl();
-  BOOL PathFree(int &rX, int &rY, int iToX, int iToY,
-                C4TransferZone **ppZone = NULL);
+  BOOL PathFree(int &rX, int &rY, int iToX, int iToY, C4TransferZone **ppZone = NULL);
 };
 
 class C4PathFinder {
@@ -60,16 +59,12 @@ public:
   void Draw(C4FacetEx &cgo);
   void Clear();
   void Default();
-  void Init(BOOL (*fnPointFree)(int, int),
-            C4TransferZones *pTransferZones = NULL);
-  BOOL Find(int iFromX, int iFromY, int iToX, int iToY,
-            BOOL (*fnSetWaypoint)(int, int, int, int), int iWaypointParameter);
+  void Init(BOOL (*fnPointFree)(int, int), C4TransferZones *pTransferZones = NULL);
+  BOOL Find(int iFromX, int iFromY, int iToX, int iToY, BOOL (*fnSetWaypoint)(int, int, int, int), int iWaypointParameter);
 
 protected:
   void Run();
-  BOOL AddRay(int iFromX, int iFromY, int iToX, int iToY, int iDepth,
-              int iDirection, C4PathFinderRay *pFrom,
-              C4TransferZone *pUseZone = NULL);
+  BOOL AddRay(int iFromX, int iFromY, int iToX, int iToY, int iDepth, int iDirection, C4PathFinderRay *pFrom, C4TransferZone *pUseZone = NULL);
   BOOL SplitRay(C4PathFinderRay *pRay, int iAtX, int iAtY);
   BOOL Execute();
 };

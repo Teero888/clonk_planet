@@ -33,10 +33,7 @@ int Min(int val1, int val2) {
   return val2;
 }
 
-int Distance(int iX1, int iY1, int iX2, int iY2) {
-  return (int)sqrt(Abs(iX1 - iX2) * Abs(iX1 - iX2) +
-                   Abs(iY1 - iY2) * Abs(iY1 - iY2));
-}
+int Distance(int iX1, int iY1, int iX2, int iY2) { return (int)sqrt(Abs(iX1 - iX2) * Abs(iX1 - iX2) + Abs(iY1 - iY2) * Abs(iY1 - iY2)); }
 
 int Angle(int iX1, int iY1, int iX2, int iY2) {
   const double pi = 3.141592654;
@@ -59,22 +56,15 @@ void Toggle(BYTE &tbyte) { tbyte = !tbyte; }
 
 void Toggle(BOOL &rBool) { rBool = !rBool; }
 
-void FillMem(void *lpMem, DWORD dwSize, BYTE bValue) {
-  memset(lpMem, bValue, dwSize);
-}
+void FillMem(void *lpMem, DWORD dwSize, BYTE bValue) { memset(lpMem, bValue, dwSize); }
 
 void ZeroMem(void *lpMem, DWORD dwSize) { FillMem(lpMem, dwSize, 0); }
 
-bool MemEqual(void *lpMem1, void *lpMem2, DWORD dwSize) {
-  return !memcmp(lpMem1, lpMem2, dwSize);
-}
+bool MemEqual(void *lpMem1, void *lpMem2, DWORD dwSize) { return !memcmp(lpMem1, lpMem2, dwSize); }
 
-void MemCopy(void *lpMem1, void *lpMem2, DWORD dwSize) {
-  memmove(lpMem2, lpMem1, dwSize);
-}
+void MemCopy(void *lpMem1, void *lpMem2, DWORD dwSize) { memmove(lpMem2, lpMem1, dwSize); }
 
-bool PathMove(int &rX, int &rY, int iTargetX, int iTargetY, int iSteps,
-              int &rDelta) {
+bool PathMove(int &rX, int &rY, int iTargetX, int iTargetY, int iSteps, int &rDelta) {
   int iDeltaX, iDeltaY, aincr, bincr, iDirX, iDirY, x, y;
   // No steps
   if (iSteps <= 0)
@@ -139,8 +129,7 @@ bool PathMove(int &rX, int &rY, int iTargetX, int iTargetY, int iSteps,
   return false;
 }
 
-bool ForLine(int x1, int y1, int x2, int y2, BOOL (*fnCallback)(int, int, int),
-             int iPar, int *lastx, int *lasty) {
+bool ForLine(int x1, int y1, int x2, int y2, BOOL (*fnCallback)(int, int, int), int iPar, int *lastx, int *lasty) {
   int d, dx, dy, aincr, bincr, xincr, yincr, x, y;
   if (Abs(x2 - x1) < Abs(y2 - y1)) {
     if (y1 > y2) {
@@ -422,9 +411,7 @@ int SCharLastPos(char cTarget, const char *szInStr) {
   return lcpos;
 }
 
-void SAppend(const char *szSource, char *szTarget) {
-  SCopy(szSource, szTarget + SLen(szTarget));
-}
+void SAppend(const char *szSource, char *szTarget) { SCopy(szSource, szTarget + SLen(szTarget)); }
 
 void SAppendChar(char cChar, char *szStr) {
   if (!szStr)
@@ -436,8 +423,7 @@ void SAppendChar(char cChar, char *szStr) {
   *(cPos + 1) = 0;
 }
 
-bool SCopySegment(const char *szString, int iSegment, char *sTarget,
-                  char cSeparator, int iMaxL) {
+bool SCopySegment(const char *szString, int iSegment, char *sTarget, char cSeparator, int iMaxL) {
   // Advance to indexed segment
   while (iSegment > 0) {
     if (SCharPos(cSeparator, szString) == -1) {
@@ -452,11 +438,9 @@ bool SCopySegment(const char *szString, int iSegment, char *sTarget,
   return true;
 }
 
-bool SCopyNamedSegment(const char *szString, const char *szName, char *sTarget,
-                       char cSeparator, char cNameSeparator, int iMaxL) {
+bool SCopyNamedSegment(const char *szString, const char *szName, char *sTarget, char cSeparator, char cNameSeparator, int iMaxL) {
   // Advance to named segment
-  while (!(SEqual2(szString, szName) &&
-           (szString[SLen(szName)] == cNameSeparator))) {
+  while (!(SEqual2(szString, szName) && (szString[SLen(szName)] == cNameSeparator))) {
     if (SCharPos(cSeparator, szString) == -1) {
       sTarget[0] = 0;
       return false;
@@ -652,8 +636,7 @@ int SClearFrontBack(char *szString, char cClear) {
     ;
   if (cpos != szString)
     memmove(szString, cpos, strlen(cpos) + 1);
-  for (cpos = szString + SLen(szString) - 1;
-       (cpos > szString) && (*cpos == cClear); cpos--, cleared++)
+  for (cpos = szString + SLen(szString) - 1; (cpos > szString) && (*cpos == cClear); cpos--, cleared++)
     *cpos = 0x00;
   return cleared;
 }
@@ -692,8 +675,7 @@ void SRemoveComments(char *szScript) {
     // Line comment
     if (szScript[1] == '/') {
       if (pScriptCont = SSearch(szScript + 2, LineFeed))
-        memmove(szScript, pScriptCont - SLen(LineFeed),
-                strlen(pScriptCont - SLen(LineFeed)) + 1);
+        memmove(szScript, pScriptCont - SLen(LineFeed), strlen(pScriptCont - SLen(LineFeed)) + 1);
       else
         szScript[0] = 0;
     }
@@ -711,8 +693,7 @@ void SRemoveComments(char *szScript) {
   }
 }
 
-bool SCopyPrecedingIdentifier(const char *pBegin, const char *pIdentifier,
-                              char *sTarget, int iSize) {
+bool SCopyPrecedingIdentifier(const char *pBegin, const char *pIdentifier, char *sTarget, int iSize) {
   // Safety
   if (!pIdentifier || !sTarget || !pBegin)
     return false;
@@ -754,8 +735,7 @@ void SInsert(char *szString, const char *szInsert, int iPosition) {
   if (!szString || !szInsert || !szInsert[0])
     return;
   // Move up string remainder
-  MemCopy(szString + iPosition, szString + iPosition + SLen(szInsert),
-          SLen(szString + iPosition) + 1);
+  MemCopy(szString + iPosition, szString + iPosition + SLen(szInsert), SLen(szString + iPosition) + 1);
   // Copy insertion
   MemCopy((void *)szInsert, szString + iPosition, SLen(szInsert));
 }
@@ -765,12 +745,10 @@ void SDelete(char *szString, int iLen, int iPosition) {
   if (!szString)
     return;
   // Move down string remainder
-  MemCopy(szString + iPosition + iLen, szString + iPosition,
-          SLen(szString + iPosition + iLen) + 1);
+  MemCopy(szString + iPosition + iLen, szString + iPosition, SLen(szString + iPosition + iLen) + 1);
 }
 
-bool SCopyEnclosed(const char *szSource, char cOpen, char cClose, char *sTarget,
-                   int iSize) {
+bool SCopyEnclosed(const char *szSource, char cOpen, char cClose, char *sTarget, int iSize) {
   int iPos, iLen;
   if (!szSource || !sTarget)
     return false;
@@ -791,8 +769,7 @@ bool SGetModule(const char *szList, int iIndex, char *sTarget, int iSize) {
   return true;
 }
 
-bool SIsModule(const char *szList, const char *szString, int *ipIndex,
-               bool fCase) {
+bool SIsModule(const char *szList, const char *szString, int *ipIndex, bool fCase) {
   char szModule[1024 + 1];
   // Compare all modules
   for (int iMod = 0; SGetModule(szList, iMod, szModule, 1024); iMod++)
@@ -882,8 +859,7 @@ int SModuleCount(const char *szList) {
 
 void BufferBlit(BYTE *bypSource, int iSourcePitch,
                 int iSrcBufHgt, // Positive: Bottom up
-                int iSrcX, int iSrcY, int iSrcWdt, int iSrcHgt, BYTE *bypTarget,
-                int iTargetPitch,
+                int iSrcX, int iSrcY, int iSrcWdt, int iSrcHgt, BYTE *bypTarget, int iTargetPitch,
                 int iTrgBufHgt, // Positive: Bottom up
                 int iTrgX, int iTrgY, int iTrgWdt, int iTrgHgt) {
   if (!bypSource || !bypTarget)
@@ -902,15 +878,13 @@ void BufferBlit(BYTE *bypSource, int iSourcePitch,
     else
       tline = (iTrgY + ycnt) * iTargetPitch;
     for (xcnt = 0; xcnt < iTrgWdt; xcnt++)
-      bypTarget[tline + iTrgX + xcnt] =
-          bypSource[sline + iSrcX + iSrcWdt * xcnt / iTrgWdt];
+      bypTarget[tline + iTrgX + xcnt] = bypSource[sline + iSrcX + iSrcWdt * xcnt / iTrgWdt];
   }
 }
 
 void BufferBlitAspect(BYTE *bypSource, int iSourcePitch,
                       int iSrcBufHgt, // Positive: Bottom up
-                      int iSrcX, int iSrcY, int iSrcWdt, int iSrcHgt,
-                      BYTE *bypTarget, int iTargetPitch,
+                      int iSrcX, int iSrcY, int iSrcWdt, int iSrcHgt, BYTE *bypTarget, int iTargetPitch,
                       int iTrgBufHgt, // Positive: Bottom up
                       int iTrgX, int iTrgY, int iTrgWdt, int iTrgHgt) {
   int nhgt, nwdt;
@@ -927,15 +901,11 @@ void BufferBlitAspect(BYTE *bypSource, int iSourcePitch,
       iTrgX += (iTrgWdt - nwdt) / 2;
       iTrgWdt = nwdt;
     }
-  BufferBlit(bypSource, iSourcePitch, iSrcBufHgt, iSrcX, iSrcY, iSrcWdt,
-             iSrcHgt, bypTarget, iTargetPitch, iTrgBufHgt, iTrgX, iTrgY,
-             iTrgWdt, iTrgHgt);
+  BufferBlit(bypSource, iSourcePitch, iSrcBufHgt, iSrcX, iSrcY, iSrcWdt, iSrcHgt, bypTarget, iTargetPitch, iTrgBufHgt, iTrgX, iTrgY, iTrgWdt, iTrgHgt);
 }
 
-void StdBlit(BYTE *bypSource, int iSourcePitch, int iSrcBufHgt, int iSrcX,
-             int iSrcY, int iSrcWdt, int iSrcHgt, BYTE *bypTarget,
-             int iTargetPitch, int iTrgBufHgt, int iTrgX, int iTrgY,
-             int iTrgWdt, int iTrgHgt, int iBytesPerPixel, bool fFlip) {
+void StdBlit(BYTE *bypSource, int iSourcePitch, int iSrcBufHgt, int iSrcX, int iSrcY, int iSrcWdt, int iSrcHgt, BYTE *bypTarget, int iTargetPitch, int iTrgBufHgt, int iTrgX, int iTrgY, int iTrgWdt,
+             int iTrgHgt, int iBytesPerPixel, bool fFlip) {
   if (!bypSource || !bypTarget)
     return;
   if (!iTrgWdt || !iTrgHgt)
@@ -954,18 +924,11 @@ void StdBlit(BYTE *bypSource, int iSourcePitch, int iSrcBufHgt, int iSrcX,
     if (!fFlip) {
       for (xcnt = 0; xcnt < iTrgWdt; xcnt++)
         for (zcnt = 0; zcnt < iBytesPerPixel; zcnt++)
-          bypTarget[tline + (iTrgX + xcnt) * iBytesPerPixel + zcnt] =
-              bypSource[sline +
-                        (iSrcX + iSrcWdt * xcnt / iTrgWdt) * iBytesPerPixel +
-                        zcnt];
+          bypTarget[tline + (iTrgX + xcnt) * iBytesPerPixel + zcnt] = bypSource[sline + (iSrcX + iSrcWdt * xcnt / iTrgWdt) * iBytesPerPixel + zcnt];
     } else {
       for (xcnt = 0; xcnt < iTrgWdt; xcnt++)
         for (zcnt = 0; zcnt < iBytesPerPixel; zcnt++)
-          bypTarget[tline + (iTrgX + iTrgWdt - 1 - xcnt) * iBytesPerPixel +
-                    zcnt] =
-              bypSource[sline +
-                        (iSrcX + iSrcWdt * xcnt / iTrgWdt) * iBytesPerPixel +
-                        zcnt];
+          bypTarget[tline + (iTrgX + iTrgWdt - 1 - xcnt) * iBytesPerPixel + zcnt] = bypSource[sline + (iSrcX + iSrcWdt * xcnt / iTrgWdt) * iBytesPerPixel + zcnt];
     }
   }
 }

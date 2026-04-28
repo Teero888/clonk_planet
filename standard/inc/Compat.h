@@ -176,14 +176,8 @@ typedef struct tagBITMAPINFO {
 } BITMAPINFO, *PBITMAPINFO, *LPBITMAPINFO;
 
 // Functions
-inline BOOL PeekMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin,
-                        UINT wMsgFilterMax, UINT wRemoveMsg) {
-  return FALSE;
-}
-inline BOOL GetMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin,
-                       UINT wMsgFilterMax) {
-  return TRUE;
-}
+inline BOOL PeekMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg) { return FALSE; }
+inline BOOL GetMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax) { return TRUE; }
 inline BOOL TranslateMessage(const MSG *lpMsg) { return FALSE; }
 inline LRESULT DispatchMessage(const MSG *lpMsg) { return 0; }
 inline BOOL IsDialogMessage(HWND hWnd, LPMSG lpMsg) { return FALSE; }
@@ -203,9 +197,7 @@ inline BOOL GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize) {
   }
   return FALSE;
 }
-inline BOOL SetCurrentDirectory(LPCSTR lpPathName) {
-  return chdir(lpPathName) == 0;
-}
+inline BOOL SetCurrentDirectory(LPCSTR lpPathName) { return chdir(lpPathName) == 0; }
 inline DWORD GetTempPath(DWORD nBufferLength, LPSTR lpBuffer) {
   const char *tmp = getenv("TMPDIR");
   if (!tmp)
@@ -215,9 +207,7 @@ inline DWORD GetTempPath(DWORD nBufferLength, LPSTR lpBuffer) {
 }
 #include <sys/stat.h>
 
-inline BOOL CreateDirectory(LPCSTR lpPathName, void *lpSecurityAttributes) {
-  return mkdir(lpPathName, 0755) == 0;
-}
+inline BOOL CreateDirectory(LPCSTR lpPathName, void *lpSecurityAttributes) { return mkdir(lpPathName, 0755) == 0; }
 
 // UI Stubs
 #define VK_F1 0x70
@@ -290,15 +280,10 @@ inline BOOL CreateDirectory(LPCSTR lpPathName, void *lpSecurityAttributes) {
 #define MM_MCINOTIFY 0x3B9
 #define MCI_NOTIFY_SUCCESSFUL 1
 
-inline LRESULT DefWindowProc(HWND hWnd, UINT Msg, WPARAM wParam,
-                             LPARAM lParam) {
-  return 0;
-}
+inline LRESULT DefWindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) { return 0; }
 inline BOOL DestroyWindow(HWND hWnd) { return FALSE; }
-inline HWND CreateWindowEx(DWORD dwExStyle, LPCSTR lpClassName,
-                           LPCSTR lpWindowName, DWORD dwStyle, int X, int Y,
-                           int nWidth, int nHeight, HWND hWndParent,
-                           HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam) {
+inline HWND CreateWindowEx(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance,
+                           LPVOID lpParam) {
   return (HWND)1;
 }
 inline BOOL ShowWindow(HWND hWnd, int nCmdShow) { return TRUE; }
@@ -306,9 +291,7 @@ inline HWND SetFocus(HWND hWnd) { return hWnd; }
 inline int ShowCursor(BOOL bShow) { return 0; }
 inline WORD RegisterClassEx(const void *lpwcx) { return 1; }
 inline HICON LoadIcon(HINSTANCE hInstance, LPCSTR lpIconName) { return 0; }
-inline HCURSOR LoadCursor(HINSTANCE hInstance, LPCSTR lpCursorName) {
-  return 0;
-}
+inline HCURSOR LoadCursor(HINSTANCE hInstance, LPCSTR lpCursorName) { return 0; }
 
 typedef struct tagWNDCLASSEX {
   UINT cbSize;
@@ -336,37 +319,19 @@ typedef struct tagWNDCLASSEX {
 #define MAKEINTRESOURCE(i) ((LPCSTR)((DWORD)((WORD)(i))))
 
 #define STILL_ACTIVE 259
-inline BOOL GetExitCodeThread(HANDLE hThread, LPDWORD lpExitCode) {
-  return FALSE;
-}
+inline BOOL GetExitCodeThread(HANDLE hThread, LPDWORD lpExitCode) { return FALSE; }
 inline void Sleep(DWORD dwMilliseconds) { usleep(dwMilliseconds * 1000); }
 inline BOOL TerminateThread(HANDLE hThread, DWORD dwExitCode) { return FALSE; }
-inline HANDLE CreateThread(void *lpThreadAttributes, DWORD dwStackSize,
-                           DWORD(WINAPI *lpStartAddress)(void *),
-                           void *lpParameter, DWORD dwCreationFlags,
-                           LPDWORD lpThreadId) {
-  return 0;
-}
+inline HANDLE CreateThread(void *lpThreadAttributes, DWORD dwStackSize, DWORD(WINAPI *lpStartAddress)(void *), void *lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId) { return 0; }
 
-inline BOOL PostMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
-  return FALSE;
-}
-inline LRESULT SendMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
-  return 0;
-}
+inline BOOL PostMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) { return FALSE; }
+inline LRESULT SendMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) { return 0; }
 
 inline BOOL DeleteObject(HGDIOBJ ho) { return FALSE; }
 inline HDC GetDC(HWND hWnd) { return 0; }
 inline int ReleaseDC(HWND hWnd, HDC hDC) { return 0; }
-inline HBITMAP CreateDIBitmap(HDC hdc, const void *lpbmih, DWORD fdwInit,
-                              const void *lpbInit, const void *lpbmi,
-                              UINT fuUsage) {
-  return 0;
-}
-inline HICON CreateIconFromResource(PBYTE presbits, DWORD dwResSize, BOOL fIcon,
-                                    DWORD dwVer) {
-  return 0;
-}
+inline HBITMAP CreateDIBitmap(HDC hdc, const void *lpbmih, DWORD fdwInit, const void *lpbInit, const void *lpbmi, UINT fuUsage) { return 0; }
+inline HICON CreateIconFromResource(PBYTE presbits, DWORD dwResSize, BOOL fIcon, DWORD dwVer) { return 0; }
 inline DWORD GetLastError() { return 0; }
 
 typedef struct utimbuf _utimbuf;
@@ -380,36 +345,23 @@ typedef struct hostent HOSTENT;
 inline short GetKeyState(int nVirtKey) { return 0; }
 
 inline HGDIOBJ SelectObject(HDC hdc, HGDIOBJ h) { return 0; }
-inline BOOL GetTextExtentPoint32(HDC hdc, LPCSTR lpString, int cbString,
-                                 LPSIZE lpSize) {
-  return FALSE;
-}
+inline BOOL GetTextExtentPoint32(HDC hdc, LPCSTR lpString, int cbString, LPSIZE lpSize) { return FALSE; }
 #define TA_LEFT 0
 inline UINT SetTextAlign(HDC hdc, UINT align) { return 0; }
 #define TRANSPARENT 1
 inline int SetBkMode(HDC hdc, int mode) { return 0; }
-#define RGB(r, g, b)                                                           \
-  ((DWORD)(((BYTE)(r) | ((WORD)((BYTE)(g)) << 8)) | (((DWORD)(BYTE)(b)) << 16)))
+#define RGB(r, g, b) ((DWORD)(((BYTE)(r) | ((WORD)((BYTE)(g)) << 8)) | (((DWORD)(BYTE)(b)) << 16)))
 inline COLORREF SetTextColor(HDC hdc, COLORREF color) { return 0; }
 #define ETO_CLIPPED 0x0004
-inline BOOL ExtTextOut(HDC hdc, int x, int y, UINT options, const RECT *lprc,
-                       LPCSTR lpString, UINT c, const int *lpDx) {
-  return FALSE;
-}
+inline BOOL ExtTextOut(HDC hdc, int x, int y, UINT options, const RECT *lprc, LPCSTR lpString, UINT c, const int *lpDx) { return FALSE; }
 inline int SaveDC(HDC hdc) { return 0; }
 inline BOOL RestoreDC(HDC hdc, int nSavedDC) { return 0; }
 #define GM_ADVANCED 2
 inline int SetGraphicsMode(HDC hdc, int iMode) { return 0; }
 #define MWT_IDENTITY 1
-inline BOOL ModifyWorldTransform(HDC hdc, const void *lpxf, DWORD mode) {
-  return FALSE;
-}
-inline BOOL SetViewportOrgEx(HDC hdc, int x, int y, LPPOINT lppt) {
-  return FALSE;
-}
-inline BOOL SetWindowOrgEx(HDC hdc, int x, int y, LPPOINT lppt) {
-  return FALSE;
-}
+inline BOOL ModifyWorldTransform(HDC hdc, const void *lpxf, DWORD mode) { return FALSE; }
+inline BOOL SetViewportOrgEx(HDC hdc, int x, int y, LPPOINT lppt) { return FALSE; }
+inline BOOL SetWindowOrgEx(HDC hdc, int x, int y, LPPOINT lppt) { return FALSE; }
 typedef struct tagLOGFONT {
   LONG lfHeight;
   LONG lfWidth;
@@ -428,14 +380,8 @@ typedef struct tagLOGFONT {
 } LOGFONT;
 inline HFONT CreateFontIndirect(const LOGFONT *lplf) { return 0; }
 
-inline BOOL CopyFile(const char *lpExistingFileName, const char *lpNewFileName,
-                     BOOL bFailIfExists) {
-  return FALSE;
-}
-inline int LoadString(HINSTANCE hInstance, UINT uID, LPSTR lpBuffer,
-                      int nBufferMax) {
-  return 0;
-}
+inline BOOL CopyFile(const char *lpExistingFileName, const char *lpNewFileName, BOOL bFailIfExists) { return FALSE; }
+inline int LoadString(HINSTANCE hInstance, UINT uID, LPSTR lpBuffer, int nBufferMax) { return 0; }
 
 // Dummy function to match some windows calls
 #define GetUserDefaultLangID() 0x0409

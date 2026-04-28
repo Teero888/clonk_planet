@@ -24,8 +24,7 @@ public:
   ~CStdConfig();
 
 protected:
-  void LoadDefault(CStdConfigValue *pCfgMap, void *vpData,
-                   const char *szOnlySection = NULL);
+  void LoadDefault(CStdConfigValue *pCfgMap, void *vpData, const char *szOnlySection = NULL);
   BOOL Save(CStdConfigValue *pCfgMap, void *vpData);
   BOOL Load(CStdConfigValue *pCfgMap, void *vpData);
 };

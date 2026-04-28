@@ -73,31 +73,30 @@
 
 //================================= File Load Sequences ================================================
 
-#define C4FLS_Scenario                                                         \
-  "Loader*.bmp|Scenario.txt|Title.txt|Info.txt|Script*.c|Names.txt|Game.txt|"  \
-  "Control.c4q|Music.c4g|*.mid|*.wav|Desc*.rtf|Title.bmp|*.c4d|Material.c4g|"  \
-  "MatMap.txt|Landscape.bmp|Sky.bmp|PXS.c4b|MassMover.c4b|Objects.txt|Icon."   \
+#define C4FLS_Scenario                                                                                                                                                                                 \
+  "Loader*.bmp|Scenario.txt|Title.txt|Info.txt|Script*.c|Names.txt|Game.txt|"                                                                                                                          \
+  "Control.c4q|Music.c4g|*.mid|*.wav|Desc*.rtf|Title.bmp|*.c4d|Material.c4g|"                                                                                                                          \
+  "MatMap.txt|Landscape.bmp|Sky.bmp|PXS.c4b|MassMover.c4b|Objects.txt|Icon."                                                                                                                           \
   "bmp|Author.txt"
-#define C4FLS_Def                                                              \
-  "DefCore.txt|Graphics.bmp|ActMap.txt|C4Script.c|Script*.c|Names.txt|Title."  \
+#define C4FLS_Def                                                                                                                                                                                      \
+  "DefCore.txt|Graphics.bmp|ActMap.txt|C4Script.c|Script*.c|Names.txt|Title."                                                                                                                          \
   "txt|Desc*.txt|Title.bmp|Icon.bmp|Author.txt|*.wav|*.c4d"
 #define C4FLS_Player "Player.txt|Portrait.bmp|*.c4i"
 #define C4FLS_Object "ObjectInfo.txt|Portrait.bmp"
-#define C4FLS_Folder                                                           \
-  "Loader*.bmp|*.txt|*.rtf|Title.bmp|Icon.bmp|Author.txt|*.c4s"
+#define C4FLS_Folder "Loader*.bmp|*.txt|*.rtf|Title.bmp|Icon.bmp|Author.txt|*.c4s"
 #define C4FLS_Material "TexMap.txt|*.bmp|*.c4m"
-#define C4FLS_Graphics                                                         \
-  "Portrait*.bmp|Loader*.bmp|Resource.bmp|Control.bmp|Fire.bmp|Background."    \
-  "bmp|Flag.bmp|Crew.bmp|Player.bmp|Rank.bmp|Entry.bmp|Captain.bmp|Cursor."    \
+#define C4FLS_Graphics                                                                                                                                                                                 \
+  "Portrait*.bmp|Loader*.bmp|Resource.bmp|Control.bmp|Fire.bmp|Background."                                                                                                                            \
+  "bmp|Flag.bmp|Crew.bmp|Player.bmp|Rank.bmp|Entry.bmp|Captain.bmp|Cursor."                                                                                                                            \
   "bmp|SelectMark.bmp|MenuSymbol.bmp|Menu.bmp|FogOfWar.bmp|*.pal"
 #define C4FLS_Objects "Names.txt|Desc*.txt|*.c4d"
-#define C4FLS_Mouse                                                            \
-  "*.txt|*.rtf|Title.bmp|Icon.bmp|Tutorial01.c4s|Tutorial02.c4s|Tutorial03."   \
+#define C4FLS_Mouse                                                                                                                                                                                    \
+  "*.txt|*.rtf|Title.bmp|Icon.bmp|Tutorial01.c4s|Tutorial02.c4s|Tutorial03."                                                                                                                           \
   "c4s|Objects.c4d"
-#define C4FLS_Keyboard                                                         \
-  "*.txt|*.rtf|Title.bmp|Icon.bmp|Tutorial01.c4s|Tutorial02.c4s|Tutorial03."   \
-  "c4s|Tutorial04.c4s|Tutorial05.c4s|Tutorial06.c4s|Tutorial07.c4s|"           \
+#define C4FLS_Keyboard                                                                                                                                                                                 \
+  "*.txt|*.rtf|Title.bmp|Icon.bmp|Tutorial01.c4s|Tutorial02.c4s|Tutorial03."                                                                                                                           \
+  "c4s|Tutorial04.c4s|Tutorial05.c4s|Tutorial06.c4s|Tutorial07.c4s|"                                                                                                                                   \
   "Tutorial08.c4s|Tutorial09.c4s|Tutorial10.c4s"
-#define C4FLS_Easy                                                             \
-  "*.txt|*.rtf|Title.bmp|Icon.bmp|Goldmine.c4s|Monsterkill.c4s|Economy.c4s|"   \
+#define C4FLS_Easy                                                                                                                                                                                     \
+  "*.txt|*.rtf|Title.bmp|Icon.bmp|Goldmine.c4s|Monsterkill.c4s|Economy.c4s|"                                                                                                                           \
   "Melee.c4s|Lake.c4s|Castle.c4s"

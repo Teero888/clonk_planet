@@ -14,9 +14,7 @@ BOOL C4MusicSystem::Init() {
   if (Game.ScenarioFile.FindEntry(C4CFN_Music)) {
     if (!MusicFile.OpenAsChild(&Game.ScenarioFile, C4CFN_Music))
       return FALSE;
-    sprintf(OSTR, LoadResStr(IDS_PRC_LOCALMUSIC),
-            GetFilename(Game.ScenarioFile.GetName()),
-            GetFilename(MusicFile.GetName()));
+    sprintf(OSTR, LoadResStr(IDS_PRC_LOCALMUSIC), GetFilename(Game.ScenarioFile.GetName()), GetFilename(MusicFile.GetName()));
     Log(OSTR);
     pMusicFile = &MusicFile;
     return TRUE;

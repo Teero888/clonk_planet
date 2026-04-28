@@ -140,10 +140,8 @@ C4CompilerValue C4CR_ActMap[] = {
 
 const int C4D_MaxDFA = 18;
 
-const char *ProcedureName[C4D_MaxDFA] = {
-    "WALK", "FLIGHT", "KNEEL",  "SCALE", "HANGLE",  "DIG",
-    "SWIM", "THROW",  "BRIDGE", "BUILD", "PUSH",    "CHOP",
-    "LIFT", "FLOAT",  "ATTACH", "FIGHT", "CONNECT", "PULL"};
+const char *ProcedureName[C4D_MaxDFA] = {"WALK",  "FLIGHT", "KNEEL", "SCALE", "HANGLE", "DIG",    "SWIM",  "THROW",   "BRIDGE",
+                                         "BUILD", "PUSH",   "CHOP",  "LIFT",  "FLOAT",  "ATTACH", "FIGHT", "CONNECT", "PULL"};
 
 //-------------------------------- C4ActionDef
 //--------------------------------------------
@@ -274,8 +272,7 @@ BOOL C4DefCore::Decompile(char **ppOutput, int *ipSize) {
   C4Compiler Compiler;
   C4DefCore dC4D;
   *ppOutput = NULL;
-  return Compiler.DecompileStructure(C4CR_DefCore, this, &dC4D, ppOutput,
-                                     ipSize);
+  return Compiler.DecompileStructure(C4CR_DefCore, this, &dC4D, ppOutput, ipSize);
 }
 
 //-------------------------------- C4Def
@@ -334,8 +331,7 @@ void C4Def::Clear() {
   Desc = NULL;
 }
 
-BOOL C4Def::Load(C4Group &hGroup, DWORD dwLoadWhat, const char *szLanguage,
-                 C4SoundSystem *pSoundSystem) {
+BOOL C4Def::Load(C4Group &hGroup, DWORD dwLoadWhat, const char *szLanguage, C4SoundSystem *pSoundSystem) {
   int binlen;
   char element_name[30 + 1];
 
@@ -370,25 +366,20 @@ BOOL C4Def::Load(C4Group &hGroup, DWORD dwLoadWhat, const char *szLanguage,
 #ifdef C4ENGINE
   // Read surface bitmap
   if (dwLoadWhat & C4D_Load_Bitmap)
-    if (!hGroup.AccessEntry(C4CFN_DefGraphics) ||
-        !(Bitmap[0] = GroupReadSurface(hGroup)))
+    if (!hGroup.AccessEntry(C4CFN_DefGraphics) || !(Bitmap[0] = GroupReadSurface(hGroup)))
       return FALSE;
 #endif
 
   // Read picture section
   if (dwLoadWhat & C4D_Load_Picture)
     // Load picture section
-    if (!hGroup.AccessEntry(C4CFN_DefGraphics) ||
-        !hGroup.ReadDDBSection(&Picture, NULL, PictureRect.x, PictureRect.y,
-                               PictureRect.Wdt, PictureRect.Hgt))
+    if (!hGroup.AccessEntry(C4CFN_DefGraphics) || !hGroup.ReadDDBSection(&Picture, NULL, PictureRect.x, PictureRect.y, PictureRect.Wdt, PictureRect.Hgt))
       return FALSE;
 
   // Read image picture section
   if (dwLoadWhat & C4D_Load_Image)
     // Load image picture section
-    if (!hGroup.AccessEntry(C4CFN_DefGraphics) ||
-        !hGroup.ReadDDBSection(&Image, NULL, PictureRect.x, PictureRect.y,
-                               PictureRect.Wdt, PictureRect.Hgt, 32, 32, TRUE))
+    if (!hGroup.AccessEntry(C4CFN_DefGraphics) || !hGroup.ReadDDBSection(&Image, NULL, PictureRect.x, PictureRect.y, PictureRect.Wdt, PictureRect.Hgt, 32, 32, TRUE))
       return FALSE;
 
   // Read ActMap
@@ -474,9 +465,7 @@ BOOL C4Def::LoadActMap(C4Group &hGroup) {
   // New format
   BYTE *pSource;
   if (hGroup.LoadEntry(C4CFN_DefActMap, &pSource, NULL, 1)) {
-    if (!(actnum = SCharCount('[', (char *)pSource)) ||
-        !(ActMap = new C4ActionDef[actnum]) ||
-        !CompileActMap((char *)pSource, ActMap, actnum)) {
+    if (!(actnum = SCharCount('[', (char *)pSource)) || !(ActMap = new C4ActionDef[actnum]) || !CompileActMap((char *)pSource, ActMap, actnum)) {
       delete[] pSource;
       return FALSE;
     }
@@ -529,9 +518,7 @@ BOOL C4Def::ColorizeByMaterial(C4MaterialMap &rMats, BYTE bGBM) {
   if (mat == MNone)
     return FALSE;
   // printf("    Colorizing by material %d: %s\n", mat, ColorByMaterial);
-  Engine.DDraw.SurfaceAllowColor(
-      Bitmap[0], bGBM + C4M_ColsPerMat * mat,
-      bGBM + C4M_ColsPerMat * mat + C4M_ColsPerMat - 1, TRUE);
+  Engine.DDraw.SurfaceAllowColor(Bitmap[0], bGBM + C4M_ColsPerMat * mat, bGBM + C4M_ColsPerMat * mat + C4M_ColsPerMat - 1, TRUE);
 #endif // - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   return TRUE;
@@ -544,34 +531,29 @@ void C4Def::Draw(C4Facet &cgo, BOOL fSelected, int iColor) {
     return;
 
   C4Facet fctPicture;
-  fctPicture.Set(Bitmap[iColor], PictureRect.x, PictureRect.y, PictureRect.Wdt,
-                 PictureRect.Hgt);
+  fctPicture.Set(Bitmap[iColor], PictureRect.x, PictureRect.y, PictureRect.Wdt, PictureRect.Hgt);
 
   if (fSelected)
-    Engine.DDraw.DrawBox(cgo.Surface, cgo.X, cgo.Y, cgo.X + cgo.Wdt - 1,
-                         cgo.Y + cgo.Hgt - 1, CRed);
+    Engine.DDraw.DrawBox(cgo.Surface, cgo.X, cgo.Y, cgo.X + cgo.Wdt - 1, cgo.Y + cgo.Hgt - 1, CRed);
 
   fctPicture.Draw(cgo);
 
 #endif // - - - - - - - - - - - - - - - - - - - - - - - - - - -
 }
 
-BOOL C4Def::DecompileActMap(C4ActionDef *pC4A, int iActNum, char **ppOutput,
-                            int *ipSize) {
+BOOL C4Def::DecompileActMap(C4ActionDef *pC4A, int iActNum, char **ppOutput, int *ipSize) {
   C4Compiler Compiler;
   C4ActionDef dC4A;
   *ppOutput = new char[10000];
   *ppOutput[0] = 0;
   for (int cnt = 0; cnt < iActNum; cnt++)
-    Compiler.DecompileStructure(C4CR_ActMap, &(pC4A[cnt]), &dC4A, ppOutput,
-                                ipSize);
+    Compiler.DecompileStructure(C4CR_ActMap, &(pC4A[cnt]), &dC4A, ppOutput, ipSize);
   SAppend(EndOfFile, *ppOutput);
   *ipSize = SLen(*ppOutput);
   return TRUE;
 }
 
-BOOL C4Def::CompileActMap(const char *szSource, C4ActionDef *pC4A,
-                          int iActNum) {
+BOOL C4Def::CompileActMap(const char *szSource, C4ActionDef *pC4A, int iActNum) {
   C4Compiler Compiler;
   char actbuf[1000 + 2];
   for (int cnt = 0; cnt < iActNum; cnt++) {
@@ -602,9 +584,7 @@ C4DefList::C4DefList() { Default(); }
 
 C4DefList::~C4DefList() { Clear(); }
 
-int C4DefList::Load(C4Group &hGroup, DWORD dwLoadWhat, const char *szLanguage,
-                    C4SoundSystem *pSoundSystem, BOOL fOverload,
-                    BOOL fSearchMessage) {
+int C4DefList::Load(C4Group &hGroup, DWORD dwLoadWhat, const char *szLanguage, C4SoundSystem *pSoundSystem, BOOL fOverload, BOOL fSearchMessage) {
   int iResult = 0;
   C4Def *nDef;
   char szEntryname[_MAX_FNAME + 1];
@@ -614,9 +594,7 @@ int C4DefList::Load(C4Group &hGroup, DWORD dwLoadWhat, const char *szLanguage,
 
   // This search message
   if (fSearchMessage)
-    if (SEqualNoCase(GetExtension(hGroup.GetName()), "c4d") ||
-        SEqualNoCase(GetExtension(hGroup.GetName()), "c4s") ||
-        SEqualNoCase(GetExtension(hGroup.GetName()), "c4f")) {
+    if (SEqualNoCase(GetExtension(hGroup.GetName()), "c4d") || SEqualNoCase(GetExtension(hGroup.GetName()), "c4s") || SEqualNoCase(GetExtension(hGroup.GetName()), "c4f")) {
       fThisSearchMessage = TRUE;
       fSearchMessage = FALSE;
     }
@@ -632,8 +610,7 @@ int C4DefList::Load(C4Group &hGroup, DWORD dwLoadWhat, const char *szLanguage,
 
   // Load primary definition
   if (nDef = new C4Def)
-    if (nDef->Load(hGroup, dwLoadWhat, szLanguage, pSoundSystem) &&
-        Add(nDef, fOverload)) {
+    if (nDef->Load(hGroup, dwLoadWhat, szLanguage, pSoundSystem) && Add(nDef, fOverload)) {
       iResult++;
       fPrimaryDef = TRUE;
     } else {
@@ -644,8 +621,7 @@ int C4DefList::Load(C4Group &hGroup, DWORD dwLoadWhat, const char *szLanguage,
   hGroup.ResetSearch();
   while (hGroup.FindNextEntry(C4CFN_DefFiles, szEntryname)) {
     if (hChild.OpenAsChild(&hGroup, szEntryname)) {
-      iResult += Load(hChild, dwLoadWhat, szLanguage, pSoundSystem, fOverload,
-                      fSearchMessage);
+      iResult += Load(hChild, dwLoadWhat, szLanguage, pSoundSystem, fOverload, fSearchMessage);
       hChild.Close();
     }
   }
@@ -661,10 +637,7 @@ int C4DefList::Load(C4Group &hGroup, DWORD dwLoadWhat, const char *szLanguage,
   return iResult;
 }
 
-int C4DefList::LoadFolderLocal(const char *szPath, DWORD dwLoadWhat,
-                               const char *szLanguage,
-                               C4SoundSystem *pSoundSystem, BOOL fOverload,
-                               char *sStoreName) {
+int C4DefList::LoadFolderLocal(const char *szPath, DWORD dwLoadWhat, const char *szLanguage, C4SoundSystem *pSoundSystem, BOOL fOverload, char *sStoreName) {
   int iResult = 0;
 
   // Scan path for folder names
@@ -674,8 +647,7 @@ int C4DefList::LoadFolderLocal(const char *szPath, DWORD dwLoadWhat,
     SCopy(szPath, szFoldername, iBackslash);
     // Load from parent folder
     if (SEqualNoCase(GetExtension(szFoldername), "c4f"))
-      if (iDefs = Load(szFoldername, dwLoadWhat, szLanguage, pSoundSystem,
-                       fOverload)) {
+      if (iDefs = Load(szFoldername, dwLoadWhat, szLanguage, pSoundSystem, fOverload)) {
         iResult += iDefs;
         // Add any folder containing defs to store list
         if (sStoreName) {
@@ -694,9 +666,7 @@ extern BOOL C4EngineLoadProcess(const char *szMessage, int iProcess);
 #endif // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
        // - - - - - - - - - - - - - -
 
-int C4DefList::Load(const char *szSearch, DWORD dwLoadWhat,
-                    const char *szLanguage, C4SoundSystem *pSoundSystem,
-                    BOOL fOverload) {
+int C4DefList::Load(const char *szSearch, DWORD dwLoadWhat, const char *szLanguage, C4SoundSystem *pSoundSystem, BOOL fOverload) {
   int iResult = 0;
 
   // Empty
@@ -706,10 +676,8 @@ int C4DefList::Load(const char *szSearch, DWORD dwLoadWhat,
   // Segments
   char szSegment[_MAX_PATH + 1];
   if (SCharCount(';', szSearch)) {
-    for (int cseg = 0; SCopySegment(szSearch, cseg, szSegment, ';', _MAX_PATH);
-         cseg++)
-      iResult +=
-          Load(szSegment, dwLoadWhat, szLanguage, pSoundSystem, fOverload);
+    for (int cseg = 0; SCopySegment(szSearch, cseg, szSegment, ';', _MAX_PATH); cseg++)
+      iResult += Load(szSegment, dwLoadWhat, szLanguage, pSoundSystem, fOverload);
     return iResult;
   }
 
@@ -719,8 +687,7 @@ int C4DefList::Load(const char *szSearch, DWORD dwLoadWhat,
     intptr_t fdthnd;
     if ((fdthnd = _findfirst(szSearch, &fdt)) >= 0) {
       do {
-        iResult +=
-            Load(fdt.name, dwLoadWhat, szLanguage, pSoundSystem, fOverload);
+        iResult += Load(fdt.name, dwLoadWhat, szLanguage, pSoundSystem, fOverload);
       } while (_findnext(fdthnd, &fdt) == 0);
       _findclose(fdthnd);
     }
@@ -753,8 +720,7 @@ int C4DefList::Load(const char *szSearch, DWORD dwLoadWhat,
     LoadFailure = TRUE;
     return iResult;
   }
-  iResult +=
-      Load(hGroup, dwLoadWhat, szLanguage, pSoundSystem, fOverload, TRUE);
+  iResult += Load(hGroup, dwLoadWhat, szLanguage, pSoundSystem, fOverload, TRUE);
   hGroup.Close();
 
   return iResult;
@@ -775,8 +741,7 @@ BOOL C4DefList::Add(C4Def *pDef, BOOL fOverload) {
   if (Config.Graphics.VerboseObjectLoading >= 1)
     if (pLastDef) {
       char ostr[250];
-      sprintf(ostr, LoadResStr(IDS_PRC_DEFOVERLOAD), pDef->Name,
-              C4IdText(pLastDef->id));
+      sprintf(ostr, LoadResStr(IDS_PRC_DEFOVERLOAD), pDef->Name, C4IdText(pLastDef->id));
       Log(ostr);
     }
 #endif // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -893,8 +858,7 @@ int C4DefList::CheckEngineVersion(int ver1, int ver2, int ver3) {
   C4Def *cdef, *prev, *next;
   for (cdef = FirstDef, prev = NULL; cdef; cdef = next) {
     next = cdef->Next;
-    if (cdef->rC4XVer1 * 100 + cdef->rC4XVer2 * 10 + cdef->rC4XVer3 >
-        ver1 * 100 + ver2 * 10 + ver3) {
+    if (cdef->rC4XVer1 * 100 + cdef->rC4XVer2 * 10 + cdef->rC4XVer3 > ver1 * 100 + ver2 * 10 + ver3) {
       if (prev)
         prev->Next = cdef->Next;
       else
@@ -929,9 +893,7 @@ void C4DefList::Default() {
 
 // Load scenario specified or all selected plus scenario & folder local
 
-int C4DefList::LoadForScenario(const char *szScenario, const char *szSelection,
-                               DWORD dwLoadWhat, const char *szLanguage,
-                               C4SoundSystem *pSoundSystem, BOOL fOverload) {
+int C4DefList::LoadForScenario(const char *szScenario, const char *szSelection, DWORD dwLoadWhat, const char *szLanguage, C4SoundSystem *pSoundSystem, BOOL fOverload) {
   int iDefs = 0;
   char szSpecified[10 * _MAX_PATH + 1];
 
@@ -951,8 +913,7 @@ int C4DefList::LoadForScenario(const char *szScenario, const char *szSelection,
   iDefs += Load(szSpecified, dwLoadWhat, szLanguage, pSoundSystem, fOverload);
 
   // Load folder local
-  iDefs += LoadFolderLocal(szScenario, dwLoadWhat, szLanguage, pSoundSystem,
-                           fOverload);
+  iDefs += LoadFolderLocal(szScenario, dwLoadWhat, szLanguage, pSoundSystem, fOverload);
 
   // Load local
   iDefs += Load(hScenario, dwLoadWhat, szLanguage, pSoundSystem, fOverload);
@@ -961,8 +922,7 @@ int C4DefList::LoadForScenario(const char *szScenario, const char *szSelection,
   return iDefs;
 }
 
-BOOL C4DefList::Reload(C4Def *pDef, DWORD dwLoadWhat, const char *szLanguage,
-                       C4SoundSystem *pSoundSystem) {
+BOOL C4DefList::Reload(C4Def *pDef, DWORD dwLoadWhat, const char *szLanguage, C4SoundSystem *pSoundSystem) {
   // Safety
   if (!pDef)
     return FALSE;

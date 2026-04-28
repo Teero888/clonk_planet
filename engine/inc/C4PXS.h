@@ -34,8 +34,7 @@ public:
   void Draw(C4FacetEx &cgo);
   void Synchronize();
   void Cast(int mat, int num, int tx, int ty, int level);
-  BOOL Create(int mat, double ix, double iy, double ixdir = 0,
-              double iydir = 0);
+  BOOL Create(int mat, double ix, double iy, double ixdir = 0, double iydir = 0);
   BOOL Load(C4Group &hGroup);
   BOOL Save(C4Group &hGroup);
 

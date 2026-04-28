@@ -226,8 +226,7 @@ static int GLFWKeyToVK(int key) {
   }
 }
 
-static void glfw_key_callback(GLFWwindow *window, int key, int scancode,
-                              int action, int mods) {
+static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
   if (action == GLFW_PRESS || action == GLFW_REPEAT) {
     int vk = GLFWKeyToVK(key);
     if (vk)
@@ -235,8 +234,7 @@ static void glfw_key_callback(GLFWwindow *window, int key, int scancode,
   }
 }
 
-static void glfw_mouse_button_callback(GLFWwindow *window, int button,
-                                       int action, int mods) {
+static void glfw_mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
   double xpos, ypos;
   glfwGetCursorPos(window, &xpos, &ypos);
   WORD flags = 0;
@@ -263,10 +261,7 @@ static void glfw_mouse_button_callback(GLFWwindow *window, int button,
   }
 }
 
-static void glfw_cursor_pos_callback(GLFWwindow *window, double xpos,
-                                     double ypos) {
-  Game.MouseControl.Move(C4MC_Button_None, (int)xpos, (int)ypos, 0);
-}
+static void glfw_cursor_pos_callback(GLFWwindow *window, double xpos, double ypos) { Game.MouseControl.Move(C4MC_Button_None, (int)xpos, (int)ypos, 0); }
 #endif
 
 int C4Application::HandleMessage() {
@@ -300,8 +295,7 @@ int C4Application::HandleMessage() {
     if (Console.hDialog && IsDialogMessage(Console.hDialog, &msg))
       MsgDone = TRUE;
   if (!MsgDone)
-    if (Console.PropertyDlg.hDialog &&
-        IsDialogMessage(Console.PropertyDlg.hDialog, &msg))
+    if (Console.PropertyDlg.hDialog && IsDialogMessage(Console.PropertyDlg.hDialog, &msg))
       MsgDone = TRUE;
   if (!MsgDone) {
     TranslateMessage(&msg);

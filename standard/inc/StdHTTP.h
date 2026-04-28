@@ -47,8 +47,7 @@ protected:
 public:
   bool ObtainStatus(const char *szHost);
   bool Get(const char *szFilename, const char *szTargetPath);
-  bool GetFile(const char *szHost, const char *szFilename,
-               const char *szTargetPath);
+  bool GetFile(const char *szHost, const char *szFilename, const char *szTargetPath);
   bool GetLocalAddress(const char *szTargetConnect, char *sBuffer);
   bool Receive(CStdHttpMessage &rMsg);
   bool Post(const char *szText, BYTE *bpBinary = NULL, int iBinarySize = 0);
@@ -56,6 +55,5 @@ public:
   bool Connect(const char *szHost);
   void Clear();
   void Default();
-  bool Init(const char *szUserAgent, const char *szPostTarget,
-            const char *szRequestType, const char *szClientVersion);
+  bool Init(const char *szUserAgent, const char *szPostTarget, const char *szRequestType, const char *szClientVersion);
 };

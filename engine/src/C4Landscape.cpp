@@ -4,8 +4,7 @@
 
 #include <C4Include.h>
 
-int MVehic = MNone, MTunnel = MNone, MWater = MNone, MSnow = MNone,
-    MEarth = MNone, MGranite = MNone;
+int MVehic = MNone, MTunnel = MNone, MWater = MNone, MSnow = MNone, MEarth = MNone, MGranite = MNone;
 
 C4Landscape::C4Landscape() { Default(); }
 
@@ -56,13 +55,11 @@ void C4Landscape::ExecuteScan() {
         int conv_to = MNone;
         // Check below conv
         if (Game.Material.Map[mat].BelowTempConvertTo != MNone)
-          if (Game.Weather.GetTemperature() <
-              Game.Material.Map[mat].BelowTempConvert)
+          if (Game.Weather.GetTemperature() < Game.Material.Map[mat].BelowTempConvert)
             conv_to = Game.Material.Map[mat].BelowTempConvertTo;
         // Check above conv
         if (Game.Material.Map[mat].AboveTempConvertTo != MNone)
-          if (Game.Weather.GetTemperature() >
-              Game.Material.Map[mat].AboveTempConvert)
+          if (Game.Weather.GetTemperature() > Game.Material.Map[mat].AboveTempConvert)
             conv_to = Game.Material.Map[mat].AboveTempConvertTo;
         // Conversion
         if (conv_to != MNone) {
@@ -116,8 +113,7 @@ int ChunkyRandom(int &iOffset, int iRange) {
   return Random(iRange);
 }
 
-void C4Landscape::DrawChunk(SURFACE sfcTarget, int tx, int ty, int wdt, int hgt,
-                            int mcol, BYTE top_rough, BYTE side_rough) {
+void C4Landscape::DrawChunk(SURFACE sfcTarget, int tx, int ty, int wdt, int hgt, int mcol, BYTE top_rough, BYTE side_rough) {
   int vtcs[16];
   int rx = Max(wdt / 2, 1);
   int cro = (tx + ty) / 7;
@@ -142,8 +138,7 @@ void C4Landscape::DrawChunk(SURFACE sfcTarget, int tx, int ty, int wdt, int hgt,
   Engine.DDraw.DrawPolygon(sfcTarget, 8, vtcs, mcol);
 }
 
-void C4Landscape::DrawSmoothOChunk(SURFACE sfcTarget, int tx, int ty, int wdt,
-                                   int hgt, int mcol, BYTE flip) {
+void C4Landscape::DrawSmoothOChunk(SURFACE sfcTarget, int tx, int ty, int wdt, int hgt, int mcol, BYTE flip) {
   int vtcs[8];
   int rx = Max(wdt / 2, 1);
   int cro = (tx + ty) / 3;
@@ -168,9 +163,7 @@ void C4Landscape::DrawSmoothOChunk(SURFACE sfcTarget, int tx, int ty, int wdt,
   Engine.DDraw.DrawPolygon(sfcTarget, 4, vtcs, mcol);
 }
 
-void C4Landscape::ChunkOZoom(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
-                             int iMapHgt, SURFACE sfcLandscape, int iTexture,
-                             int iMaterial) {
+void C4Landscape::ChunkOZoom(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt, int iMapHgt, SURFACE sfcLandscape, int iTexture, int iMaterial) {
   int iX, iY, iChunkWidth, iChunkHeight, iToX, iToY;
   int iIFT;
   BYTE *bypMapPixel, *bypMapPixelBelow, *bypMap;
@@ -178,8 +171,7 @@ void C4Landscape::ChunkOZoom(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
   int iChunkType = Game.Material.Map[iMaterial].MapChunkType;
   BYTE byColor = Mat2PixCol(iMaterial);
   // Get map & landscape size
-  if (!GetSurfaceSize(sfcMap, iMapWidth, iMapHeight) ||
-      !GetSurfaceSize(sfcLandscape, iLandscapeWidth, iLandscapeHeight))
+  if (!GetSurfaceSize(sfcMap, iMapWidth, iMapHeight) || !GetSurfaceSize(sfcLandscape, iLandscapeWidth, iLandscapeHeight))
     return;
   // Clip desired map segment to map size
   iMapX = BoundBy(iMapX, 0, iMapWidth - 1);
@@ -216,28 +208,23 @@ void C4Landscape::ChunkOZoom(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
         // Draw chunk
         switch (iChunkType) {
         case C4M_Flat:
-          Engine.DDraw.DrawBox(sfcLandscape, iToX, iToY, iToX + iChunkWidth,
-                               iToY + iChunkHeight, byColor + iIFT);
+          Engine.DDraw.DrawBox(sfcLandscape, iToX, iToY, iToX + iChunkWidth, iToY + iChunkHeight, byColor + iIFT);
           break;
         case C4M_TopFlat:
-          DrawChunk(sfcLandscape, iToX, iToY, iChunkWidth, iChunkHeight,
-                    byColor + iIFT, 0, 1);
+          DrawChunk(sfcLandscape, iToX, iToY, iChunkWidth, iChunkHeight, byColor + iIFT, 0, 1);
           break;
         case C4M_Smooth:
-          DrawChunk(sfcLandscape, iToX, iToY, iChunkWidth, iChunkHeight,
-                    byColor + iIFT, 1, 1);
+          DrawChunk(sfcLandscape, iToX, iToY, iChunkWidth, iChunkHeight, byColor + iIFT, 1, 1);
           break;
         case C4M_Rough:
-          DrawChunk(sfcLandscape, iToX, iToY, iChunkWidth, iChunkHeight,
-                    byColor + iIFT, 1, 2);
+          DrawChunk(sfcLandscape, iToX, iToY, iChunkWidth, iChunkHeight, byColor + iIFT, 1, 2);
           break;
         }
       }
       // Other chunk, check for slope smoothers
       else
         // Smooth chunk & same texture-material below
-        if ((iChunkType == C4M_Smooth) && bypMapPixelBelow &&
-            (((*bypMapPixelBelow) & 127) == iTexture)) {
+        if ((iChunkType == C4M_Smooth) && bypMapPixelBelow && (((*bypMapPixelBelow) & 127) == iTexture)) {
           // Same texture-material on left
           if ((iX > 0) && (((*(bypMapPixel - 1)) & 127) == iTexture)) {
             // Determine IFT
@@ -245,19 +232,16 @@ void C4Landscape::ChunkOZoom(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
             if (*(bypMapPixel - 1) >= 128)
               iIFT = IFT;
             // Draw smoother
-            DrawSmoothOChunk(sfcLandscape, iToX, iToY, iChunkWidth,
-                             iChunkHeight, byColor + iIFT, 0);
+            DrawSmoothOChunk(sfcLandscape, iToX, iToY, iChunkWidth, iChunkHeight, byColor + iIFT, 0);
           }
           // Same texture-material on right
-          if ((iX < iMapWidth - 1) &&
-              (((*(bypMapPixel + 1)) & 127) == iTexture)) {
+          if ((iX < iMapWidth - 1) && (((*(bypMapPixel + 1)) & 127) == iTexture)) {
             // Determine IFT
             iIFT = 0;
             if (*(bypMapPixel + 1) >= 128)
               iIFT = IFT;
             // Draw smoother
-            DrawSmoothOChunk(sfcLandscape, iToX, iToY, iChunkWidth,
-                             iChunkHeight, byColor + iIFT, 1);
+            DrawSmoothOChunk(sfcLandscape, iToX, iToY, iChunkWidth, iChunkHeight, byColor + iIFT, 1);
           }
         }
       // Advance to next scan line pixel
@@ -271,8 +255,7 @@ void C4Landscape::ChunkOZoom(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
   UnLockSurface(sfcMap);
 }
 
-BOOL C4Landscape::GetTexUsage(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
-                              int iMapHgt, DWORD *dwpTextureUsage) {
+BOOL C4Landscape::GetTexUsage(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt, int iMapHgt, DWORD *dwpTextureUsage) {
   BYTE *bypMap, *bypPixel;
   int iPitch, iWidth, iHeight;
   int iX, iY;
@@ -292,8 +275,7 @@ BOOL C4Landscape::GetTexUsage(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
     dwpTextureUsage[cnt] = 0;
   // Scan map pixels
   for (iY = iMapY; iY < iMapY + iMapHgt; iY++)
-    for (iX = iMapX, bypPixel = bypMap + iPitch * iY + iX; iX < iMapX + iMapWdt;
-         iX++, bypPixel++)
+    for (iX = iMapX, bypPixel = bypMap + iPitch * iY + iX; iX < iMapX + iMapWdt; iX++, bypPixel++)
       // Count texture map index only (no IFT)
       dwpTextureUsage[(*bypPixel) & (C4M_MaxTexIndex - 1)]++;
   // Unlock map surface
@@ -302,9 +284,7 @@ BOOL C4Landscape::GetTexUsage(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
   return TRUE;
 }
 
-BOOL C4Landscape::TexOZoom(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
-                           int iMapHgt, SURFACE sfcLandscape,
-                           DWORD *dwpTextureUsage, C4TextureMap &rTextureMap) {
+BOOL C4Landscape::TexOZoom(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt, int iMapHgt, SURFACE sfcLandscape, DWORD *dwpTextureUsage, C4TextureMap &rTextureMap) {
   int iIndex, iMaterial;
   const char *szMaterialTexture;
   char szMaterial[C4M_MaxName + 1];
@@ -346,8 +326,7 @@ BOOL C4Landscape::TexOZoom(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
         }
 
       // ChunkOZoom map to landscape
-      ChunkOZoom(sfcMap, iMapX, iMapY, iMapWdt, iMapHgt, sfcLandscape, iIndex,
-                 iMaterial);
+      ChunkOZoom(sfcMap, iMapX, iMapY, iMapWdt, iMapHgt, sfcLandscape, iIndex, iMaterial);
 
       // Clear drawing pattern
       Engine.DDraw.NoPattern();
@@ -357,13 +336,10 @@ BOOL C4Landscape::TexOZoom(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
   return TRUE;
 }
 
-BOOL C4Landscape::SkyToLandscape(SURFACE sfcMap, int iMapX, int iMapY,
-                                 int iMapWdt, int iMapHgt,
-                                 SURFACE sfcLandscape) {
+BOOL C4Landscape::SkyToLandscape(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt, int iMapHgt, SURFACE sfcLandscape) {
   // Get map & landscape size
   int iMapWidth, iMapHeight, iLandscapeWidth, iLandscapeHeight;
-  if (!GetSurfaceSize(sfcMap, iMapWidth, iMapHeight) ||
-      !GetSurfaceSize(sfcLandscape, iLandscapeWidth, iLandscapeHeight))
+  if (!GetSurfaceSize(sfcMap, iMapWidth, iMapHeight) || !GetSurfaceSize(sfcLandscape, iLandscapeWidth, iLandscapeHeight))
     return FALSE;
   // Clip map segment to map size
   iMapX = BoundBy(iMapX, 0, iMapWidth - 1);
@@ -379,24 +355,19 @@ BOOL C4Landscape::SkyToLandscape(SURFACE sfcMap, int iMapX, int iMapY,
   iToY = iMapY * iLandscapeHeight / iMapHeight;
   iToWdt = iMapWdt * iLandscapeWidth / iMapWidth;
   iToHgt = iMapHgt * iLandscapeHeight / iMapHeight;
-  Engine.DDraw.BlitSurfaceTile(Sky.Surface, Surface, iToX, iToY, iToWdt, iToHgt,
-                               -iToX, -iToY);
+  Engine.DDraw.BlitSurfaceTile(Sky.Surface, Surface, iToX, iToY, iToWdt, iToHgt, -iToX, -iToY);
   // Done
   return TRUE;
 }
 
-BOOL C4Landscape::MapToLandscape(SURFACE sfcMap, int iMapX, int iMapY,
-                                 int iMapWdt, int iMapHgt, SURFACE sfcLandscape,
-                                 C4TextureMap &rTextureMap,
-                                 BOOL fStaticChunks) {
+BOOL C4Landscape::MapToLandscape(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt, int iMapHgt, SURFACE sfcLandscape, C4TextureMap &rTextureMap, BOOL fStaticChunks) {
   // Sky background segment
   SkyToLandscape(sfcMap, iMapX, iMapY, iMapWdt, iMapHgt, sfcLandscape);
 
   // Clip to map/landscape segment
   int iMapWidth, iMapHeight, iLandscapeWidth, iLandscapeHeight;
   // Get map & landscape size
-  if (!GetSurfaceSize(sfcMap, iMapWidth, iMapHeight) ||
-      !GetSurfaceSize(sfcLandscape, iLandscapeWidth, iLandscapeHeight))
+  if (!GetSurfaceSize(sfcMap, iMapWidth, iMapHeight) || !GetSurfaceSize(sfcLandscape, iLandscapeWidth, iLandscapeHeight))
     return FALSE;
   // Clip map segment to map size
   iMapX = BoundBy(iMapX, 0, iMapWidth - 1);
@@ -412,8 +383,7 @@ BOOL C4Landscape::MapToLandscape(SURFACE sfcMap, int iMapX, int iMapY,
   iToY = iMapY * iLandscapeHeight / iMapHeight;
   iToWdt = iMapWdt * iLandscapeWidth / iMapWidth;
   iToHgt = iMapHgt * iLandscapeHeight / iMapHeight;
-  Engine.DDraw.SetPrimaryClipper(iToX, iToY, iToX + iToWdt - 1,
-                                 iToY + iToHgt - 1);
+  Engine.DDraw.SetPrimaryClipper(iToX, iToY, iToX + iToWdt - 1, iToY + iToHgt - 1);
 
   // Set chunk random mode
   ChunkyRandomStatic = fStaticChunks;
@@ -428,8 +398,7 @@ BOOL C4Landscape::MapToLandscape(SURFACE sfcMap, int iMapX, int iMapY,
   if (!GetTexUsage(sfcMap, iMapX, iMapY, iMapWdt, iMapHgt, dwTexUsage))
     return FALSE;
   // Texture zoom map to landscape
-  if (!TexOZoom(sfcMap, iMapX, iMapY, iMapWdt, iMapHgt, sfcLandscape,
-                dwTexUsage, rTextureMap))
+  if (!TexOZoom(sfcMap, iMapX, iMapY, iMapWdt, iMapHgt, sfcLandscape, dwTexUsage, rTextureMap))
     return FALSE;
 
   Engine.DDraw.NoPrimaryClipper();
@@ -452,8 +421,7 @@ SURFACE C4Landscape::CreateMap(C4TextureMap &rTextureMap) {
   // Fill sfcMap
   if (bpBuffer = LockSurface(sfcMap, iPitch)) {
     C4MapCreator MapCreator;
-    MapCreator.Create(bpBuffer, iPitch, Game.C4S.Landscape, rTextureMap, TRUE,
-                      Game.StartupPlayerCount);
+    MapCreator.Create(bpBuffer, iPitch, Game.C4S.Landscape, rTextureMap, TRUE, Game.StartupPlayerCount);
     UnLockSurface(sfcMap);
   }
 
@@ -590,9 +558,7 @@ BOOL C4Landscape::ClearPix(int tx, int ty) {
   if (GBackIFT(tx, ty))
     bcol = Mat2PixColRnd(MTunnel) + IFT;
   else
-    bcol = (BYTE)BoundBy(
-        Engine.DDraw.GetPixel(Sky.Surface, tx % Sky.Width, ty % Sky.Height),
-        CSkyDef1, CSkyDef2);
+    bcol = (BYTE)BoundBy(Engine.DDraw.GetPixel(Sky.Surface, tx % Sky.Width, ty % Sky.Height), CSkyDef1, CSkyDef2);
   return SetPix(tx, ty, bcol);
 }
 
@@ -622,9 +588,7 @@ int C4Landscape::BlastFreePix(int tx, int ty, int grade) {
     // Blast Shift
     if (Game.Material.Map[mat].BlastShiftTo != MNone)
       if (GBackMatColIndex(tx, ty) + grade >= C4M_ColsPerMat)
-        SetPix(tx, ty,
-               Mat2PixColRnd(Game.Material.Map[mat].BlastShiftTo) +
-                   GBackIFT(tx, ty));
+        SetPix(tx, ty, Mat2PixColRnd(Game.Material.Map[mat].BlastShiftTo) + GBackIFT(tx, ty));
       else
         SetPix(tx, ty, GBackPix(tx, ty) + grade);
     // Blast Free
@@ -637,8 +601,7 @@ int C4Landscape::BlastFreePix(int tx, int ty, int grade) {
   return mat;
 }
 
-void C4Landscape::DigFree(int tx, int ty, int rad, BOOL fRequest,
-                          C4Object *pByObj) {
+void C4Landscape::DigFree(int tx, int ty, int rad, BOOL fRequest, C4Object *pByObj) {
   int ycnt, xcnt, iLineWidth, iLineY, iMaterial;
   // Dig free
   for (ycnt = -rad; ycnt < rad; ycnt++) {
@@ -655,8 +618,7 @@ void C4Landscape::DigFree(int tx, int ty, int rad, BOOL fRequest,
       pByObj->DigOutMaterialCast(fRequest);
 }
 
-void C4Landscape::DigFreeRect(int tx, int ty, int wdt, int hgt, BOOL fRequest,
-                              C4Object *pByObj) {
+void C4Landscape::DigFreeRect(int tx, int ty, int wdt, int hgt, BOOL fRequest, C4Object *pByObj) {
   // Dig free pixels
   int cx, cy, iMaterial;
   for (cx = tx; cx < tx + wdt; cx++)
@@ -711,15 +673,10 @@ void C4Landscape::BlastFree(int tx, int ty, int rad, int grade) {
 
       if (Game.Material.Map[cnt].Blast2Object != C4ID_None)
         if (Game.Material.Map[cnt].Blast2ObjectRatio != 0)
-          Game.BlastCastObjects(Game.Material.Map[cnt].Blast2Object,
-                                BlastMatCount[cnt] /
-                                    Game.Material.Map[cnt].Blast2ObjectRatio,
-                                tx, ty);
+          Game.BlastCastObjects(Game.Material.Map[cnt].Blast2Object, BlastMatCount[cnt] / Game.Material.Map[cnt].Blast2ObjectRatio, tx, ty);
 
       if (Game.Material.Map[cnt].Blast2PXSRatio != 0)
-        Game.PXS.Cast(
-            cnt, BlastMatCount[cnt] / Game.Material.Map[cnt].Blast2PXSRatio, tx,
-            ty, 60);
+        Game.PXS.Cast(cnt, BlastMatCount[cnt] / Game.Material.Map[cnt].Blast2PXSRatio, tx, ty, 60);
     }
 }
 
@@ -727,9 +684,7 @@ void C4Landscape::DrawMaterialRect(int mat, int tx, int ty, int wdt, int hgt) {
   int cx, cy;
   for (cy = ty; cy < ty + hgt; cy++)
     for (cx = tx; cx < tx + wdt; cx++)
-      if ((MatDensity(mat) > GBackDensity(cx, cy)) ||
-          ((MatDensity(mat) == GBackDensity(cx, cy)) &&
-           (MatDigFree(mat) <= MatDigFree(GBackMat(cx, cy)))))
+      if ((MatDensity(mat) > GBackDensity(cx, cy)) || ((MatDensity(mat) == GBackDensity(cx, cy)) && (MatDigFree(mat) <= MatDigFree(GBackMat(cx, cy)))))
         SetPix(cx, cy, Mat2PixCol(mat) + GBackIFT(cx, cy));
 }
 
@@ -856,8 +811,7 @@ BOOL C4Landscape::InsertMaterial(int mat, int tx, int ty) {
 
 // Finds the next pixel position moving to desired slide.
 
-BOOL C4Landscape::FindMatPath(int &fx, int &fy, int ydir, int mdens,
-                              int mslide) {
+BOOL C4Landscape::FindMatPath(int &fx, int &fy, int ydir, int mdens, int mslide) {
   int cslide;
   BOOL fLeft = TRUE, fRight = TRUE;
 
@@ -894,8 +848,7 @@ BOOL C4Landscape::FindMatPath(int &fx, int &fy, int ydir, int mdens,
 
 // Finds the closest immediate slide position.
 
-BOOL C4Landscape::FindMatSlide(int &fx, int &fy, int ydir, int mdens,
-                               int mslide) {
+BOOL C4Landscape::FindMatSlide(int &fx, int &fy, int ydir, int mdens, int mslide) {
   int cslide;
   BOOL fLeft = TRUE, fRight = TRUE;
 
@@ -953,8 +906,7 @@ BOOL C4Landscape::Save(C4Group &hGroup) {
     UnLockQBA();
 
   // Save landscape surface
-  if (!SaveSurface(Config.AtTempPath(C4CFN_TempLandscape), Surface,
-                   Game.GraphicsResource.GamePalette))
+  if (!SaveSurface(Config.AtTempPath(C4CFN_TempLandscape), Surface, Game.GraphicsResource.GamePalette))
     return FALSE;
 
   // Check QBA
@@ -1000,10 +952,7 @@ void C4Landscape::Default() {
   Gravity = ftofix(0.2);
 }
 
-void C4Landscape::Draw(C4FacetEx &cgo) {
-  Engine.DDraw.BlitFast(Surface, cgo.TargetX, cgo.TargetY, cgo.Surface, cgo.X,
-                        cgo.Y, cgo.Wdt, cgo.Hgt);
-}
+void C4Landscape::Draw(C4FacetEx &cgo) { Engine.DDraw.BlitFast(Surface, cgo.TargetX, cgo.TargetY, cgo.Surface, cgo.X, cgo.Y, cgo.Wdt, cgo.Hgt); }
 
 void C4Landscape::ClearBlastMatCount() {
   for (int cnt = 0; cnt < C4MaxMaterial; cnt++)
@@ -1148,8 +1097,7 @@ BOOL FindSolidGround(long &rx, long &ry, int width) {
 
   int cx1, cx2, cy1, cy2, rl1 = 0, rl2 = 0;
 
-  for (cx1 = cx2 = rx, cy1 = cy2 = ry; (cx1 > 0) || (cx2 < GBackWdt);
-       cx1--, cx2++) {
+  for (cx1 = cx2 = rx, cy1 = cy2 = ry; (cx1 > 0) || (cx2 < GBackWdt); cx1--, cx2++) {
     // Left search
     if (cx1 >= 0) // Still going
     {
@@ -1198,8 +1146,7 @@ BOOL FindSurfaceLiquid(long &rx, long &ry, int width, int height) {
 
   int cx1, cx2, cy1, cy2, rl1 = 0, rl2 = 0, cnt;
   BOOL lokay;
-  for (cx1 = cx2 = rx, cy1 = cy2 = ry; (cx1 > 0) || (cx2 < GBackWdt);
-       cx1--, cx2++) {
+  for (cx1 = cx2 = rx, cy1 = cy2 = ry; (cx1 > 0) || (cx2 < GBackWdt); cx1--, cx2++) {
     // Left search
     if (cx1 > 0) // Still going
     {
@@ -1258,8 +1205,7 @@ BOOL FindSurfaceLiquid(long &rx, long &ry, int width, int height) {
 BOOL FindLiquid(long &rx, long &ry, int width, int height) {
   int cx1, cx2, cy1, cy2, rl1 = 0, rl2 = 0;
 
-  for (cx1 = cx2 = rx, cy1 = cy2 = ry; (cx1 > 0) || (cx2 < GBackWdt);
-       cx1--, cx2++) {
+  for (cx1 = cx2 = rx, cy1 = cy2 = ry; (cx1 > 0) || (cx2 < GBackWdt); cx1--, cx2++) {
     // Left search
     if (cx1 > 0) {
       long lcy1 = cy1;
@@ -1370,8 +1316,7 @@ BOOL FindLevelGround(long &rx, long &ry, int width, int hrange) {
 // ground with structure clearance (category).
 // Returns bottom center of surface found.
 
-BOOL FindConSiteSpot(long &rx, long &ry, int wdt, int hgt, DWORD category,
-                     int hrange) {
+BOOL FindConSiteSpot(long &rx, long &ry, int wdt, int hgt, DWORD category, int hrange) {
   BOOL fFound = FALSE;
 
   // No hrange limit, use standard smooth surface limit
@@ -1453,8 +1398,7 @@ BOOL FindConSiteSpot(long &rx, long &ry, int wdt, int hgt, DWORD category,
         }
     if (rl2 >= wdt)
       if (cx2 < GBackWdt)
-        if (!Game.OverlapObject(cx2 - wdt, cy2 - hgt - 10, wdt, hgt + 40,
-                                category)) {
+        if (!Game.OverlapObject(cx2 - wdt, cy2 - hgt - 10, wdt, hgt + 40, category)) {
           rx = cx2 - wdt / 2;
           ry = cy2;
           fFound = TRUE;
@@ -1472,19 +1416,14 @@ BOOL FindConSiteSpot(long &rx, long &ry, int wdt, int hgt, DWORD category,
 
 BOOL PathFreePix(int x, int y, int par) { return !GBackSolid(x, y); }
 
-BOOL PathFree(int x1, int y1, int x2, int y2, int *ix, int *iy) {
-  return ForLine(x1, y1, x2, y2, &PathFreePix, 0, ix, iy);
-}
+BOOL PathFree(int x1, int y1, int x2, int y2, int *ix, int *iy) { return ForLine(x1, y1, x2, y2, &PathFreePix, 0, ix, iy); }
 
-int TrajectoryDistance(int iFx, int iFy, FIXED iXDir, FIXED iYDir, int iTx,
-                       int iTy) {
+int TrajectoryDistance(int iFx, int iFy, FIXED iXDir, FIXED iYDir, int iTx, int iTy) {
   int iClosest = Distance(iFx, iFy, iTx, iTy);
   // Follow free trajectory, take closest point distance
   FIXED cx = itofix(iFx), cy = itofix(iFy);
   int cdis;
-  while (Inside(fixtoi(cx), 0, GBackWdt - 1) &&
-         Inside(fixtoi(cy), 0, GBackHgt - 1) &&
-         !GBackSolid(fixtoi(cx), fixtoi(cy))) {
+  while (Inside(fixtoi(cx), 0, GBackWdt - 1) && Inside(fixtoi(cy), 0, GBackHgt - 1) && !GBackSolid(fixtoi(cx), fixtoi(cy))) {
     cdis = Distance(fixtoi(cx), fixtoi(cy), iTx, iTy);
     if (cdis < iClosest)
       iClosest = cdis;
@@ -1497,8 +1436,7 @@ int TrajectoryDistance(int iFx, int iFy, FIXED iXDir, FIXED iYDir, int iTx,
 
 const int C4LSC_Throwing_MaxVertical = 50, C4LSC_Throwing_MaxHorizontal = 60;
 
-BOOL FindThrowingPosition(int iTx, int iTy, FIXED fXDir, FIXED fYDir,
-                          int iHeight, long &rX, long &rY) {
+BOOL FindThrowingPosition(int iTx, int iTy, FIXED fXDir, FIXED fYDir, int iHeight, long &rX, long &rY) {
 
   // Start underneath throwing target
   rX = iTx;
@@ -1507,8 +1445,7 @@ BOOL FindThrowingPosition(int iTx, int iTy, FIXED fXDir, FIXED fYDir,
     return FALSE;
 
   // Target too far above surface
-  if (!Inside((int)rY - iTy, -C4LSC_Throwing_MaxVertical,
-              +C4LSC_Throwing_MaxVertical))
+  if (!Inside((int)rY - iTy, -C4LSC_Throwing_MaxVertical, +C4LSC_Throwing_MaxVertical))
     return FALSE;
 
   // Search in direction according to launch fXDir
@@ -1517,16 +1454,13 @@ BOOL FindThrowingPosition(int iTx, int iTy, FIXED fXDir, FIXED fYDir,
     iDir = -1;
 
   // Move along surface
-  for (int cnt = 0; Inside((int)rX, 0, GBackWdt - 1) &&
-                    (cnt <= C4LSC_Throwing_MaxHorizontal);
-       rX += iDir, cnt++) {
+  for (int cnt = 0; Inside((int)rX, 0, GBackWdt - 1) && (cnt <= C4LSC_Throwing_MaxHorizontal); rX += iDir, cnt++) {
     // Adjust to surface
     if (!SemiAboveSolid(rX, rY))
       return FALSE;
 
     // Check trajectory distance
-    int itjd =
-        TrajectoryDistance((int)rX, (int)rY - iHeight, fXDir, fYDir, iTx, iTy);
+    int itjd = TrajectoryDistance((int)rX, (int)rY - iHeight, fXDir, fYDir, iTx, iTy);
 
     // Hitting range: success
     if (itjd <= 2)
@@ -1539,12 +1473,10 @@ BOOL FindThrowingPosition(int iTx, int iTy, FIXED fXDir, FIXED fYDir,
 
 const int C4LSC_Closest_MaxRange = 200, C4LSC_Closest_Step = 10;
 
-BOOL FindClosestFree(long &rX, long &rY, int iAngle1, int iAngle2,
-                     int iExcludeAngle1, int iExcludeAngle2) {
+BOOL FindClosestFree(long &rX, long &rY, int iAngle1, int iAngle2, int iExcludeAngle1, int iExcludeAngle2) {
   double pi = 3.1415926535;
   int iX, iY;
-  for (int iR = C4LSC_Closest_Step; iR < C4LSC_Closest_MaxRange;
-       iR += C4LSC_Closest_Step)
+  for (int iR = C4LSC_Closest_Step; iR < C4LSC_Closest_MaxRange; iR += C4LSC_Closest_Step)
     for (int iAngle = iAngle1; iAngle < iAngle2; iAngle += C4LSC_Closest_Step)
       if (!Inside(iAngle, iExcludeAngle1, iExcludeAngle2)) {
         iX = (int)rX + (int)(sin(pi * (double)iAngle / 180.0) * (double)iR);
@@ -1650,8 +1582,7 @@ BOOL C4Landscape::SetMode(int iMode) {
   return TRUE;
 }
 
-BOOL C4Landscape::SetColorPattern(const char *szMaterial, const char *szTexture,
-                                  BOOL fIFT, BYTE &rbyCol) {
+BOOL C4Landscape::SetColorPattern(const char *szMaterial, const char *szTexture, BOOL fIFT, BYTE &rbyCol) {
   // Sky material: sky as pattern only
   if (SEqual(szMaterial, C4TLS_MatSky)) {
     rbyCol = 0;
@@ -1681,14 +1612,9 @@ BOOL C4Landscape::SetColorPattern(const char *szMaterial, const char *szTexture,
 
 void C4Landscape::ClearColorPattern() { Engine.DDraw.NoPattern(); }
 
-BOOL C4Landscape::MapToLandscape() {
-  return MapToLandscape(Map, 0, 0, MapWidth, MapHeight, Surface,
-                        Game.TextureMap);
-}
+BOOL C4Landscape::MapToLandscape() { return MapToLandscape(Map, 0, 0, MapWidth, MapHeight, Surface, Game.TextureMap); }
 
-BOOL C4Landscape::GetMapColorIndex(const char *szMaterial,
-                                   const char *szTexture, BOOL fIFT,
-                                   BYTE &rbyCol) {
+BOOL C4Landscape::GetMapColorIndex(const char *szMaterial, const char *szTexture, BOOL fIFT, BYTE &rbyCol) {
   // Sky
   if (SEqual(szMaterial, C4TLS_MatSky))
     rbyCol = 0;
@@ -1704,8 +1630,7 @@ BOOL C4Landscape::GetMapColorIndex(const char *szMaterial,
   return TRUE;
 }
 
-BOOL C4Landscape::DrawBrush(int iX, int iY, int iGrade, const char *szMaterial,
-                            const char *szTexture, BOOL fIFT) {
+BOOL C4Landscape::DrawBrush(int iX, int iY, int iGrade, const char *szMaterial, const char *szTexture, BOOL fIFT) {
   BYTE byCol;
   switch (Mode) {
   // Dynamic: ignore
@@ -1724,9 +1649,7 @@ BOOL C4Landscape::DrawBrush(int iX, int iY, int iGrade, const char *szMaterial,
     else
       Engine.DDraw.DrawCircle(Map, iX / MapZoom, iY / MapZoom, iRadius, byCol);
     // Update landscape
-    MapToLandscape(Map, iX / MapZoom - iRadius - 1, iY / MapZoom - iRadius - 1,
-                   2 * iRadius + 2, 2 * iRadius + 2, Surface, Game.TextureMap,
-                   TRUE);
+    MapToLandscape(Map, iX / MapZoom - iRadius - 1, iY / MapZoom - iRadius - 1, 2 * iRadius + 2, 2 * iRadius + 2, Surface, Game.TextureMap, TRUE);
     break;
   // Exact: draw directly to landscape by color & pattern
   case C4LSC_Exact:
@@ -1757,9 +1680,7 @@ BOOL DrawLineMap(int iX, int iY, int iRadius) {
   return TRUE;
 }
 
-BOOL C4Landscape::DrawLine(int iX1, int iY1, int iX2, int iY2, int iGrade,
-                           const char *szMaterial, const char *szTexture,
-                           BOOL fIFT) {
+BOOL C4Landscape::DrawLine(int iX1, int iY1, int iX2, int iY2, int iGrade, const char *szMaterial, const char *szTexture, BOOL fIFT) {
   switch (Mode) {
   // Dynamic: ignore
   case C4LSC_Dynamic:
@@ -1783,8 +1704,7 @@ BOOL C4Landscape::DrawLine(int iX1, int iY1, int iX2, int iY2, int iGrade,
     iUpY = Min(iY1, iY2) - iRadius - 1;
     iUpWdt = Abs(iX2 - iX1) + 2 * iRadius + 2;
     iUpHgt = Abs(iY2 - iY1) + 2 * iRadius + 2;
-    MapToLandscape(Map, iUpX, iUpY, iUpWdt, iUpHgt, Surface, Game.TextureMap,
-                   TRUE);
+    MapToLandscape(Map, iUpX, iUpY, iUpWdt, iUpHgt, Surface, Game.TextureMap, TRUE);
     break;
   // Exact: draw directly to landscape by color & pattern
   case C4LSC_Exact:
@@ -1800,9 +1720,7 @@ BOOL C4Landscape::DrawLine(int iX1, int iY1, int iX2, int iY2, int iGrade,
   return TRUE;
 }
 
-BOOL C4Landscape::DrawBox(int iX1, int iY1, int iX2, int iY2, int iGrade,
-                          const char *szMaterial, const char *szTexture,
-                          BOOL fIFT) {
+BOOL C4Landscape::DrawBox(int iX1, int iY1, int iX2, int iY2, int iGrade, const char *szMaterial, const char *szTexture, BOOL fIFT) {
   BYTE byCol;
   switch (Mode) {
   // Dynamic: ignore
@@ -1818,12 +1736,9 @@ BOOL C4Landscape::DrawBox(int iX1, int iY1, int iX2, int iY2, int iGrade,
     iY1 /= MapZoom;
     iX2 /= MapZoom;
     iY2 /= MapZoom;
-    Engine.DDraw.DrawBox(Map, Min(iX1, iX2), Min(iY1, iY2), Max(iX1, iX2),
-                         Max(iY1, iY2), byCol);
+    Engine.DDraw.DrawBox(Map, Min(iX1, iX2), Min(iY1, iY2), Max(iX1, iX2), Max(iY1, iY2), byCol);
     // Update landscape
-    MapToLandscape(Map, Min(iX1, iX2) - 1, Min(iY1, iY2) - 1,
-                   Abs(iX1 - iX2) + 3, Abs(iY1 - iY2) + 3, Surface,
-                   Game.TextureMap, TRUE);
+    MapToLandscape(Map, Min(iX1, iX2) - 1, Min(iY1, iY2) - 1, Abs(iX1 - iX2) + 3, Abs(iY1 - iY2) + 3, Surface, Game.TextureMap, TRUE);
     break;
   // Exact: draw directly to landscape by color & pattern
   case C4LSC_Exact:
@@ -1831,8 +1746,7 @@ BOOL C4Landscape::DrawBox(int iX1, int iY1, int iX2, int iY2, int iGrade,
     if (!SetColorPattern(szMaterial, szTexture, fIFT, byCol))
       return FALSE;
     // Draw to landscape
-    Engine.DDraw.DrawBox(Surface, Min(iX1, iX2), Min(iY1, iY2), Max(iX1, iX2),
-                         Max(iY1, iY2), byCol);
+    Engine.DDraw.DrawBox(Surface, Min(iX1, iX2), Min(iY1, iY2), Max(iX1, iX2), Max(iY1, iY2), byCol);
     // Clear pattern
     ClearColorPattern();
     break;

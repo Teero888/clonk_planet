@@ -95,8 +95,7 @@ BOOL CStdBitmap::Save(const char *szFileName) {
   int savesize = sizeof(Head) + sizeof(Info);
   if (Info.biBitCount == 8)
     savesize += 256 * sizeof(RGBQUAD);
-  if (!hFile.Create(szFileName, FALSE) || !hFile.Write(this, savesize) ||
-      !hFile.Write(Bits, Info.biSizeImage) || !hFile.Close())
+  if (!hFile.Create(szFileName, FALSE) || !hFile.Write(this, savesize) || !hFile.Write(Bits, Info.biSizeImage) || !hFile.Close())
     return FALSE;
   return TRUE;
 }
@@ -115,9 +114,7 @@ BOOL CStdBitmap::Enlarge(int iWdt, int iHgt) {
     return FALSE;
   ZeroMem(nBits, nSize);
   iHgt *= Sign(Info.biHeight);
-  StdBlit(Bits, Info.Pitch(), Info.biHeight, 0, 0, Info.biWidth, Info.biHeight,
-          nBits, nPitch, iHgt, 0, 0, Info.biWidth, Info.biHeight,
-          Info.biBitCount / 8);
+  StdBlit(Bits, Info.Pitch(), Info.biHeight, 0, 0, Info.biWidth, Info.biHeight, nBits, nPitch, iHgt, 0, 0, Info.biWidth, Info.biHeight, Info.biBitCount / 8);
   Info.biWidth = iWdt;
   Info.biHeight = iHgt;
   Info.biSizeImage = nSize;

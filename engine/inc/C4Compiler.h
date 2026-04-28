@@ -2,8 +2,7 @@
 
 /* Scan ini-type text component files to run-time data structures */
 
-const int C4CV_String = 1, C4CV_Id = 2, C4CV_Integer = 3, C4CV_NameList = 4,
-          C4CV_IdList = 5, C4CV_ObjectList = 6,
+const int C4CV_String = 1, C4CV_Id = 2, C4CV_Integer = 3, C4CV_NameList = 4, C4CV_IdList = 5, C4CV_ObjectList = 6,
 
           C4CV_Section = 10, C4CV_End = 0;
 
@@ -21,13 +20,9 @@ public:
 
 class C4Compiler {
 public:
-  BOOL CompileStructure(C4CompilerValue *pRefs, const char *szSource,
-                        void *vpTarget, const char *szSecExt = NULL);
-  BOOL DecompileStructure(C4CompilerValue *pRefs, void *vpData, void *vpDefault,
-                          char **ppOutput, int *ipSize,
-                          const char *szSecExt = NULL);
+  BOOL CompileStructure(C4CompilerValue *pRefs, const char *szSource, void *vpTarget, const char *szSecExt = NULL);
+  BOOL DecompileStructure(C4CompilerValue *pRefs, void *vpData, void *vpDefault, char **ppOutput, int *ipSize, const char *szSecExt = NULL);
 
 protected:
-  BOOL CompileLine(C4CompilerValue *pRefs, const char *szSection,
-                   const char *szLine, BYTE *pTarget, const char *szSecExt);
+  BOOL CompileLine(C4CompilerValue *pRefs, const char *szSection, const char *szLine, BYTE *pTarget, const char *szSecExt);
 };

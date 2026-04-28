@@ -21,8 +21,7 @@ void C4SoundEffect::Clear() {
   WaveBuffer = NULL;
 }
 
-BOOL C4SoundEffect::Load(const char *szFileName, C4Group &hGroup,
-                         BOOL fStatic) {
+BOOL C4SoundEffect::Load(const char *szFileName, C4Group &hGroup, BOOL fStatic) {
   // Sound check
   if (!Config.Sound.RXSound)
     return FALSE;
@@ -30,9 +29,7 @@ BOOL C4SoundEffect::Load(const char *szFileName, C4Group &hGroup,
   if (!hGroup.AccessEntry(szFileName, &WaveSize))
     return FALSE;
   // Allocate wave buffer, load sound, create sound object
-  if (!(WaveBuffer = new BYTE[WaveSize]) ||
-      !hGroup.Read(WaveBuffer, WaveSize) ||
-      !(DSObj = DSndObjCreate(WaveBuffer, WaveSize))) {
+  if (!(WaveBuffer = new BYTE[WaveSize]) || !hGroup.Read(WaveBuffer, WaveSize) || !(DSObj = DSndObjCreate(WaveBuffer, WaveSize))) {
     Clear();
     return FALSE;
   }
@@ -164,10 +161,7 @@ void C4SoundSystem::Execute() {
   for (csfx = FirstSound; csfx; csfx = next) {
     next = csfx->Next;
     // Unload check
-    if ((Game.Time - csfx->UsageTime >
-         SoundUnloadTime -
-             SoundUnloadTime * csfx->WaveSize / SoundMaxUnloadSize) &&
-        !csfx->Playing() && !csfx->Static) {
+    if ((Game.Time - csfx->UsageTime > SoundUnloadTime - SoundUnloadTime * csfx->WaveSize / SoundMaxUnloadSize) && !csfx->Playing() && !csfx->Static) {
       if (prev)
         prev->Next = next;
       else

@@ -62,8 +62,7 @@ BOOL C4InputHandler::Init(HWND hwnd) {
   hWnd = hwnd;
 
   // Launch host thread
-  if (!(hHostThread =
-            CreateThread(NULL, 0, &HostThreadFunction, this, 0, &idHostThread)))
+  if (!(hHostThread = CreateThread(NULL, 0, &HostThreadFunction, this, 0, &idHostThread)))
     return FALSE;
 
   // Launch handling thread
@@ -89,8 +88,7 @@ DWORD WINAPI C4InputHandler::HostThreadFunction(void *lpPar) {
   // Host thread loop
   while (!pInstance->Terminate) {
     // Await client & connect
-    iResult = pListener->Connect(Config.Network.LocalName, C4STRM_Listener,
-                                 NULL, &pStrm, C4PORT_Input);
+    iResult = pListener->Connect(Config.Network.LocalName, C4STRM_Listener, NULL, &pStrm, C4PORT_Input);
     if (iResult == C4STRM_Ok) {
       // Wait for handler thread to take over new stream
       while (pInstance->NewStream)
@@ -103,9 +101,7 @@ DWORD WINAPI C4InputHandler::HostThreadFunction(void *lpPar) {
   return 123;
 }
 
-void C4InputHandler::Message(WORD idMsg, const char *szMsgPar) {
-  PostMessage(hWnd, WM_USER_LOG, idMsg, (LPARAM)szMsgPar);
-}
+void C4InputHandler::Message(WORD idMsg, const char *szMsgPar) { PostMessage(hWnd, WM_USER_LOG, idMsg, (LPARAM)szMsgPar); }
 
 int C4InputHandler::Run() {
   C4InputStream *pStrm, *pPrev, *pNext;

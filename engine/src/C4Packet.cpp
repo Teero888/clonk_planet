@@ -144,9 +144,7 @@ BOOL C4Packet::GetStatic(int iIndex, C4Packet &rPacket) {
     pHeader = (C4PacketHeader *)pData;
     // Set static packet & return
     if (cIndex == iIndex) {
-      rPacket.Set(pHeader->Type,
-                  pHeader->Size ? pData + sizeof(C4PacketHeader) : NULL,
-                  pHeader->Size);
+      rPacket.Set(pHeader->Type, pHeader->Size ? pData + sizeof(C4PacketHeader) : NULL, pHeader->Size);
       return TRUE;
     }
     // Advance to next packet

@@ -4,22 +4,16 @@
 
 const DWORD C4D_None = 0, C4D_All = ~C4D_None,
 
-            C4D_StaticBack = 1 << 0, C4D_Structure = 1 << 1,
-            C4D_Vehicle = 1 << 2, C4D_Living = 1 << 3, C4D_Object = 1 << 4,
+            C4D_StaticBack = 1 << 0, C4D_Structure = 1 << 1, C4D_Vehicle = 1 << 2, C4D_Living = 1 << 3, C4D_Object = 1 << 4,
 
-            C4D_SortLimit = C4D_StaticBack | C4D_Structure | C4D_Vehicle |
-                            C4D_Living | C4D_Object,
+            C4D_SortLimit = C4D_StaticBack | C4D_Structure | C4D_Vehicle | C4D_Living | C4D_Object,
 
             C4D_Goal = 1 << 5, C4D_Environment = 1 << 6,
 
-            C4D_SelectBuilding = 1 << 7, C4D_SelectVehicle = 1 << 8,
-            C4D_SelectMaterial = 1 << 9, C4D_SelectKnowledge = 1 << 10,
-            C4D_SelectHomebase = 1 << 11, C4D_SelectAnimal = 1 << 12,
-            C4D_SelectNest = 1 << 13, C4D_SelectInEarth = 1 << 14,
-            C4D_SelectVegetation = 1 << 15,
+            C4D_SelectBuilding = 1 << 7, C4D_SelectVehicle = 1 << 8, C4D_SelectMaterial = 1 << 9, C4D_SelectKnowledge = 1 << 10, C4D_SelectHomebase = 1 << 11, C4D_SelectAnimal = 1 << 12,
+            C4D_SelectNest = 1 << 13, C4D_SelectInEarth = 1 << 14, C4D_SelectVegetation = 1 << 15,
 
-            C4D_TradeLiving = 1 << 16, C4D_Magic = 1 << 17,
-            C4D_CrewMember = 1 << 18,
+            C4D_TradeLiving = 1 << 16, C4D_Magic = 1 << 17, C4D_CrewMember = 1 << 18,
 
             C4D_Rule = 1 << 19;
 
@@ -27,31 +21,18 @@ const DWORD C4D_Grab_Put = 1, C4D_Grab_Get = 2,
 
             C4D_Border_Sides = 1, C4D_Border_Top = 2, C4D_Border_Bottom = 4,
 
-            C4D_Line_Power = 1, C4D_Line_Source = 2, C4D_Line_Drain = 3,
-            C4D_Line_Lightning = 4, C4D_Line_Volcano = 5, C4D_Line_Rope = 6,
-            C4D_Line_Colored = 7, C4D_Line_Vertex = 8,
+            C4D_Line_Power = 1, C4D_Line_Source = 2, C4D_Line_Drain = 3, C4D_Line_Lightning = 4, C4D_Line_Volcano = 5, C4D_Line_Rope = 6, C4D_Line_Colored = 7, C4D_Line_Vertex = 8,
 
-            C4D_Power_Input = 1, C4D_Power_Output = 2, C4D_Liquid_Input = 4,
-            C4D_Liquid_Output = 8, C4D_Power_Generator = 16,
-            C4D_Power_Consumer = 32, C4D_Liquid_Pump = 64,
-            C4D_Connect_Rope = 128,
+            C4D_Power_Input = 1, C4D_Power_Output = 2, C4D_Liquid_Input = 4, C4D_Liquid_Output = 8, C4D_Power_Generator = 16, C4D_Power_Consumer = 32, C4D_Liquid_Pump = 64, C4D_Connect_Rope = 128,
 
             C4D_Place_Surface = 0, C4D_Place_Liquid = 1, C4D_Place_Air = 2;
 
-const DWORD C4D_VehicleControl_None = 0, C4D_VehicleControl_Outside = 1,
-            C4D_VehicleControl_Inside = 2;
+const DWORD C4D_VehicleControl_None = 0, C4D_VehicleControl_Outside = 1, C4D_VehicleControl_Inside = 2;
 
-const DWORD C4D_Sell = C4D_StaticBack | C4D_Structure | C4D_Vehicle |
-                       C4D_Object | C4D_TradeLiving,
-            C4D_Get = C4D_Sell, C4D_Take = C4D_Get, C4D_Activate = C4D_Get;
+const DWORD C4D_Sell = C4D_StaticBack | C4D_Structure | C4D_Vehicle | C4D_Object | C4D_TradeLiving, C4D_Get = C4D_Sell, C4D_Take = C4D_Get, C4D_Activate = C4D_Get;
 
-const DWORD C4D_Load_None = 0, C4D_Load_Picture = 1, C4D_Load_Bitmap = 2,
-            C4D_Load_Script = 4, C4D_Load_Desc = 8, C4D_Load_ActMap = 16,
-            C4D_Load_Image = 32, C4D_Load_Sounds = 64,
-            C4D_Load_FE = C4D_Load_Image | C4D_Load_Desc,
-            C4D_Load_RX = C4D_Load_Bitmap | C4D_Load_Script | C4D_Load_Desc |
-                          C4D_Load_ActMap | C4D_Load_Sounds,
-            C4D_Load_Temporary = 512;
+const DWORD C4D_Load_None = 0, C4D_Load_Picture = 1, C4D_Load_Bitmap = 2, C4D_Load_Script = 4, C4D_Load_Desc = 8, C4D_Load_ActMap = 16, C4D_Load_Image = 32, C4D_Load_Sounds = 64,
+            C4D_Load_FE = C4D_Load_Image | C4D_Load_Desc, C4D_Load_RX = C4D_Load_Bitmap | C4D_Load_Script | C4D_Load_Desc | C4D_Load_ActMap | C4D_Load_Sounds, C4D_Load_Temporary = 512;
 
 const int ActIdle = -1;
 const int ActHold = -2;
@@ -198,15 +179,13 @@ public:
   void Clear();
   void Default();
   void Draw(C4Facet &cgo, BOOL fSelected = FALSE, int iColor = 0);
-  BOOL Load(C4Group &hGroup, DWORD dwLoadWhat, const char *szLanguage,
-            C4SoundSystem *pSoundSystem = NULL);
+  BOOL Load(C4Group &hGroup, DWORD dwLoadWhat, const char *szLanguage, C4SoundSystem *pSoundSystem = NULL);
 
 protected:
   BOOL ColorizeByMaterial(C4MaterialMap &rMats, BYTE bGBM);
   BOOL LoadActMap(C4Group &hGroup);
   void CrossMapActMap();
-  BOOL DecompileActMap(C4ActionDef *pC4A, int iActNum, char **ppOutput,
-                       int *ipSize);
+  BOOL DecompileActMap(C4ActionDef *pC4A, int iActNum, char **ppOutput, int *ipSize);
   BOOL CompileActMap(const char *szSource, C4ActionDef *pC4A, int iActNum);
 };
 
@@ -225,19 +204,10 @@ public:
   void ResolveIncludes();
   void Default();
   void Clear();
-  int Load(C4Group &hGroup, DWORD dwLoadWhat, const char *szLanguage,
-           C4SoundSystem *pSoundSystem = NULL, BOOL fOverload = FALSE,
-           BOOL fSearchMessage = FALSE);
-  int Load(const char *szSearch, DWORD dwLoadWhat, const char *szLanguage,
-           C4SoundSystem *pSoundSystem = NULL, BOOL fOverload = FALSE);
-  int LoadFolderLocal(const char *szPath, DWORD dwLoadWhat,
-                      const char *szLanguage,
-                      C4SoundSystem *pSoundSystem = NULL,
-                      BOOL fOverload = FALSE, char *szStoreName = NULL);
-  int LoadForScenario(const char *szScenario, const char *szSpecified,
-                      DWORD dwLoadWhat, const char *szLanguage,
-                      C4SoundSystem *pSoundSystem = NULL,
-                      BOOL fOverload = FALSE);
+  int Load(C4Group &hGroup, DWORD dwLoadWhat, const char *szLanguage, C4SoundSystem *pSoundSystem = NULL, BOOL fOverload = FALSE, BOOL fSearchMessage = FALSE);
+  int Load(const char *szSearch, DWORD dwLoadWhat, const char *szLanguage, C4SoundSystem *pSoundSystem = NULL, BOOL fOverload = FALSE);
+  int LoadFolderLocal(const char *szPath, DWORD dwLoadWhat, const char *szLanguage, C4SoundSystem *pSoundSystem = NULL, BOOL fOverload = FALSE, char *szStoreName = NULL);
+  int LoadForScenario(const char *szScenario, const char *szSpecified, DWORD dwLoadWhat, const char *szLanguage, C4SoundSystem *pSoundSystem = NULL, BOOL fOverload = FALSE);
   C4Def *ID2Def(C4ID id);
   C4Def *GetDef(int Index, DWORD dwCategory = C4D_All);
   int GetDefCount(DWORD dwCategory = C4D_All);
@@ -248,8 +218,7 @@ public:
   void Draw(C4ID id, C4Facet &cgo, BOOL fSelected, int iColor);
   void Remove(C4Def *def);
   BOOL Remove(C4ID id);
-  BOOL Reload(C4Def *pDef, DWORD dwLoadWhat, const char *szLanguage,
-              C4SoundSystem *pSoundSystem = NULL);
+  BOOL Reload(C4Def *pDef, DWORD dwLoadWhat, const char *szLanguage, C4SoundSystem *pSoundSystem = NULL);
   BOOL Add(C4Def *ndef, BOOL fOverload);
 };
 

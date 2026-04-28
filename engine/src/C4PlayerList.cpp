@@ -51,8 +51,7 @@ BOOL C4PlayerList::Hostile(int iPlayer1, int iPlayer2) {
     return FALSE;
   if (pPlr1->Number == pPlr2->Number)
     return FALSE;
-  if (pPlr1->Hostility.GetIDCount(pPlr2->Number + 1) ||
-      pPlr2->Hostility.GetIDCount(pPlr1->Number + 1))
+  if (pPlr1->Hostility.GetIDCount(pPlr2->Number + 1) || pPlr2->Hostility.GetIDCount(pPlr1->Number + 1))
     return TRUE;
   return FALSE;
 }
@@ -167,8 +166,7 @@ BOOL C4PlayerList::Remove(C4Player *pPlr) {
   return TRUE;
 }
 
-C4Player *C4PlayerList::Join(const char *szFilename, BOOL fScenarioInit,
-                             int iAtClient, const char *szAtClientName) {
+C4Player *C4PlayerList::Join(const char *szFilename, BOOL fScenarioInit, int iAtClient, const char *szAtClientName) {
 
   // Log
   sprintf(OSTR, LoadResStr(IDS_PRC_JOINPLR), szFilename);
@@ -201,8 +199,7 @@ C4Player *C4PlayerList::Join(const char *szFilename, BOOL fScenarioInit,
     First = pPlr;
 
   // Init
-  if (!pPlr->Init(GetFreeNumber(), iAtClient, szAtClientName, szFilename,
-                  fScenarioInit)) {
+  if (!pPlr->Init(GetFreeNumber(), iAtClient, szAtClientName, szFilename, fScenarioInit)) {
     Remove(pPlr);
     Log(LoadResStr(IDS_PRC_JOINFAIL));
     return NULL;

@@ -34,11 +34,8 @@ protected:
   C4ThreadError Error;
 
 public:
-  long Execute(C4Thread *pCaller, const char *szScript, const char *szFunction,
-               const char *cpPosition, C4Object *pObj, long par0 = 0,
-               long par1 = 0, long par2 = 0, long par3 = 0, long par4 = 0,
-               long par5 = 0, long par6 = 0, long par7 = 0, long par8 = 0,
-               long par9 = 0);
+  long Execute(C4Thread *pCaller, const char *szScript, const char *szFunction, const char *cpPosition, C4Object *pObj, long par0 = 0, long par1 = 0, long par2 = 0, long par3 = 0, long par4 = 0,
+               long par5 = 0, long par6 = 0, long par7 = 0, long par8 = 0, long par9 = 0);
   void SetError(const char *szMessage);
 
 protected:

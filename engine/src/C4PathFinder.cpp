@@ -29,17 +29,13 @@
 
 #include <C4Include.h>
 
-const int C4PF_MaxDepth = 35, C4PF_MaxCrawl = 800, C4PF_MaxRay = 350,
-          C4PF_Threshold = 10,
+const int C4PF_MaxDepth = 35, C4PF_MaxCrawl = 800, C4PF_MaxRay = 350, C4PF_Threshold = 10,
 
-          C4PF_Direction_Left = -1, C4PF_Direction_Right = +1,
-          C4PF_Direction_None = 0,
+          C4PF_Direction_Left = -1, C4PF_Direction_Right = +1, C4PF_Direction_None = 0,
 
-          C4PF_Ray_Launch = 0, C4PF_Ray_Crawl = 1, C4PF_Ray_Still = 2,
-          C4PF_Ray_Failure = 3, C4PF_Ray_Deleted = 4,
+          C4PF_Ray_Launch = 0, C4PF_Ray_Crawl = 1, C4PF_Ray_Still = 2, C4PF_Ray_Failure = 3, C4PF_Ray_Deleted = 4,
 
-          C4PF_Crawl_NoAttach = 0, C4PF_Crawl_Top = 1, C4PF_Crawl_Right = 2,
-          C4PF_Crawl_Bottom = 3, C4PF_Crawl_Left = 4,
+          C4PF_Crawl_NoAttach = 0, C4PF_Crawl_Top = 1, C4PF_Crawl_Right = 2, C4PF_Crawl_Bottom = 3, C4PF_Crawl_Left = 4,
 
           C4PF_Draw_Rate = 10;
 
@@ -94,8 +90,7 @@ BOOL C4PathFinderRay::Execute() {
           break;
         }
         // Launch new ray (continue direction of entrance ray)
-        if (!pPathFinder->AddRay(X2, Y2, TargetX, TargetY, Depth + 1, Direction,
-                                 this)) {
+        if (!pPathFinder->AddRay(X2, Y2, TargetX, TargetY, Depth + 1, Direction, this)) {
           Status = C4PF_Ray_Failure;
           break;
         }
@@ -120,8 +115,7 @@ BOOL C4PathFinderRay::Execute() {
       if (!pZone->At(X, Y))
         pZone->GetEntryPoint(X2, Y2, X2, Y2);
       // Add use-zone ray
-      if (!pPathFinder->AddRay(X2, Y2, TargetX, TargetY, Depth + 1, Direction,
-                               this, pZone)) {
+      if (!pPathFinder->AddRay(X2, Y2, TargetX, TargetY, Depth + 1, Direction, this, pZone)) {
         Status = C4PF_Ray_Failure;
         break;
       }
@@ -161,8 +155,7 @@ BOOL C4PathFinderRay::Execute() {
       break;
     }
     // Back at crawl starting position: done and still
-    if ((X2 == CrawlStartX) && (Y2 == CrawlStartY) &&
-        (CrawlAttach == CrawlStartAttach)) {
+    if ((X2 == CrawlStartX) && (Y2 == CrawlStartY) && (CrawlAttach == CrawlStartAttach)) {
       Status = C4PF_Ray_Still;
       break;
     }
@@ -174,8 +167,7 @@ BOOL C4PathFinderRay::Execute() {
           iX = X2;
           iY = Y2;
           if (pZone->GetEntryPoint(iX, iY, X2, Y2))
-            if (!pPathFinder->AddRay(iX, iY, TargetX, TargetY, Depth + 1,
-                                     Direction, this, pZone)) {
+            if (!pPathFinder->AddRay(iX, iY, TargetX, TargetY, Depth + 1, Direction, this, pZone)) {
               Status = C4PF_Ray_Failure;
               break;
             }
@@ -206,16 +198,11 @@ BOOL C4PathFinderRay::Execute() {
       if (PathFree(iX, iY, TargetX, TargetY)
           // ...or at least beyond threshold and not backwards toward crawl
           // start
-          || ((Distance(iX, iY, X2, Y2) > C4PF_Threshold) &&
-              (Distance(iX, iY, CrawlStartX, CrawlStartY) >
-               Distance(X2, Y2, CrawlStartX, CrawlStartY)))) {
+          || ((Distance(iX, iY, X2, Y2) > C4PF_Threshold) && (Distance(iX, iY, CrawlStartX, CrawlStartY) > Distance(X2, Y2, CrawlStartX, CrawlStartY)))) {
         // Still
         Status = C4PF_Ray_Still;
         // Launch new rays
-        if (!pPathFinder->AddRay(X2, Y2, TargetX, TargetY, Depth + 1,
-                                 C4PF_Direction_Left, this) ||
-            !pPathFinder->AddRay(X2, Y2, TargetX, TargetY, Depth + 1,
-                                 C4PF_Direction_Right, this)) {
+        if (!pPathFinder->AddRay(X2, Y2, TargetX, TargetY, Depth + 1, C4PF_Direction_Left, this) || !pPathFinder->AddRay(X2, Y2, TargetX, TargetY, Depth + 1, C4PF_Direction_Right, this)) {
           Status = C4PF_Ray_Failure;
           break;
         }
@@ -256,36 +243,23 @@ void C4PathFinderRay::Draw(C4FacetEx &cgo) {
   if (Status == C4PF_Ray_Crawl) {
     int iX = 0, iY = 0;
     CrawlToAttach(iX, iY, CrawlAttach);
-    lpDDraw->DrawLine(cgo.Surface, cgo.X + X2 - cgo.TargetX,
-                      cgo.Y + Y2 - cgo.TargetY,
-                      cgo.X + X2 - cgo.TargetX + 7 * iX,
-                      cgo.Y + Y2 - cgo.TargetY + 7 * iY, CRed);
+    lpDDraw->DrawLine(cgo.Surface, cgo.X + X2 - cgo.TargetX, cgo.Y + Y2 - cgo.TargetY, cgo.X + X2 - cgo.TargetX + 7 * iX, cgo.Y + Y2 - cgo.TargetY + 7 * iY, CRed);
     // sprintf(OSTR,"%d",Depth);
     // lpDDraw->TextOut(OSTR,cgo.Surface,cgo.X+X2-cgo.TargetX,cgo.Y+Y2-cgo.TargetY+20,CGray4);
   }
 
   // Ray line
-  lpDDraw->DrawLine(cgo.Surface, cgo.X + X - cgo.TargetX,
-                    cgo.Y + Y - cgo.TargetY, cgo.X + X2 - cgo.TargetX,
-                    cgo.Y + Y2 - cgo.TargetY, byColor);
+  lpDDraw->DrawLine(cgo.Surface, cgo.X + X - cgo.TargetX, cgo.Y + Y - cgo.TargetY, cgo.X + X2 - cgo.TargetX, cgo.Y + Y2 - cgo.TargetY, byColor);
 
   // Crawler point
-  lpDDraw->DrawFrame(cgo.Surface, cgo.X + X2 - cgo.TargetX - 1,
-                     cgo.Y + Y2 - cgo.TargetY - 1, cgo.X + X2 - cgo.TargetX + 1,
-                     cgo.Y + Y2 - cgo.TargetY + 1,
-                     (Status == C4PF_Ray_Crawl)
-                         ? ((Direction == C4PF_Direction_Left) ? CGreen : CBlue)
-                         : byColor);
+  lpDDraw->DrawFrame(cgo.Surface, cgo.X + X2 - cgo.TargetX - 1, cgo.Y + Y2 - cgo.TargetY - 1, cgo.X + X2 - cgo.TargetX + 1, cgo.Y + Y2 - cgo.TargetY + 1,
+                     (Status == C4PF_Ray_Crawl) ? ((Direction == C4PF_Direction_Left) ? CGreen : CBlue) : byColor);
 
   // Search target point
-  lpDDraw->DrawFrame(cgo.Surface, cgo.X + TargetX - cgo.TargetX - 2,
-                     cgo.Y + TargetY - cgo.TargetY - 2,
-                     cgo.X + TargetX - cgo.TargetX + 2,
-                     cgo.Y + TargetY - cgo.TargetY + 2, CYellow);
+  lpDDraw->DrawFrame(cgo.Surface, cgo.X + TargetX - cgo.TargetX - 2, cgo.Y + TargetY - cgo.TargetY - 2, cgo.X + TargetX - cgo.TargetX + 2, cgo.Y + TargetY - cgo.TargetY + 2, CYellow);
 }
 
-BOOL C4PathFinderRay::PathFree(int &rX, int &rY, int iToX, int iToY,
-                               C4TransferZone **ppZone) {
+BOOL C4PathFinderRay::PathFree(int &rX, int &rY, int iToX, int iToY, C4TransferZone **ppZone) {
   int d, dx, dy, aincr, bincr, xincr, yincr, x, y;
   // Y based
   if (Abs(iToX - rX) < Abs(iToY - rY)) {
@@ -434,27 +408,21 @@ void C4PathFinderRay::SetCompletePath() {
   for (pRay = this; pRay->From; pRay = pRay->From) {
     // Transfer waypoint
     if (pRay->UseZone)
-      pPathFinder->SetWaypoint(pRay->X2, pRay->Y2, (long)pRay->UseZone->Object,
-                               pPathFinder->WaypointParameter);
+      pPathFinder->SetWaypoint(pRay->X2, pRay->Y2, (long)pRay->UseZone->Object, pPathFinder->WaypointParameter);
     // MoveTo waypoint
     else
-      pPathFinder->SetWaypoint(pRay->From->X2, pRay->From->Y2, NULL,
-                               pPathFinder->WaypointParameter);
+      pPathFinder->SetWaypoint(pRay->From->X2, pRay->From->Y2, NULL, pPathFinder->WaypointParameter);
   }
 }
 
-BOOL C4PathFinderRay::PointFree(int iX, int iY) {
-  return pPathFinder->PointFree(iX, iY);
-}
+BOOL C4PathFinderRay::PointFree(int iX, int iY) { return pPathFinder->PointFree(iX, iY); }
 
-BOOL C4PathFinderRay::CrawlTargetFree(int iX, int iY, int iAttach,
-                                      int iDirection) {
+BOOL C4PathFinderRay::CrawlTargetFree(int iX, int iY, int iAttach, int iDirection) {
   CrawlByAttach(iX, iY, iAttach, iDirection);
   return PointFree(iX, iY);
 }
 
-void C4PathFinderRay::CrawlByAttach(int &rX, int &rY, int iAttach,
-                                    int iDirection) {
+void C4PathFinderRay::CrawlByAttach(int &rX, int &rY, int iAttach, int iDirection) {
   switch (iAttach) {
   case C4PF_Crawl_Top:
     rX += iDirection;
@@ -600,8 +568,7 @@ void C4PathFinder::Clear() {
   FirstRay = NULL;
 }
 
-void C4PathFinder::Init(BOOL (*fnPointFree)(int, int),
-                        C4TransferZones *pTransferZones) {
+void C4PathFinder::Init(BOOL (*fnPointFree)(int, int), C4TransferZones *pTransferZones) {
   // Set data
   PointFree = fnPointFree;
   TransferZones = pTransferZones;
@@ -628,8 +595,7 @@ BOOL C4PathFinder::Execute() {
   // Execute & count rays
   BOOL fContinue = FALSE;
   int iRays = 0;
-  for (C4PathFinderRay *pRay = FirstRay; pRay && !Success;
-       pRay = pRay->Next, iRays++)
+  for (C4PathFinderRay *pRay = FirstRay; pRay && !Success; pRay = pRay->Next, iRays++)
     if (pRay->Execute())
       fContinue = TRUE;
 
@@ -652,9 +618,7 @@ BOOL C4PathFinder::Execute() {
   return fContinue;
 }
 
-BOOL C4PathFinder::Find(int iFromX, int iFromY, int iToX, int iToY,
-                        BOOL (*fnSetWaypoint)(int, int, int, int),
-                        int iWaypointParameter) {
+BOOL C4PathFinder::Find(int iFromX, int iFromY, int iToX, int iToY, BOOL (*fnSetWaypoint)(int, int, int, int), int iWaypointParameter) {
 
   // Prepare
   Clear();
@@ -682,9 +646,7 @@ BOOL C4PathFinder::Find(int iFromX, int iFromY, int iToX, int iToY,
   return Success;
 }
 
-BOOL C4PathFinder::AddRay(int iFromX, int iFromY, int iToX, int iToY,
-                          int iDepth, int iDirection, C4PathFinderRay *pFrom,
-                          C4TransferZone *pUseZone) {
+BOOL C4PathFinder::AddRay(int iFromX, int iFromY, int iToX, int iToY, int iDepth, int iDirection, C4PathFinderRay *pFrom, C4TransferZone *pUseZone) {
   // Max depth
   if (iDepth >= C4PF_MaxDepth)
     return FALSE;

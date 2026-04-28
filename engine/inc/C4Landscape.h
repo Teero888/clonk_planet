@@ -49,10 +49,8 @@ public:
   void UnLockQBA();
   void CheckInstabilityRange(int tx, int ty);
   void ShakeFree(int tx, int ty, int rad);
-  void DigFree(int tx, int ty, int rad, BOOL fRequest = FALSE,
-               C4Object *pByObj = NULL);
-  void DigFreeRect(int tx, int ty, int wdt, int hgt, BOOL fRequest = FALSE,
-                   C4Object *pByObj = NULL);
+  void DigFree(int tx, int ty, int rad, BOOL fRequest = FALSE, C4Object *pByObj = NULL);
+  void DigFreeRect(int tx, int ty, int wdt, int hgt, BOOL fRequest = FALSE, C4Object *pByObj = NULL);
   void DigFreeMat(int tx, int ty, int wdt, int hgt, int mat);
   void BlastFree(int tx, int ty, int rad, int grade);
   void DrawMaterialRect(int mat, int tx, int ty, int wdt, int hgt);
@@ -74,12 +72,9 @@ public:
   BOOL FindMatPath(int &fx, int &fy, int ydir, int mdens, int mslide);
   BOOL FindMatSlide(int &fx, int &fy, int ydir, int mdens, int mslide);
   BOOL Incinerate(int x, int y);
-  BOOL DrawBrush(int iX, int iY, int iGrade, const char *szMaterial,
-                 const char *szTexture, BOOL fIFT);
-  BOOL DrawLine(int iX1, int iY1, int iX2, int iY2, int iGrade,
-                const char *szMaterial, const char *szTexture, BOOL fIFT);
-  BOOL DrawBox(int iX1, int iY1, int iX2, int iY2, int iGrade,
-               const char *szMaterial, const char *szTexture, BOOL fIFT);
+  BOOL DrawBrush(int iX, int iY, int iGrade, const char *szMaterial, const char *szTexture, BOOL fIFT);
+  BOOL DrawLine(int iX1, int iY1, int iX2, int iY2, int iGrade, const char *szMaterial, const char *szTexture, BOOL fIFT);
+  BOOL DrawBox(int iX1, int iY1, int iX2, int iY2, int iGrade, const char *szMaterial, const char *szTexture, BOOL fIFT);
   BYTE GetPix(int x, int y);
   int DigFreePix(int tx, int ty);
   int ShakeFreePix(int tx, int ty);
@@ -91,27 +86,15 @@ public:
 protected:
   void ClearColorPattern();
   void ExecuteScan();
-  void DrawChunk(SURFACE sfcTarget, int tx, int ty, int wdt, int hgt, int mcol,
-                 BYTE top_rough, BYTE side_rough);
-  void DrawSmoothOChunk(SURFACE sfcTarget, int tx, int ty, int wdt, int hgt,
-                        int mcol, BYTE flip);
-  void ChunkOZoom(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
-                  int iMapHgt, SURFACE sfcLandscape, int iTexture,
-                  int iMaterial);
-  BOOL SetColorPattern(const char *szMaterial, const char *szTexture, BOOL fIFT,
-                       BYTE &rbyCol);
-  BOOL GetTexUsage(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
-                   int iMapHgt, DWORD *dwpTextureUsage);
-  BOOL TexOZoom(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt, int iMapHgt,
-                SURFACE sfcLandscape, DWORD *dwpTextureUsage,
-                C4TextureMap &rTextureMap);
-  BOOL MapToLandscape(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
-                      int iMapHgt, SURFACE sfcLandscape,
-                      C4TextureMap &rTextureMap, BOOL fStaticChunks = FALSE);
-  BOOL GetMapColorIndex(const char *szMaterial, const char *szTexture,
-                        BOOL fIFT, BYTE &rbyCol);
-  BOOL SkyToLandscape(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt,
-                      int iMapHgt, SURFACE sfcLandscape);
+  void DrawChunk(SURFACE sfcTarget, int tx, int ty, int wdt, int hgt, int mcol, BYTE top_rough, BYTE side_rough);
+  void DrawSmoothOChunk(SURFACE sfcTarget, int tx, int ty, int wdt, int hgt, int mcol, BYTE flip);
+  void ChunkOZoom(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt, int iMapHgt, SURFACE sfcLandscape, int iTexture, int iMaterial);
+  BOOL SetColorPattern(const char *szMaterial, const char *szTexture, BOOL fIFT, BYTE &rbyCol);
+  BOOL GetTexUsage(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt, int iMapHgt, DWORD *dwpTextureUsage);
+  BOOL TexOZoom(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt, int iMapHgt, SURFACE sfcLandscape, DWORD *dwpTextureUsage, C4TextureMap &rTextureMap);
+  BOOL MapToLandscape(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt, int iMapHgt, SURFACE sfcLandscape, C4TextureMap &rTextureMap, BOOL fStaticChunks = FALSE);
+  BOOL GetMapColorIndex(const char *szMaterial, const char *szTexture, BOOL fIFT, BYTE &rbyCol);
+  BOOL SkyToLandscape(SURFACE sfcMap, int iMapX, int iMapY, int iMapWdt, int iMapHgt, SURFACE sfcLandscape);
   SURFACE CreateMap(C4TextureMap &rTextureMap);
 };
 
@@ -124,11 +107,8 @@ BOOL FindSolidGround(long &rx, long &ry, int width);
 BOOL FindLiquid(long &rx, long &ry, int width, int height);
 BOOL FindSurfaceLiquid(long &rx, long &ry, int width, int height);
 BOOL FindLevelGround(long &rx, long &ry, int width, int hrange);
-BOOL FindConSiteSpot(long &rx, long &ry, int wdt, int hgt, DWORD category,
-                     int hrange = -1);
-BOOL FindThrowingPosition(int iTx, int iTy, FIXED fXDir, FIXED fYDir,
-                          int iHeight, long &rX, long &rY);
+BOOL FindConSiteSpot(long &rx, long &ry, int wdt, int hgt, DWORD category, int hrange = -1);
+BOOL FindThrowingPosition(int iTx, int iTy, FIXED fXDir, FIXED fYDir, int iHeight, long &rX, long &rY);
 BOOL PathFree(int x1, int y1, int x2, int y2, int *ix = NULL, int *iy = NULL);
-BOOL FindClosestFree(long &rX, long &rY, int iAngle1, int iAngle2,
-                     int iExcludeAngle1, int iExcludeAngle2);
+BOOL FindClosestFree(long &rX, long &rY, int iAngle1, int iAngle2, int iExcludeAngle1, int iExcludeAngle2);
 BOOL ConstructionCheck(C4ID id, int iX, int iY, C4Object *pByObj = NULL);

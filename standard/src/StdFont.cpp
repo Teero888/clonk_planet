@@ -136,12 +136,8 @@ BOOL CStdFont::Init(HDC hdc, const char *szFontname, int iSize) {
   BYTE byColorIndex[FNT_MaxCol] = {31, 16, 39, 47, 55, 63, 71, 79, 87, 95};
 
   // Attempt to load a TrueType font
-  const char *fontPaths[] = {
-      "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-      "/usr/share/fonts/TTF/DejaVuSans.ttf",
-      "/usr/share/fonts/liberation/LiberationSans-Regular.ttf",
-      "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
-      "C:\\Windows\\Fonts\\arial.ttf"};
+  const char *fontPaths[] = {"/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", "/usr/share/fonts/TTF/DejaVuSans.ttf", "/usr/share/fonts/liberation/LiberationSans-Regular.ttf",
+                             "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf", "C:\\Windows\\Fonts\\arial.ttf"};
 
   std::vector<uint8_t> ttf_buffer;
   bool loaded = false;
@@ -189,19 +185,16 @@ BOOL CStdFont::Init(HDC hdc, const char *szFontname, int iSize) {
         int cy = col * (fontHgt + 2);
         for (int i = 0; i < FNT_MaxChar; i++) {
           int x1, y1, x2, y2;
-          stbtt_GetCodepointBitmapBox(&font, i, scale, scale, &x1, &y1, &x2,
-                                      &y2);
+          stbtt_GetCodepointBitmapBox(&font, i, scale, scale, &x1, &y1, &x2, &y2);
           int charW = x2 - x1;
           int charH = y2 - y1;
           if (charW > 0 && charH > 0) {
             std::vector<uint8_t> bitmap(charW * charH);
-            stbtt_MakeCodepointBitmap(&font, bitmap.data(), charW, charH, charW,
-                                      scale, scale, i);
+            stbtt_MakeCodepointBitmap(&font, bitmap.data(), charW, charH, charW, scale, scale, i);
             for (int by = 0; by < charH; by++) {
               for (int bx = 0; bx < charW; bx++) {
                 if (bitmap[by * charW + bx] > 128) {
-                  Surface.Pix(cx + x1 + bx, cy + baseline + y1 + by,
-                              byColorIndex[col]);
+                  Surface.Pix(cx + x1 + bx, cy + baseline + y1 + by, byColorIndex[col]);
                 }
               }
             }
@@ -241,8 +234,7 @@ BOOL CStdFont::Init(HDC hdc, const char *szFontname, int iSize) {
   return TRUE;
 }
 
-HFONT CStdFont::CreateFont(HDC hdc, const char *szFacename, int iPtHeight,
-                           int iAttributes) {
+HFONT CStdFont::CreateFont(HDC hdc, const char *szFacename, int iPtHeight, int iAttributes) {
   HFONT hFont;
   LOGFONT lf;
   SaveDC(hdc);
@@ -269,16 +261,13 @@ HFONT CStdFont::CreateFont(HDC hdc, const char *szFacename, int iPtHeight,
   return hFont;
 }
 
-BOOL CStdFont::CharOut(BYTE chChar, SURFACE sfcSurface, int iX, int iY,
-                       int iColor) {
+BOOL CStdFont::CharOut(BYTE chChar, SURFACE sfcSurface, int iX, int iY, int iColor) {
   if (iColor != FTrans)
-    Character[chChar].Draw(sfcSurface, iX, iY, 0,
-                           BoundBy(iColor, 0, FNT_MaxCol - 1));
+    Character[chChar].Draw(sfcSurface, iX, iY, 0, BoundBy(iColor, 0, FNT_MaxCol - 1));
   return TRUE;
 }
 
-BOOL CStdFont::StringOut(const char *szText, SURFACE sfcDest, int iTx, int iTy,
-                         int iFCol, int iBCol, BYTE byForm) {
+BOOL CStdFont::StringOut(const char *szText, SURFACE sfcDest, int iTx, int iTy, int iFCol, int iBCol, BYTE byForm) {
   if (!szText)
     return FALSE;
   // Alignment
@@ -329,11 +318,9 @@ int CStdFont::GetTextHeight(const char *szText) {
   return iMaxHeight * iLines;
 }
 
-BOOL CStdFont::TextOut(const char *szText, SURFACE sfcDest, int iTx, int iTy,
-                       int iFCol, int iBCol, BYTE byForm) {
+BOOL CStdFont::TextOut(const char *szText, SURFACE sfcDest, int iTx, int iTy, int iFCol, int iBCol, BYTE byForm) {
   static char szLinebuf[2500 + 1];
-  for (int cnt = 0; SCopySegment(szText, cnt, szLinebuf, '|', 2500);
-       cnt++, iTy += GetTextHeight())
+  for (int cnt = 0; SCopySegment(szText, cnt, szLinebuf, '|', 2500); cnt++, iTy += GetTextHeight())
     StringOut(szLinebuf, sfcDest, iTx, iTy, iFCol, iBCol, byForm);
   return TRUE;
 }

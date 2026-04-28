@@ -2,16 +2,14 @@
 
 /* Drawing tools dialog for landscape editing in console mode */
 
-const int C4TLS_Brush = 0, C4TLS_Line = 1, C4TLS_Rect = 2, C4TLS_Fill = 3,
-          C4TLS_Picker = 4;
+const int C4TLS_Brush = 0, C4TLS_Line = 1, C4TLS_Rect = 2, C4TLS_Fill = 3, C4TLS_Picker = 4;
 
 const int C4TLS_GradeMax = 50, C4TLS_GradeMin = 1, C4TLS_GradeDefault = 5;
 
 #define C4TLS_MatSky "Sky"
 
 class C4ToolsDlg {
-  friend BOOL CALLBACK ToolsDlgProc(HWND hDlg, UINT Msg, WPARAM wParam,
-                                    LPARAM lParam);
+  friend BOOL CALLBACK ToolsDlgProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 public:
   C4ToolsDlg();

@@ -18,8 +18,7 @@
 #define _A_SUBDIR 0x10 /* Subdirectory */
 #define _A_ARCH 0x20   /* Archive file */
 
-const DWORD _A_ALL =
-    _A_ARCH | _A_HIDDEN | _A_NORMAL | _A_RDONLY | _A_SUBDIR | _A_SYSTEM;
+const DWORD _A_ALL = _A_ARCH | _A_HIDDEN | _A_NORMAL | _A_RDONLY | _A_SUBDIR | _A_SYSTEM;
 const DWORD _A_ALL_FILES = _A_ALL & ~_A_SUBDIR;
 
 #ifndef _MAX_PATH
@@ -36,8 +35,7 @@ void TruncateBackslash(char *szFilename);
 void MakeTempFilename(char *szFileName);
 BOOL WildcardMatch(const char *szFName1, const char *szFName2);
 BOOL TruncatePath(char *szPath);
-BOOL GetParentPath(const char *szFilename, char *szBuffer,
-                   int iBufferSize = _MAX_PATH);
+BOOL GetParentPath(const char *szFilename, char *szBuffer, int iBufferSize = _MAX_PATH);
 
 int FileAttributes(const char *szFileName);
 BOOL FileExists(const char *szFileName, int *lpAttr = NULL);
@@ -60,13 +58,11 @@ BOOL CopyItem(const char *szSource, const char *szTarget);
 BOOL CreateItem(const char *szItemname);
 BOOL MoveItem(const char *szSource, const char *szTarget);
 
-int ForEachFile(const char *szPath, int lAttrib,
-                BOOL (*fnCallback)(const char *));
+int ForEachFile(const char *szPath, int lAttrib, BOOL (*fnCallback)(const char *));
 
 BOOL LocateInFile(FILE *file, char *index, BYTE wrap = 1, BYTE lbeg = 0);
 BOOL ReadFileLine(FILE *fhnd, char *tobuf, int maxlen);
-BOOL ReadFileInfoLine(FILE *fhnd, char *info, char *tbuf, int maxlen = 256,
-                      int wrap = 1);
+BOOL ReadFileInfoLine(FILE *fhnd, char *info, char *tbuf, int maxlen = 256, int wrap = 1);
 BOOL WriteFileLine(FILE *hfile, const char *szLine);
 DWORD ReadFileUntil(FILE *fhnd, char *tbuf, char smark, int maxlen);
 void AdvanceFileLine(FILE *fhnd);

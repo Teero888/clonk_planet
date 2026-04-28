@@ -152,8 +152,7 @@ void C4Player::Execute() {
     SelectFlash--;
 }
 
-BOOL C4Player::Init(int iNumber, int iAtClient, const char *szAtClientName,
-                    const char *szFilename, BOOL fScenarioInit) {
+BOOL C4Player::Init(int iNumber, int iAtClient, const char *szAtClientName, const char *szFilename, BOOL fScenarioInit) {
 
   // Status init
   Status = TRUE;
@@ -193,8 +192,7 @@ BOOL C4Player::Init(int iNumber, int iAtClient, const char *szAtClientName,
     SCopy(szFilename, Filename);
     // Reset at-client for local players from no-network savegames
     if (AtClient == C4NET_NoClient)
-      if (SEqualNoCase(AtClientName, "Unknown") ||
-          SEqualNoCase(AtClientName, "Local")) {
+      if (SEqualNoCase(AtClientName, "Unknown") || SEqualNoCase(AtClientName, "Local")) {
         AtClient = iAtClient;
         SCopy(szAtClientName, AtClientName, C4MaxTitle);
       }
@@ -305,9 +303,7 @@ void C4Player::PlaceReadyCrew(int tx1, int tx2, int ty, C4Object *FirstBase) {
   else {
     // Place crew
     int id, iCount;
-    for (cnt = 0;
-         id = Game.C4S.PlrStart[PlrStartIndex].ReadyCrew.GetID(cnt, &iCount);
-         cnt++) {
+    for (cnt = 0; id = Game.C4S.PlrStart[PlrStartIndex].ReadyCrew.GetID(cnt, &iCount); cnt++) {
 
       // Minimum one clonk if empty id
       iCount = Max(iCount, 1);
@@ -358,23 +354,17 @@ void C4Player::PlaceReadyBase(int &tx, int &ty, C4Object **pFirstBase) {
   C4ID cid;
   C4Object *cbase, *fpower = NULL;
   // Create ready base structures
-  for (cnt = 0; (cid = Game.C4S.PlrStart[PlrStartIndex].ReadyBase.GetID(cnt));
-       cnt++) {
+  for (cnt = 0; (cid = Game.C4S.PlrStart[PlrStartIndex].ReadyBase.GetID(cnt)); cnt++) {
     if (def = C4Id2Def(cid))
-      for (cnt2 = 0;
-           cnt2 < Game.C4S.PlrStart[PlrStartIndex].ReadyBase.GetCount(cnt);
-           cnt2++) {
+      for (cnt2 = 0; cnt2 < Game.C4S.PlrStart[PlrStartIndex].ReadyBase.GetCount(cnt); cnt2++) {
         ctx = tx;
         cty = ty;
         {
           long lctx = ctx, lcty = cty;
-          if (Game.C4S.PlrStart[PlrStartIndex].EnforcePosition ||
-              FindConSiteSpot(lctx, lcty, def->Shape.Wdt, def->Shape.Hgt,
-                              def->Category, 20)) {
+          if (Game.C4S.PlrStart[PlrStartIndex].EnforcePosition || FindConSiteSpot(lctx, lcty, def->Shape.Wdt, def->Shape.Hgt, def->Category, 20)) {
             ctx = (int)lctx;
             cty = (int)lcty;
-            if (cbase = Game.CreateObjectConstruction(cid, Number, ctx, cty,
-                                                      FullCon, TRUE)) {
+            if (cbase = Game.CreateObjectConstruction(cid, Number, ctx, cty, FullCon, TRUE)) {
               // FirstBase
               if (!(*pFirstBase))
                 if (cbase->Def->CanBeBase) {
@@ -397,8 +387,7 @@ void C4Player::PlaceReadyBase(int &tx, int &ty, C4Object **pFirstBase) {
   C4Object *cobj;
   if (Game.Rules & C4RULE_StructuresNeedEnergy)
     if (fpower)
-      for (clnk = Game.Objects.First; clnk && (cobj = clnk->Obj);
-           clnk = clnk->Next)
+      for (clnk = Game.Objects.First; clnk && (cobj = clnk->Obj); clnk = clnk->Next)
         if (cobj->Owner == Number)
           if (cobj->Def->LineConnect & C4D_Power_Consumer)
             CreatePowerConnection(fpower, cobj);
@@ -409,12 +398,9 @@ void C4Player::PlaceReadyVehic(int tx1, int tx2, int ty, C4Object *FirstBase) {
   C4Def *def;
   C4ID cid;
   C4Object *cobj;
-  for (cnt = 0; (cid = Game.C4S.PlrStart[PlrStartIndex].ReadyVehic.GetID(cnt));
-       cnt++) {
+  for (cnt = 0; (cid = Game.C4S.PlrStart[PlrStartIndex].ReadyVehic.GetID(cnt)); cnt++) {
     if (def = C4Id2Def(cid))
-      for (cnt2 = 0;
-           cnt2 < Game.C4S.PlrStart[PlrStartIndex].ReadyVehic.GetCount(cnt);
-           cnt2++) {
+      for (cnt2 = 0; cnt2 < Game.C4S.PlrStart[PlrStartIndex].ReadyVehic.GetCount(cnt); cnt2++) {
         ctx = tx1 + Random(tx2 - tx1);
         cty = ty;
         if (!Game.C4S.PlrStart[PlrStartIndex].EnforcePosition) {
@@ -434,28 +420,21 @@ void C4Player::PlaceReadyVehic(int tx1, int tx2, int ty, C4Object *FirstBase) {
   }
 }
 
-void C4Player::PlaceReadyMaterial(int tx1, int tx2, int ty,
-                                  C4Object *FirstBase) {
+void C4Player::PlaceReadyMaterial(int tx1, int tx2, int ty, C4Object *FirstBase) {
   int cnt, cnt2, ctx, cty;
   C4Def *def;
   C4ID cid;
 
   // In base
   if (FirstBase) {
-    FirstBase->CreateContentsByList(
-        Game.C4S.PlrStart[PlrStartIndex].ReadyMaterial);
+    FirstBase->CreateContentsByList(Game.C4S.PlrStart[PlrStartIndex].ReadyMaterial);
   }
 
   // Outside
   else {
-    for (cnt = 0;
-         (cid = Game.C4S.PlrStart[PlrStartIndex].ReadyMaterial.GetID(cnt));
-         cnt++) {
+    for (cnt = 0; (cid = Game.C4S.PlrStart[PlrStartIndex].ReadyMaterial.GetID(cnt)); cnt++) {
       if (def = C4Id2Def(cid))
-        for (cnt2 = 0;
-             cnt2 <
-             Game.C4S.PlrStart[PlrStartIndex].ReadyMaterial.GetCount(cnt);
-             cnt2++) {
+        for (cnt2 = 0; cnt2 < Game.C4S.PlrStart[PlrStartIndex].ReadyMaterial.GetCount(cnt); cnt2++) {
           ctx = tx1 + Random(tx2 - tx1);
           cty = ty;
           if (!Game.C4S.PlrStart[PlrStartIndex].EnforcePosition) {
@@ -511,8 +490,7 @@ BOOL C4Player::ScenarioInit() {
     if (Game.StartupPlayerCount >= 2) {
       int iMaxPos = Game.StartupPlayerCount;
       // Map preferred position to available positions
-      int iStartPos =
-          BoundBy(PrefPosition * iMaxPos / C4P_MaxPosition, 0, iMaxPos - 1);
+      int iStartPos = BoundBy(PrefPosition * iMaxPos / C4P_MaxPosition, 0, iMaxPos - 1);
       int iPosition = iStartPos;
       // Distribute according to availability
       while (Game.Players.PositionTaken(iPosition)) {
@@ -522,8 +500,7 @@ BOOL C4Player::ScenarioInit() {
       }
       Position = iPosition;
       // Set x position
-      ptx = BoundBy(16 + Position * (GBackWdt - 32) / (iMaxPos - 1), 0,
-                    GBackWdt - 16);
+      ptx = BoundBy(16 + Position * (GBackWdt - 32) / (iMaxPos - 1), 0, GBackWdt - 16);
     }
 
   // All-random position
@@ -552,8 +529,7 @@ BOOL C4Player::ScenarioInit() {
   PlaceReadyCrew(ptx - 30, ptx + 30, pty, FirstBase);
 
   // Scenario script initialization
-  Game.Script.Call(NULL, PSF_InitializePlayer, Number, ptx, pty,
-                   (long)FirstBase);
+  Game.Script.Call(NULL, PSF_InitializePlayer, Number, ptx, pty, (long)FirstBase);
 
   Game.Landscape.UnLockQBA();
 
@@ -630,8 +606,7 @@ BOOL C4Player::Sell2Home(C4Object *pObj) {
   // Do transaction
   DoWealth(+pObj->GetValue());
   // Barrel handling (hardcoded crap)
-  if ((pObj->Def->id == C4Id("WBRL")) || (pObj->Def->id == C4Id("ABRL")) ||
-      (pObj->Def->id == C4Id("OBRL")) || (pObj->Def->id == C4Id("LBRL")))
+  if ((pObj->Def->id == C4Id("WBRL")) || (pObj->Def->id == C4Id("ABRL")) || (pObj->Def->id == C4Id("OBRL")) || (pObj->Def->id == C4Id("LBRL")))
     pObj->ChangeDef(C4Id("BARL"));
   // Add to homebase material
   HomeBaseMaterial.IncreaseIDCount(pObj->Def->id, pObj->Def->Rebuyable);
@@ -711,9 +686,7 @@ BOOL C4Player::SetHostility(int iOpponent, int iHostility) {
   Hostility.SetIDCount(iOpponent + 1, iHostility, TRUE);
   // Announce
   SoundEffect("Trumpet");
-  sprintf(OSTR,
-          LoadResStr(iHostility ? IDS_PLR_HOSTILITY : IDS_PLR_NOHOSTILITY),
-          Name, Game.Players.Get(iOpponent)->Name);
+  sprintf(OSTR, LoadResStr(iHostility ? IDS_PLR_HOSTILITY : IDS_PLR_NOHOSTILITY), Name, Game.Players.Get(iOpponent)->Name);
   Log(OSTR);
   // Success
   return TRUE;
@@ -811,10 +784,7 @@ void C4Player::DrawHostility(C4FacetEx &cgo, int iIndex) {
     Game.GraphicsResource.fctCrew.Draw(cgo, TRUE, pPlr->Color);
     // Hostility flag
     if (pPlr != this)
-      Game.GraphicsResource.fctFlag.DrawX(
-          cgo.Surface, cgo.X, cgo.Y + cgo.Hgt / 3, 2 * cgo.Wdt / 3,
-          2 * cgo.Hgt / 3,
-          Hostility.GetIDCount(pPlr->Number + 1) ? 1 : C4MaxColor);
+      Game.GraphicsResource.fctFlag.DrawX(cgo.Surface, cgo.X, cgo.Y + cgo.Hgt / 3, 2 * cgo.Wdt / 3, 2 * cgo.Hgt / 3, Hostility.GetIDCount(pPlr->Number + 1) ? 1 : C4MaxColor);
   }
 }
 
@@ -878,15 +848,13 @@ void C4Player::AdjustCursorCommand() {
   for (clnk = Crew.First; clnk && (cobj = clnk->Obj); clnk = clnk->Next)
     if (cobj->Status)
       if (cobj->Select)
-        if (!pHiRank ||
-            (cobj->Info && (cobj->Info->Rank > pHiRank->Info->Rank)))
+        if (!pHiRank || (cobj->Info && (cobj->Info->Rank > pHiRank->Info->Rank)))
           pHiRank = cobj;
   // If none, check non-Selects as well
   if (!pHiRank) {
     for (clnk = Crew.First; clnk && (cobj = clnk->Obj); clnk = clnk->Next)
       if (cobj->Status)
-        if (!pHiRank ||
-            (cobj->Info && (cobj->Info->Rank > pHiRank->Info->Rank)))
+        if (!pHiRank || (cobj->Info && (cobj->Info->Rank > pHiRank->Info->Rank)))
           pHiRank = cobj;
   }
   Cursor = pHiRank;
@@ -1020,8 +988,7 @@ BOOL C4Player::ObjectCom(BYTE byCom, int iData) // By DirectCom
   return TRUE;
 }
 
-BOOL C4Player::ObjectCommand(int iCommand, C4Object *pTarget, int iX, int iY,
-                             C4Object *pTarget2, int iData, int iMode) {
+BOOL C4Player::ObjectCommand(int iCommand, C4Object *pTarget, int iX, int iY, C4Object *pTarget2, int iData, int iMode) {
   // Eliminated
   if (Eliminated)
     return FALSE;
@@ -1038,20 +1005,15 @@ BOOL C4Player::ObjectCommand(int iCommand, C4Object *pTarget, int iX, int iY,
   for (cLnk = Crew.First; cLnk && (cObj = cLnk->Obj); cLnk = cLnk->Next) {
     if (cObj->Status)
       if (cObj->Select)
-        if (!(iMode & C4P_Command_Range) ||
-            (Cursor && Inside(cObj->x - Cursor->x, -15, +15) &&
-             Inside(cObj->y - Cursor->y, -15, +15)))
+        if (!(iMode & C4P_Command_Range) || (Cursor && Inside(cObj->x - Cursor->x, -15, +15) && Inside(cObj->y - Cursor->y, -15, +15)))
           if (cObj != pTarget)
 
             if (iMode & C4P_Command_Append)
-              cObj->AddCommand(iCommand, pTarget, iX, iY, 0, pTarget2, TRUE,
-                               iData, TRUE);
+              cObj->AddCommand(iCommand, pTarget, iX, iY, 0, pTarget2, TRUE, iData, TRUE);
             else if (iMode & C4P_Command_Add)
-              cObj->AddCommand(iCommand, pTarget, iX, iY, 0, pTarget2, TRUE,
-                               iData, FALSE);
+              cObj->AddCommand(iCommand, pTarget, iX, iY, 0, pTarget2, TRUE, iData, FALSE);
             else if (iMode & C4P_Command_Set)
-              cObj->SetCommand(iCommand, pTarget, iX, iY, pTarget2, TRUE,
-                               iData);
+              cObj->SetCommand(iCommand, pTarget, iX, iY, pTarget2, TRUE, iData);
   }
 
   // Success
@@ -1121,8 +1083,7 @@ BOOL C4Player::Compile(const char *szSource, const char *szSecExt) {
 BOOL C4Player::Decompile(char **ppOutput, int *ipSize, const char *szSecExt) {
   C4Compiler Compiler;
   C4Player dC4P;
-  return Compiler.DecompileStructure(C4CR_Player, this, &dC4P, ppOutput, ipSize,
-                                     szSecExt);
+  return Compiler.DecompileStructure(C4CR_Player, this, &dC4P, ppOutput, ipSize, szSecExt);
 }
 
 BOOL C4Player::LoadRuntimeData(C4Group &hGroup) {
@@ -1149,11 +1110,8 @@ void C4Player::ExecHomeBaseProduction() {
     ProductionUnit++;
     for (int cnt = 0; HomeBaseProduction.GetID(cnt); cnt++)
       if (HomeBaseProduction.GetCount(cnt) > 0)
-        if (ProductionUnit %
-                BoundBy(11 - HomeBaseProduction.GetCount(cnt), 1, 10) ==
-            0)
-          if (HomeBaseMaterial.GetIDCount(HomeBaseProduction.GetID(cnt)) <
-              MaxHomeBaseProduction)
+        if (ProductionUnit % BoundBy(11 - HomeBaseProduction.GetCount(cnt), 1, 10) == 0)
+          if (HomeBaseMaterial.GetIDCount(HomeBaseProduction.GetID(cnt)) < MaxHomeBaseProduction)
             HomeBaseMaterial.IncreaseIDCount(HomeBaseProduction.GetID(cnt));
   }
 }
@@ -1273,41 +1231,34 @@ BOOL C4Player::ActivateMenuMain() {
 
   // Goals
   SCopy(LoadResStr(IDS_MENU_CPGOALSINFO), OSTR);
-  Menu.Add(LoadResStr(IDS_MENU_CPGOALS), GfxR->fctMenu.GetPhase(2),
-           "ActivateMenu:Goals", C4MN_Item_NoCount, NULL, 0, OSTR);
+  Menu.Add(LoadResStr(IDS_MENU_CPGOALS), GfxR->fctMenu.GetPhase(2), "ActivateMenu:Goals", C4MN_Item_NoCount, NULL, 0, OSTR);
   // Rules
   SCopy(LoadResStr(IDS_MENU_CPRULESINFO), OSTR);
-  Menu.Add(LoadResStr(IDS_MENU_CPRULES), GfxR->fctMenu.GetPhase(3),
-           "ActivateMenu:Rules", C4MN_Item_NoCount, NULL, 0, OSTR);
+  Menu.Add(LoadResStr(IDS_MENU_CPRULES), GfxR->fctMenu.GetPhase(3), "ActivateMenu:Rules", C4MN_Item_NoCount, NULL, 0, OSTR);
   // Hostility
   if (Game.Players.GetCount() > 1) {
     SCopy(LoadResStr(IDS_MENU_CPATTACKINFO), OSTR);
-    Menu.Add(LoadResStr(IDS_MENU_CPATTACK), GfxR->fctFlag.GetPhase(1),
-             "ActivateMenu:Hostility", C4MN_Item_NoCount, NULL, 0, OSTR);
+    Menu.Add(LoadResStr(IDS_MENU_CPATTACK), GfxR->fctFlag.GetPhase(1), "ActivateMenu:Hostility", C4MN_Item_NoCount, NULL, 0, OSTR);
   }
   // Surrender
   if (Game.Objects.Find(C4Id("SURR"))) {
     SCopy(LoadResStr(IDS_MENU_CPSURRENDERINFO), OSTR);
-    Menu.Add(LoadResStr(IDS_MENU_CPSURRENDER), GfxR->fctSurrender.GetPhase(),
-             "ActivateMenu:Surrender", C4MN_Item_NoCount, NULL, 0, OSTR);
+    Menu.Add(LoadResStr(IDS_MENU_CPSURRENDER), GfxR->fctSurrender.GetPhase(), "ActivateMenu:Surrender", C4MN_Item_NoCount, NULL, 0, OSTR);
   }
   // NewPlayer
   if (Game.Players.GetCount() < Game.C4S.Head.MaxPlayer) {
     SCopy(LoadResStr(IDS_MENU_CPNEWPLAYERINFO), OSTR);
-    Menu.Add(LoadResStr(IDS_MENU_CPNEWPLAYER), GfxR->fctPlayer.GetPhase(),
-             "ActivateMenu:NewPlayer", C4MN_Item_NoCount, NULL, 0, OSTR);
+    Menu.Add(LoadResStr(IDS_MENU_CPNEWPLAYER), GfxR->fctPlayer.GetPhase(), "ActivateMenu:NewPlayer", C4MN_Item_NoCount, NULL, 0, OSTR);
   }
   // Save game
   if (!Game.Network.Active || Game.Network.Host) {
     SCopy(LoadResStr(IDS_MENU_CPSAVEGAMEINFO), OSTR);
-    Menu.Add(LoadResStr(IDS_MENU_CPSAVEGAME), GfxR->fctMenu.GetPhase(0),
-             "Save:Game", C4MN_Item_NoCount, NULL, 0, OSTR);
+    Menu.Add(LoadResStr(IDS_MENU_CPSAVEGAME), GfxR->fctMenu.GetPhase(0), "Save:Game", C4MN_Item_NoCount, NULL, 0, OSTR);
   }
   // Save scenario
   if (!Game.Network.Active || Game.Network.Host) {
     SCopy(LoadResStr(IDS_MENU_CPSAVESCENARIOINFO), OSTR);
-    Menu.Add(LoadResStr(IDS_MENU_CPSAVESCENARIO), GfxR->fctMenu.GetPhase(1),
-             "Save:Scenario", C4MN_Item_NoCount, NULL, 0, OSTR);
+    Menu.Add(LoadResStr(IDS_MENU_CPSAVESCENARIO), GfxR->fctMenu.GetPhase(1), "Save:Scenario", C4MN_Item_NoCount, NULL, 0, OSTR);
   }
 
   // No empty menus
@@ -1340,8 +1291,7 @@ BOOL C4Player::MenuCommand(const char *szCommand) {
   if (SEqual2(szCommand, "SetHostility:")) {
     int iOpponent;
     sscanf(szCommand + 13, "%i", &iOpponent);
-    Game.Input.AddSetHostility(Number, iOpponent,
-                               !Hostility.GetIDCount(iOpponent + 1));
+    Game.Input.AddSetHostility(Number, iOpponent, !Hostility.GetIDCount(iOpponent + 1));
     return TRUE;
   }
   // SurrenderPlayer
@@ -1374,8 +1324,7 @@ BOOL C4Player::ActivateMenuHostility() {
   C4FacetEx fctSymbol;
   fctSymbol.Create(C4SymbolSize, C4SymbolSize);
   GfxR->fctFlag.Draw(fctSymbol, TRUE, 1);
-  Menu.Init(fctSymbol, LoadResStr(IDS_MENU_CPATTACK), Number, C4MN_Extra_None,
-            0, C4MN_Hostility);
+  Menu.Init(fctSymbol, LoadResStr(IDS_MENU_CPATTACK), Number, C4MN_Extra_None, 0, C4MN_Hostility);
   fctSymbol.Default();
   Menu.SetAlignment(C4MN_Align_Left | C4MN_Align_Bottom);
   Menu.SetPermanent(TRUE);
@@ -1385,8 +1334,7 @@ BOOL C4Player::ActivateMenuHostility() {
 
 BOOL C4Player::ActivateMenuSurrender() {
   // Menu symbol/init
-  Menu.Init(GfxR->fctSurrender.GetPhase(), LoadResStr(IDS_MENU_CPSURRENDER),
-            Number);
+  Menu.Init(GfxR->fctSurrender.GetPhase(), LoadResStr(IDS_MENU_CPSURRENDER), Number);
   Menu.SetAlignment(C4MN_Align_Left | C4MN_Align_Bottom);
   // Items
   sprintf(OSTR, "SurrenderPlayer:%i", Number);
@@ -1473,8 +1421,7 @@ void C4Player::InitControl() {
   // Choose next while control taken
   if (Game.Players.ControlTaken(iControl)) {
     // Preferred control taken, search for available keyboard control
-    for (iControl = C4P_Control_Keyboard1; iControl <= C4P_Control_Keyboard4;
-         iControl++)
+    for (iControl = C4P_Control_Keyboard1; iControl <= C4P_Control_Keyboard4; iControl++)
       if (!Game.Players.ControlTaken(iControl)) // Available control found
         break;
     // No available control found
@@ -1541,8 +1488,7 @@ BOOL C4Player::ActivateMenuGoals() {
     if (pDef = C4Id2Def(idGoal)) {
       fctSymbol.Create(C4SymbolSize, C4SymbolSize);
       pDef->Draw(fctSymbol);
-      Menu.Add(pDef->Name, fctSymbol, "", Game.Objects.ObjectCount(idGoal),
-               NULL, 0, pDef->Desc);
+      Menu.Add(pDef->Name, fctSymbol, "", Game.Objects.ObjectCount(idGoal), NULL, 0, pDef->Desc);
       fctSymbol.Default();
     }
   // Done
@@ -1563,8 +1509,7 @@ BOOL C4Player::ActivateMenuRules() {
     if (pDef = C4Id2Def(idGoal)) {
       fctSymbol.Create(C4SymbolSize, C4SymbolSize);
       pDef->Draw(fctSymbol);
-      Menu.Add(pDef->Name, fctSymbol, "", C4MN_Item_NoCount, NULL, 0,
-               pDef->Desc);
+      Menu.Add(pDef->Name, fctSymbol, "", C4MN_Item_NoCount, NULL, 0, pDef->Desc);
       fctSymbol.Default();
     }
   // Done

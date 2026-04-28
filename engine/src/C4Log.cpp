@@ -83,9 +83,7 @@ BOOL NetLog(const char *szMessage) {
   return Log(buf);
 }
 
-void LogProcess(int iValue) {
-  Game.GraphicsSystem.MessageBoard.NotifyProcess(iValue);
-}
+void LogProcess(int iValue) { Game.GraphicsSystem.MessageBoard.NotifyProcess(iValue); }
 
 BOOL LogProcessCallback(const char *szFormat, int iValue) {
   Game.GraphicsSystem.MessageBoard.NotifyProcess(iValue);

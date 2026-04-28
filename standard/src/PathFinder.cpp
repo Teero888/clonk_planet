@@ -8,11 +8,9 @@
 
 const int PF_Direction_Left = -1, PF_Direction_Right = +1,
 
-          PF_Ray_Launch = 0, PF_Ray_Crawl = 1, PF_Ray_Still = 2,
-          PF_Ray_Failure = 3, PF_Ray_Deleted = 4,
+          PF_Ray_Launch = 0, PF_Ray_Crawl = 1, PF_Ray_Still = 2, PF_Ray_Failure = 3, PF_Ray_Deleted = 4,
 
-          PF_Crawl_NoAttach = 0, PF_Crawl_Top = 1, PF_Crawl_Right = 2,
-          PF_Crawl_Bottom = 3, PF_Crawl_Left = 4,
+          PF_Crawl_NoAttach = 0, PF_Crawl_Top = 1, PF_Crawl_Right = 2, PF_Crawl_Bottom = 3, PF_Crawl_Left = 4,
 
           PF_Draw_Rate = 10;
 
@@ -51,8 +49,7 @@ BOOL CPathFinderRay::Execute() {
           ;
       // Set all waypoints
       for (pRay = this; pRay->From; pRay = pRay->From)
-        pPathFinder->SetWaypoint(pRay->From->X2, pRay->From->Y2,
-                                 pPathFinder->WaypointParameter);
+        pPathFinder->SetWaypoint(pRay->From->X2, pRay->From->Y2, pPathFinder->WaypointParameter);
       // Success
       pPathFinder->Success = TRUE;
       Status = PF_Ray_Still;
@@ -86,8 +83,7 @@ BOOL CPathFinderRay::Execute() {
       break;
     }
     // Back at crawl starting position: done and still
-    if ((X2 == CrawlStartX) && (Y2 == CrawlStartY) &&
-        (CrawlAttach == CrawlStartAttach)) {
+    if ((X2 == CrawlStartX) && (Y2 == CrawlStartY) && (CrawlAttach == CrawlStartAttach)) {
       Status = PF_Ray_Still;
       break;
     }
@@ -115,16 +111,11 @@ BOOL CPathFinderRay::Execute() {
       if (PathFree(iX, iY, TargetX, TargetY)
           // ...or at least beyond threshold and not backwards toward crawl
           // start
-          || ((Distance(iX, iY, X2, Y2) > pPathFinder->Threshold) &&
-              (Distance(iX, iY, CrawlStartX, CrawlStartY) >
-               Distance(X2, Y2, CrawlStartX, CrawlStartY)))) {
+          || ((Distance(iX, iY, X2, Y2) > pPathFinder->Threshold) && (Distance(iX, iY, CrawlStartX, CrawlStartY) > Distance(X2, Y2, CrawlStartX, CrawlStartY)))) {
         // Still
         Status = PF_Ray_Still;
         // Launch new rays
-        if (!pPathFinder->AddRay(X2, Y2, TargetX, TargetY, Depth + 1,
-                                 PF_Direction_Left, this) ||
-            !pPathFinder->AddRay(X2, Y2, TargetX, TargetY, Depth + 1,
-                                 PF_Direction_Right, this))
+        if (!pPathFinder->AddRay(X2, Y2, TargetX, TargetY, Depth + 1, PF_Direction_Left, this) || !pPathFinder->AddRay(X2, Y2, TargetX, TargetY, Depth + 1, PF_Direction_Right, this))
           Status = PF_Ray_Failure;
       }
     break;
@@ -275,18 +266,14 @@ BOOL CPathFinderRay::Crawl() {
   return TRUE;
 }
 
-BOOL CPathFinderRay::PointFree(int iX, int iY) {
-  return pPathFinder->PointFree(iX, iY, pPathFinder->PointFreeParameter);
-}
+BOOL CPathFinderRay::PointFree(int iX, int iY) { return pPathFinder->PointFree(iX, iY, pPathFinder->PointFreeParameter); }
 
-BOOL CPathFinderRay::CrawlTargetFree(int iX, int iY, int iAttach,
-                                     int iDirection) {
+BOOL CPathFinderRay::CrawlTargetFree(int iX, int iY, int iAttach, int iDirection) {
   CrawlByAttach(iX, iY, iAttach, iDirection);
   return PointFree(iX, iY);
 }
 
-void CPathFinderRay::CrawlByAttach(int &rX, int &rY, int iAttach,
-                                   int iDirection) {
+void CPathFinderRay::CrawlByAttach(int &rX, int &rY, int iAttach, int iDirection) {
   switch (iAttach) {
   case PF_Crawl_Top:
     rX += iDirection;
@@ -430,9 +417,7 @@ void CPathFinder::Clear() {
   FirstRay = NULL;
 }
 
-void CPathFinder::Init(BOOL (*fnPointFree)(int, int, int),
-                       int iPointFreeParameter, int iDepth, int iCrawl,
-                       int iRay, int iThreshold) {
+void CPathFinder::Init(BOOL (*fnPointFree)(int, int, int), int iPointFreeParameter, int iDepth, int iCrawl, int iRay, int iThreshold) {
   // Set data
   PointFree = fnPointFree;
   PointFreeParameter = iPointFreeParameter;
@@ -459,8 +444,7 @@ BOOL CPathFinder::Execute() {
   // Execute & count rays
   BOOL fContinue = FALSE;
   int iRays = 0;
-  for (CPathFinderRay *pRay = FirstRay; pRay && !Success;
-       pRay = pRay->Next, iRays++)
+  for (CPathFinderRay *pRay = FirstRay; pRay && !Success; pRay = pRay->Next, iRays++)
     if (pRay->Execute())
       fContinue = TRUE;
 
@@ -471,9 +455,7 @@ BOOL CPathFinder::Execute() {
   return fContinue;
 }
 
-BOOL CPathFinder::Find(int iFromX, int iFromY, int iToX, int iToY,
-                       BOOL (*fnSetWaypoint)(int, int, int),
-                       int iWaypointParameter) {
+BOOL CPathFinder::Find(int iFromX, int iFromY, int iToX, int iToY, BOOL (*fnSetWaypoint)(int, int, int), int iWaypointParameter) {
 
   // Prepare
   Clear();
@@ -485,8 +467,7 @@ BOOL CPathFinder::Find(int iFromX, int iFromY, int iToX, int iToY,
   WaypointParameter = iWaypointParameter;
 
   // Start & target coordinates must be free
-  if (!PointFree(iFromX, iFromY, PointFreeParameter) ||
-      !PointFree(iToX, iToY, PointFreeParameter))
+  if (!PointFree(iFromX, iFromY, PointFreeParameter) || !PointFree(iToX, iToY, PointFreeParameter))
     return FALSE;
 
   // Add the first two rays
@@ -502,8 +483,7 @@ BOOL CPathFinder::Find(int iFromX, int iFromY, int iToX, int iToY,
   return Success;
 }
 
-BOOL CPathFinder::AddRay(int iFromX, int iFromY, int iToX, int iToY, int iDepth,
-                         int iDirection, CPathFinderRay *pFrom) {
+BOOL CPathFinder::AddRay(int iFromX, int iFromY, int iToX, int iToY, int iDepth, int iDirection, CPathFinderRay *pFrom) {
   // Max depth
   if (iDepth >= MaxDepth)
     return FALSE;

@@ -20,9 +20,7 @@ inline int DensitySolid(int dens) { return (dens >= C4M_Solid); }
 
 inline int DensitySemiSolid(int dens) { return (dens >= C4M_SemiSolid); }
 
-inline int DensityLiquid(int dens) {
-  return ((dens >= C4M_Liquid) && (dens < C4M_Solid));
-}
+inline int DensityLiquid(int dens) { return ((dens >= C4M_Liquid) && (dens < C4M_Solid)); }
 
 //==================================== Materials =========================================
 
@@ -54,9 +52,7 @@ inline BYTE Mat2PixCol(int mat) {
   return (BYTE)(GBM + mat * C4M_ColsPerMat);
 }
 
-inline BYTE Mat2PixColRnd(int mat) {
-  return (BYTE)(Mat2PixCol(mat) + 1 + (BYTE)Rnd3());
-}
+inline BYTE Mat2PixColRnd(int mat) { return (BYTE)(Mat2PixCol(mat) + 1 + (BYTE)Rnd3()); }
 
 inline int MatDensity(int mat) {
   if (!MatValid(mat))
@@ -80,21 +76,15 @@ inline BYTE GBackIFT(int x, int y) { return PixColIFT(GBackPix(x, y)); }
 
 inline int GBackMat(int x, int y) { return PixCol2Mat(GBackPix(x, y)); }
 
-inline int GBackMatColIndex(int x, int y) {
-  return PixColMatIndex(GBackPix(x, y));
-}
+inline int GBackMatColIndex(int x, int y) { return PixColMatIndex(GBackPix(x, y)); }
 
 inline int GBackDensity(int x, int y) { return MatDensity(GBackMat(x, y)); }
 
 inline int GBackSolid(int x, int y) { return DensitySolid(GBackDensity(x, y)); }
 
-inline int GBackSemiSolid(int x, int y) {
-  return DensitySemiSolid(GBackDensity(x, y));
-}
+inline int GBackSemiSolid(int x, int y) { return DensitySemiSolid(GBackDensity(x, y)); }
 
-inline int GBackLiquid(int x, int y) {
-  return DensityLiquid(GBackDensity(x, y));
-}
+inline int GBackLiquid(int x, int y) { return DensityLiquid(GBackDensity(x, y)); }
 
 //=============================== Sound ==================================================
 
@@ -103,15 +93,13 @@ inline int GBackLiquid(int x, int y) {
 //           +1 Increase Loop Level
 //           -1 Decrease Loop Level
 
-inline BOOL SoundEffect(const char *szSndName, int iMode = 0, int iVolume = 100,
-                        C4Object *pObj = NULL) {
+inline BOOL SoundEffect(const char *szSndName, int iMode = 0, int iVolume = 100, C4Object *pObj = NULL) {
   if (pObj)
     iVolume = pObj->Audible * iVolume / 100;
   return Game.SoundSystem.PlayEffect(szSndName, iMode, iVolume);
 }
 
-inline BOOL SoundEffectPlayer(const char *szSndName, int iPlayer, int iMode = 0,
-                              int iVolume = 100) {
+inline BOOL SoundEffectPlayer(const char *szSndName, int iPlayer, int iMode = 0, int iVolume = 100) {
   C4Player *pPlr;
   if (!(pPlr = Game.Players.Get(iPlayer)))
     return FALSE;
@@ -125,9 +113,7 @@ inline BOOL SoundEffectPlayer(const char *szSndName, int iPlayer, int iMode = 0,
 // If the sound is playing, sets the volume.
 // If the volume is zero, stops the sound.
 
-inline BOOL SoundLevel(const char *szSndName, int iVolume = 100) {
-  return Game.SoundSystem.SoundLevel(szSndName, iVolume);
-}
+inline BOOL SoundLevel(const char *szSndName, int iVolume = 100) { return Game.SoundSystem.SoundLevel(szSndName, iVolume); }
 
 //=========================== Graphics Resource =========================================
 
@@ -135,45 +121,25 @@ inline BOOL SoundLevel(const char *szSndName, int iVolume = 100) {
 
 //=============================== Messages =============================================
 
-inline void GameMsgObject(const char *szText, C4Object *pTarget,
-                          int iFCol = FWhite) {
-  Game.Messages.New(szText, pTarget, NO_OWNER, -1, -1, iFCol);
-}
+inline void GameMsgObject(const char *szText, C4Object *pTarget, int iFCol = FWhite) { Game.Messages.New(szText, pTarget, NO_OWNER, -1, -1, iFCol); }
 
-inline void GameMsgGlobal(const char *szText, int iFCol = FWhite) {
-  Game.Messages.New(szText, NULL, ANY_OWNER, -1, -1, iFCol);
-}
+inline void GameMsgGlobal(const char *szText, int iFCol = FWhite) { Game.Messages.New(szText, NULL, ANY_OWNER, -1, -1, iFCol); }
 
-inline void GameMsgPlayer(const char *szText, int iPlayer, int iFCol = FWhite) {
-  Game.Messages.New(szText, NULL, iPlayer, -1, -1, iFCol);
-}
+inline void GameMsgPlayer(const char *szText, int iPlayer, int iFCol = FWhite) { Game.Messages.New(szText, NULL, iPlayer, -1, -1, iFCol); }
 
 //============================== DirectDraw ==============================================
 
-inline void DestroySurface(SURFACE sfcSurface) {
-  Engine.DDraw.DestroySurface(sfcSurface);
-}
+inline void DestroySurface(SURFACE sfcSurface) { Engine.DDraw.DestroySurface(sfcSurface); }
 
-inline SURFACE DuplicateSurface(SURFACE sfcSurface) {
-  return Engine.DDraw.DuplicateSurface(sfcSurface);
-}
+inline SURFACE DuplicateSurface(SURFACE sfcSurface) { return Engine.DDraw.DuplicateSurface(sfcSurface); }
 
-inline SURFACE CreateSurface(int iWdt, int iHgt) {
-  return Engine.DDraw.CreateSurface(iWdt, iHgt);
-}
+inline SURFACE CreateSurface(int iWdt, int iHgt) { return Engine.DDraw.CreateSurface(iWdt, iHgt); }
 
-inline BYTE *LockSurface(SURFACE sfcSurface, int &lPitch, int *lpSfcWdt = 0,
-                         int *lpSfcHgt = 0) {
-  return Engine.DDraw.LockSurface(sfcSurface, lPitch, lpSfcWdt, lpSfcHgt);
-}
+inline BYTE *LockSurface(SURFACE sfcSurface, int &lPitch, int *lpSfcWdt = 0, int *lpSfcHgt = 0) { return Engine.DDraw.LockSurface(sfcSurface, lPitch, lpSfcWdt, lpSfcHgt); }
 
-inline void UnLockSurface(SURFACE sfcSurface) {
-  Engine.DDraw.UnLockSurface(sfcSurface);
-}
+inline void UnLockSurface(SURFACE sfcSurface) { Engine.DDraw.UnLockSurface(sfcSurface); }
 
-inline BOOL GetSurfaceSize(SURFACE sfcSurface, int &iWdt, int &iHgt) {
-  return Engine.DDraw.GetSurfaceSize(sfcSurface, iWdt, iHgt);
-}
+inline BOOL GetSurfaceSize(SURFACE sfcSurface, int &iWdt, int &iHgt) { return Engine.DDraw.GetSurfaceSize(sfcSurface, iWdt, iHgt); }
 
 //===================================== Ticks ==========================================
 
@@ -190,6 +156,4 @@ inline BOOL GetSurfaceSize(SURFACE sfcSurface, int &iWdt, int &iHgt) {
 
 inline int ValidPlr(int plr) { return Game.Players.Valid(plr); }
 
-inline int Hostile(int plr1, int plr2) {
-  return Game.Players.Hostile(plr1, plr2);
-}
+inline int Hostile(int plr1, int plr2) { return Game.Players.Hostile(plr1, plr2); }

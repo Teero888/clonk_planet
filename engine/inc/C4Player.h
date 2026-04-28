@@ -6,8 +6,7 @@ const int C4PVM_Cursor = 0, C4PVM_Target = 1, C4PVM_Scrolling = 2;
 
 const int C4P_Number_None = -5;
 
-const int C4P_Command_None = 0, C4P_Command_Set = 1, C4P_Command_Add = 2,
-          C4P_Command_Append = 4, C4P_Command_Range = 8;
+const int C4P_Command_None = 0, C4P_Command_Set = 1, C4P_Command_Add = 2, C4P_Command_Append = 4, C4P_Command_Range = 8;
 
 class C4Player : public C4PlayerInfoCore {
   friend C4PlayerList;
@@ -106,12 +105,9 @@ public:
   void DirectCom(BYTE byCom, int iData);
   void InCom(BYTE byCom, int iData);
   BOOL ObjectCom(BYTE byCom, int iData);
-  BOOL ObjectCommand(int iCommand, C4Object *pTarget, int iTx, int iTy,
-                     C4Object *pTarget2 = NULL, int iData = 0,
-                     int iAddMode = C4P_Command_Set);
+  BOOL ObjectCommand(int iCommand, C4Object *pTarget, int iTx, int iTy, C4Object *pTarget2 = NULL, int iData = 0, int iAddMode = C4P_Command_Set);
   BOOL DoPoints(int iChange);
-  BOOL Init(int iNumber, int iAtClient, const char *szAtClientName,
-            const char *szFilename, BOOL fScenarioInit);
+  BOOL Init(int iNumber, int iAtClient, const char *szAtClientName, const char *szFilename, BOOL fScenarioInit);
   BOOL ScenarioInit();
   BOOL FinalInit(BOOL fInitialValue);
   BOOL Save();

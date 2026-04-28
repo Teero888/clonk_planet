@@ -18,8 +18,7 @@ C4Console::C4Console() {
   hbmHalt = NULL;
   hbmHalt2 = NULL;
 
-  MenuIndexFile = 0, MenuIndexComponents = 1, MenuIndexPlayer = 2,
-  MenuIndexViewport = 3, MenuIndexNet = -1, MenuIndexHelp = 4;
+  MenuIndexFile = 0, MenuIndexComponents = 1, MenuIndexPlayer = 2, MenuIndexViewport = 3, MenuIndexNet = -1, MenuIndexHelp = 4;
 }
 
 C4Console::~C4Console() {}
@@ -45,9 +44,7 @@ BOOL C4Console::Out(const char *szText) {
 
 BOOL C4Console::In(const char *szText) { return TRUE; }
 
-void C4Console::ClearPointers(C4Object *pObj) {
-  PropertyDlg.ClearPointers(pObj);
-}
+void C4Console::ClearPointers(C4Object *pObj) { PropertyDlg.ClearPointers(pObj); }
 
 BOOL C4Console::UpdateStatusBars() { return TRUE; }
 
@@ -72,10 +69,7 @@ BOOL C4Console::FileOpen() { return FALSE; }
 
 BOOL C4Console::FileOpenWPlrs() { return FALSE; }
 
-BOOL C4Console::FileSelect(char *szFilename, int iSize, const char *szFilter,
-                           DWORD dwFlags, BOOL fSave) {
-  return FALSE;
-}
+BOOL C4Console::FileSelect(char *szFilename, int iSize, const char *szFilter, DWORD dwFlags, BOOL fSave) { return FALSE; }
 
 void C4Console::HelpAbout() {}
 
@@ -83,10 +77,7 @@ BOOL C4Console::UpdateViewportMenu() { return TRUE; }
 
 void C4Console::ClearViewportMenu() {}
 
-BOOL C4Console::AddMenuItem(HMENU hMenu, DWORD dwID, const char *szString,
-                            BOOL fEnabled) {
-  return FALSE;
-}
+BOOL C4Console::AddMenuItem(HMENU hMenu, DWORD dwID, const char *szString, BOOL fEnabled) { return FALSE; }
 
 BOOL C4Console::Keydown(WORD wParam) { return FALSE; }
 

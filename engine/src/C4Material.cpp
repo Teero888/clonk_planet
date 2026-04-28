@@ -38,11 +38,9 @@ C4CompilerValue C4CR_Material[] = {
     {"InMatConvert", C4CV_String, offsC4M(szInMatConvert), C4M_MaxName},
     {"InMatConvertTo", C4CV_String, offsC4M(szInMatConvertTo), C4M_MaxName},
     {"AboveTempConvert", C4CV_Integer, offsC4M(AboveTempConvert), 1},
-    {"AboveTempConvertTo", C4CV_String, offsC4M(szAboveTempConvertTo),
-     C4M_MaxName},
+    {"AboveTempConvertTo", C4CV_String, offsC4M(szAboveTempConvertTo), C4M_MaxName},
     {"BelowTempConvert", C4CV_Integer, offsC4M(BelowTempConvert), 1},
-    {"BelowTempConvertTo", C4CV_String, offsC4M(szBelowTempConvertTo),
-     C4M_MaxName},
+    {"BelowTempConvertTo", C4CV_String, offsC4M(szBelowTempConvertTo), C4M_MaxName},
 
     {NULL, C4CV_End, 0, 0}};
 
@@ -100,8 +98,7 @@ int C4MaterialMap::Load(C4Group &hGroup) {
   hGroup.ResetSearch();
 
   for (cnt = 0; cnt < mat_num; cnt++)
-    if (!hGroup.FindNextEntry(C4CFN_MaterialFiles, entryname) ||
-        !Map[cnt].Load(hGroup, entryname)) {
+    if (!hGroup.FindNextEntry(C4CFN_MaterialFiles, entryname) || !Map[cnt].Load(hGroup, entryname)) {
       Clear();
       return 0;
     }
@@ -221,6 +218,5 @@ BOOL C4MaterialCore::Decompile(char **ppOutput, int *ipSize) {
   C4Compiler Compiler;
   C4MaterialCore dC4M;
   *ppOutput = NULL;
-  return Compiler.DecompileStructure(C4CR_Material, this, &dC4M, ppOutput,
-                                     ipSize);
+  return Compiler.DecompileStructure(C4CR_Material, this, &dC4M, ppOutput, ipSize);
 }

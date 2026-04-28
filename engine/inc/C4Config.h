@@ -155,6 +155,5 @@ public:
   const char *AtExeRelativePath(const char *szFilename);
 
 protected:
-  BOOL IsRegistered(const char *szName, const char *szCode,
-                    const char *szSecKey, BOOL fOld);
+  BOOL IsRegistered(const char *szName, const char *szCode, const char *szSecKey, BOOL fOld);
 };

@@ -6,10 +6,7 @@
 
 const int C4MN_SymbolSize = 16, C4MN_SymbolSize2 = 10, C4MN_FrameWidth = 2;
 
-const int C4MN_Frame_Left = 1, C4MN_Frame_Right = 2, C4MN_Frame_Top = 4,
-          C4MN_Frame_Bottom = 8,
-          C4MN_Frame_Border = C4MN_Frame_Left | C4MN_Frame_Right |
-                              C4MN_Frame_Top | C4MN_Frame_Bottom,
+const int C4MN_Frame_Left = 1, C4MN_Frame_Right = 2, C4MN_Frame_Top = 4, C4MN_Frame_Bottom = 8, C4MN_Frame_Border = C4MN_Frame_Left | C4MN_Frame_Right | C4MN_Frame_Top | C4MN_Frame_Bottom,
           C4MN_Frame_Outside = 16;
 
 const int C4MN_Caption_Delay = 20, C4MN_InfoCaption_Delay = 90;
@@ -35,27 +32,23 @@ void DrawMenuSymbol(int iMenu, C4Facet &cgo, int iOwner, C4Object *cObj) {
   case C4MN_Buy:
     ccgo.Set(cgo.Surface, cgo.X, cgo.Y, cgo.Wdt * 3 / 4, cgo.Hgt * 3 / 4);
     Game.GraphicsResource.fctFlag.Draw(ccgo, TRUE, color);
-    ccgo.Set(cgo.Surface, cgo.X + cgo.Wdt / 2, cgo.Y + cgo.Hgt / 2 - 2,
-             cgo.Wdt / 2, cgo.Hgt / 2);
+    ccgo.Set(cgo.Surface, cgo.X + cgo.Wdt / 2, cgo.Y + cgo.Hgt / 2 - 2, cgo.Wdt / 2, cgo.Hgt / 2);
     Game.GraphicsResource.fctEntry.Draw(ccgo);
     break;
   case C4MN_Sell:
     ccgo.Set(cgo.Surface, cgo.X, cgo.Y, cgo.Wdt * 3 / 4, cgo.Hgt * 3 / 4);
     Game.GraphicsResource.fctFlag.Draw(ccgo, TRUE, color);
-    ccgo.Set(cgo.Surface, cgo.X + cgo.Wdt / 2, cgo.Y + cgo.Hgt / 2 - 2,
-             cgo.Wdt / 2, cgo.Hgt / 2);
+    ccgo.Set(cgo.Surface, cgo.X + cgo.Wdt / 2, cgo.Y + cgo.Hgt / 2 - 2, cgo.Wdt / 2, cgo.Hgt / 2);
     Game.GraphicsResource.fctEntry.Draw(ccgo, TRUE, 1);
     break;
   case C4MN_Put:
     cObj->DrawPicture(cgo);
-    ccgo.Set(cgo.Surface, cgo.X + cgo.Wdt / 2, cgo.Y + cgo.Hgt / 2, cgo.Wdt / 2,
-             cgo.Hgt / 2);
+    ccgo.Set(cgo.Surface, cgo.X + cgo.Wdt / 2, cgo.Y + cgo.Hgt / 2, cgo.Wdt / 2, cgo.Hgt / 2);
     Game.GraphicsResource.fctEntry.Draw(ccgo, TRUE, 3);
     break;
   case C4MN_Activate:
     cObj->Def->Draw(cgo);
-    ccgo.Set(cgo.Surface, cgo.X + cgo.Wdt / 2, cgo.Y + cgo.Hgt / 2, cgo.Wdt / 2,
-             cgo.Hgt / 2);
+    ccgo.Set(cgo.Surface, cgo.X + cgo.Wdt / 2, cgo.Y + cgo.Hgt / 2, cgo.Wdt / 2, cgo.Hgt / 2);
     Game.GraphicsResource.fctEntry.Draw(ccgo, TRUE, 2);
     break;
   case C4MN_Main:
@@ -91,10 +84,7 @@ void C4MenuItem::Default() {
 
 void C4MenuItem::Clear() { Symbol.Clear(); }
 
-void C4MenuItem::Set(const char *szCaption, C4FacetEx &fctSymbol,
-                     const char *szCommand, int iCount, C4Object *pObject,
-                     int iParameter, const char *szInfoCaption, C4ID idID,
-                     const char *szCommand2) {
+void C4MenuItem::Set(const char *szCaption, C4FacetEx &fctSymbol, const char *szCommand, int iCount, C4Object *pObject, int iParameter, const char *szInfoCaption, C4ID idID, const char *szCommand2) {
   SCopy(szCaption, Caption, C4MaxTitle);
   SCopy(szCommand, Command, _MAX_FNAME + 30);
   SCopy(szCommand2, Command2, _MAX_FNAME + 30);
@@ -106,13 +96,11 @@ void C4MenuItem::Set(const char *szCaption, C4FacetEx &fctSymbol,
   id = idID;
 }
 
-void C4MenuItem::Draw(C4Facet &cgo, int iIndex, BOOL fSelected, int iStyle,
-                      C4Menu *pMenu, C4RegionList *pRegions) {
+void C4MenuItem::Draw(C4Facet &cgo, int iIndex, BOOL fSelected, int iStyle, C4Menu *pMenu, C4RegionList *pRegions) {
   // Select mark
   if (iStyle != C4MN_Style_Info)
     if (fSelected)
-      Engine.DDraw.DrawBox(cgo.Surface, cgo.X, cgo.Y, cgo.X + cgo.Wdt - 1,
-                           cgo.Y + cgo.Hgt - 1, CRed);
+      Engine.DDraw.DrawBox(cgo.Surface, cgo.X, cgo.Y, cgo.X + cgo.Wdt - 1, cgo.Y + cgo.Hgt - 1, CRed);
   // Symbol/text areas
   C4Facet cgoItemSymbol, cgoItemText;
   cgoItemSymbol = cgoItemText = cgo;
@@ -122,20 +110,16 @@ void C4MenuItem::Draw(C4Facet &cgo, int iIndex, BOOL fSelected, int iStyle,
   Symbol.Draw(cgoItemSymbol);
   // Draw item text
   Engine.DDraw.ApplyPrimaryClipper(cgoItemText.Surface);
-  Engine.DDraw.SetPrimaryClipper(cgoItemText.X, cgoItemText.Y,
-                                 cgoItemText.X + cgoItemText.Wdt - 1,
-                                 cgoItemText.Y + cgoItemText.Hgt - 1);
+  Engine.DDraw.SetPrimaryClipper(cgoItemText.X, cgoItemText.Y, cgoItemText.X + cgoItemText.Wdt - 1, cgoItemText.Y + cgoItemText.Hgt - 1);
   switch (iStyle) {
   case C4MN_Style_Context:
-    Engine.DDraw.TextOut(Caption, cgoItemText.Surface, cgoItemText.X,
-                         cgoItemText.Y, FWhite, FBlack, ALeft);
+    Engine.DDraw.TextOut(Caption, cgoItemText.Surface, cgoItemText.X, cgoItemText.Y, FWhite, FBlack, ALeft);
     break;
   case C4MN_Style_Info:
     char szText[2 * C4MaxTitle + 1];
     SCopy(InfoCaption, szText);
     SWordWrap(szText, ' ', '|', 30);
-    Engine.DDraw.TextOut(szText, cgoItemText.Surface, cgoItemText.X,
-                         cgoItemText.Y, FWhite, FBlack, ALeft);
+    Engine.DDraw.TextOut(szText, cgoItemText.Surface, cgoItemText.X, cgoItemText.Y, FWhite, FBlack, ALeft);
     break;
   }
   Engine.DDraw.DetachPrimaryClipper(cgoItemText.Surface);
@@ -144,10 +128,7 @@ void C4MenuItem::Draw(C4Facet &cgo, int iIndex, BOOL fSelected, int iStyle,
   if (Count != C4MN_Item_NoCount) {
     char szCount[10 + 1];
     sprintf(szCount, "%ix", Count);
-    Engine.DDraw.TextOut(
-        szCount, cgoItemText.Surface, cgoItemText.X + cgoItemText.Wdt - 1,
-        cgoItemText.Y + cgoItemText.Hgt - 1 - Engine.DDraw.TextHeight(), FWhite,
-        FBlack, ARight);
+    Engine.DDraw.TextOut(szCount, cgoItemText.Surface, cgoItemText.X + cgoItemText.Wdt - 1, cgoItemText.Y + cgoItemText.Hgt - 1 - Engine.DDraw.TextHeight(), FWhite, FBlack, ARight);
   }
   // Region
   if (pRegions) {
@@ -160,8 +141,7 @@ void C4MenuItem::Draw(C4Facet &cgo, int iIndex, BOOL fSelected, int iStyle,
     rgn.Data = iIndex;
     rgn.Target = Object;
     rgn.id = id;
-    rgn.Menu =
-        pMenu; // Pointer only to be set on local-control no-object menus!
+    rgn.Menu = pMenu; // Pointer only to be set on local-control no-object menus!
     pRegions->Add(rgn);
   }
 }
@@ -226,8 +206,7 @@ void C4Menu::Close() {
   Active = FALSE;
 }
 
-BOOL C4Menu::Init(C4FacetEx fctSymbol, const char *szEmpty, int iPlayer,
-                  int iExtra, int iExtraData, int iId, int iStyle) {
+BOOL C4Menu::Init(C4FacetEx fctSymbol, const char *szEmpty, int iPlayer, int iExtra, int iExtraData, int iId, int iStyle) {
   Clear();
   Default();
   Active = TRUE;
@@ -241,8 +220,7 @@ BOOL C4Menu::Init(C4FacetEx fctSymbol, const char *szEmpty, int iPlayer,
   return TRUE;
 }
 
-BOOL C4Menu::Init(C4FacetEx fctSymbol, const char *szEmpty, C4Object *pObject,
-                  int iExtra, int iExtraData, int iId, int iStyle) {
+BOOL C4Menu::Init(C4FacetEx fctSymbol, const char *szEmpty, C4Object *pObject, int iExtra, int iExtraData, int iId, int iStyle) {
   Clear();
   Default();
   Active = TRUE;
@@ -257,18 +235,14 @@ BOOL C4Menu::Init(C4FacetEx fctSymbol, const char *szEmpty, C4Object *pObject,
   return TRUE;
 }
 
-BOOL C4Menu::Add(const char *szCaption, C4FacetEx fctSymbol,
-                 const char *szCommand, int iCount, C4Object *pObject,
-                 int iParameter, const char *szInfoCaption, C4ID idID,
-                 const char *szCommand2) {
+BOOL C4Menu::Add(const char *szCaption, C4FacetEx fctSymbol, const char *szCommand, int iCount, C4Object *pObject, int iParameter, const char *szInfoCaption, C4ID idID, const char *szCommand2) {
   if (!Active)
     return FALSE;
   C4MenuItem *pNew, *pLast;
   // Create and set item
   if (!(pNew = new C4MenuItem))
     return FALSE;
-  pNew->Set(szCaption, fctSymbol, szCommand, iCount, pObject, iParameter,
-            szInfoCaption, idID, szCommand2);
+  pNew->Set(szCaption, fctSymbol, szCommand, iCount, pObject, iParameter, szInfoCaption, idID, szCommand2);
   // Append item to list
   for (pLast = First; pLast && pLast->Next; pLast = pLast->Next)
     ;
@@ -436,8 +410,7 @@ BOOL C4Menu::ActivateNewPlayer(int iPlayer) {
   Init(fctMenu, LoadResStr(IDS_MENU_NOPLRFILES), iPlayer);
 
   // Search player files
-  char szSearch[_MAX_PATH + 1], szFilename[_MAX_PATH + 1],
-      szCommand[_MAX_PATH + 30 + 1];
+  char szSearch[_MAX_PATH + 1], szFilename[_MAX_PATH + 1], szCommand[_MAX_PATH + 30 + 1];
   sprintf(szSearch, "%s*.c4p", Config.General.PlayerPath);
   struct _finddata_t fdt;
   intptr_t fdthnd;
@@ -470,8 +443,7 @@ BOOL C4Menu::ActivateNewPlayer(int iPlayer) {
           Add(OSTR, fctPortrait, szCommand);
           fctPortrait.Default();
         } else {
-          C4FacetEx fct2 = GfxR->fctPlayer.GetPhase(
-              BoundBy(C4P.PrefColor, 0, C4MaxColor - 1) + 2);
+          C4FacetEx fct2 = GfxR->fctPlayer.GetPhase(BoundBy(C4P.PrefColor, 0, C4MaxColor - 1) + 2);
           Add(OSTR, fct2, szCommand);
         }
       }
@@ -485,14 +457,9 @@ BOOL C4Menu::ActivateNewPlayer(int iPlayer) {
 void C4Menu::AdjustPosition() {
   // Adjust position by selection (works only after InitLocation)
   if (Multiline)
-    Position =
-        Columns *
-        BoundBy(
-            (Selection / Columns) - Lines / 2, 0,
-            Max(ItemCount / Columns + Min(ItemCount % Columns, 1) - Lines, 0));
+    Position = Columns * BoundBy((Selection / Columns) - Lines / 2, 0, Max(ItemCount / Columns + Min(ItemCount % Columns, 1) - Lines, 0));
   else
-    Position = BoundBy(Selection - VisibleCount / 2, 0,
-                       Max(ItemCount - VisibleCount, 0));
+    Position = BoundBy(Selection - VisibleCount / 2, 0, Max(ItemCount - VisibleCount, 0));
 }
 
 int C4Menu::GetSelection() { return Selection; }
@@ -540,9 +507,7 @@ void C4Menu::InitLocation(C4Facet &cgoArea) {
   }
 
   // Single line (if low item count, sufficient output width, style normal)
-  if ((ItemCount <= 5) &&
-      (cgoArea.Wdt >= 5 * ItemWidth + 2 * C4MN_FrameWidth) &&
-      (Style == C4MN_Style_Normal)) {
+  if ((ItemCount <= 5) && (cgoArea.Wdt >= 5 * ItemWidth + 2 * C4MN_FrameWidth) && (Style == C4MN_Style_Normal)) {
     Multiline = FALSE;
     Columns = 5;
     Lines = 1;
@@ -556,9 +521,7 @@ void C4Menu::InitLocation(C4Facet &cgoArea) {
       Columns = 1;
     if (Style == C4MN_Style_Info)
       Columns = 1;
-    Lines = Max(Min((cgoArea.Hgt - 100) / Max(ItemHeight, 1),
-                    ItemCount / Columns + Min(ItemCount % Columns, 1)),
-                1);
+    Lines = Max(Min((cgoArea.Hgt - 100) / Max(ItemHeight, 1), ItemCount / Columns + Min(ItemCount % Columns, 1)), 1);
   }
 
   // Visible count
@@ -621,30 +584,19 @@ BOOL C4Menu::Draw(C4Facet &cgo, C4RegionList *pRegions, BOOL fResetLocation) {
   // Background
   C4Facet cgoOut;
   cgoOut.Set(cgo.Surface, cgo.X + X, cgo.Y + Y, Width, Height);
-  lpDDraw->DrawBoxColorTable(
-      cgoOut.Surface, cgoOut.X, cgoOut.Y, cgoOut.X + cgoOut.Wdt - 1,
-      cgoOut.Y + cgoOut.Hgt - 1, Game.GraphicsSystem.DarkColorTable);
+  lpDDraw->DrawBoxColorTable(cgoOut.Surface, cgoOut.X, cgoOut.Y, cgoOut.X + cgoOut.Wdt - 1, cgoOut.Y + cgoOut.Hgt - 1, Game.GraphicsSystem.DarkColorTable);
 
   // Buffer to output
   Buffer.Draw(cgoOut);
 
   // Caption
-  Engine.DDraw.SubPrimaryClipper(
-      cgoOut.X + CaptionPlace.x, cgoOut.Y + CaptionPlace.y,
-      cgoOut.X + CaptionPlace.x + CaptionPlace.Wdt - 1,
-      cgoOut.Y + CaptionPlace.y + CaptionPlace.Hgt - 1);
-  Engine.DDraw.TextOut(CaptionText, cgoOut.Surface,
-                       cgoOut.X + CaptionPlace.x + CaptionPlace.tx,
-                       cgoOut.Y + CaptionPlace.y, FWhite, FBlack, ALeft);
+  Engine.DDraw.SubPrimaryClipper(cgoOut.X + CaptionPlace.x, cgoOut.Y + CaptionPlace.y, cgoOut.X + CaptionPlace.x + CaptionPlace.Wdt - 1, cgoOut.Y + CaptionPlace.y + CaptionPlace.Hgt - 1);
+  Engine.DDraw.TextOut(CaptionText, cgoOut.Surface, cgoOut.X + CaptionPlace.x + CaptionPlace.tx, cgoOut.Y + CaptionPlace.y, FWhite, FBlack, ALeft);
   Engine.DDraw.RestorePrimaryClipper();
   // Info caption
-  Engine.DDraw.SubPrimaryClipper(
-      cgoOut.X + InfoCaptionPlace.x, cgoOut.Y + InfoCaptionPlace.y,
-      cgoOut.X + InfoCaptionPlace.x + InfoCaptionPlace.Wdt - 1,
-      cgoOut.Y + InfoCaptionPlace.y + InfoCaptionPlace.Hgt - 1);
-  Engine.DDraw.TextOut(InfoCaptionText, cgoOut.Surface,
-                       cgoOut.X + InfoCaptionPlace.x + InfoCaptionPlace.tx,
-                       cgoOut.Y + InfoCaptionPlace.y, FWhite, FBlack, ALeft);
+  Engine.DDraw.SubPrimaryClipper(cgoOut.X + InfoCaptionPlace.x, cgoOut.Y + InfoCaptionPlace.y, cgoOut.X + InfoCaptionPlace.x + InfoCaptionPlace.Wdt - 1,
+                                 cgoOut.Y + InfoCaptionPlace.y + InfoCaptionPlace.Hgt - 1);
+  Engine.DDraw.TextOut(InfoCaptionText, cgoOut.Surface, cgoOut.X + InfoCaptionPlace.x + InfoCaptionPlace.tx, cgoOut.Y + InfoCaptionPlace.y, FWhite, FBlack, ALeft);
   Engine.DDraw.RestorePrimaryClipper();
 
   // Set regions
@@ -673,8 +625,7 @@ void C4Menu::DrawBuffer() {
   C4RegionList *pRegions = &Regions;
 
   // Area variables
-  C4Facet cgoMenu, cgoArea, cgoCaption, cgoTitle, cgoSymbol, cgoSelection,
-      cgoExtra;
+  C4Facet cgoMenu, cgoArea, cgoCaption, cgoTitle, cgoSymbol, cgoSelection, cgoExtra;
   C4Facet cgoClose, cgoScrollbar;
   C4Region rgn;
 
@@ -682,27 +633,21 @@ void C4Menu::DrawBuffer() {
   cgoArea.Set(cgo.Surface, cgo.X, cgo.Y, Width, Height);
   cgoMenu = cgoArea;
   cgoTitle = cgoArea.Truncate(C4FCT_Top, C4MN_SymbolSize + C4MN_FrameWidth * 2);
-  cgoTitle.Expand(-C4MN_FrameWidth, -C4MN_FrameWidth, -C4MN_FrameWidth,
-                  -C4MN_FrameWidth);
+  cgoTitle.Expand(-C4MN_FrameWidth, -C4MN_FrameWidth, -C4MN_FrameWidth, -C4MN_FrameWidth);
   cgoCaption = cgoTitle;
   cgoSymbol = cgoCaption.TruncateSection();
-  cgoClose =
-      cgoCaption.Truncate(C4FCT_Right, C4MN_SymbolSize + C4MN_FrameWidth);
+  cgoClose = cgoCaption.Truncate(C4FCT_Right, C4MN_SymbolSize + C4MN_FrameWidth);
   cgoClose.Expand(-C4MN_FrameWidth);
   if (Extra) {
-    cgoExtra =
-        cgoArea.Truncate(C4FCT_Bottom, C4MN_SymbolSize + C4MN_FrameWidth * 2);
-    cgoExtra.Expand(-C4MN_FrameWidth, -C4MN_FrameWidth, -C4MN_FrameWidth,
-                    -C4MN_FrameWidth);
+    cgoExtra = cgoArea.Truncate(C4FCT_Bottom, C4MN_SymbolSize + C4MN_FrameWidth * 2);
+    cgoExtra.Expand(-C4MN_FrameWidth, -C4MN_FrameWidth, -C4MN_FrameWidth, -C4MN_FrameWidth);
   }
   if (Scrollbar) {
-    cgoScrollbar =
-        cgoArea.Truncate(C4FCT_Right, C4MN_SymbolSize2 + C4MN_FrameWidth * 2);
+    cgoScrollbar = cgoArea.Truncate(C4FCT_Right, C4MN_SymbolSize2 + C4MN_FrameWidth * 2);
     cgoScrollbar.Expand(-C4MN_FrameWidth, -C4MN_FrameWidth);
   }
   cgoSelection = cgoArea;
-  cgoSelection.Expand(-C4MN_FrameWidth, Scrollbar ? 0 : -C4MN_FrameWidth, 0,
-                      Extra ? 0 : -C4MN_FrameWidth);
+  cgoSelection.Expand(-C4MN_FrameWidth, Scrollbar ? 0 : -C4MN_FrameWidth, 0, Extra ? 0 : -C4MN_FrameWidth);
 
   // General region
   if (pRegions)
@@ -720,18 +665,15 @@ void C4Menu::DrawBuffer() {
 
   // Title (drag bar)
   if (pRegions)
-    pRegions->Add(cgoTitle, "", COM_MenuDrag, ParentObject, COM_None, COM_None,
-                  0, Object ? NULL : this);
+    pRegions->Add(cgoTitle, "", COM_MenuDrag, ParentObject, COM_None, COM_None, 0, Object ? NULL : this);
 
   // Close
   GfxR->fctMenuSymbol.Draw(cgoClose, TRUE, C4MN_Symbol_Close + CloseDown);
   if (pRegions)
-    pRegions->Add(cgoClose, "", COM_MenuClose, NULL, COM_None,
-                  COM_MenuCloseDown, 0, Object ? NULL : this);
+    pRegions->Add(cgoClose, "", COM_MenuClose, NULL, COM_None, COM_MenuCloseDown, 0, Object ? NULL : this);
 
   // Scrollbar
-  DrawScrollbar(cgoScrollbar, ItemCount / Columns + Min(ItemCount % Columns, 1),
-                Lines, Position / Columns, pRegions);
+  DrawScrollbar(cgoScrollbar, ItemCount / Columns + Min(ItemCount % Columns, 1), Lines, Position / Columns, pRegions);
 
   // Arg!
   DragScrollRange1 = cgoScrollbar.Y - cgo.Y;
@@ -742,15 +684,11 @@ void C4Menu::DrawBuffer() {
   int cnt;
   C4Facet cgoItem;
   if (VisibleCount && ItemCount)
-    for (cnt = 0, pItem = GetItem(Position); pItem && (cnt < VisibleCount);
-         cnt++, pItem = pItem->Next) {
+    for (cnt = 0, pItem = GetItem(Position); pItem && (cnt < VisibleCount); cnt++, pItem = pItem->Next) {
       // Item area
-      cgoItem.Set(
-          cgoSelection.Surface, cgoSelection.X + ItemWidth * (cnt % Columns),
-          cgoSelection.Y + ItemHeight * (cnt / Columns), ItemWidth, ItemHeight);
+      cgoItem.Set(cgoSelection.Surface, cgoSelection.X + ItemWidth * (cnt % Columns), cgoSelection.Y + ItemHeight * (cnt / Columns), ItemWidth, ItemHeight);
       // Draw item
-      pItem->Draw(cgoItem, Position + cnt, (Selection == Position + cnt), Style,
-                  Object ? NULL : this, pRegions);
+      pItem->Draw(cgoItem, Position + cnt, (Selection == Position + cnt), Style, Object ? NULL : this, pRegions);
     }
 
   // Default empty caption
@@ -769,12 +707,10 @@ void C4Menu::DrawBuffer() {
 
   // Set caption
   SCopy(szCaption, CaptionText);
-  CaptionPlace.Set(cgoCaption.X, cgoCaption.Y, cgoCaption.Wdt, cgoCaption.Hgt,
-                   CaptionPlace.tx, CaptionPlace.ty);
+  CaptionPlace.Set(cgoCaption.X, cgoCaption.Y, cgoCaption.Wdt, cgoCaption.Hgt, CaptionPlace.tx, CaptionPlace.ty);
 
   // Info caption
-  InfoCaptionPlace.Set(cgoExtra.X, cgoExtra.Y, cgoExtra.Wdt, cgoExtra.Hgt,
-                       InfoCaptionPlace.tx, InfoCaptionPlace.ty);
+  InfoCaptionPlace.Set(cgoExtra.X, cgoExtra.Y, cgoExtra.Wdt, cgoExtra.Hgt, InfoCaptionPlace.tx, InfoCaptionPlace.ty);
 
   // Extra information (if no info caption)
   if (!InfoCaptionText[0]) {
@@ -782,21 +718,18 @@ void C4Menu::DrawBuffer() {
     switch (Extra) {
     case C4MN_Extra_Components:
       if (pDef)
-        pDef->Component.Draw(cgoExtra, -1, Game.Defs, C4D_All, TRUE,
-                             C4FCT_Right | C4FCT_Triple | C4FCT_Half);
+        pDef->Component.Draw(cgoExtra, -1, Game.Defs, C4D_All, TRUE, C4FCT_Right | C4FCT_Triple | C4FCT_Half);
       break;
     case C4MN_Extra_Value:
       if (pDef)
-        Game.GraphicsResource.fctWealthSymbol.DrawValue(cgoExtra, pDef->Value,
-                                                        0, 0, C4FCT_Right);
+        Game.GraphicsResource.fctWealthSymbol.DrawValue(cgoExtra, pDef->Value, 0, 0, C4FCT_Right);
       // Flag parent object's owner's wealth display
       if (ParentObject && ValidPlr(ParentObject->Owner))
         Game.Players.Get(ParentObject->Owner)->ViewWealth = C4ViewDelay;
       break;
     case C4MN_Extra_MagicValue:
       if (pDef)
-        Game.GraphicsResource.fctMagicSymbol.DrawValue2(
-            cgoExtra, pDef->Value, ExtraData, 0, 0, C4FCT_Right);
+        Game.GraphicsResource.fctMagicSymbol.DrawValue2(cgoExtra, pDef->Value, ExtraData, 0, 0, C4FCT_Right);
       break;
     }
   }
@@ -806,8 +739,7 @@ void C4Menu::DrawBuffer() {
 }
 
 void C4Menu::DrawFrame(SURFACE sfcSurface, int iX, int iY, int iWdt, int iHgt) {
-  lpDDraw->DrawFrame(sfcSurface, iX + 1, iY + 1, iX + iWdt - 1, iY + iHgt - 1,
-                     CGray1);
+  lpDDraw->DrawFrame(sfcSurface, iX + 1, iY + 1, iX + iWdt - 1, iY + iHgt - 1, CGray1);
   lpDDraw->DrawFrame(sfcSurface, iX, iY, iX + iWdt - 2, iY + iHgt - 2, CGray3);
   lpDDraw->SetPixel(sfcSurface, iX + iWdt - 1, iY, CGray2);
   lpDDraw->SetPixel(sfcSurface, iX, iY + iHgt - 1, CGray2);
@@ -819,56 +751,38 @@ void C4Menu::DrawFrame(C4Facet &cgo, int iAlign) {
   // Left
   if (iAlign & C4MN_Frame_Left)
     if (iAlign & C4MN_Frame_Outside) {
-      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X - 2, cgo.Y - 1,
-                                cgo.Y + cgo.Hgt - 1 + 1, CGray2);
-      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X - 1, cgo.Y,
-                                cgo.Y + cgo.Hgt - 1, CGray1);
+      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X - 2, cgo.Y - 1, cgo.Y + cgo.Hgt - 1 + 1, CGray2);
+      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X - 1, cgo.Y, cgo.Y + cgo.Hgt - 1, CGray1);
     } else {
-      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X, cgo.Y, cgo.Y + cgo.Hgt - 1,
-                                CGray2);
-      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X + 1, cgo.Y + 1,
-                                cgo.Y + cgo.Hgt - 1 - 1, CGray1);
+      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X, cgo.Y, cgo.Y + cgo.Hgt - 1, CGray2);
+      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X + 1, cgo.Y + 1, cgo.Y + cgo.Hgt - 1 - 1, CGray1);
     }
   // Right
   if (iAlign & C4MN_Frame_Right)
     if (iAlign & C4MN_Frame_Outside) {
-      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X + cgo.Wdt - 1 + 2, cgo.Y - 1,
-                                cgo.Y + cgo.Hgt - 1 + 1, CGray1);
-      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X + cgo.Wdt - 1 + 1, cgo.Y,
-                                cgo.Y + cgo.Hgt - 1, CGray2);
+      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X + cgo.Wdt - 1 + 2, cgo.Y - 1, cgo.Y + cgo.Hgt - 1 + 1, CGray1);
+      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X + cgo.Wdt - 1 + 1, cgo.Y, cgo.Y + cgo.Hgt - 1, CGray2);
     } else {
-      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X + cgo.Wdt - 1, cgo.Y,
-                                cgo.Y + cgo.Hgt - 1, CGray1);
-      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X + cgo.Wdt - 1 - 1, cgo.Y + 1,
-                                cgo.Y + cgo.Hgt - 1 - 1, CGray2);
+      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X + cgo.Wdt - 1, cgo.Y, cgo.Y + cgo.Hgt - 1, CGray1);
+      lpDDraw->DrawVerticalLine(cgo.Surface, cgo.X + cgo.Wdt - 1 - 1, cgo.Y + 1, cgo.Y + cgo.Hgt - 1 - 1, CGray2);
     }
   // Top
   if (iAlign & C4MN_Frame_Top)
     if (iAlign & C4MN_Frame_Outside) {
-      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X - 1,
-                                  cgo.X + cgo.Wdt - 1 + 1, cgo.Y - 2, CGray2);
-      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X, cgo.X + cgo.Wdt - 1,
-                                  cgo.Y - 1, CGray1);
+      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X - 1, cgo.X + cgo.Wdt - 1 + 1, cgo.Y - 2, CGray2);
+      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X, cgo.X + cgo.Wdt - 1, cgo.Y - 1, CGray1);
     } else {
-      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X, cgo.X + cgo.Wdt - 1,
-                                  cgo.Y, CGray2);
-      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X + 1,
-                                  cgo.X + cgo.Wdt - 1 - 1, cgo.Y + 1, CGray1);
+      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X, cgo.X + cgo.Wdt - 1, cgo.Y, CGray2);
+      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X + 1, cgo.X + cgo.Wdt - 1 - 1, cgo.Y + 1, CGray1);
     }
   // Bottom
   if (iAlign & C4MN_Frame_Bottom)
     if (iAlign & C4MN_Frame_Outside) {
-      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X - 1,
-                                  cgo.X + cgo.Wdt - 1 + 1,
-                                  cgo.Y + cgo.Hgt - 1 + 2, CGray1);
-      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X, cgo.X + cgo.Wdt - 1,
-                                  cgo.Y + cgo.Hgt - 1 + 1, CGray2);
+      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X - 1, cgo.X + cgo.Wdt - 1 + 1, cgo.Y + cgo.Hgt - 1 + 2, CGray1);
+      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X, cgo.X + cgo.Wdt - 1, cgo.Y + cgo.Hgt - 1 + 1, CGray2);
     } else {
-      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X, cgo.X + cgo.Wdt - 1,
-                                  cgo.Y + cgo.Hgt - 1, CGray1);
-      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X + 1,
-                                  cgo.X + cgo.Wdt - 1 - 1,
-                                  cgo.Y + cgo.Hgt - 1 - 1, CGray2);
+      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X, cgo.X + cgo.Wdt - 1, cgo.Y + cgo.Hgt - 1, CGray1);
+      lpDDraw->DrawHorizontalLine(cgo.Surface, cgo.X + 1, cgo.X + cgo.Wdt - 1 - 1, cgo.Y + cgo.Hgt - 1 - 1, CGray2);
     }
 }
 
@@ -902,8 +816,7 @@ C4Object *C4Menu::GetParentObject() {
   return NULL;
 }
 
-void C4Menu::DrawScrollbar(C4Facet &cgo, int iTotal, int iVisible,
-                           int iPosition, C4RegionList *pRegions) {
+void C4Menu::DrawScrollbar(C4Facet &cgo, int iTotal, int iVisible, int iPosition, C4RegionList *pRegions) {
   if (!iTotal)
     return;
   if (!cgo.Surface || !cgo.Wdt || !cgo.Hgt)
@@ -915,17 +828,13 @@ void C4Menu::DrawScrollbar(C4Facet &cgo, int iTotal, int iVisible,
   cgo2.Set(cgo.Surface, cgo.X, cgo.Y + iPos, cgo.Wdt, iSize);
   DrawButton(cgo2);
   if (pRegions)
-    pRegions->Add(cgo2, "", COM_MenuDragScroll, ParentObject, COM_None,
-                  COM_None, 0, Object ? NULL : this);
+    pRegions->Add(cgo2, "", COM_MenuDragScroll, ParentObject, COM_None, COM_None, 0, Object ? NULL : this);
 }
 
 void C4Menu::DrawButton(C4Facet &cgo) {
-  Engine.DDraw.DrawFrame(cgo.Surface, cgo.X, cgo.Y, cgo.X + cgo.Wdt - 1,
-                         cgo.Y + cgo.Hgt - 1, CGray3);
-  Engine.DDraw.DrawFrame(cgo.Surface, cgo.X + 1, cgo.Y + 1, cgo.X + cgo.Wdt - 1,
-                         cgo.Y + cgo.Hgt - 1, CGray1);
-  Engine.DDraw.DrawBox(cgo.Surface, cgo.X + 1, cgo.Y + 1, cgo.X + cgo.Wdt - 2,
-                       cgo.Y + cgo.Hgt - 2, CGray2);
+  Engine.DDraw.DrawFrame(cgo.Surface, cgo.X, cgo.Y, cgo.X + cgo.Wdt - 1, cgo.Y + cgo.Hgt - 1, CGray3);
+  Engine.DDraw.DrawFrame(cgo.Surface, cgo.X + 1, cgo.Y + 1, cgo.X + cgo.Wdt - 1, cgo.Y + cgo.Hgt - 1, CGray1);
+  Engine.DDraw.DrawBox(cgo.Surface, cgo.X + 1, cgo.Y + 1, cgo.X + cgo.Wdt - 2, cgo.Y + cgo.Hgt - 2, CGray2);
 }
 
 void C4Menu::DragScroll(int iX, int iY) {
@@ -934,13 +843,8 @@ void C4Menu::DragScroll(int iX, int iY) {
   int iDragRangeSize = DragScrollRange2 - DragScrollRange1;
   if (iDragRangeSize <= 0)
     return;
-  int iPos = (ItemCount / Columns) *
-             BoundBy(iY - DragScrollRange1, 0, iDragRangeSize) / iDragRangeSize;
-  Position =
-      Columns *
-      BoundBy(
-          iPos, 0,
-          Max(ItemCount / Columns + Min(ItemCount % Columns, 1) - Lines, 0));
+  int iPos = (ItemCount / Columns) * BoundBy(iY - DragScrollRange1, 0, iDragRangeSize) / iDragRangeSize;
+  Position = Columns * BoundBy(iPos, 0, Max(ItemCount / Columns + Min(ItemCount % Columns, 1) - Lines, 0));
   SetRedraw();
 }
 
@@ -973,9 +877,7 @@ BOOL C4Menu::RefillInternal() {
     // Clear items
     ClearItems();
     // Add target contents items
-    for (cnt = 0;
-         pDef = C4Id2Def(pTarget->Contents.GetListID(C4D_Activate, cnt));
-         cnt++) {
+    for (cnt = 0; pDef = C4Id2Def(pTarget->Contents.GetListID(C4D_Activate, cnt)); cnt++) {
       // First contents object
       pObj = pTarget->Contents.Find(pDef->id);
       // Count
@@ -983,19 +885,12 @@ BOOL C4Menu::RefillInternal() {
       // Caption
       sprintf(szCaption, LoadResStr(IDS_MENU_ACTIVATE), pDef->Name);
       // Picture
-      fctSymbol.Set(pDef->Bitmap[pObj->Color], pDef->PictureRect.x,
-                    pDef->PictureRect.y, pDef->PictureRect.Wdt,
-                    pDef->PictureRect.Hgt);
+      fctSymbol.Set(pDef->Bitmap[pObj->Color], pDef->PictureRect.x, pDef->PictureRect.y, pDef->PictureRect.Wdt, pDef->PictureRect.Hgt);
       // Commands
-      sprintf(szCommand, "SetCommand(this(),\"Activate\",Object(%d))",
-              pObj->Number);
-      sprintf(szCommand2,
-              "SetCommand(this(),\"Activate\",0,%d,0,Object(%d),%s)",
-              pTarget->Contents.ObjectCount(pDef->id), pTarget->Number,
-              C4IdText(pDef->id));
+      sprintf(szCommand, "SetCommand(this(),\"Activate\",Object(%d))", pObj->Number);
+      sprintf(szCommand2, "SetCommand(this(),\"Activate\",0,%d,0,Object(%d),%s)", pTarget->Contents.ObjectCount(pDef->id), pTarget->Number, C4IdText(pDef->id));
       // Add menu item
-      Add(szCaption, fctSymbol, szCommand, iCount, pObj, 0, pDef->Desc,
-          pDef->id, szCommand2);
+      Add(szCaption, fctSymbol, szCommand, iCount, pObj, 0, pDef->Desc, pDef->id, szCommand2);
     }
     break;
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1009,23 +904,16 @@ BOOL C4Menu::RefillInternal() {
     // Add base owner's homebase material
     if (!(pPlayer = Game.Players.Get(pTarget->Base)))
       return FALSE;
-    for (cnt = 0; pDef = C4Id2Def(pPlayer->HomeBaseMaterial.GetID(
-                      Game.Defs, C4D_All, cnt, &iCount));
-         cnt++) {
+    for (cnt = 0; pDef = C4Id2Def(pPlayer->HomeBaseMaterial.GetID(Game.Defs, C4D_All, cnt, &iCount)); cnt++) {
       // Caption
       sprintf(szCaption, LoadResStr(IDS_MENU_BUY), pDef->Name);
       // Picture
-      fctSymbol.Set(pDef->Bitmap[0], pDef->PictureRect.x, pDef->PictureRect.y,
-                    pDef->PictureRect.Wdt, pDef->PictureRect.Hgt);
+      fctSymbol.Set(pDef->Bitmap[0], pDef->PictureRect.x, pDef->PictureRect.y, pDef->PictureRect.Wdt, pDef->PictureRect.Hgt);
       // Command
-      sprintf(szCommand, "AppendCommand(this(),\"Buy\",Object(%d),%d,0,0,0,%s)",
-              pTarget->Number, 1, C4IdText(pDef->id));
-      sprintf(szCommand2,
-              "AppendCommand(this(),\"Buy\",Object(%d),%d,0,0,0,%s)",
-              pTarget->Number, iCount, C4IdText(pDef->id));
+      sprintf(szCommand, "AppendCommand(this(),\"Buy\",Object(%d),%d,0,0,0,%s)", pTarget->Number, 1, C4IdText(pDef->id));
+      sprintf(szCommand2, "AppendCommand(this(),\"Buy\",Object(%d),%d,0,0,0,%s)", pTarget->Number, iCount, C4IdText(pDef->id));
       // Add menu item
-      Add(szCaption, fctSymbol, szCommand, iCount, NULL, 0, pDef->Desc,
-          pDef->id, szCommand2);
+      Add(szCaption, fctSymbol, szCommand, iCount, NULL, 0, pDef->Desc, pDef->id, szCommand2);
     }
     break;
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1037,8 +925,7 @@ BOOL C4Menu::RefillInternal() {
     // Clear items
     ClearItems();
     // Add target contents items
-    for (cnt = 0; pDef = C4Id2Def(pTarget->Contents.GetListID(C4D_Sell, cnt));
-         cnt++) {
+    for (cnt = 0; pDef = C4Id2Def(pTarget->Contents.GetListID(C4D_Sell, cnt)); cnt++) {
       // First contents object
       pObj = pTarget->Contents.Find(pDef->id);
       // Count
@@ -1046,20 +933,12 @@ BOOL C4Menu::RefillInternal() {
       // Caption
       sprintf(szCaption, LoadResStr(IDS_MENU_SELL), pDef->Name);
       // Picture
-      fctSymbol.Set(pDef->Bitmap[pObj->Color], pDef->PictureRect.x,
-                    pDef->PictureRect.y, pDef->PictureRect.Wdt,
-                    pDef->PictureRect.Hgt);
+      fctSymbol.Set(pDef->Bitmap[pObj->Color], pDef->PictureRect.x, pDef->PictureRect.y, pDef->PictureRect.Wdt, pDef->PictureRect.Hgt);
       // Commands
-      sprintf(szCommand,
-              "AppendCommand(this(),\"Sell\",Object(%d),%d,0,0,0,%s)",
-              pTarget->Number, 1, C4IdText(pDef->id));
-      sprintf(szCommand2,
-              "AppendCommand(this(),\"Sell\",Object(%d),%d,0,0,0,%s)",
-              pTarget->Number, pTarget->Contents.ObjectCount(pDef->id),
-              C4IdText(pDef->id));
+      sprintf(szCommand, "AppendCommand(this(),\"Sell\",Object(%d),%d,0,0,0,%s)", pTarget->Number, 1, C4IdText(pDef->id));
+      sprintf(szCommand2, "AppendCommand(this(),\"Sell\",Object(%d),%d,0,0,0,%s)", pTarget->Number, pTarget->Contents.ObjectCount(pDef->id), C4IdText(pDef->id));
       // Add menu item
-      Add(szCaption, fctSymbol, szCommand, iCount, NULL, 0, pDef->Desc,
-          pDef->id, szCommand2);
+      Add(szCaption, fctSymbol, szCommand, iCount, NULL, 0, pDef->Desc, pDef->id, szCommand2);
     }
     // Adjust selection
     AdjustSelection();
@@ -1082,27 +961,19 @@ BOOL C4Menu::RefillInternal() {
     // Clear items
     ClearItems();
     // Add target contents items
-    for (cnt = 0; pDef = C4Id2Def(pTarget->Contents.GetListID(C4D_Get, cnt));
-         cnt++) {
+    for (cnt = 0; pDef = C4Id2Def(pTarget->Contents.GetListID(C4D_Get, cnt)); cnt++) {
       // First contents object
       pObj = pTarget->Contents.Find(pDef->id);
       // Count
       iCount = pTarget->Contents.ObjectCount(pDef->id);
       // Caption
-      sprintf(szCaption,
-              LoadResStr(pObj->OCF & OCF_Carryable ? IDS_MENU_GET
-                                                   : IDS_MENU_ACTIVATE),
-              pDef->Name);
+      sprintf(szCaption, LoadResStr(pObj->OCF & OCF_Carryable ? IDS_MENU_GET : IDS_MENU_ACTIVATE), pDef->Name);
       // Picture
-      fctSymbol.Set(pDef->Bitmap[pObj->Color], pDef->PictureRect.x,
-                    pDef->PictureRect.y, pDef->PictureRect.Wdt,
-                    pDef->PictureRect.Hgt);
+      fctSymbol.Set(pDef->Bitmap[pObj->Color], pDef->PictureRect.x, pDef->PictureRect.y, pDef->PictureRect.Wdt, pDef->PictureRect.Hgt);
       // Command
-      sprintf(szCommand, "SetCommand(this(),\"%s\",Object(%d))",
-              pObj->OCF & OCF_Carryable ? "Get" : "Activate", pObj->Number);
+      sprintf(szCommand, "SetCommand(this(),\"%s\",Object(%d))", pObj->OCF & OCF_Carryable ? "Get" : "Activate", pObj->Number);
       // Add menu item (with object)
-      Add(szCaption, fctSymbol, szCommand, iCount, pObj, 0, pDef->Desc,
-          pDef->id);
+      Add(szCaption, fctSymbol, szCommand, iCount, pObj, 0, pDef->Desc, pDef->id);
     }
     break;
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1130,19 +1001,14 @@ BOOL C4Menu::RefillInternal() {
       sprintf(szCommand, "SetHostility:%i", pPlr->Number);
       // Info caption
       char szInfoCaption[C4MaxTitle + 1], szFriendly[50], szNot[30] = "";
-      SCopy(LoadResStr(pPlr->Hostility.GetIDCount(pPlayer->Number + 1)
-                           ? IDS_MENU_ATTACKHOSTILE
-                           : IDS_MENU_ATTACKFRIENDLY),
-            szFriendly);
+      SCopy(LoadResStr(pPlr->Hostility.GetIDCount(pPlayer->Number + 1) ? IDS_MENU_ATTACKHOSTILE : IDS_MENU_ATTACKFRIENDLY), szFriendly);
       if (!pPlayer->Hostility.GetIDCount(pPlr->Number + 1))
         SCopy(LoadResStr(IDS_MENU_ATTACKNOT), szNot);
-      sprintf(szInfoCaption, LoadResStr(IDS_MENU_ATTACKINFO), pPlr->Name,
-              szFriendly, szNot);
+      sprintf(szInfoCaption, LoadResStr(IDS_MENU_ATTACKINFO), pPlr->Name, szFriendly, szNot);
       if (iIndex == pPlayer->Number)
         SCopy(LoadResStr(IDS_MENU_ATTACKSELF), szInfoCaption);
       // Add item
-      Add(OSTR, fctSymbol, szCommand, C4MN_Item_NoCount, NULL, 0,
-          szInfoCaption);
+      Add(OSTR, fctSymbol, szCommand, C4MN_Item_NoCount, NULL, 0, szInfoCaption);
       fctSymbol.Default();
     }
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1201,8 +1067,7 @@ void C4Menu::Execute() {
       Close();
   // Scroll captions
   if (TimeOnSelection > C4MN_Caption_Delay)
-    if (CaptionPlace.tx + Engine.DDraw.TextWidth(CaptionText) >
-        CaptionPlace.Wdt)
+    if (CaptionPlace.tx + Engine.DDraw.TextWidth(CaptionText) > CaptionPlace.Wdt)
       CaptionPlace.tx -= 3;
   InfoCaptionPlace.tx -= 3;
   // Time on selection

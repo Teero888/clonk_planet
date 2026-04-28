@@ -30,16 +30,14 @@ protected:
 
 public:
   // Client side
-  BOOL Join(const char *szServerName, const char *szServerAddress,
-            BOOL fRetrieveNetworkGame);
+  BOOL Join(const char *szServerName, const char *szServerAddress, BOOL fRetrieveNetworkGame);
   BOOL GetNetGo(C4Packet &rControl);
   BOOL SendNetReady(C4Packet &rControl);
   BOOL SendJoinReady();
   BOOL SendInput(C4Packet &rInput);
   BOOL SendSync();
   // Host side (client handler)
-  BOOL HandleJoin(int iNumber, C4Stream *pStream, BOOL fRuntimeJoin,
-                  BOOL fGetJoinReady);
+  BOOL HandleJoin(int iNumber, C4Stream *pStream, BOOL fRuntimeJoin, BOOL fGetJoinReady);
   BOOL SendNetGo(C4Packet &rControl);
   BOOL GetNetReady(C4Packet &rControl);
   BOOL GetJoinReady();

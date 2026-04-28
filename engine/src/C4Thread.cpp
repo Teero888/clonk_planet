@@ -42,8 +42,7 @@ void C4Thread::SetError(const char *szMessage) {
     sprintf(szLine, "(%d)", 1 + iLine);
 
   // Store message & position
-  sprintf(Error.Message, "%s::%s%s %s", cObj ? cObj->Def->Name : "Engine",
-          Function[0] ? Function : "Edit", szLine, szMessage);
+  sprintf(Error.Message, "%s::%s%s %s", cObj ? cObj->Def->Name : "Engine", Function[0] ? Function : "Edit", szLine, szMessage);
 
   Error.Position = cScr;
 
@@ -156,23 +155,14 @@ long C4Thread::ExecuteStatement() {
 
   // Engine function
   if (C4ScriptFnMap[psc].Identifier)
-    return (long)C4ScriptFnMap[psc].Function(
-        this, parameter[0], parameter[1], parameter[2], parameter[3],
-        parameter[4], parameter[5], parameter[6], parameter[7], parameter[8],
-        parameter[9]);
+    return (long)C4ScriptFnMap[psc].Function(this, parameter[0], parameter[1], parameter[2], parameter[3], parameter[4], parameter[5], parameter[6], parameter[7], parameter[8], parameter[9]);
 
   // Object script function
   if (cObj)
-    return (long)cObj->Call(this, identifier, parameter[0], parameter[1],
-                            parameter[2], parameter[3], parameter[4],
-                            parameter[5], parameter[6], parameter[7],
-                            parameter[8], parameter[9]);
+    return (long)cObj->Call(this, identifier, parameter[0], parameter[1], parameter[2], parameter[3], parameter[4], parameter[5], parameter[6], parameter[7], parameter[8], parameter[9]);
 
   // Global (scenario) script function
-  return (long)Game.Script.Call(this, identifier, parameter[0], parameter[1],
-                                parameter[2], parameter[3], parameter[4],
-                                parameter[5], parameter[6], parameter[7],
-                                parameter[8], parameter[9]);
+  return (long)Game.Script.Call(this, identifier, parameter[0], parameter[1], parameter[2], parameter[3], parameter[4], parameter[5], parameter[6], parameter[7], parameter[8], parameter[9]);
 }
 
 long C4Thread::Execute() {
@@ -243,11 +233,8 @@ long C4Thread::Execute() {
   }
 }
 
-long C4Thread::Execute(C4Thread *pCaller, const char *szScript,
-                       const char *szFunction, const char *cpPosition,
-                       C4Object *pObj, long par0, long par1, long par2,
-                       long par3, long par4, long par5, long par6, long par7,
-                       long par8, long par9) {
+long C4Thread::Execute(C4Thread *pCaller, const char *szScript, const char *szFunction, const char *cpPosition, C4Object *pObj, long par0, long par1, long par2, long par3, long par4, long par5,
+                       long par6, long par7, long par8, long par9) {
 
   // Set execution variables
   Caller = pCaller;

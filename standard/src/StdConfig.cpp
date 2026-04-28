@@ -38,18 +38,14 @@ BOOL CStdConfig::Load(CStdConfigValue *pCfgMap, void *vpData) {
       SCopy(pCfgMap->Name, szProduct, 100);
       break;
     case CFG_Integer:
-      sprintf(szSubkey, "Software\\%s\\%s\\%s", szCompany, szProduct,
-              szSection);
-      if (!pCfgMap->Name ||
-          !GetRegistryDWord(szSubkey, pCfgMap->Name, &dwValue))
+      sprintf(szSubkey, "Software\\%s\\%s\\%s", szCompany, szProduct, szSection);
+      if (!pCfgMap->Name || !GetRegistryDWord(szSubkey, pCfgMap->Name, &dwValue))
         dwValue = pCfgMap->Default;
       *((int *)(((BYTE *)vpData) + pCfgMap->Offset)) = dwValue;
       break;
     case CFG_String:
-      sprintf(szSubkey, "Software\\%s\\%s\\%s", szCompany, szProduct,
-              szSection);
-      if (!pCfgMap->Name ||
-          !GetRegistryString(szSubkey, pCfgMap->Name, szValue, CFG_MaxString))
+      sprintf(szSubkey, "Software\\%s\\%s\\%s", szCompany, szProduct, szSection);
+      if (!pCfgMap->Name || !GetRegistryString(szSubkey, pCfgMap->Name, szValue, CFG_MaxString))
         SCopy((char *)pCfgMap->Default, szValue, CFG_MaxString);
       SCopy(szValue, ((char *)vpData) + pCfgMap->Offset);
       break;
@@ -81,21 +77,17 @@ BOOL CStdConfig::Save(CStdConfigValue *pCfgMap, void *vpData) {
       SCopy(pCfgMap->Name, szProduct, 100);
       break;
     case CFG_Integer:
-      sprintf(szSubkey, "Software\\%s\\%s\\%s", szCompany, szProduct,
-              szSection);
+      sprintf(szSubkey, "Software\\%s\\%s\\%s", szCompany, szProduct, szSection);
       if (pCfgMap->Name)
-        SetRegistryDWord(szSubkey, pCfgMap->Name,
-                         *((int *)(((BYTE *)vpData) + pCfgMap->Offset)));
+        SetRegistryDWord(szSubkey, pCfgMap->Name, *((int *)(((BYTE *)vpData) + pCfgMap->Offset)));
       break;
     case CFG_String:
       // Compose value path
-      sprintf(szSubkey, "Software\\%s\\%s\\%s", szCompany, szProduct,
-              szSection);
+      sprintf(szSubkey, "Software\\%s\\%s\\%s", szCompany, szProduct, szSection);
       // Write if value
       if (*(((char *)vpData) + pCfgMap->Offset)) {
         if (pCfgMap->Name)
-          SetRegistryString(szSubkey, pCfgMap->Name,
-                            ((char *)vpData) + pCfgMap->Offset);
+          SetRegistryString(szSubkey, pCfgMap->Name, ((char *)vpData) + pCfgMap->Offset);
       }
       // Else delete value
       else {
@@ -107,8 +99,7 @@ BOOL CStdConfig::Save(CStdConfigValue *pCfgMap, void *vpData) {
   return TRUE;
 }
 
-void CStdConfig::LoadDefault(CStdConfigValue *pCfgMap, void *vpData,
-                             const char *szOnlySection) {
+void CStdConfig::LoadDefault(CStdConfigValue *pCfgMap, void *vpData, const char *szOnlySection) {
   if (!pCfgMap || !vpData)
     return;
 
@@ -133,8 +124,7 @@ void CStdConfig::LoadDefault(CStdConfigValue *pCfgMap, void *vpData,
       break;
     case CFG_String:
       if (!szOnlySection || SEqual(szSection, szOnlySection))
-        SCopy((char *)pCfgMap->Default, ((char *)vpData) + pCfgMap->Offset,
-              CFG_MaxString);
+        SCopy((char *)pCfgMap->Default, ((char *)vpData) + pCfgMap->Offset, CFG_MaxString);
       break;
     }
 }
