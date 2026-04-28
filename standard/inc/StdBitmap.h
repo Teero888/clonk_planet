@@ -2,46 +2,47 @@
 
 /* Bitmap handling routines */
 
-#pragma pack( push, def_pack )
+#pragma pack(push, def_pack)
 
 #pragma pack(1)
 
-class CStdBitmapHead: public BITMAPFILEHEADER
-	{
-	public:
-		CStdBitmapHead(void);
-	public:
-		void Clear(void);
-		void Set(int iBitOffset);
-		BOOL Valid(void);
-	};
+class CStdBitmapHead : public BITMAPFILEHEADER {
+public:
+  CStdBitmapHead(void);
 
-class CStdBitmapInfo: public BITMAPINFOHEADER
-	{
-	public:
-		CStdBitmapInfo(void);
-	public:
-		void Clear(void);
-		void Set(int iWdt, int iHgt, int iBitsPerPixel);
-		int Pitch(void);
-	};
+public:
+  void Clear(void);
+  void Set(int iBitOffset);
+  BOOL Valid(void);
+};
 
-class CStdBitmap
-	{
-	public:
-		CStdBitmap();
-		~CStdBitmap();
-	public:
-		CStdBitmapHead Head;
-		CStdBitmapInfo Info;
-		RGBQUAD Colors[256];
-		BYTE *Bits;
-	public:
-		void Clear(void);
-		BOOL Create(int iWdt, int iHgt, int iBitsPerPixel);
-		BOOL Save(const char *szFileName);
-		BOOL Load(const char *szFileName);
-		BOOL Enlarge(int iWdt, int iHgt);
-	};
+class CStdBitmapInfo : public BITMAPINFOHEADER {
+public:
+  CStdBitmapInfo(void);
 
-#pragma pack( pop, def_pack )
+public:
+  void Clear(void);
+  void Set(int iWdt, int iHgt, int iBitsPerPixel);
+  int Pitch(void);
+};
+
+class CStdBitmap {
+public:
+  CStdBitmap();
+  ~CStdBitmap();
+
+public:
+  CStdBitmapHead Head;
+  CStdBitmapInfo Info;
+  RGBQUAD Colors[256];
+  BYTE *Bits;
+
+public:
+  void Clear(void);
+  BOOL Create(int iWdt, int iHgt, int iBitsPerPixel);
+  BOOL Save(const char *szFileName);
+  BOOL Load(const char *szFileName);
+  BOOL Enlarge(int iWdt, int iHgt);
+};
+
+#pragma pack(pop, def_pack)

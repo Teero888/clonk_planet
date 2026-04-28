@@ -6,38 +6,32 @@
 // #include <DDraw.h>
 
 #include <Standard.h>
-#include <StdSurface.h>
+#include <StdDDraw.h>
 #include <StdFacet.h>
 #include <StdFont.h>
-#include <StdDDraw.h>
+#include <StdSurface.h>
 
-CFacet::CFacet()
-	{
-	Default();
-	}
+CFacet::CFacet() { Default(); }
 
-CFacet::~CFacet()
-	{
-	Clear();
-	}
+CFacet::~CFacet() { Clear(); }
 
-void CFacet::Default()
-	{
-	Surface = NULL;
-	X=Y=Wdt=Hgt=0;
-	}
+void CFacet::Default() {
+  Surface = NULL;
+  X = Y = Wdt = Hgt = 0;
+}
 
-void CFacet::Clear()
-	{
-	}
+void CFacet::Clear() {}
 
-void CFacet::Set(SURFACE nsfc, int nx, int ny, int nwdt, int nhgt)
-  { 
-	Surface=nsfc; X=nx; Y=ny; Wdt=nwdt; Hgt=nhgt; 
-	}
+void CFacet::Set(SURFACE nsfc, int nx, int ny, int nwdt, int nhgt) {
+  Surface = nsfc;
+  X = nx;
+  Y = ny;
+  Wdt = nwdt;
+  Hgt = nhgt;
+}
 
-void CFacet::Draw(SURFACE sfcSurface, int iX, int iY, int iPhaseX, int iPhaseY)
-	{
-	lpDDraw->Blit(Surface, X+Wdt*iPhaseX, Y+Hgt*iPhaseY, Wdt,Hgt, 
-								sfcSurface,iX,iY,Wdt,Hgt, TRUE);
-	}
+void CFacet::Draw(SURFACE sfcSurface, int iX, int iY, int iPhaseX,
+                  int iPhaseY) {
+  lpDDraw->Blit(Surface, X + Wdt * iPhaseX, Y + Hgt * iPhaseY, Wdt, Hgt,
+                sfcSurface, iX, iY, Wdt, Hgt, TRUE);
+}

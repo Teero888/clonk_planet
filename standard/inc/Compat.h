@@ -3,70 +3,70 @@
 
 #ifndef _WIN32
 
-#include <stdint.h>
-#include <string.h>
-#include <stdlib.h>
 #include <limits.h>
-#include <time.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 typedef uint32_t DWORD;
-typedef DWORD* LPDWORD;
+typedef DWORD *LPDWORD;
 typedef uint16_t WORD;
 typedef uint8_t BYTE;
-typedef uint8_t* PBYTE;
+typedef uint8_t *PBYTE;
 typedef int32_t LONG;
-typedef int32_t* PLONG;
+typedef int32_t *PLONG;
 typedef uint32_t UINT;
-typedef void* HANDLE;
-typedef void* HWND;
-typedef void* HDC;
-typedef void* HINSTANCE;
-typedef void* HMODULE;
-typedef void* HGDIOBJ;
-typedef void* HBITMAP;
-typedef void* HFONT;
-typedef void* HPEN;
-typedef void* HBRUSH;
-typedef void* HPALETTE;
-typedef void* HICON;
-typedef void* HCURSOR;
-typedef void* HMENU;
+typedef void *HANDLE;
+typedef void *HWND;
+typedef void *HDC;
+typedef void *HINSTANCE;
+typedef void *HMODULE;
+typedef void *HGDIOBJ;
+typedef void *HBITMAP;
+typedef void *HFONT;
+typedef void *HPEN;
+typedef void *HBRUSH;
+typedef void *HPALETTE;
+typedef void *HICON;
+typedef void *HCURSOR;
+typedef void *HMENU;
 typedef uint32_t COLORREF;
-typedef uint32_t* LPCOLORREF;
+typedef uint32_t *LPCOLORREF;
 typedef LONG HRESULT;
 
-typedef struct _SURFACE* SURFACE;
-typedef struct _SURFACE* LPDIRECTDRAWSURFACE;
-typedef struct _SURFACE* LPDIRECTDRAWSURFACE2;
+typedef struct _SURFACE *SURFACE;
+typedef struct _SURFACE *LPDIRECTDRAWSURFACE;
+typedef struct _SURFACE *LPDIRECTDRAWSURFACE2;
 
 #define TRUE 1
 #define FALSE 0
 
 typedef struct tagRECT {
-    LONG left;
-    LONG top;
-    LONG right;
-    LONG bottom;
+  LONG left;
+  LONG top;
+  LONG right;
+  LONG bottom;
 } RECT, *PRECT, *LPRECT;
 
 typedef struct tagPOINT {
-    LONG x;
-    LONG y;
+  LONG x;
+  LONG y;
 } POINT, *PPOINT, *LPPOINT;
 
 typedef struct tagSIZE {
-    LONG cx;
-    LONG cy;
+  LONG cx;
+  LONG cy;
 } SIZE, *PSIZE, *LPSIZE;
 
 typedef struct tagMSG {
-    HWND   hwnd;
-    UINT   message;
-    uintptr_t wParam;
-    uintptr_t lParam;
-    DWORD  time;
-    POINT  pt;
+  HWND hwnd;
+  UINT message;
+  uintptr_t wParam;
+  uintptr_t lParam;
+  DWORD time;
+  POINT pt;
 } MSG, *PMSG, *LPMSG;
 
 typedef uintptr_t WPARAM;
@@ -90,37 +90,37 @@ typedef int BOOL;
 #define MAX_PATH 260
 
 // Some common Windows macros
-#define LOWORD(l)           ((WORD)(((uintptr_t)(l)) & 0xffff))
-#define HIWORD(l)           ((WORD)((((uintptr_t)(l)) >> 16) & 0xffff))
-#define LOBYTE(w)           ((BYTE)(((uintptr_t)(w)) & 0xff))
-#define HIBYTE(w)           ((BYTE)((((uintptr_t)(w)) >> 8) & 0xff))
+#define LOWORD(l) ((WORD)(((uintptr_t)(l)) & 0xffff))
+#define HIWORD(l) ((WORD)((((uintptr_t)(l)) >> 16) & 0xffff))
+#define LOBYTE(w) ((BYTE)(((uintptr_t)(w)) & 0xff))
+#define HIBYTE(w) ((BYTE)((((uintptr_t)(w)) >> 8) & 0xff))
 
 #define INVALID_HANDLE_VALUE ((HANDLE)(intptr_t)-1)
 
 // Stubs for DirectX/Windows types that might be used
-typedef void* LPVOID;
-typedef const void* LPCVOID;
-typedef char* LPSTR;
-typedef const char* LPCSTR;
+typedef void *LPVOID;
+typedef const void *LPCVOID;
+typedef char *LPSTR;
+typedef const char *LPCSTR;
 
 // DirectDraw stubs
-typedef void* LPDIRECTDRAW;
-typedef void* LPDIRECTDRAWPALETTE;
-typedef void* LPDIRECTDRAWCLIPPER;
+typedef void *LPDIRECTDRAW;
+typedef void *LPDIRECTDRAWPALETTE;
+typedef void *LPDIRECTDRAWCLIPPER;
 
-typedef void* PAVIFILE;
-typedef void* PAVISTREAM;
-typedef void* PGETFRAME;
+typedef void *PAVIFILE;
+typedef void *PAVISTREAM;
+typedef void *PGETFRAME;
 
 typedef uint32_t _fsize_t;
 
 struct _finddata_t {
-    char        name[260];
-    uint32_t    attrib;
-    uint32_t    size;
-    time_t      time_create;
-    time_t      time_access;
-    time_t      time_write;
+  char name[260];
+  uint32_t attrib;
+  uint32_t size;
+  time_t time_create;
+  time_t time_access;
+  time_t time_write;
 };
 
 #define _A_SUBDIR 0x10
@@ -132,82 +132,91 @@ void _findclose(intptr_t a);
 }
 
 // Registry stubs
-typedef void* HKEY;
-#define HKEY_CLASSES_ROOT     ((HKEY)(intptr_t)0x80000000)
-#define HKEY_CURRENT_USER      ((HKEY)(intptr_t)0x80000001)
-#define HKEY_LOCAL_MACHINE     ((HKEY)(intptr_t)0x80000002)
-#define HKEY_USERS             ((HKEY)(intptr_t)0x80000003)
+typedef void *HKEY;
+#define HKEY_CLASSES_ROOT ((HKEY)(intptr_t)0x80000000)
+#define HKEY_CURRENT_USER ((HKEY)(intptr_t)0x80000001)
+#define HKEY_LOCAL_MACHINE ((HKEY)(intptr_t)0x80000002)
+#define HKEY_USERS ((HKEY)(intptr_t)0x80000003)
 
 // Bitmap stubs
 #pragma pack(push, 2)
 typedef struct tagBITMAPFILEHEADER {
-    WORD    bfType;
-    DWORD   bfSize;
-    WORD    bfReserved1;
-    WORD    bfReserved2;
-    DWORD   bfOffBits;
+  WORD bfType;
+  DWORD bfSize;
+  WORD bfReserved1;
+  WORD bfReserved2;
+  DWORD bfOffBits;
 } BITMAPFILEHEADER, *PBITMAPFILEHEADER, *LPBITMAPFILEHEADER;
 #pragma pack(pop)
 
 typedef struct tagBITMAPINFOHEADER {
-    DWORD      biSize;
-    LONG       biWidth;
-    LONG       biHeight;
-    WORD       biPlanes;
-    WORD       biBitCount;
-    DWORD      biCompression;
-    DWORD      biSizeImage;
-    LONG       biXPelsPerMeter;
-    LONG       biYPelsPerMeter;
-    DWORD      biClrUsed;
-    DWORD      biClrImportant;
+  DWORD biSize;
+  LONG biWidth;
+  LONG biHeight;
+  WORD biPlanes;
+  WORD biBitCount;
+  DWORD biCompression;
+  DWORD biSizeImage;
+  LONG biXPelsPerMeter;
+  LONG biYPelsPerMeter;
+  DWORD biClrUsed;
+  DWORD biClrImportant;
 } BITMAPINFOHEADER, *PBITMAPINFOHEADER, *LPBITMAPINFOHEADER;
 
 typedef struct tagRGBQUAD {
-    BYTE    rgbBlue;
-    BYTE    rgbGreen;
-    BYTE    rgbRed;
-    BYTE    rgbReserved;
+  BYTE rgbBlue;
+  BYTE rgbGreen;
+  BYTE rgbRed;
+  BYTE rgbReserved;
 } RGBQUAD;
 
 typedef struct tagBITMAPINFO {
-    BITMAPINFOHEADER bmiHeader;
-    RGBQUAD          bmiColors[1];
+  BITMAPINFOHEADER bmiHeader;
+  RGBQUAD bmiColors[1];
 } BITMAPINFO, *PBITMAPINFO, *LPBITMAPINFO;
 
 // Functions
-inline BOOL PeekMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg) { return FALSE; }
-inline BOOL GetMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax) { return TRUE; }
+inline BOOL PeekMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin,
+                        UINT wMsgFilterMax, UINT wRemoveMsg) {
+  return FALSE;
+}
+inline BOOL GetMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin,
+                       UINT wMsgFilterMax) {
+  return TRUE;
+}
 inline BOOL TranslateMessage(const MSG *lpMsg) { return FALSE; }
 inline LRESULT DispatchMessage(const MSG *lpMsg) { return 0; }
 inline BOOL IsDialogMessage(HWND hWnd, LPMSG lpMsg) { return FALSE; }
 inline void PostQuitMessage(int nExitCode) { exit(nExitCode); }
 
-#include <unistd.h>
 #include <libgen.h>
+#include <unistd.h>
 
-inline BOOL GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize) { 
-    char buf[1024];
-    ssize_t len = readlink("/proc/self/exe", buf, sizeof(buf) - 1);
-    if (len != -1) {
-        buf[len] = '\0';
-        strncpy(lpFilename, buf, nSize);
-        lpFilename[nSize-1] = '\0';
-        return TRUE;
-    }
-    return FALSE; 
+inline BOOL GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize) {
+  char buf[1024];
+  ssize_t len = readlink("/proc/self/exe", buf, sizeof(buf) - 1);
+  if (len != -1) {
+    buf[len] = '\0';
+    strncpy(lpFilename, buf, nSize);
+    lpFilename[nSize - 1] = '\0';
+    return TRUE;
+  }
+  return FALSE;
 }
-inline BOOL SetCurrentDirectory(LPCSTR lpPathName) { return chdir(lpPathName) == 0; }
-inline DWORD GetTempPath(DWORD nBufferLength, LPSTR lpBuffer) { 
-    const char* tmp = getenv("TMPDIR");
-    if (!tmp) tmp = "/tmp";
-    strncpy(lpBuffer, tmp, nBufferLength);
-    return strlen(lpBuffer);
+inline BOOL SetCurrentDirectory(LPCSTR lpPathName) {
+  return chdir(lpPathName) == 0;
+}
+inline DWORD GetTempPath(DWORD nBufferLength, LPSTR lpBuffer) {
+  const char *tmp = getenv("TMPDIR");
+  if (!tmp)
+    tmp = "/tmp";
+  strncpy(lpBuffer, tmp, nBufferLength);
+  return strlen(lpBuffer);
 }
 #include <sys/stat.h>
 
-inline BOOL CreateDirectory(LPCSTR lpPathName, void* lpSecurityAttributes) { 
-    return mkdir(lpPathName, 0755) == 0; 
+inline BOOL CreateDirectory(LPCSTR lpPathName, void *lpSecurityAttributes) {
+  return mkdir(lpPathName, 0755) == 0;
 }
 
 // UI Stubs
@@ -281,55 +290,83 @@ inline BOOL CreateDirectory(LPCSTR lpPathName, void* lpSecurityAttributes) {
 #define MM_MCINOTIFY 0x3B9
 #define MCI_NOTIFY_SUCCESSFUL 1
 
-inline LRESULT DefWindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) { return 0; }
+inline LRESULT DefWindowProc(HWND hWnd, UINT Msg, WPARAM wParam,
+                             LPARAM lParam) {
+  return 0;
+}
 inline BOOL DestroyWindow(HWND hWnd) { return FALSE; }
-inline HWND CreateWindowEx(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam) { return (HWND)1; }
+inline HWND CreateWindowEx(DWORD dwExStyle, LPCSTR lpClassName,
+                           LPCSTR lpWindowName, DWORD dwStyle, int X, int Y,
+                           int nWidth, int nHeight, HWND hWndParent,
+                           HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam) {
+  return (HWND)1;
+}
 inline BOOL ShowWindow(HWND hWnd, int nCmdShow) { return TRUE; }
 inline HWND SetFocus(HWND hWnd) { return hWnd; }
 inline int ShowCursor(BOOL bShow) { return 0; }
-inline WORD RegisterClassEx(const void* lpwcx) { return 1; }
+inline WORD RegisterClassEx(const void *lpwcx) { return 1; }
 inline HICON LoadIcon(HINSTANCE hInstance, LPCSTR lpIconName) { return 0; }
-inline HCURSOR LoadCursor(HINSTANCE hInstance, LPCSTR lpCursorName) { return 0; }
+inline HCURSOR LoadCursor(HINSTANCE hInstance, LPCSTR lpCursorName) {
+  return 0;
+}
 
 typedef struct tagWNDCLASSEX {
-    UINT        cbSize;
-    UINT        style;
-    LRESULT (CALLBACK *lpfnWndProc)(HWND, UINT, WPARAM, LPARAM);
-    int         cbClsExtra;
-    int         cbWndExtra;
-    HINSTANCE   hInstance;
-    HICON       hIcon;
-    HCURSOR     hCursor;
-    HBRUSH      hbrBackground;
-    LPCSTR      lpszMenuName;
-    LPCSTR      lpszClassName;
-    HICON       hIconSm;
+  UINT cbSize;
+  UINT style;
+  LRESULT(CALLBACK *lpfnWndProc)(HWND, UINT, WPARAM, LPARAM);
+  int cbClsExtra;
+  int cbWndExtra;
+  HINSTANCE hInstance;
+  HICON hIcon;
+  HCURSOR hCursor;
+  HBRUSH hbrBackground;
+  LPCSTR lpszMenuName;
+  LPCSTR lpszClassName;
+  HICON hIconSm;
 } WNDCLASSEX, *PWNDCLASSEX;
 
 #define CS_DBLCLKS 0x0008
 #define CS_BYTEALIGNCLIENT 0x1000
 #define COLOR_BACKGROUND 1
 #define IDC_ARROW ((LPCSTR)32512)
-#define IDC_WAIT  ((LPCSTR)32514)
+#define IDC_WAIT ((LPCSTR)32514)
 #define SW_SHOWNORMAL 1
 #define WS_POPUP 0x80000000L
 #define CW_USEDEFAULT ((int)0x80000000)
 #define MAKEINTRESOURCE(i) ((LPCSTR)((DWORD)((WORD)(i))))
 
 #define STILL_ACTIVE 259
-inline BOOL GetExitCodeThread(HANDLE hThread, LPDWORD lpExitCode) { return FALSE; }
+inline BOOL GetExitCodeThread(HANDLE hThread, LPDWORD lpExitCode) {
+  return FALSE;
+}
 inline void Sleep(DWORD dwMilliseconds) { usleep(dwMilliseconds * 1000); }
 inline BOOL TerminateThread(HANDLE hThread, DWORD dwExitCode) { return FALSE; }
-inline HANDLE CreateThread(void* lpThreadAttributes, DWORD dwStackSize, DWORD (WINAPI *lpStartAddress)(void*), void* lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId) { return 0; }
+inline HANDLE CreateThread(void *lpThreadAttributes, DWORD dwStackSize,
+                           DWORD(WINAPI *lpStartAddress)(void *),
+                           void *lpParameter, DWORD dwCreationFlags,
+                           LPDWORD lpThreadId) {
+  return 0;
+}
 
-inline BOOL PostMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) { return FALSE; }
-inline LRESULT SendMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) { return 0; }
+inline BOOL PostMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
+  return FALSE;
+}
+inline LRESULT SendMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
+  return 0;
+}
 
 inline BOOL DeleteObject(HGDIOBJ ho) { return FALSE; }
 inline HDC GetDC(HWND hWnd) { return 0; }
 inline int ReleaseDC(HWND hWnd, HDC hDC) { return 0; }
-inline HBITMAP CreateDIBitmap(HDC hdc, const void* lpbmih, DWORD fdwInit, const void* lpbInit, const void* lpbmi, UINT fuUsage) { return 0; }
-inline HICON CreateIconFromResource(PBYTE presbits, DWORD dwResSize, BOOL fIcon, DWORD dwVer) { return 0; }
+inline HBITMAP CreateDIBitmap(HDC hdc, const void *lpbmih, DWORD fdwInit,
+                              const void *lpbInit, const void *lpbmi,
+                              UINT fuUsage) {
+  return 0;
+}
+inline HICON CreateIconFromResource(PBYTE presbits, DWORD dwResSize, BOOL fIcon,
+                                    DWORD dwVer) {
+  return 0;
+}
 inline DWORD GetLastError() { return 0; }
 
 typedef struct utimbuf _utimbuf;
@@ -343,28 +380,62 @@ typedef struct hostent HOSTENT;
 inline short GetKeyState(int nVirtKey) { return 0; }
 
 inline HGDIOBJ SelectObject(HDC hdc, HGDIOBJ h) { return 0; }
-inline BOOL GetTextExtentPoint32(HDC hdc, LPCSTR lpString, int cbString, LPSIZE lpSize) { return FALSE; }
+inline BOOL GetTextExtentPoint32(HDC hdc, LPCSTR lpString, int cbString,
+                                 LPSIZE lpSize) {
+  return FALSE;
+}
 #define TA_LEFT 0
 inline UINT SetTextAlign(HDC hdc, UINT align) { return 0; }
 #define TRANSPARENT 1
 inline int SetBkMode(HDC hdc, int mode) { return 0; }
-#define RGB(r,g,b) ((DWORD)(((BYTE)(r)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(b))<<16)))
+#define RGB(r, g, b)                                                           \
+  ((DWORD)(((BYTE)(r) | ((WORD)((BYTE)(g)) << 8)) | (((DWORD)(BYTE)(b)) << 16)))
 inline COLORREF SetTextColor(HDC hdc, COLORREF color) { return 0; }
 #define ETO_CLIPPED 0x0004
-inline BOOL ExtTextOut(HDC hdc, int x, int y, UINT options, const RECT *lprc, LPCSTR lpString, UINT c, const int *lpDx) { return FALSE; }
+inline BOOL ExtTextOut(HDC hdc, int x, int y, UINT options, const RECT *lprc,
+                       LPCSTR lpString, UINT c, const int *lpDx) {
+  return FALSE;
+}
 inline int SaveDC(HDC hdc) { return 0; }
 inline BOOL RestoreDC(HDC hdc, int nSavedDC) { return 0; }
 #define GM_ADVANCED 2
 inline int SetGraphicsMode(HDC hdc, int iMode) { return 0; }
 #define MWT_IDENTITY 1
-inline BOOL ModifyWorldTransform(HDC hdc, const void* lpxf, DWORD mode) { return FALSE; }
-inline BOOL SetViewportOrgEx(HDC hdc, int x, int y, LPPOINT lppt) { return FALSE; }
-inline BOOL SetWindowOrgEx(HDC hdc, int x, int y, LPPOINT lppt) { return FALSE; }
-typedef struct tagLOGFONT { LONG lfHeight; LONG lfWidth; LONG lfEscapement; LONG lfOrientation; LONG lfWeight; BYTE lfItalic; BYTE lfUnderline; BYTE lfStrikeOut; BYTE lfCharSet; BYTE lfOutPrecision; BYTE lfClipPrecision; BYTE lfQuality; BYTE lfPitchAndFamily; char lfFaceName[32]; } LOGFONT;
+inline BOOL ModifyWorldTransform(HDC hdc, const void *lpxf, DWORD mode) {
+  return FALSE;
+}
+inline BOOL SetViewportOrgEx(HDC hdc, int x, int y, LPPOINT lppt) {
+  return FALSE;
+}
+inline BOOL SetWindowOrgEx(HDC hdc, int x, int y, LPPOINT lppt) {
+  return FALSE;
+}
+typedef struct tagLOGFONT {
+  LONG lfHeight;
+  LONG lfWidth;
+  LONG lfEscapement;
+  LONG lfOrientation;
+  LONG lfWeight;
+  BYTE lfItalic;
+  BYTE lfUnderline;
+  BYTE lfStrikeOut;
+  BYTE lfCharSet;
+  BYTE lfOutPrecision;
+  BYTE lfClipPrecision;
+  BYTE lfQuality;
+  BYTE lfPitchAndFamily;
+  char lfFaceName[32];
+} LOGFONT;
 inline HFONT CreateFontIndirect(const LOGFONT *lplf) { return 0; }
 
-inline BOOL CopyFile(const char* lpExistingFileName, const char* lpNewFileName, BOOL bFailIfExists) { return FALSE; }
-inline int LoadString(HINSTANCE hInstance, UINT uID, LPSTR lpBuffer, int nBufferMax) { return 0; }
+inline BOOL CopyFile(const char *lpExistingFileName, const char *lpNewFileName,
+                     BOOL bFailIfExists) {
+  return FALSE;
+}
+inline int LoadString(HINSTANCE hInstance, UINT uID, LPSTR lpBuffer,
+                      int nBufferMax) {
+  return 0;
+}
 
 // Dummy function to match some windows calls
 #define GetUserDefaultLangID() 0x0409

@@ -7,47 +7,46 @@
 BOOL InitDirectSound(HWND hwnd);
 void DeInitDirectSound();
 
-C4Engine::C4Engine()
-	{
-	Default();
-	}
+C4Engine::C4Engine() { Default(); }
 
-C4Engine::~C4Engine()
-	{
+C4Engine::~C4Engine() {}
 
-	}
-
-BOOL C4Engine::Init(HINSTANCE hinst, HWND hwnd, BOOL fFullscreen)
-  {
+BOOL C4Engine::Init(HINSTANCE hinst, HWND hwnd, BOOL fFullscreen) {
   // Init log, engine header message
 #ifdef _WIN32
   DeleteFile(Config.AtLogPath(C4CFN_Log));
 #endif
   Log(C4EngineInfo);
-	sprintf(OSTR,C4XVer4 ? "Version: %d.%d%d.%d" : "Version: %d.%d%d",C4XVer1,C4XVer2,C4XVer3,C4XVer4);
+  sprintf(OSTR, C4XVer4 ? "Version: %d.%d%d.%d" : "Version: %d.%d%d", C4XVer1,
+          C4XVer2, C4XVer3, C4XVer4);
   Log(OSTR);
 
   // Initialize DirectDraw
-	if (!DDraw.Init(hwnd,fFullscreen,Config.Graphics.ResX,Config.Graphics.ResY,FALSE)) 
-    { Log(LoadResStr(IDS_ERR_DDRAW)); return FALSE; }  
-	if (Config.General.RXFontName[0])
-		DDraw.InitFont(Config.General.RXFontName,Config.General.RXFontSize);
+  if (!DDraw.Init(hwnd, fFullscreen, Config.Graphics.ResX, Config.Graphics.ResY,
+                  FALSE)) {
+    Log(LoadResStr(IDS_ERR_DDRAW));
+    return FALSE;
+  }
+  if (Config.General.RXFontName[0])
+    DDraw.InitFont(Config.General.RXFontName, Config.General.RXFontSize);
 
 #ifdef _WIN32
   // Init game timers
-  if ( !SetTimer(hwnd,SEC1_TIMER,SEC1_MSEC,NULL)
-    || !SetCriticalTimer(hwnd) )
-      { Log(LoadResStr(IDS_ERR_TIMER));	return FALSE; }
+  if (!SetTimer(hwnd, SEC1_TIMER, SEC1_MSEC, NULL) || !SetCriticalTimer(hwnd)) {
+    Log(LoadResStr(IDS_ERR_TIMER));
+    return FALSE;
+  }
 
-	// DirectDraw software emulation mode (set in fullscreen only, developer mode 
-	// needs to use same as frontend)
-	if (fFullscreen)
-		{
-		if (GetRegistryDWord(HKEY_LOCAL_MACHINE,"Software\\Microsoft\\DirectDraw","EmulationOnly",&DDrawEmulationState))
-			fDDrawEmulationState=TRUE;
-		if (!Config.Graphics.DDrawAccel) 
-			SetRegistryDWord(HKEY_LOCAL_MACHINE,"Software\\Microsoft\\DirectDraw","EmulationOnly",1);
-		}
+  // DirectDraw software emulation mode (set in fullscreen only, developer mode
+  // needs to use same as frontend)
+  if (fFullscreen) {
+    if (GetRegistryDWord(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\DirectDraw",
+                         "EmulationOnly", &DDrawEmulationState))
+      fDDrawEmulationState = TRUE;
+    if (!Config.Graphics.DDrawAccel)
+      SetRegistryDWord(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\DirectDraw",
+                       "EmulationOnly", 1);
+  }
 #else
   // On Linux, we need some way to drive Game.GameGo and GraphicsGo
   // For now, let's just set them to TRUE or handle them in the loop.
@@ -57,69 +56,70 @@ BOOL C4Engine::Init(HINSTANCE hinst, HWND hwnd, BOOL fFullscreen)
 
   // Init DirectSound
   if (Config.Sound.RXSound)
-    if (!InitDirectSound(hwnd))
-			{ Config.Sound.RXSound=FALSE; Log(LoadResStr(IDS_ERR_DSOUND)); }  
+    if (!InitDirectSound(hwnd)) {
+      Config.Sound.RXSound = FALSE;
+      Log(LoadResStr(IDS_ERR_DSOUND));
+    }
 
   return TRUE;
-  }
+}
 
-void C4Engine::Clear()
-  {
-	// Clear direct sound
+void C4Engine::Clear() {
+  // Clear direct sound
   DeInitDirectSound();
-	// Clear direct draw
-  DDraw.Clear();	
+  // Clear direct draw
+  DDraw.Clear();
 
 #ifdef _WIN32
-	// Restore DirectDraw emulation state
-	if (fDDrawEmulationState)
-		SetRegistryDWord(HKEY_LOCAL_MACHINE,"Software\\Microsoft\\DirectDraw","EmulationOnly",DDrawEmulationState);
-	// Close timers
-	CloseCriticalTimer();
+  // Restore DirectDraw emulation state
+  if (fDDrawEmulationState)
+    SetRegistryDWord(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\DirectDraw",
+                     "EmulationOnly", DDrawEmulationState);
+  // Close timers
+  CloseCriticalTimer();
 #endif
-	// Log
-	Log(LoadResStr(IDS_PRC_DEINIT));
+  // Log
+  Log(LoadResStr(IDS_PRC_DEINIT));
 #ifdef _WIN32
-	// Free language module
-	if (hLanguageModule) FreeLibrary(hLanguageModule);
+  // Free language module
+  if (hLanguageModule)
+    FreeLibrary(hLanguageModule);
 #endif
-  }
+}
 
-void CALLBACK EngineCriticalTimer(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2)
-  {
-  Game.GameGo=TRUE;
-	Game.GraphicsSystem.GraphicsGo=TRUE;
-  }
+void CALLBACK EngineCriticalTimer(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1,
+                                  DWORD dw2) {
+  Game.GameGo = TRUE;
+  Game.GraphicsSystem.GraphicsGo = TRUE;
+}
 
-BOOL C4Engine::SetCriticalTimer(HWND hwnd)
-  {
+BOOL C4Engine::SetCriticalTimer(HWND hwnd) {
 #ifdef _WIN32
   // Establish minimum resolution
-  if (timeBeginPeriod(CRITICAL_MSEC)!=TIMERR_NOERROR)
+  if (timeBeginPeriod(CRITICAL_MSEC) != TIMERR_NOERROR)
     return FALSE;
-  fTimePeriod=TRUE;
+  fTimePeriod = TRUE;
   // Set critical timer
-  if (!(idCriticalTimer=timeSetEvent(
-               CRITICAL_MSEC,CRITICAL_MSEC,
-               &EngineCriticalTimer,0,TIME_PERIODIC))) return FALSE;
+  if (!(idCriticalTimer = timeSetEvent(CRITICAL_MSEC, CRITICAL_MSEC,
+                                       &EngineCriticalTimer, 0, TIME_PERIODIC)))
+    return FALSE;
 #endif
   return TRUE;
-  }
+}
 
-void C4Engine::CloseCriticalTimer()
-  {
+void C4Engine::CloseCriticalTimer() {
 #ifdef _WIN32
-  if (idCriticalTimer) timeKillEvent(idCriticalTimer);
-  if (fTimePeriod) timeEndPeriod(CRITICAL_MSEC);
+  if (idCriticalTimer)
+    timeKillEvent(idCriticalTimer);
+  if (fTimePeriod)
+    timeEndPeriod(CRITICAL_MSEC);
 #endif
-  }
+}
 
-void C4Engine::Default()
-	{
-	hLanguageModule=NULL;
-	idCriticalTimer=0;
-	fTimePeriod=FALSE;
-	DDrawEmulationState=0;
-	fDDrawEmulationState=FALSE;
-	}
-
+void C4Engine::Default() {
+  hLanguageModule = NULL;
+  idCriticalTimer = 0;
+  fTimePeriod = FALSE;
+  DDrawEmulationState = 0;
+  fDDrawEmulationState = FALSE;
+}

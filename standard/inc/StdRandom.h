@@ -4,21 +4,19 @@
 
 extern int RandomCount;
 
-inline void Randomize()
-  {
+inline void Randomize() {
   srand((unsigned)time(NULL));
-	RandomCount=0;
-  }
+  RandomCount = 0;
+}
 
-inline void FixedRandom(DWORD dwSeed)
-	{
-	srand(dwSeed);
-	RandomCount=0;
-	}
+inline void FixedRandom(DWORD dwSeed) {
+  srand(dwSeed);
+  RandomCount = 0;
+}
 
-inline int Random(int iRange)
-  {
-	RandomCount++;
-  if (iRange==0) return 0;
-  return (rand()%iRange);
-  }
+inline int Random(int iRange) {
+  RandomCount++;
+  if (iRange == 0)
+    return 0;
+  return (rand() % iRange);
+}
