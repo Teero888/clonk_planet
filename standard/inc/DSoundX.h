@@ -4,7 +4,7 @@
 
 struct CSoundObject;
 
-CSoundObject *DSndObjCreate(BYTE *bpWaveBuf, int iConcurrent = 1);
+CSoundObject *DSndObjCreate(BYTE *bpWaveBuf, int iWaveSize, int iConcurrent = 1);
 BOOL DSndObjPlay(CSoundObject *hSO, DWORD dwPlayFlags);
 BOOL DSndObjStop(CSoundObject *hSO);
 BOOL DSndObjPlaying(CSoundObject *hSO);

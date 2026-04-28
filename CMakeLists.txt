@@ -36,3 +36,8 @@ target_link_libraries(test_loading PRIVATE z)
 
 add_executable(test_zlib tests/test_zlib.cpp)
 target_link_libraries(test_zlib PRIVATE z)
+
+enable_testing()
+add_test(NAME HeadlessTest 
+         COMMAND ${CMAKE_COMMAND} -E env CLONK_TEST_HEADLESS=1 $<TARGET_FILE:clonk> Twonky.c4p
+         WORKING_DIRECTORY ${CMAKE_BINARY_DIR})

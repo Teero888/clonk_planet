@@ -10,13 +10,12 @@ const int C4SCR_Access_Public			= 0,
 #define C4SCR_Protected "protected"
 #define C4SCR_Private   "private"
 
-struct C4ScriptFnDef 
-  { 
+struct C4ScriptFnDef
+  {
   const char* Identifier;
-  int (*Function)(C4Thread*, long, long, long, long, long, long, long, long, long, long);
+  long (*Function)(C4Thread*, long, long, long, long, long, long, long, long, long, long);
 	BOOL Public;
-  };  
-
+  };
 extern C4ScriptFnDef C4ScriptFnMap[];
 
 /* Engine-Calls */

@@ -32,7 +32,7 @@ BOOL C4SoundEffect::Load(const char *szFileName, C4Group &hGroup, BOOL fStatic)
   // Allocate wave buffer, load sound, create sound object
   if ( !(WaveBuffer = new BYTE [WaveSize])
     || !hGroup.Read(WaveBuffer,WaveSize)
-    || !(DSObj = DSndObjCreate(WaveBuffer)) )
+    || !(DSObj = DSndObjCreate(WaveBuffer, WaveSize)) )
       { Clear(); return FALSE; }
   // Set name
   SCopy(szFileName,Name,C4MaxSoundName);

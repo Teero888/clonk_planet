@@ -12,7 +12,7 @@ typedef long fixed;
 
 inline fixed itofix(int x) 
   { 
-  return x << 16;
+  return x * 65536;
   }
 
 inline int fixtoi(fixed x) 

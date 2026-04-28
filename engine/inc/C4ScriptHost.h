@@ -50,10 +50,10 @@ class C4ScriptHost: public C4ComponentHost
 		const char *GetControlDesc(const char *szFunctionFormat, int iCom, C4ID *pidImage=NULL);
 		int GetControlFlag(const char *szFunctionFormat);
 		int ResolveIncludes(C4DefList &rDefs);
-		int ObjectCall(C4Thread *pCaller, C4Object *pObj, const char *szFunction,
+		long ObjectCall(C4Thread *pCaller, C4Object *pObj, const char *szFunction,
              long par0=0, long par1=0, long par2=0, long par3=0, long par4=0,
 						 long par5=0, long par6=0, long par7=0, long par8=0, long par9=0);
-		int Call(C4Thread *pCaller, const char *szFunction,
+		long Call(C4Thread *pCaller, const char *szFunction,
              long par0=0, long par1=0, long par2=0, long par3=0, long par4=0,
 						 long par5=0, long par6=0, long par7=0, long par8=0, long par9=0);
 		C4ScriptFnRef* GetFunctionRef(const char *szFunction);
@@ -63,7 +63,7 @@ class C4ScriptHost: public C4ComponentHost
 		void AddFunctionTable(C4ScriptFnRef *pFn);
 		void SetError(const char *szMessage);
 		void MakeScript();
-		int FunctionCall(C4Thread *pCaller, const char *szFunction, C4Object *pObj, long iPar0, long iPar1, long iPar2, long iPar3, long iPar4, long iPar5, long iPar6, long iPar7, long iPar8, long iPar9);
+		long FunctionCall(C4Thread *pCaller, const char *szFunction, C4Object *pObj, long iPar0, long iPar1, long iPar2, long iPar3, long iPar4, long iPar5, long iPar6, long iPar7, long iPar8, long iPar9);
 		int QualifierAccess(const char *szQualifier);
 		BOOL ScanFunctionDesc(const char *szDesc, char *sDesc, C4ID *pidImage, char *sCondition);
 	};

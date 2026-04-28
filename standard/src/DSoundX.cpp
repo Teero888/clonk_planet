@@ -38,15 +38,12 @@ struct CSoundObject
     int iCurrent;
 };
 
-CSoundObject *DSndObjCreate(BYTE *bpWaveBuf, int iConcurrent)
+CSoundObject *DSndObjCreate(BYTE *bpWaveBuf, int iWaveSize, int iConcurrent)
 {
     if (!g_maEngineInitialized || !bpWaveBuf) return NULL;
     
-    uint32_t riffSize = *(uint32_t*)(bpWaveBuf + 4);
-    uint32_t totalSize = riffSize + 8;
-
     CSoundObject *pSO = new CSoundObject();
-    pSO->waveData.assign(bpWaveBuf, bpWaveBuf + totalSize);
+    pSO->waveData.assign(bpWaveBuf, bpWaveBuf + iWaveSize);
     pSO->iAlloc = iConcurrent > 0 ? iConcurrent : 1;
     pSO->iCurrent = 0;
 

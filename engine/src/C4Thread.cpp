@@ -242,7 +242,7 @@ long C4Thread::Execute()
   }
 
 
-int C4Thread::Execute(C4Thread *pCaller,
+long C4Thread::Execute(C4Thread *pCaller,
 											const char *szScript, 
 											const char *szFunction,
 											const char *cpPosition,

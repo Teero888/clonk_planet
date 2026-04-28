@@ -25,6 +25,7 @@ class C4FullScreen
 		BOOL ViewportCheck();
 		BOOL OpenGame(const char *szCmdLine);
 	protected:
+		BOOL ActivateMenuMain();
 		BOOL ActivateMenuNewPlayer();
 		BOOL ActivateMenuScenario();
 		BOOL RegisterWindowClass(HINSTANCE hInst);

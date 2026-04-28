@@ -285,11 +285,11 @@ BOOL CStdFont::StringOut(const char *szText, SURFACE sfcDest, int iTx, int iTy, 
 		case ARight:  iTx-=GetTextWidth(szText);	 break;
 		}
 	// Draw string
-	for (szText; *szText; szText++)
+	for (const char *pChar = szText; *pChar; pChar++)
 		{
-		CharOut(*((BYTE*)szText),sfcDest,iTx+1,iTy+1,iBCol);
-		CharOut(*((BYTE*)szText),sfcDest,iTx,iTy,iFCol);
-		iTx+=Character[*((BYTE*)szText)].Wdt;
+		CharOut(*((BYTE*)pChar),sfcDest,iTx+1,iTy+1,iBCol);
+		CharOut(*((BYTE*)pChar),sfcDest,iTx,iTy,iFCol);
+		iTx+=Character[*((BYTE*)pChar)].Wdt;
 		}
 	return TRUE;
 	}
@@ -298,7 +298,7 @@ int CStdFont::GetTextWidth(const char *szText)
 	{
 	if (!szText) return FALSE;
 	int iLineWidth=0,iMaxLineWidth=0;
-	for (const char *cPos=szText; *cPos; *cPos++)
+	for (const char *cPos=szText; *cPos; cPos++)
 		{
 		// Line break
 		if (*cPos == '|') iLineWidth=0;
@@ -314,10 +314,11 @@ int CStdFont::GetTextHeight(const char *szText)
 	{
 	if (!szText) return Character[0].Hgt;
 	int iLines = 1 + SCharCount('|',szText);
-	for (int iResult=0; *szText; szText++) iResult=Max(iResult,Character[*((BYTE*)szText)].Hgt);
-	int iResult = 0; // stub
-	iResult*=iLines; 
-	return iResult;
+	int iMaxHeight = 0;
+	for (const char *pChar = szText; *pChar; pChar++) 
+		iMaxHeight = Max(iMaxHeight, (int)Character[*((BYTE*)pChar)].Hgt);
+	if (!iMaxHeight) iMaxHeight = Character[0].Hgt;
+	return iMaxHeight * iLines;
 	}
 
 BOOL CStdFont::TextOut(const char *szText, SURFACE sfcDest, int iTx, int iTy, int iFCol, int iBCol, BYTE byForm)

@@ -433,6 +433,7 @@ void C4Object::CopyMotion(C4Object *from)
 
 void C4Object::ForcePosition(int tx, int ty)
   {
+  if (!this) return;
   if ((x!=tx) || (y!=ty)) RemoveSolidMask();
   x=tx; y=ty;
   fix_x=itofix(x); fix_y=itofix(y);

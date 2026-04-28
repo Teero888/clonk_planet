@@ -113,6 +113,7 @@ C4Object::C4Object()
 
 void C4Object::Default()
 	{
+  Magic=0x434F424A;
 	id=C4ID_None;
 	Status=1; 
 	RemovalDelay=0;
@@ -1825,14 +1826,14 @@ void C4Object::ClearPointers(C4Object *pObj)
 	if (Menu) Menu->ClearPointers(pObj);
   }
 
-int C4Object::Call(const char *szFunctionCall,
+long C4Object::Call(const char *szFunctionCall,
                    long par0, long par1, long par2, long par3, long par4,
 									 long par5, long par6, long par7, long par8, long par9)
   {
 	return Call(NULL,szFunctionCall,par0,par1,par2,par3,par4,par5,par6,par7,par8,par9);
 	}
 
-int C4Object::Call(C4Thread *pCaller, const char *szFunctionCall,
+long C4Object::Call(C4Thread *pCaller, const char *szFunctionCall,
                    long par0, long par1, long par2, long par3, long par4,
 									 long par5, long par6, long par7, long par8, long par9)
   {

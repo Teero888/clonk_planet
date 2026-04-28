@@ -59,6 +59,7 @@ class C4Object
 		C4Object();
     ~C4Object();
   public:
+    uint32_t Magic;
 		C4ID id;
 		long Number;
     long Status; // NoSave //
@@ -144,10 +145,10 @@ class C4Object
 		BOOL CallControl(BYTE byCom,
 										 int par0=0, int par1=0, int par2=0, int par3=0, int par4=0,
 										 int par5=0, int par6=0, int par7=0, int par8=0, int par9=0);
-    int Call(const char *szFunctionCall,
+    long Call(const char *szFunctionCall,
              long par0=0, long par1=0, long par2=0, long par3=0, long par4=0,
 						 long par5=0, long par6=0, long par7=0, long par8=0, long par9=0);
-    int Call(C4Thread *pCaller, const char *szFunctionCall,
+    long Call(C4Thread *pCaller, const char *szFunctionCall,
              long par0=0, long par1=0, long par2=0, long par3=0, long par4=0,
 						 long par5=0, long par6=0, long par7=0, long par8=0, long par9=0);
 

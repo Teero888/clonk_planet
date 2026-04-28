@@ -130,7 +130,8 @@ BOOL CStdDDraw::Init(HWND hWnd, BOOL Fullscreen, int iResX, int iResY, BOOL fUse
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+    if (getenv("CLONK_TEST_HEADLESS")) glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    else glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
     glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 
     printf("glfwCreateWindow(%dx%d)...\n", iResX, iResY);
@@ -351,9 +352,31 @@ SURFACE CStdDDraw::CreateSurface(int iWdt, int iHgt) {
     return (SURFACE)s;
 }
 
-void CStdDDraw::SurfaceShiftColor(SURFACE sfcSfc, int iShift) { }
-void CStdDDraw::SurfaceShiftColorRange(SURFACE sfcSfc, int iRngLo, int iRngHi, int iShift) { }
-void CStdDDraw::SurfaceAllowColor(SURFACE sfcSfc, BYTE iRngLo, BYTE iRngHi, BOOL fAllowZero) { }
+void CStdDDraw::SurfaceShiftColor(SURFACE sfcSfc, int iShift) {
+    if (!sfcSfc) return;
+    CGLSurface* s = (CGLSurface*)sfcSfc;
+    for (int i=0; i<s->pitch*s->h; i++) {
+        if (s->bits[i]) s->bits[i] = (BYTE)BoundBy((int)s->bits[i] + iShift, 0, 255);
+    }
+    s->dirty = true;
+}
+
+void CStdDDraw::SurfaceShiftColorRange(SURFACE sfcSfc, int iRngLo, int iRngHi, int iShift) {
+    if (!sfcSfc) return;
+    CGLSurface* s = (CGLSurface*)sfcSfc;
+    for (int i=0; i<s->pitch*s->h; i++) {
+        if (Inside((int)s->bits[i], iRngLo, iRngHi)) {
+            s->bits[i] = (BYTE)BoundBy((int)s->bits[i] + iShift, 0, 255);
+        }
+    }
+    s->dirty = true;
+}
+
+void CStdDDraw::SurfaceAllowColor(SURFACE sfcSfc, BYTE iRngLo, BYTE iRngHi, BOOL fAllowZero) { 
+    // This was likely used in DirectDraw to manage color keys or palette usage.
+    // In our OpenGL software blitter, we don't have a direct equivalent but we can 
+    // at least ensure the surface is marked dirty if needed.
+}
 
 BOOL CStdDDraw::BlitFast(SURFACE sfcSource, int fx, int fy, SURFACE sfcTarget, int tx, int ty, int wdt, int hgt) {
     return Blit(sfcSource, fx, fy, wdt, hgt, sfcTarget, tx, ty, wdt, hgt, TRUE);

@@ -1905,8 +1905,8 @@ void C4Command::DenumeratePointers()
 
 void C4Command::EnumeratePointers()
 	{
-	Target = (C4Object*) Game.Objects.ObjectNumber(Target);
-	Target2 = (C4Object*) Game.Objects.ObjectNumber(Target2);
+	Target = (C4Object*) (intptr_t) Game.Objects.ObjectNumber(Target);
+	Target2 = (C4Object*) (intptr_t) Game.Objects.ObjectNumber(Target2);
 	}
 
 int C4Command::CallFailed()
@@ -1916,7 +1916,7 @@ int C4Command::CallFailed()
 	// Compose fail-function name
 	char szFunctionFailed[1024+1]; sprintf(szFunctionFailed,"%sFailed",Text);
 	// Call failed-function
-	return Target->Call(szFunctionFailed,(intptr_t)cObj,Tx,Ty,(intptr_t)Target2);
+	return (int) Target->Call(szFunctionFailed,(long)cObj,Tx,Ty,(long)Target2);
 	// Extreme caution notice: the script call might do just about anything 
 	// including clearing all commands (including this) i.e. through a call 
 	// to SetCommand. Thus, we must not do anything in this command anymore

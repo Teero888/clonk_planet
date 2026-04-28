@@ -34,7 +34,7 @@ class C4Thread
     const char *cScr;
 		C4ThreadError Error;
   public:
-    int Execute(C4Thread *pCaller,
+    long Execute(C4Thread *pCaller,
 								const char *szScript, 
 								const char *szFunction,
 								const char *cpPosition,

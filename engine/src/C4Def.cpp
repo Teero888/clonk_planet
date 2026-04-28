@@ -541,16 +541,15 @@ void C4Def::CrossMapActMap()
 
 BOOL C4Def::ColorizeByMaterial(C4MaterialMap &rMats, BYTE bGBM)
 	{
-#ifdef C4ENGINE // - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    printf("  ColorizeByMaterial: %s (%s)\n", Name, Filename);
+#ifdef C4ENGINE // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // printf("  ColorizeByMaterial: %s (%s)\n", Name, Filename);
   int mat;
 	if (!Bitmap[0]) return FALSE; // (Bitmap[0] only)
 	if (!ColorByMaterial[0]) return FALSE;
 	mat=rMats.Get(ColorByMaterial);
 	if (mat==MNone) return FALSE;
-  printf("    Colorizing by material %d: %s\n", mat, ColorByMaterial);
+  // printf("    Colorizing by material %d: %s\n", mat, ColorByMaterial);
   Engine.DDraw.SurfaceAllowColor(Bitmap[0],bGBM+C4M_ColsPerMat*mat,bGBM+C4M_ColsPerMat*mat+C4M_ColsPerMat-1,TRUE);
-
 #endif // - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	return TRUE;
@@ -671,16 +670,13 @@ int C4DefList::Load(C4Group &hGroup, DWORD dwLoadWhat,
 
   // Load sub definitions
   hGroup.ResetSearch();
-  printf("C4DefList::Load: searching sub-defs in %s\n", hGroup.GetName());
   while (hGroup.FindNextEntry(C4CFN_DefFiles,szEntryname))
   {
-  printf("  Found sub-def entry: %s\n", szEntryname);
   	if (hChild.OpenAsChild(&hGroup,szEntryname))
   		{
   		iResult += Load(hChild,dwLoadWhat,szLanguage,pSoundSystem,fOverload,fSearchMessage);
   		hChild.Close();
   		}
-  else { printf("  Failed to open sub-def as child: %s\n", szEntryname); }
   }
 #ifdef C4ENGINE // Message - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 		if (fThisSearchMessage) {	sprintf(OSTR,LoadResStr(IDS_PRC_DEFSLOADED),iResult); Log(OSTR); }

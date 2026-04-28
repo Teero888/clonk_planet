@@ -109,7 +109,6 @@ void C4Application::Clear()
 
 void C4Application::Execute()
 {
-#ifndef _WIN32
     // Drive engine flags on Linux
     static uint32_t lastTick = 0;
     uint32_t now = glfwGetTime() * 1000;
@@ -118,19 +117,19 @@ void C4Application::Execute()
         Game.GameGo = TRUE;
         Game.GraphicsSystem.GraphicsGo = TRUE;
         lastTick = now;
+        
+        
+        // Fullscreen mode: drive the game and menu
+        if (Fullscreen)
+            FullScreen.Execute();
+        // Console mode
+        else
+        {
+            Console.Execute();
+            // In windowed mode on Linux, we still want the game to run and render to our window
+            FullScreen.Execute();
+        }
     }
-#endif
-
-	// Fullscreen mode
-	if (Fullscreen)
-		FullScreen.Execute();
-	// Console mode
-	else
-	{
-		Console.Execute();
-		// In windowed mode on Linux, we still want the game to run and render to our window
-		FullScreen.Execute();
-	}
 }
 
 void C4Application::Quit()
