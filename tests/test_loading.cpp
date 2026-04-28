@@ -4,123 +4,171 @@
 #include <vector>
 #include <stdlib.h>
 #include <zlib.h>
+#include <string>
 
 typedef uint8_t BYTE;
+
+#pragma pack(push, 1)
+struct C4GroupHeader {
+  char id[28];
+  int32_t Ver1, Ver2;
+  int32_t Entries;
+  char Maker[32];
+  char Password[32];
+  int32_t Creation, Original;
+  uint8_t fbuf[92];
+};
+
+struct C4GroupEntryCore {
+  char FileName[260];
+  int32_t Packed, ChildGroup;
+  int32_t Size, EntrySize, Offset;
+  int32_t Time;
+  uint8_t fbuf[32];
+};
+#pragma pack(pop)
 
 void MemUnscramble(BYTE *bypBuffer, int iSize) {
   int cnt;
   BYTE temp;
+  // Scramble order from original source: XOR then SWAP
+  for (cnt = 0; cnt < iSize; cnt++)
+    bypBuffer[cnt] ^= 237;
   for (cnt = 0; cnt + 2 < iSize; cnt += 3) {
     temp = bypBuffer[cnt];
     bypBuffer[cnt] = bypBuffer[cnt + 2];
     bypBuffer[cnt + 2] = temp;
   }
-  for (cnt = 0; cnt < iSize; cnt++)
-    bypBuffer[cnt] ^= 237;
 }
 
-void MemUnscramble2(BYTE *bypBuffer, int iSize) {
-  int cnt;
-  BYTE temp;
-  for (cnt = 0; cnt < iSize; cnt++)
-    bypBuffer[cnt] ^= 237;
-  for (cnt = 0; cnt + 2 < iSize; cnt += 3) {
-    temp = bypBuffer[cnt];
-    bypBuffer[cnt] = bypBuffer[cnt + 2];
-    bypBuffer[cnt + 2] = temp;
-  }
+bool DecompressData(const std::vector<BYTE> &in, std::vector<BYTE> &out, int idx) {
+    if (in.size() < 2) return false;
+    char tmp_gz[256], tmp_out[256];
+    snprintf(tmp_gz, sizeof(tmp_gz), "tmp_%d.gz", idx);
+    snprintf(tmp_out, sizeof(tmp_out), "tmp_%d", idx);
+
+    FILE *f = fopen(tmp_gz, "wb");
+    if (!f) return false;
+    fwrite(in.data(), 1, in.size(), f);
+    fclose(f);
+
+    if (in[0] == 0x1e && in[1] == 0x8c) {
+        char cmd[1024];
+        snprintf(cmd, sizeof(cmd), "python3 -c \"d=open('%s','rb').read(); "
+                 "open('%s','wb').write(bytes([d[0]^1, d[1]^7])+d[2:])\" && gzip -df %s",
+                 tmp_gz, tmp_gz, tmp_gz);
+        system(cmd);
+    } else {
+        char cmd[1024];
+        snprintf(cmd, sizeof(cmd), "gzip -df %s", tmp_gz);
+        system(cmd);
+    }
+
+    FILE *fout = fopen(tmp_out, "rb");
+    if (!fout) { remove(tmp_gz); return false; }
+    out.clear();
+    BYTE buf[4096]; size_t len;
+    while ((len = fread(buf, 1, sizeof(buf), fout)) > 0) {
+        size_t old = out.size(); out.resize(old + len);
+        memcpy(out.data() + old, buf, len);
+    }
+    fclose(fout);
+    remove(tmp_out);
+    remove(tmp_gz);
+    return true;
+}
+
+void HexDump(const BYTE *data, size_t size) {
+    for (size_t i = 0; i < size; i++) {
+        if (i % 16 == 0) printf("\n%08zx: ", i);
+        printf("%02x ", data[i]);
+    }
+    printf("\n");
 }
 
 int main(int argc, char **argv) {
-  if (argc < 2)
-    return 1;
-  const char *filename = argv[1];
+  if (argc < 2) { printf("Usage: %s <path/to/resource>\n", argv[0]); return 1; }
+  
+  std::string full_path = argv[1];
+  std::vector<std::string> segments;
+  size_t start = 0, end;
+  while ((end = full_path.find('/', start)) != std::string::npos) {
+      segments.push_back(full_path.substr(start, end - start));
+      start = end + 1;
+  }
+  segments.push_back(full_path.substr(start));
 
   std::vector<BYTE> data;
-
-  FILE *f = fopen(filename, "rb");
-  BYTE magic[2];
-  fread(magic, 1, 2, f);
+  FILE *f = fopen(segments[0].c_str(), "rb");
+  if (!f) { perror("fopen"); return 1; }
+  fseek(f, 0, SEEK_END); size_t fsize = ftell(f); fseek(f, 0, SEEK_SET);
+  data.resize(fsize); fread(data.data(), 1, fsize, f);
   fclose(f);
 
-  if (magic[0] == 0x1f && magic[1] == 0x8b) {
-    printf("Decompressing Gzip...\n");
-    gzFile g = gzopen(filename, "rb");
-    BYTE buf[4096];
-    int len;
-    while ((len = gzread(g, buf, sizeof(buf))) > 0) {
-      size_t old = data.size();
-      data.resize(old + len);
-      memcpy(data.data() + old, buf, len);
-    }
-    gzclose(g);
-  } else if (magic[0] == 0x1e && magic[1] == 0x8c) {
-    printf("Decompressing Scrambled Gzip...\n");
-    char cmd[512];
-    sprintf(cmd,
-            "cp %s %s.tmp.gz && python3 -c \"d=open('%s.tmp.gz','rb').read(); "
-            "open('%s.tmp.gz','wb').write(bytes([d[0]^1, d[1]^7])+d[2:])\" && "
-            "gzip -df %s.tmp.gz",
-            filename, filename, filename, filename, filename);
-    system(cmd);
-    char tmpname[512];
-    sprintf(tmpname, "%s.tmp", filename);
-    f = fopen(tmpname, "rb");
-    BYTE buf[4096];
-    size_t len;
-    while ((len = fread(buf, 1, sizeof(buf), f)) > 0) {
-      size_t old = data.size();
-      data.resize(old + len);
-      memcpy(data.data() + old, buf, len);
-    }
-    fclose(f);
-  } else {
-    f = fopen(filename, "rb");
-    fseek(f, 0, SEEK_END);
-    size_t fsize = ftell(f);
-    fseek(f, 0, SEEK_SET);
-    data.resize(fsize);
-    fread(data.data(), 1, fsize, f);
-    fclose(f);
+  for (size_t s = 0; s < segments.size(); s++) {
+      // 1. Decompress if needed
+      if (data.size() >= 2 && ((data[0] == 0x1f && data[1] == 0x8b) || (data[0] == 0x1e && data[1] == 0x8c))) {
+          std::vector<BYTE> dec;
+          if (DecompressData(data, dec, (int)s)) data = dec;
+      }
+
+      // 2. Check if it's a group
+      if (data.size() < sizeof(C4GroupHeader)) break;
+      C4GroupHeader head; memcpy(&head, data.data(), sizeof(C4GroupHeader));
+      
+      // Header is ALWAYS scrambled in GrpFiles
+      MemUnscramble((BYTE*)&head, sizeof(C4GroupHeader));
+      if (memcmp(head.id, "RedWolf Design GrpFolder", 24) != 0) {
+          // Try without unscramble
+          memcpy(&head, data.data(), sizeof(C4GroupHeader));
+          if (memcmp(head.id, "RedWolf Design GrpFolder", 24) != 0) break; // Not a group
+      }
+
+      // 3. Handle last segment
+      if (s == segments.size() - 1) {
+          printf("--- Group: %s ---\n", segments[s].c_str());
+          printf("Entries: %d | Maker: %.32s\n", head.Entries, head.Maker);
+          size_t offset = sizeof(C4GroupHeader);
+          for (int i = 0; i < head.Entries; i++) {
+              C4GroupEntryCore entry; memcpy(&entry, data.data() + offset, sizeof(C4GroupEntryCore));
+              // Entry headers are NEVER scrambled
+              printf("[%2d] %-32.256s | Size: %7d | Offset: %7d\n", i, entry.FileName, entry.Size, entry.Offset);
+              offset += sizeof(C4GroupEntryCore);
+          }
+          return 0;
+      }
+
+      // 4. Find next segment
+      bool found = false;
+      size_t offset = sizeof(C4GroupHeader);
+      for (int i = 0; i < head.Entries; i++) {
+          C4GroupEntryCore entry; memcpy(&entry, data.data() + offset, sizeof(C4GroupEntryCore));
+          if (strcasecmp(entry.FileName, segments[s+1].c_str()) == 0) {
+              size_t data_start = sizeof(C4GroupHeader) + head.Entries * sizeof(C4GroupEntryCore) + entry.Offset;
+              std::vector<BYTE> next_data(entry.Size);
+              memcpy(next_data.data(), data.data() + data_start, entry.Size);
+              data = next_data;
+              found = true;
+              break;
+          }
+          offset += sizeof(C4GroupEntryCore);
+      }
+      if (!found) { printf("Segment '%s' not found\n", segments[s+1].c_str()); return 1; }
   }
 
-  size_t fsize = data.size();
-  printf("Searching in decompressed %s (%zu bytes)...\n", filename, fsize);
-
-  BYTE entry0[64];
-  memcpy(entry0, data.data() + 204, 64);
-  MemUnscramble(entry0, 64);
-  printf("Entry 0 (offset 204) unscrambled: %.64s\n", entry0);
-  printf("Entry 0 hex: ");
-  for (int i = 0; i < 32; i++)
-    printf("%02x ", entry0[i]);
-  printf("\n");
-
-  for (int i = 0; i < (int)fsize - 64; i++) {
-    BYTE buf[65];
-    memset(buf, 0, 65);
-
-    // Order 1: Swap then XOR
-    memcpy(buf, data.data() + i, 64);
-    MemUnscramble(buf, 64);
-    if (memcmp(buf, "RedWolf", 7) == 0 || strstr((char *)buf, ".txt") || strstr((char *)buf, ".c4s") || strstr((char *)buf, ".c4f")) {
-      printf("Found at offset %d (Swap then XOR): %.48s\n", i, buf);
-    }
-
-    // Order 2: XOR then Swap
-    memcpy(buf, data.data() + i, 64);
-    MemUnscramble2(buf, 64);
-    if (memcmp(buf, "RedWolf", 7) == 0 || memcmp(buf, "Title.txt", 9) == 0 || memcmp(buf, "Scenario.txt", 12) == 0) {
-      printf("Found at offset %d (XOR then Swap): %.32s\n", i, buf);
-    }
-
-    // Order 3: Pure XOR 237
-    memcpy(buf, data.data() + i, 64);
-    for (int j = 0; j < 64; j++)
-      buf[j] ^= 237;
-    if (memcmp(buf, "RedWolf", 7) == 0 || memcmp(buf, "Title.txt", 9) == 0 || memcmp(buf, "Scenario.txt", 12) == 0) {
-      printf("Found at offset %d (Pure XOR): %.32s\n", i, buf);
-    }
+  // Final display as file
+  printf("--- File: %s (%zu bytes) ---\n", segments.back().c_str(), data.size());
+  size_t dump_size = data.size() > 256 ? 256 : data.size();
+  HexDump(data.data(), dump_size);
+  if (data.size() > 0) {
+      bool printable = true;
+      for(size_t i=0; i < (data.size() < 20 ? data.size() : 20); i++) {
+          if (data[i] < 9 || (data[i] > 13 && data[i] < 32)) { printable = false; break; }
+      }
+      if (printable) {
+          int preview_len = data.size() > 1024 ? 1024 : (int)data.size();
+          printf("\nAs Text (preview):\n%.*s\n", preview_len, (char*)data.data());
+      }
   }
 
   return 0;
