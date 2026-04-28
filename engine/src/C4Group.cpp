@@ -10,15 +10,13 @@
 #include <utime.h>
 #endif
 
-//------------------------------ File Sort Lists
-//-------------------------------------------
+//------------------------------ File Sort Lists -------------------------------------------
 
 const char *C4CFN_FLS[] = {
     C4CFN_Mouse, C4FLS_Mouse,       C4CFN_Keyboard, C4FLS_Keyboard,        C4CFN_Easy,   C4FLS_Easy,          C4CFN_Material, C4FLS_Material,    C4CFN_Graphics, C4FLS_Graphics, C4CFN_DefFiles,
     C4FLS_Def,   C4CFN_PlayerFiles, C4FLS_Player,   C4CFN_ObjectInfoFiles, C4FLS_Object, C4CFN_ScenarioFiles, C4FLS_Scenario, C4CFN_FolderFiles, C4FLS_Folder,   NULL,           NULL};
 
-//---------------------------- Global C4Group_Functions
-//-------------------------------------------
+//---------------------------- Global C4Group_Functions -------------------------------------------
 
 char C4Group_Maker[C4GroupMaxMaker + 1] = "";
 char C4Group_Passwords[CFG_MaxString + 1] = "";
@@ -317,13 +315,11 @@ void MemScramble(BYTE *bypBuffer, int iSize) {
     bypBuffer[cnt] ^= 237;
 }
 
-//------------------------------- Bitmap Helper
-//-------------------------------------------
+//------------------------------- Bitmap Helper -------------------------------------------
 
 void DeleteBitmap(HBITMAP hbmp) { DeleteObject(hbmp); }
 
-//---------------------------------- C4Group
-//---------------------------------------------
+//---------------------------------- C4Group ---------------------------------------------
 
 C4GroupHeader::C4GroupHeader() { ZeroMem(this, sizeof(C4GroupHeader)); }
 

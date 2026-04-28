@@ -39,8 +39,7 @@ const int C4PF_MaxDepth = 35, C4PF_MaxCrawl = 800, C4PF_MaxRay = 350, C4PF_Thres
 
           C4PF_Draw_Rate = 10;
 
-//------------------------------- C4PathFinderRay
-//---------------------------------------------
+//------------------------------- C4PathFinderRay ---------------------------------------------
 
 C4PathFinderRay::C4PathFinderRay() { Default(); }
 
@@ -411,7 +410,7 @@ void C4PathFinderRay::SetCompletePath() {
       pPathFinder->SetWaypoint(pRay->X2, pRay->Y2, (long)pRay->UseZone->Object, pPathFinder->WaypointParameter);
     // MoveTo waypoint
     else
-      pPathFinder->SetWaypoint(pRay->From->X2, pRay->From->Y2, NULL, pPathFinder->WaypointParameter);
+      pPathFinder->SetWaypoint(pRay->From->X2, pRay->From->Y2, 0, pPathFinder->WaypointParameter);
   }
 }
 
@@ -543,8 +542,7 @@ BOOL C4PathFinderRay::CheckBackRayShorten() {
   return FALSE;
 }
 
-//------------------------------- C4PathFinder
-//---------------------------------------------
+//------------------------------- C4PathFinder ---------------------------------------------
 
 C4PathFinder::C4PathFinder() { Default(); }
 

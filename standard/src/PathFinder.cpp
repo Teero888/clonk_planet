@@ -14,8 +14,7 @@ const int PF_Direction_Left = -1, PF_Direction_Right = +1,
 
           PF_Draw_Rate = 10;
 
-//------------------------------- CPathFinderRay
-//---------------------------------------------
+//------------------------------- CPathFinderRay ---------------------------------------------
 
 CPathFinderRay::CPathFinderRay() { Default(); }
 
@@ -38,8 +37,7 @@ BOOL CPathFinderRay::Execute() {
   CPathFinderRay *pRay;
   int iX, iY, iLastX, iLastY;
   switch (Status) {
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - - -
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   case PF_Ray_Launch:
     // Path free
     if (PathFree(X2, Y2, TargetX, TargetY)) {
@@ -389,8 +387,7 @@ BOOL CPathFinderRay::CheckBackRayShorten() {
   return FALSE;
 }
 
-//------------------------------- CPathFinder
-//---------------------------------------------
+//------------------------------- CPathFinder ---------------------------------------------
 
 CPathFinder::CPathFinder() { Default(); }
 

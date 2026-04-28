@@ -4,8 +4,7 @@
 
 #include <C4Include.h>
 
-//----------------------------- C4Def Compilation
-//----------------------------------------
+//----------------------------- C4Def Compilation ----------------------------------------
 
 #define offsC4D(x) offsetof(C4DefCore, x)
 #define offsC4A(x) offsetof(C4ActionDef, x)
@@ -135,16 +134,14 @@ C4CompilerValue C4CR_ActMap[] = {
 
     {NULL, C4CV_End, 0, 0}};
 
-//-------------------------- Default Action Procedures
-//--------------------------------------
+//-------------------------- Default Action Procedures --------------------------------------
 
 const int C4D_MaxDFA = 18;
 
 const char *ProcedureName[C4D_MaxDFA] = {"WALK",  "FLIGHT", "KNEEL", "SCALE", "HANGLE", "DIG",    "SWIM",  "THROW",   "BRIDGE",
                                          "BUILD", "PUSH",   "CHOP",  "LIFT",  "FLOAT",  "ATTACH", "FIGHT", "CONNECT", "PULL"};
 
-//-------------------------------- C4ActionDef
-//--------------------------------------------
+//-------------------------------- C4ActionDef --------------------------------------------
 
 C4ActionDef::C4ActionDef() { Default(); }
 
@@ -158,8 +155,7 @@ void C4ActionDef::Default() {
   FacetBase = 0;
 }
 
-//--------------------------------- C4DefCore
-//----------------------------------------------
+//--------------------------------- C4DefCore ----------------------------------------------
 
 C4DefCore::C4DefCore() { Default(); }
 
@@ -275,8 +271,7 @@ BOOL C4DefCore::Decompile(char **ppOutput, int *ipSize) {
   return Compiler.DecompileStructure(C4CR_DefCore, this, &dC4D, ppOutput, ipSize);
 }
 
-//-------------------------------- C4Def
-//-------------------------------------------------------
+//-------------------------------- C4Def -------------------------------------------------------
 
 C4Def::C4Def() { Default(); }
 
@@ -577,8 +572,7 @@ int C4Def::ResolveIncludes(C4DefList &rDefs) {
   return iResult;
 }
 
-//--------------------------------- C4DefList
-//----------------------------------------------
+//--------------------------------- C4DefList ----------------------------------------------
 
 C4DefList::C4DefList() { Default(); }
 

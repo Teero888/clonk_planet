@@ -13,8 +13,7 @@
 #include <Standard.h>
 #include <StdFile.h>
 
-//---------------------------- Some system-dependent stuff
-//--------------------------------------------------------------------------------------------------------
+//---------------------------- Some system-dependent stuff --------------------------------------------------------------------------------------------------------
 
 const char *GetWorkingDirectory() {
   static char buf[_MAX_PATH + 1];
@@ -23,8 +22,7 @@ const char *GetWorkingDirectory() {
 
 BOOL SetWorkingDirectory(const char *szPath) { return (chdir(szPath) == 0); }
 
-//--------------------------------- Path & Filename
-//--------------------------------------------------------------------------------------------------------
+//--------------------------------- Path & Filename --------------------------------------------------------------------------------------------------------
 
 // Return pointer to position after last backslash.
 
@@ -153,8 +151,7 @@ BOOL WildcardMatch(const char *szWildcard, const char *szFilename) {
   return FALSE;
 }
 
-//----------------------------------- Files
-//--------------------------------------------------------------------------------------------------------
+//----------------------------------- Files --------------------------------------------------------------------------------------------------------
 
 int FileAttributes(const char *szFilename) {
   struct _finddata_t fdt;
@@ -208,8 +205,7 @@ BOOL RenameFile(const char *szFilename, const char *szNewFileName) {
   return TRUE;
 }
 
-//-------------------------------- Directories
-//--------------------------------------------------------------------------------------------------------
+//-------------------------------- Directories --------------------------------------------------------------------------------------------------------
 
 BOOL CopyDirectory(const char *szSource, const char *szTarget) {
   // Source check
@@ -284,8 +280,7 @@ BOOL EraseDirectory(const char *szDirName) {
   return (rmdir(szDirName) == 0);
 }
 
-//--------------------------------- Items
-//--------------------------------------------------------------------------------------------------------
+//--------------------------------- Items --------------------------------------------------------------------------------------------------------
 
 int ItemAttributes(const char *szItemName) { return FileAttributes(szItemName); }
 
@@ -343,8 +338,7 @@ BOOL ItemIdentical(const char *szFilename1, const char *szFilename2) {
   return FALSE;
 }
 
-//------------------------- Multi File Processing
-//--------------------------------------------------------------------------------------------------------
+//------------------------- Multi File Processing --------------------------------------------------------------------------------------------------------
 
 int ForEachFile(const char *szPath, int lAttrib, BOOL (*fnCallback)(const char *)) {
   char szFilename[_MAX_PATH + 1];
@@ -367,8 +361,7 @@ int ForEachFile(const char *szPath, int lAttrib, BOOL (*fnCallback)(const char *
   return iFileCount;
 }
 
-//------------------------------- Text Files
-//--------------------------------------------------------------------------------------------------------
+//------------------------------- Text Files --------------------------------------------------------------------------------------------------------
 
 // Sets file pointer to end of located string.
 

@@ -4,8 +4,7 @@
 
 #include <C4Include.h>
 
-//------------------------------ Name File Handling
-//-------------------------------------
+//------------------------------ Name File Handling -------------------------------------
 
 char GetANameBuffer[C4MaxName + 1];
 
@@ -39,8 +38,7 @@ const char *GetAName(const char *szNameFile) {
   return GetANameBuffer;
 }
 
-//------------------------------- Player Info
-//----------------------------------------
+//------------------------------- Player Info ----------------------------------------
 
 #define offsC4P(x) offsetof(C4PlayerInfoCore, x)
 
@@ -162,8 +160,7 @@ BOOL C4PlayerInfoCore::Decompile(char **ppOutput, int *ipSize) {
   return Compiler.DecompileStructure(C4CR_PlayerInfoCore, this, &dC4P, ppOutput, ipSize);
 }
 
-//------------------------------- Physical Info
-//----------------------------------------
+//------------------------------- Physical Info ----------------------------------------
 
 void C4PhysicalInfo::PromotionUpdate(int iRank) {
   if (iRank >= 0) {
@@ -184,8 +181,7 @@ C4PhysicalInfo::C4PhysicalInfo() { Default(); }
 
 void C4PhysicalInfo::Default() { ZeroMem(this, sizeof(C4PhysicalInfo)); }
 
-//------------------------------- Object Info
-//----------------------------------------
+//------------------------------- Object Info ----------------------------------------
 
 #define offsC4I(x) offsetof(C4ObjectInfoCore, x)
 
@@ -348,8 +344,7 @@ BOOL C4ObjectInfoCore::Decompile(char **ppOutput, int *ipSize) {
   return Compiler.DecompileStructure(C4CR_ObjectInfoCore, this, &dC4O, ppOutput, ipSize);
 }
 
-//------------------------------- Round Info
-//------------------------------------------
+//------------------------------- Round Info ------------------------------------------
 
 C4RoundResult::C4RoundResult() { Default(); }
 

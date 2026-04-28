@@ -12,7 +12,7 @@ const int C4EnumPointer1 = 1000000000, C4EnumPointer2 = 1001000000;
 
 class C4CompilerValue {
 public:
-  char *Name;
+  const char *Name;
   int Type;
   int Offset;
   int Size;

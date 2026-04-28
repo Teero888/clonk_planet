@@ -3297,8 +3297,7 @@ void C4Object::ContactAction() {
   int iProcedure = Def->ActMap[Action.Act].Procedure;
   int fDisabled = Def->ActMap[Action.Act].Disabled;
 
-  //------------------------------- Hit Bottom
-  //---------------------------------------------
+  //------------------------------- Hit Bottom ---------------------------------------------
   if (t_contact & CNAT_Bottom)
     switch (iProcedure) {
 
@@ -3354,8 +3353,7 @@ void C4Object::ContactAction() {
       return;
     }
 
-  //------------------------------- Hit Ceiling
-  //-----------------------------------------
+  //------------------------------- Hit Ceiling -----------------------------------------
   if (t_contact & CNAT_Top)
     switch (iProcedure) {
 
@@ -3404,8 +3402,7 @@ void C4Object::ContactAction() {
       break;
     }
 
-  //---------------------------- Hit Left Wall
-  //----------------------------------------
+  //---------------------------- Hit Left Wall ----------------------------------------
   if (t_contact & CNAT_Left) {
     switch (iProcedure) {
     case DFA_FLIGHT:
@@ -3463,8 +3460,7 @@ void C4Object::ContactAction() {
     }
   }
 
-  //------------------------------ Hit Right Wall
-  //--------------------------------------
+  //------------------------------ Hit Right Wall --------------------------------------
   if (t_contact & CNAT_Right) {
     switch (iProcedure) {
 
@@ -3525,8 +3521,7 @@ void C4Object::ContactAction() {
     }
   }
 
-  //---------------------------- Unresolved Cases
-  //---------------------------------------
+  //---------------------------- Unresolved Cases ---------------------------------------
 
   // Flight stuck
   if (iProcedure == DFA_FLIGHT) {

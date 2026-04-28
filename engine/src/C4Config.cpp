@@ -211,7 +211,7 @@ void C4ConfigGeneral::DeterminePaths() {
 #ifndef _WIN32
   AppendBackslash(ExePath); // Clonk expects trailing backslash for its own path
                             // joins
-#endif Temp path
+#endif // Temp path
   GetTempPath(CFG_MaxString, TempPath);
   if (TempPath[0])
     AppendBackslash(TempPath);
