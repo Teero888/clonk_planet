@@ -10,7 +10,8 @@
 
 #define C4EngineCaption "Clonk Planet Engine"
 
-/* Use 4.9x.x version for offspin engines - modify version resource accordingly */
+/* Use 4.9x.x version for offspin engines - modify version resource accordingly
+ */
 
 const int C4XVer1 = 4, C4XVer2 = 6, C4XVer3 = 5, C4XVer4 = 0;
 
@@ -77,13 +78,11 @@ const int C4XVer1 = 4, C4XVer2 = 6, C4XVer3 = 5, C4XVer4 = 0;
 #include <C4UserMessages.h>
 #include <C4SurfaceFile.h>
 
-
 #ifdef C4SHAREWARE
 #include <C4ConfigShareware.h>
 #else
 #include <C4Config.h>
 #endif
-
 
 #ifdef C4ENGINE
 
@@ -103,7 +102,7 @@ const int C4XVer1 = 4, C4XVer2 = 6, C4XVer3 = 5, C4XVer4 = 0;
 #include <C4Sky.h>
 #include <C4Landscape.h>
 #include <C4MaterialList.h>
-#include <C4GamePadCon.h>  
+#include <C4GamePadCon.h>
 #include <C4FogOfWar.h>
 #include <C4Player.h>
 #include <C4PlayerList.h>
@@ -134,16 +133,16 @@ const int C4XVer1 = 4, C4XVer2 = 6, C4XVer3 = 5, C4XVer4 = 0;
 #include <C4Physics.h>
 #include <C4Engine.h>
 
-extern C4Application	Application;
-extern C4Engine				Engine; 
-extern C4Console			Console;
-extern C4FullScreen		FullScreen;
-extern C4Game					Game;
+extern C4Application Application;
+extern C4Engine Engine;
+extern C4Console Console;
+extern C4FullScreen FullScreen;
+extern C4Game Game;
 
 #ifdef C4SHAREWARE
 extern C4ConfigShareware Config;
 #else
-extern C4Config	Config;
+extern C4Config Config;
 #endif
 
 #include <C4Wrappers.h>
