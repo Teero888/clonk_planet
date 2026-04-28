@@ -13,7 +13,7 @@ const int CFG_String = 1, CFG_Integer = 2,
 class CStdConfigValue {
 public:
   int Type;
-  char *Name;
+  const char *Name;
   int Offset;
   long Default;
 };

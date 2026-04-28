@@ -101,7 +101,7 @@ public:
 	void open( const char *addr, int service, const role = client ) ;
 	void close( void ) ;
 	int is_open( void ) const ;
-	void attach( SOCKET = NULL );
+	void attach( SOCKET = 0 );
 	SOCKET getsocket() const ;
 
 	char *getpeername( char *, int ) const ;

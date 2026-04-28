@@ -104,7 +104,7 @@ const char *FnStringFormat(const char *szFormatPar, long iPar0 = 0, long iPar1 =
       // String
       case 's':
         if (cPar < C4ThreadMaxPar)
-          sprintf(FnStringFormatBuf + SLen(FnStringFormatBuf), szField, FnStringPar((const char *)iPar[cPar++]));
+          sprintf(FnStringFormatBuf + SLen(FnStringFormatBuf), szField, FnStringPar((const char *)(uintptr_t)iPar[cPar++]));
         cpFormat += SLen(szField);
         break;
       // Undefined / Empty
@@ -765,7 +765,7 @@ long FnSetCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Objec
   // Special: convert iData to szText
   const char *szText = NULL;
   if (iCommand == C4CMD_Call) {
-    szText = FnStringPar((const char *)iData);
+    szText = FnStringPar((const char *)(uintptr_t)iData);
     iData = 0;
   }
   // Set
@@ -787,7 +787,7 @@ long FnAddCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Objec
   // Special: convert iData to szText
   const char *szText = NULL;
   if (iCommand == C4CMD_Call) {
-    szText = FnStringPar((const char *)iData);
+    szText = FnStringPar((const char *)(uintptr_t)iData);
     iData = 0;
   }
   // Add
@@ -807,7 +807,7 @@ long FnAppendCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Ob
   // Special: convert iData to szText
   const char *szText = NULL;
   if (iCommand == C4CMD_Call) {
-    szText = FnStringPar((const char *)iData);
+    szText = FnStringPar((const char *)(uintptr_t)iData);
     iData = 0;
   }
   // Add

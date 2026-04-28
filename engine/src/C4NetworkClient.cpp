@@ -6,8 +6,7 @@
 
 const int C4NET_Transfer_None = 0, C4NET_Transfer_Cease = 1, C4NET_Transfer_GetNetReady = 2, C4NET_Transfer_SendNetGo = 3;
 
-//--------------------------------- C4NetworkClientList
-//--------------------------------------------
+//--------------------------------- C4NetworkClientList --------------------------------------------
 
 C4NetworkClientList::C4NetworkClientList() { Default(); }
 
@@ -150,8 +149,7 @@ void C4NetworkClientList::Draw(C4Facet &cgo) {
   }
 }
 
-//------------------------------------- C4NetworkClient
-//------------------------------------------------
+//------------------------------------- C4NetworkClient ------------------------------------------------
 
 C4NetworkClient::C4NetworkClient() { Default(); }
 

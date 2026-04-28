@@ -140,11 +140,12 @@ BOOL ValidFilenameCharacter(char cChar) {
     return TRUE;
   if (Inside(cChar, '0', '9'))
     return TRUE;
-  if ((cChar == '�') || (cChar == '�') || (cChar == '�'))
+  // This is to handle ÄÖÜäöü in the reference filename - these are not valid filename characters, but they are used in the reference filename and should be kept as is. TODO: idk find a fix
+  if (((unsigned char)cChar == 0xe4) || ((unsigned char)cChar == 0xf6) || ((unsigned char)cChar == 0xfc))
     return TRUE;
-  if ((cChar == '�') || (cChar == '�') || (cChar == '�'))
+  if (((unsigned char)cChar == 0xc4) || ((unsigned char)cChar == 0xd6) || ((unsigned char)cChar == 0xdc))
     return TRUE;
-  if (cChar == '�')
+  if ((unsigned char)cChar == 0xdf)
     return TRUE;
   if (cChar == '.')
     return TRUE;

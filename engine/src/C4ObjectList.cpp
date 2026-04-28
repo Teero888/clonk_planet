@@ -496,7 +496,7 @@ C4Object *C4ObjectList::Enumerated(C4Object *pObj) {
   int iPtrNum;
   // If object is enumerated, convert to enumerated pointer
   if (iPtrNum = ObjectNumber(pObj))
-    return (C4Object *)(C4EnumPointer1 + iPtrNum);
+    return (C4Object *)(uintptr_t)(C4EnumPointer1 + iPtrNum);
   // Failure, return original pointer
   return pObj;
 }

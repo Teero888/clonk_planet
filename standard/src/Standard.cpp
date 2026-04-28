@@ -11,8 +11,7 @@ std::thread::id g_mainThreadId;
 
 #include <Standard.h>
 
-//------------------------------------- Basics
-//----------------------------------------
+//------------------------------------- Basics ----------------------------------------
 
 void Swap(int &int1, int &int2) {
   int temp;
@@ -203,18 +202,17 @@ bool ForLine(int x1, int y1, int x2, int y2, BOOL (*fnCallback)(int, int, int), 
   return true;
 }
 
-//--------------------------------- Characters
-//------------------------------------------
+//--------------------------------- Characters ------------------------------------------
 
 char CharCapital(char cChar) {
   if (Inside(cChar, 'a', 'z'))
     return (cChar - 32);
-  if (cChar == '�')
-    return '�';
-  if (cChar == '�')
-    return '�';
-  if (cChar == '�')
-    return '�';
+  if ((unsigned char)cChar == 0xe4)
+    return (char)0xc4;
+  if ((unsigned char)cChar == 0xf6)
+    return (char)0xd6;
+  if ((unsigned char)cChar == 0xfc)
+    return (char)0xdc;
   return cChar;
 }
 
@@ -248,14 +246,16 @@ bool IsWhiteSpace(char cChar) {
   return false;
 }
 
+// This is to handle ÄÖÜäöü in latin-1 TODO: idk find a fix
+
 bool IsUpperCase(char cChar) {
   if (Inside(cChar, 'A', 'Z'))
     return true;
-  if (cChar == '�')
+  if ((unsigned char)cChar == 0xc4)
     return true;
-  if (cChar == '�')
+  if ((unsigned char)cChar == 0xd6)
     return true;
-  if (cChar == '�')
+  if ((unsigned char)cChar == 0xdc)
     return true;
   return false;
 }
@@ -263,17 +263,16 @@ bool IsUpperCase(char cChar) {
 bool IsLowerCase(char cChar) {
   if (Inside(cChar, 'a', 'z'))
     return true;
-  if (cChar == '�')
+  if ((unsigned char)cChar == 0xe4)
     return true;
-  if (cChar == '�')
+  if ((unsigned char)cChar == 0xf6)
     return true;
-  if (cChar == '�')
+  if ((unsigned char)cChar == 0xfc)
     return true;
   return false;
 }
 
-//------------------------------- Strings
-//------------------------------------------------
+//------------------------------- Strings ------------------------------------------------
 
 int SLen(const char *sptr) {
   int slen = 0;
@@ -854,8 +853,7 @@ int SModuleCount(const char *szList) {
   return iCount;
 }
 
-//--------------------------------- Blitting
-//---------------------------------------------
+//--------------------------------- Blitting ---------------------------------------------
 
 void BufferBlit(BYTE *bypSource, int iSourcePitch,
                 int iSrcBufHgt, // Positive: Bottom up
@@ -933,8 +931,7 @@ void StdBlit(BYTE *bypSource, int iSourcePitch, int iSrcBufHgt, int iSrcX, int i
   }
 }
 
-//---------------------------------- Global Milliseconds
-//-------------------------------------
+//---------------------------------- Global Milliseconds -------------------------------------
 
 DWORD time_msecs() {
   /* struct _timeb timebuffer; */
@@ -944,7 +941,6 @@ DWORD time_msecs() {
   return secs * 1000 + msecs;
 }
 
-//------------------------- A global variable used by StdRandom
-//-------------------------------
+//------------------------- A global variable used by StdRandom -------------------------------
 
 int RandomCount = 0;
