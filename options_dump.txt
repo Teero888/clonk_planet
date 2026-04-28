@@ -1,0 +1,367 @@
+
+=== Resource 3011 (22 items) ===
+Base Dimensions: 0, 0, 226, 212 DLUs
+  ID 2129 | Edit   | '                    ' | Rect:   6,  30, 132,  12
+  ID 2047 | Btn    | 'BROWSE              ' | Rect: 141,  30,  63,  12
+  ID 2358 | Static | 'TEXT                ' | Rect:   6,  19, 135,  11
+  ID 2126 | Edit   | '                    ' | Rect:   6,  57, 132,  12
+  ID 2044 | Btn    | 'BROWSE              ' | Rect: 141,  57,  63,  12
+  ID 2340 | Static | 'RICHTEXT            ' | Rect:   6,  46, 135,   9
+  ID 2127 | Edit   | '                    ' | Rect:   6,  84, 132,  12
+  ID 2045 | Btn    | 'BROWSE              ' | Rect: 141,  84,  63,  12
+  ID 2343 | Static | 'SCRIPT              ' | Rect:   6,  73, 135,   9
+  ID 2124 | Edit   | '                    ' | Rect:   6, 110, 132,  12
+  ID 2042 | Btn    | 'BROWSE              ' | Rect: 141, 110,  63,  12
+  ID 2268 | Static | 'BITMAP              ' | Rect:   6, 100, 135,   9
+  ID 2128 | Edit   | '                    ' | Rect:   6, 136, 132,  12
+  ID 2046 | Btn    | 'BROWSE              ' | Rect: 141, 136,  63,  12
+  ID 2354 | Static | 'SOUND               ' | Rect:   6, 126, 135,   9
+  ID 2125 | Edit   | '                    ' | Rect:   6, 162, 132,  12
+  ID 2043 | Btn    | 'BROWSE              ' | Rect: 141, 162,  63,  12
+  ID 2325 | Static | 'MUSIC               ' | Rect:   6, 152, 135,   9
+  ID 2130 | Edit   | '                    ' | Rect:   6, 189, 132,  12
+  ID 2048 | Btn    | 'BROWSE              ' | Rect: 141, 189,  63,  12
+  ID 2378 | Static | 'ZIP                 ' | Rect:   6, 179, 135,   9
+  ID 2102 | Btn    | 'USESHELL            ' | Rect:   6,   6, 198,  10
+
+=== Resource 3012 (24 items) ===
+Base Dimensions: 0, 0, 396, 204 DLUs
+  ID 2266 | Static | 'ANIMALS             ' | Rect:   5,   5, 170,  10
+  ID 2192 | LBox   | '                    ' | Rect:   5,  15, 170,  30
+  ID 2062 | Static | '                    ' | Rect: 175,  15,  15,  30
+  ID 2367 | Static | 'VEGETATION TYPES    ' | Rect:   5,  55, 170,  10
+  ID 2204 | LBox   | '                    ' | Rect:   5,  65, 170,  30
+  ID 2071 | Static | '                    ' | Rect: 175,  65,  15,  30
+  ID 2366 | Static | 'VEGETATION AMOUNTS  ' | Rect:   5, 110, 170,  10
+  ID 2251 | Static | '                    ' | Rect:   5, 120, 170,   5
+  ID 2326 | Static | 'NESTS               ' | Rect: 205,   5, 170,  10
+  ID 2200 | LBox   | '                    ' | Rect: 205,  15, 170,  30
+  ID 2068 | Static | '                    ' | Rect: 375,  15,  15,  30
+  ID 2309 | Static | 'INEARTH TYPES       ' | Rect: 205,  55, 170,  10
+  ID 2198 | LBox   | '                    ' | Rect: 205,  65, 170,  30
+  ID 2066 | Static | '                    ' | Rect: 375,  65,  15,  30
+  ID 2235 | Static | '                    ' | Rect: 205, 120, 170,   5
+  ID 2308 | Static | 'INEARTH AMOUNTS     ' | Rect: 205, 110, 170,  10
+  ID 2250 | Static | '                    ' | Rect:   5,  97, 170,   5
+  ID 2234 | Static | '                    ' | Rect: 205,  97, 170,   5
+  ID 2223 | Static | '                    ' | Rect:   5,  46, 170,   5
+  ID 2240 | Static | '                    ' | Rect: 205,  46, 170,   5
+  ID 2295 | Static | 'ENVIRONMENT         ' | Rect:   6, 133, 170,  10
+  ID 2195 | LBox   | '                    ' | Rect:   6, 143, 369,  30
+  ID 2064 | Static | '                    ' | Rect: 375, 142,  15,  30
+  ID 2228 | Static | '                    ' | Rect:   6, 175, 369,   5
+
+=== Resource 3013 (16 items) ===
+Base Dimensions: 0, 0, 396, 204 DLUs
+  ID 2109 | Static | '                    ' | Rect:   9,  73,  15,  15
+  ID 2264 | Static | 'ACCESS              ' | Rect:  25,  69, 120,  10
+  ID 2074 | Btn    | 'ACCESS              ' | Rect:  25,  79, 139,  10
+  ID 2319 | Static | 'MAX PLAYERS         ' | Rect:  43,  96,  50,  10
+  ID 2146 | Edit   | '                    ' | Rect:  43, 106,  25,  12
+  ID 2261 | msctls_updown32 | 'Spin1               ' | Rect:  67, 106,  11,  14
+  ID 2307 | Static | 'ICON                ' | Rect:   9,  96,  25,  10
+  ID 2106 | CBox   | '                    ' | Rect:   9, 106,  25, 100
+  ID 2300 | Static | 'GOALS               ' | Rect:   6,   9, 170,  10
+  ID 2196 | LBox   | '                    ' | Rect:   6,  19, 171,  30
+  ID 2065 | Static | '                    ' | Rect: 177,  19,  15,  30
+  ID 2229 | Static | '                    ' | Rect:   6,  51, 171,   5
+  ID 2341 | Static | 'RULES               ' | Rect: 199,   9, 170,  10
+  ID 2201 | LBox   | '                    ' | Rect: 199,  19, 171,  30
+  ID 2069 | Static | '                    ' | Rect: 370,  19,  15,  30
+  ID 2245 | Static | '                    ' | Rect: 199,  51, 171,   5
+
+=== Resource 3014 (38 items) ===
+Base Dimensions: 0, 0, 240, 180 DLUs
+  ID 2002 | Static | '                    ' | Rect:   5,  21,  22,  21
+  ID 2278 | Static | 'SEL LEFT            ' | Rect:  30,  11,  45,   8
+  ID 2026 | Btn    | 'ASSIGN              ' | Rect:  30,  21,  45,  12
+  ID 2008 | Static | '                    ' | Rect:  85,  21,  20,  21
+  ID 2282 | Static | 'SEL TOGGLE          ' | Rect: 110,  11,  45,   8
+  ID 2030 | Btn    | 'ASSIGN              ' | Rect: 111,  21,  45,  12
+  ID 2009 | Static | '                    ' | Rect: 165,  21,  21,  21
+  ID 2283 | Static | 'SEL RIGHT           ' | Rect: 189,  11,  45,   8
+  ID 2031 | Btn    | 'ASSIGN              ' | Rect: 189,  21,  45,  12
+  ID 2010 | Static | '                    ' | Rect:   5,  51,  22,  21
+  ID 2284 | Static | 'THROW               ' | Rect:  30,  41,  45,   8
+  ID 2032 | Btn    | 'ASSIGN              ' | Rect:  30,  51,  45,  12
+  ID 2011 | Static | '                    ' | Rect:  85,  51,  20,  21
+  ID 2285 | Static | 'UP JUMP             ' | Rect: 110,  41,  55,   8
+  ID 2147 | Edit   | '                    ' | Rect: 111,  51,  45,  12
+  ID 2012 | Static | '                    ' | Rect: 165,  51,  21,  21
+  ID 2286 | Static | 'DIG                 ' | Rect: 190,  41,  45,   8
+  ID 2033 | Btn    | 'ASSIGN              ' | Rect: 189,  51,  45,  12
+  ID 2013 | Static | '                    ' | Rect:   5,  81,  22,  21
+  ID 2287 | Static | 'LEFT                ' | Rect:  30,  71,  45,   8
+  ID 2148 | Edit   | '                    ' | Rect:  30,  81,  45,  12
+  ID 2014 | Static | '                    ' | Rect:  85,  81,  20,  21
+  ID 2288 | Static | 'DOWN STOP           ' | Rect: 110,  71,  45,   8
+  ID 2149 | Edit   | '                    ' | Rect: 111,  81,  45,  12
+  ID 2015 | Static | '                    ' | Rect: 165,  81,  21,  21
+  ID 2289 | Static | 'RIGHT               ' | Rect: 190,  71,  45,   8
+  ID 2150 | Edit   | '                    ' | Rect: 189,  81,  45,  12
+  ID 2003 | Static | '                    ' | Rect:   5, 111,  22,  21
+  ID 2279 | Static | 'MENU                ' | Rect:  30, 101,  45,   8
+  ID 2027 | Btn    | 'ASSIGN              ' | Rect:  30, 111,  45,  12
+  ID 2333 | Static | 'PROMPTPAD           ' | Rect:   3, 135, 231,  18
+  ID 2006 | Static | '                    ' | Rect:  84, 112,  21,  20
+  ID 2280 | Static | 'SPECIAL1            ' | Rect: 109, 102,  45,   8
+  ID 2028 | Btn    | 'ASSIGN              ' | Rect: 109, 112,  45,  12
+  ID 2007 | Static | '                    ' | Rect: 165, 112,  21,  20
+  ID 2281 | Static | 'SPECIAL2            ' | Rect: 190, 102,  45,   8
+  ID 2029 | Btn    | 'ASSIGN              ' | Rect: 190, 112,  45,  12
+  ID 2059 | Btn    | 'RESETCALIBRATION    ' | Rect:  70, 159, 100,  12
+
+=== Resource 3015 (17 items) ===
+Base Dimensions: 0, 0, 186, 175 DLUs
+  ID 2339 | Btn    | 'RESOLUTION          ' | Rect:   4,   6,  68,  48
+  ID 2215 | Btn    | '640x480             ' | Rect:  11,  18,  50,  10
+  ID 2216 | Btn    | '800x600             ' | Rect:  11,  28,  50,  10
+  ID 2217 | Btn    | '1024x768            ' | Rect:  11,  38,  50,  10
+  ID 2351 | Btn    | 'SMOKE               ' | Rect:  78,   6, 102,  48
+  ID 2247 | msctls_trackbar32 | 'Slider1             ' | Rect:  83,  23,  91,   9
+  ID 2353 | Static | 'LOW                 ' | Rect:  86,  33,  30,   9
+  ID 2352 | Static | 'HIGH                ' | Rect: 144,  34,  27,   9
+  ID 2349 | Btn    | 'SHOW                ' | Rect:   4,  56, 177,  76
+  ID 2104 | Btn    | 'VIEWPORTBORDER      ' | Rect:  11,  68, 155,  10
+  ID 2094 | Btn    | 'PLAYERINFO          ' | Rect:  11,  78, 155,  10
+  ID 2077 | Btn    | 'COLORANIMATION      ' | Rect:  11,  88, 155,  10
+  ID 2101 | Btn    | 'STARTUPMESSAGES     ' | Rect:  11,  98, 155,  10
+  ID 2091 | Btn    | 'OBJECTCOMMANDS      ' | Rect:  11, 107, 155,  10
+  ID 2095 | Btn    | 'PORTRAITS           ' | Rect:  11, 117, 155,  10
+  ID 2365 | Btn    | 'TROUBLE             ' | Rect:   5, 135, 176,  27
+  ID 2078 | Btn    | 'DDRAWSOFT           ' | Rect:  11, 147, 155,  10
+
+=== Resource 3016 (55 items) ===
+Base Dimensions: 0, 0, 240, 180 DLUs
+  ID 2269 | Static | 'BLOCK               ' | Rect:   5,   5,  50,   8
+  ID 2035 | Btn    | 'BLOCK1              ' | Rect:  60,   5,  41,  10
+  ID 2036 | Btn    | 'BLOCK2              ' | Rect: 105,   5,  41,  10
+  ID 2037 | Btn    | 'BLOCK3              ' | Rect: 150,   5,  41,  10
+  ID 2038 | Btn    | 'BLOCK4              ' | Rect: 192,   5,  41,  10
+  ID 65535 | Static | '                    ' | Rect:   5,  20, 230,   1
+  ID 2002 | Static | '                    ' | Rect:   5,  45,  15,  15
+  ID 2278 | Static | 'SEL LEFT            ' | Rect:  30,  35,  45,   8
+  ID 2112 | msctls_hotkey32 | 'HotKey1             ' | Rect:  30,  45,  45,  12
+  ID 2008 | Static | '                    ' | Rect:  85,  45,  15,  15
+  ID 2282 | Static | 'SEL TOGGLE          ' | Rect: 110,  35,  45,   8
+  ID 2116 | msctls_hotkey32 | 'HotKey1             ' | Rect: 110,  45,  45,  12
+  ID 2009 | Static | '                    ' | Rect: 165,  45,  15,  15
+  ID 2283 | Static | 'SEL RIGHT           ' | Rect: 190,  35,  45,   8
+  ID 2117 | msctls_hotkey32 | 'HotKey1             ' | Rect: 190,  45,  45,  12
+  ID 2010 | Static | '                    ' | Rect:   5,  75,  15,  15
+  ID 2284 | Static | 'THROW               ' | Rect:  30,  65,  45,   8
+  ID 2118 | msctls_hotkey32 | 'HotKey1             ' | Rect:  30,  75,  45,  12
+  ID 2011 | Static | '                    ' | Rect:  85,  75,  15,  15
+  ID 2285 | Static | 'UP JUMP             ' | Rect: 110,  65,  55,   8
+  ID 2119 | msctls_hotkey32 | 'HotKey1             ' | Rect: 110,  75,  45,  12
+  ID 2012 | Static | '                    ' | Rect: 165,  75,  15,  15
+  ID 2286 | Static | 'DIG                 ' | Rect: 190,  65,  45,   8
+  ID 2120 | msctls_hotkey32 | 'HotKey1             ' | Rect: 190,  75,  45,  12
+  ID 2013 | Static | '                    ' | Rect:   5, 105,  15,  15
+  ID 2287 | Static | 'LEFT                ' | Rect:  30,  95,  45,   8
+  ID 2121 | msctls_hotkey32 | 'HotKey1             ' | Rect:  30, 105,  45,  12
+  ID 2014 | Static | '                    ' | Rect:  85, 105,  15,  15
+  ID 2288 | Static | 'DOWN STOP           ' | Rect: 110,  95,  45,   8
+  ID 2122 | msctls_hotkey32 | 'HotKey1             ' | Rect: 110, 105,  45,  12
+  ID 2015 | Static | '                    ' | Rect: 165, 105,  15,  15
+  ID 2289 | Static | 'RIGHT               ' | Rect: 190,  95,  45,   8
+  ID 2123 | msctls_hotkey32 | 'HotKey1             ' | Rect: 190, 105,  45,  12
+  ID 2003 | Static | '                    ' | Rect:   5, 135,  15,  15
+  ID 2279 | Static | 'MENU                ' | Rect:  30, 125,  45,   8
+  ID 2113 | msctls_hotkey32 | 'HotKey1             ' | Rect:  30, 135,  45,  12
+  ID 2004 | Static | '                    ' | Rect:  84, 136,  15,  15
+  ID 2280 | Static | 'SPECIAL1            ' | Rect: 109, 126,  45,   8
+  ID 2114 | msctls_hotkey32 | 'HotKey1             ' | Rect: 110, 135,  45,  12
+  ID 2005 | Static | '                    ' | Rect: 165, 136,  15,  15
+  ID 2281 | Static | 'SPECIAL2            ' | Rect: 190, 126,  45,   8
+  ID 2115 | msctls_hotkey32 | 'HotKey1             ' | Rect: 190, 135,  45,  12
+  ID 2131 | Edit   | '                    ' | Rect:  30,  45,  45,  12
+  ID 2135 | Edit   | '                    ' | Rect: 110,  45,  45,  12
+  ID 2136 | Edit   | '                    ' | Rect: 190,  45,  45,  12
+  ID 2137 | Edit   | '                    ' | Rect:  30,  75,  45,  12
+  ID 2138 | Edit   | '                    ' | Rect: 110,  75,  45,  12
+  ID 2139 | Edit   | '                    ' | Rect: 190,  75,  45,  12
+  ID 2140 | Edit   | '                    ' | Rect:  30, 105,  45,  12
+  ID 2141 | Edit   | '                    ' | Rect: 110, 105,  45,  12
+  ID 2142 | Edit   | '                    ' | Rect: 190, 105,  45,  12
+  ID 2132 | Edit   | '                    ' | Rect:  30, 135,  45,  12
+  ID 2133 | Edit   | '                    ' | Rect: 110, 135,  45,  12
+  ID 2134 | Edit   | '                    ' | Rect: 190, 135,  45,  12
+  ID 2060 | Btn    | 'RESET               ' | Rect:  85, 161,  69,  12
+
+=== Resource 3017 (30 items) ===
+Base Dimensions: 0, 0, 396, 204 DLUs
+  ID 2374 | Static | 'WIDTH               ' | Rect:   5,   5, 120,  10
+  ID 2255 | Static | '                    ' | Rect:   5,  15, 120,   5
+  ID 2304 | Static | 'HEIGHT              ' | Rect:   5,  25, 120,  10
+  ID 2231 | Static | '                    ' | Rect:   5,  35, 120,   5
+  ID 2379 | Static | 'ZOOM                ' | Rect:   5,  45,  95,  10
+  ID 2257 | Static | '                    ' | Rect:   5,  55,  95,   5
+  ID 2158 | Edit   | '                    ' | Rect: 105,  50,  20,  12
+  ID 2265 | Static | 'AMPLITUDE           ' | Rect:   5,  65, 120,  10
+  ID 2222 | Static | '                    ' | Rect:   5,  75, 120,   5
+  ID 2328 | Static | 'PHASE               ' | Rect:   5,  85, 120,  10
+  ID 2242 | Static | '                    ' | Rect:   5,  95, 118,   5
+  ID 2327 | Static | 'PERIOD              ' | Rect:   5, 105, 120,  10
+  ID 2241 | Static | '                    ' | Rect:   5, 115, 120,   5
+  ID 2337 | Static | 'RANDOM              ' | Rect:   5, 125, 120,  10
+  ID 2244 | Static | '                    ' | Rect:   5, 135, 120,   5
+  ID 2373 | Static | 'WATER LEVEL         ' | Rect:   5, 145, 120,  10
+  ID 2254 | Static | '                    ' | Rect:   5, 155, 120,   5
+  ID 2093 | Btn    | 'OPEN TOP            ' | Rect:   5, 170, 120,  10
+  ID 2092 | Btn    | 'OPEN BOTTOM         ' | Rect:   5, 179, 120,  10
+  ID 2088 | Btn    | 'MAP PLAYER EXTEND   ' | Rect:   5, 189, 128,  10
+  ID 2318 | Static | 'MAP TYPE            ' | Rect: 135,   5, 182,  10
+  ID 2107 | Static | '                    ' | Rect: 135,  15, 180, 185
+  ID 2349 | Static | 'SHOW                ' | Rect: 325,   5,  70,  10
+  ID 2099 | Btn    | 'SHOW SCREEN         ' | Rect: 325,  15,  70,  10
+  ID 2097 | Btn    | 'SHOW LAYERS         ' | Rect: 325,  25,  70,  10
+  ID 2330 | Static | 'PREVIEW FOR         ' | Rect: 325,  45,  50,  10
+  ID 2210 | Btn    | 'PLAYERS 1           ' | Rect: 325,  55,  52,  10
+  ID 2211 | Btn    | 'PLAYERS 2           ' | Rect: 325,  65,  52,  10
+  ID 2212 | Btn    | 'PLAYERS 3           ' | Rect: 325,  75,  52,  10
+  ID 2213 | Btn    | 'PLAYERS 4           ' | Rect: 325,  85,  52,  10
+
+=== Resource 3018 (13 items) ===
+Base Dimensions: 0, 0, 228, 198 DLUs
+  ID 2075 | Btn    | 'ACTIVE              ' | Rect:   4,   6,  47,  12
+  ID 2314 | Btn    | 'LOCAL               ' | Rect:   4,  20, 177,  48
+  ID 2315 | Static | 'NAME                ' | Rect:  10,  30,  78,   9
+  ID 2144 | Edit   | '                    ' | Rect:  10,  41, 116,  12
+  ID 2305 | Btn    | 'HOST                ' | Rect:   4,  73, 177,  78
+  ID 2306 | Static | 'HOSTNAME            ' | Rect:  10,  56, 162,   9
+  ID 2197 | LBox   | '                    ' | Rect:  10,  86, 116,  59
+  ID 2056 | Btn    | 'NEW                 ' | Rect: 131,  86,  44,  13
+  ID 2040 | Btn    | 'DELETE              ' | Rect: 131, 101,  44,  13
+  ID 2041 | Btn    | 'EDIT                ' | Rect: 131, 115,  44,  13
+  ID 2052 | Btn    | 'IP CONFIG           ' | Rect:  99,   6,  81,  12
+  ID 2348 | Btn    | 'SERVER              ' | Rect:   4, 156, 177,  29
+  ID 2153 | Edit   | '                    ' | Rect:  10, 167, 164,  12
+
+=== Resource 3019 (43 items) ===
+Base Dimensions: 0, 0, 396, 204 DLUs
+  ID 2176 | Static | 'VALUES FOR          ' | Rect:   5,   5,  50,  10
+  ID 2171 | Btn    | 'PLAYER1             ' | Rect:  63,   5,  50,  10
+  ID 2172 | Btn    | 'PLAYER2             ' | Rect: 118,   5,  50,  10
+  ID 2173 | Btn    | 'PLAYER3             ' | Rect: 173,   5,  50,  10
+  ID 2174 | Btn    | 'PLAYER4             ' | Rect: 228,   5,  50,  10
+  ID 2175 | Btn    | 'ALL                 ' | Rect: 283,   5,  50,  10
+  ID 65535 | Static | '                    ' | Rect:   5,  20, 384,   1
+  ID 2185 | Static | 'WEALTH              ' | Rect:   6,  25,  45,  10
+  ID 2183 | Edit   | '                    ' | Rect:   6,  35,  35,  12
+  ID 2184 | msctls_updown32 | 'Spin1               ' | Rect:  41,  35,  10,  10
+  ID 2050 | Btn    | 'EXTEND              ' | Rect: 336, 160,  54,  12
+  ID 2277 | Static | 'CREW                ' | Rect:   6,  56, 170,  10
+  ID 2193 | LBox   | '                    ' | Rect:   6,  66, 170,  30
+  ID 2063 | Static | '                    ' | Rect: 176,  66,  15,  30
+  ID 2161 | Static | 'BUILDINGS           ' | Rect: 206,  55, 170,  10
+  ID 2160 | LBox   | '                    ' | Rect: 206,  65, 170,  30
+  ID 2159 | Static | '                    ' | Rect: 376,  65,  15,  30
+  ID 2170 | Static | 'MATERIAL            ' | Rect:   7, 106, 170,  10
+  ID 2169 | LBox   | '                    ' | Rect:   6, 116, 170,  30
+  ID 2168 | Static | '                    ' | Rect: 176, 116,  15,  30
+  ID 2182 | Static | 'VEHICLES            ' | Rect: 206, 106, 170,  10
+  ID 2181 | LBox   | '                    ' | Rect: 206, 116, 170,  30
+  ID 2180 | Static | '                    ' | Rect: 376, 116,  15,  30
+  ID 2164 | Static | 'KNOWLEDGE           ' | Rect:   6,  56, 170,  10
+  ID 2163 | LBox   | '                    ' | Rect:   6,  66, 170,  30
+  ID 2162 | Static | '                    ' | Rect: 176,  66,  15,  30
+  ID 2317 | Static | 'MAGIC               ' | Rect: 206,  55, 170,  10
+  ID 2199 | LBox   | '                    ' | Rect: 206,  65, 170,  30
+  ID 2067 | Static | '                    ' | Rect: 376,  65,  15,  30
+  ID 2167 | Static | 'HOMEBASE MAT        ' | Rect:   7, 105, 170,  10
+  ID 2166 | LBox   | '                    ' | Rect:   6, 116, 170,  30
+  ID 2165 | Static | '                    ' | Rect: 176, 116,  15,  30
+  ID 2179 | Static | 'HOMEBASE PROD       ' | Rect: 206, 106, 170,  10
+  ID 2178 | LBox   | '                    ' | Rect: 206, 116, 170,  30
+  ID 2177 | Static | '                    ' | Rect: 376, 116,  15,  30
+  ID 2226 | Static | '                    ' | Rect:   6,  98, 170,   5
+  ID 2224 | Static | '                    ' | Rect: 206,  97, 170,   5
+  ID 2238 | Static | '                    ' | Rect:   6, 148, 170,   5
+  ID 2252 | Static | '                    ' | Rect: 205, 148, 170,   5
+  ID 2236 | Static | '                    ' | Rect:   6,  98, 170,   5
+  ID 2237 | Static | '                    ' | Rect: 206,  97, 170,   5
+  ID 2232 | Static | '                    ' | Rect:   6, 148, 170,   5
+  ID 2233 | Static | '                    ' | Rect: 205, 148, 170,   5
+
+=== Resource 3020 (15 items) ===
+Base Dimensions: 0, 0, 186, 199 DLUs
+  ID 2313 | Btn    | 'LANGUAGE            ' | Rect:   4,   6, 177,  45
+  ID 2207 | Btn    | 'GERMAN              ' | Rect:   9,  21,  78,  10
+  ID 2208 | Btn    | 'ENGLISH             ' | Rect:   9,  31,  78,  10
+  ID 2297 | Btn    | 'FONT                ' | Rect:   4,  56, 177,  59
+  ID 2105 | CBox   | '                    ' | Rect:   9,  68, 165, 174
+  ID 2320 | Static | 'MENUS               ' | Rect:   9,  85,  51,  10
+  ID 2155 | Edit   | '                    ' | Rect:   9,  96,  30,  13
+  ID 2262 | msctls_updown32 | 'Spin1               ' | Rect:  39,  96,  11,  13
+  ID 2299 | Static | 'GAME                ' | Rect:  69,  85,  51,  10
+  ID 2156 | Edit   | '                    ' | Rect:  69,  96,  30,  13
+  ID 2263 | msctls_updown32 | 'Spin1               ' | Rect:  99,  96,  11,  13
+  ID 2331 | Btn    | 'PROGRAM             ' | Rect:   3, 119, 177,  31
+  ID 2098 | Btn    | 'SHOWQUICKSTART      ' | Rect:  11, 132, 159,   9
+  ID 2324 | Btn    | 'MODE                ' | Rect:   3, 154, 177,  31
+  ID 2080 | Btn    | 'DEVELOPER ACTIVE    ' | Rect:  11, 167, 159,   9
+
+=== Resource 3021 (9 items) ===
+Base Dimensions: 0, 0, 186, 174 DLUs
+  ID 2356 | Btn    | 'GAME                ' | Rect:   4,   6, 176,  51
+  ID 2084 | Btn    | 'SOUNDFX             ' | Rect:  12,  18, 117,   9
+  ID 2085 | Btn    | 'SOUNDLOOPS          ' | Rect:  12,  27, 117,   9
+  ID 2086 | Btn    | 'MUSIC               ' | Rect:  12,  39, 117,   9
+  ID 2355 | Btn    | 'EXPLORER            ' | Rect:   4,  61, 176,  42
+  ID 2082 | Btn    | 'SOUNDFX             ' | Rect:  12,  73, 117,   9
+  ID 2083 | Btn    | 'MUSIC               ' | Rect:  12,  85, 117,   9
+  ID 2073 | Btn    | 'VOLUME              ' | Rect:  46, 117,  93,  12
+  ID 2372 | Btn    | 'VOLUME              ' | Rect:   4, 106, 176,  30
+
+=== Resource 3022 (49 items) ===
+Base Dimensions: 0, 0, 396, 205 DLUs
+  ID 2270 | Static | 'CLIMATE             ' | Rect:  43,   6, 126,  10
+  ID 2225 | Static | '                    ' | Rect:  43,  17, 126,   6
+  ID 2344 | Static | 'SEASON              ' | Rect:  43,  36, 126,  10
+  ID 2246 | Static | '                    ' | Rect:  43,  46, 126,   6
+  ID 2362 | Static | 'TIMEADVANCE         ' | Rect:  43,  66, 126,  10
+  ID 2249 | Static | '                    ' | Rect:  43,  76, 126,   6
+  ID 2334 | Static | 'RAIN                ' | Rect:  42, 102, 126,  11
+  ID 2243 | Static | '                    ' | Rect:  42, 113, 126,   6
+  ID 2359 | Static | 'THUNDERSTORM        ' | Rect:  42, 132, 126,  10
+  ID 2248 | Static | '                    ' | Rect:  42, 142, 126,   6
+  ID 2375 | Static | 'WIND                ' | Rect:  42, 161, 126,  10
+  ID 2256 | Static | '                    ' | Rect:  42, 171, 126,   6
+  ID 2291 | Static | 'EARTHQUAKES         ' | Rect: 217,   6, 126,  10
+  ID 2227 | Static | '                    ' | Rect: 217,  17, 126,   6
+  ID 2369 | Static | 'VOLCANOES           ' | Rect: 217,  36, 126,  10
+  ID 2253 | Static | '                    ' | Rect: 217,  46, 126,   6
+  ID 2321 | Static | 'METEORITES          ' | Rect: 217,  66, 126,  10
+  ID 2239 | Static | '                    ' | Rect: 217,  76, 126,   6
+  ID 2301 | Static | 'GRAVITY             ' | Rect: 217, 103, 126,  10
+  ID 2230 | Static | '                    ' | Rect: 217, 113, 126,   6
+  ID 2363 | Static | 'TIMEADVANCE         ' | Rect:  43,  82,  60,  10
+  ID 2322 | Static | 'METEORITES          ' | Rect: 217,  82,  60,  10
+  ID 2345 | Static | 'SEASON              ' | Rect:  43,  52,  60,  10
+  ID 2370 | Static | 'VOLCANOES           ' | Rect: 217,  52,  60,  10
+  ID 2271 | Static | 'CLIMATE             ' | Rect:  43,  22,  60,  10
+  ID 2292 | Static | 'EARTHQUAKES         ' | Rect: 217,  22,  60,  10
+  ID 2272 | Static | 'CLIMATE             ' | Rect: 109,  22,  60,  10
+  ID 2346 | Static | 'SEASON              ' | Rect: 109,  52,  60,  10
+  ID 2364 | Static | 'TIMEADVANCE         ' | Rect: 108,  82,  60,  10
+  ID 2293 | Static | 'EARTHQUAKES         ' | Rect: 283,  22,  60,  10
+  ID 2371 | Static | 'VOLCANOES           ' | Rect: 283,  52,  60,  10
+  ID 2323 | Static | 'METEORITES          ' | Rect: 283,  82,  60,  10
+  ID 2376 | Static | 'WIND                ' | Rect:  42, 177,  60,  10
+  ID 2377 | Static | 'WIND                ' | Rect: 108, 177,  60,  10
+  ID 2360 | Static | 'THUNDERSTORM        ' | Rect:  42, 148,  60,  10
+  ID 2361 | Static | 'THUNDERSTORM        ' | Rect: 108, 148,  60,  10
+  ID 2335 | Static | 'RAIN                ' | Rect:  42, 119,  60,  11
+  ID 2336 | Static | 'RAIN                ' | Rect: 108, 120,  60,  11
+  ID 2302 | Static | 'GRAVITY             ' | Rect: 216, 119,  60,  10
+  ID 2303 | Static | 'GRAVITY             ' | Rect: 283, 119,  60,  10
+  ID 2001 | Static | '                    ' | Rect:  18,  10,  21,  21
+  ID 2020 | Static | '                    ' | Rect:  18,  39,  21,  21
+  ID 2022 | Static | '                    ' | Rect:  18,  67,  21,  21
+  ID 2019 | Static | '                    ' | Rect:  18, 106,  21,  21
+  ID 2021 | Static | '                    ' | Rect:  18, 134,  21,  21
+  ID 2024 | Static | '                    ' | Rect:  18, 163,  21,  21
+  ID 2017 | Static | '                    ' | Rect: 192,  10,  21,  21
+  ID 2023 | Static | '                    ' | Rect: 192,  39,  21,  21
+  ID 2018 | Static | '                    ' | Rect: 192,  67,  21,  21
