@@ -42,118 +42,145 @@ void MemUnscramble(BYTE *bypBuffer, int iSize) {
 }
 
 bool DecompressData(const std::vector<BYTE> &in, std::vector<BYTE> &out, int idx) {
-    if (in.size() < 2) return false;
-    char tmp_gz[256], tmp_out[256];
-    snprintf(tmp_gz, sizeof(tmp_gz), "tmp_%d.gz", idx);
-    snprintf(tmp_out, sizeof(tmp_out), "tmp_%d", idx);
+  if (in.size() < 2)
+    return false;
+  char tmp_gz[256], tmp_out[256];
+  snprintf(tmp_gz, sizeof(tmp_gz), "tmp_%d.gz", idx);
+  snprintf(tmp_out, sizeof(tmp_out), "tmp_%d", idx);
 
-    FILE *f = fopen(tmp_gz, "wb");
-    if (!f) return false;
-    fwrite(in.data(), 1, in.size(), f);
-    fclose(f);
+  FILE *f = fopen(tmp_gz, "wb");
+  if (!f)
+    return false;
+  fwrite(in.data(), 1, in.size(), f);
+  fclose(f);
 
-    if (in[0] == 0x1e && in[1] == 0x8c) {
-        char cmd[1024];
-        snprintf(cmd, sizeof(cmd), "python3 -c \"d=open('%s','rb').read(); "
-                 "open('%s','wb').write(bytes([d[0]^1, d[1]^7])+d[2:])\" && gzip -df %s",
-                 tmp_gz, tmp_gz, tmp_gz);
-        system(cmd);
-    } else {
-        char cmd[1024];
-        snprintf(cmd, sizeof(cmd), "gzip -df %s", tmp_gz);
-        system(cmd);
-    }
+  if (in[0] == 0x1e && in[1] == 0x8c) {
+    char cmd[1024];
+    snprintf(cmd, sizeof(cmd),
+             "python3 -c \"d=open('%s','rb').read(); "
+             "open('%s','wb').write(bytes([d[0]^1, d[1]^7])+d[2:])\" && gzip -df %s",
+             tmp_gz, tmp_gz, tmp_gz);
+    system(cmd);
+  } else {
+    char cmd[1024];
+    snprintf(cmd, sizeof(cmd), "gzip -df %s", tmp_gz);
+    system(cmd);
+  }
 
-    FILE *fout = fopen(tmp_out, "rb");
-    if (!fout) { remove(tmp_gz); return false; }
-    out.clear();
-    BYTE buf[4096]; size_t len;
-    while ((len = fread(buf, 1, sizeof(buf), fout)) > 0) {
-        size_t old = out.size(); out.resize(old + len);
-        memcpy(out.data() + old, buf, len);
-    }
-    fclose(fout);
-    remove(tmp_out);
+  FILE *fout = fopen(tmp_out, "rb");
+  if (!fout) {
     remove(tmp_gz);
-    return true;
+    return false;
+  }
+  out.clear();
+  BYTE buf[4096];
+  size_t len;
+  while ((len = fread(buf, 1, sizeof(buf), fout)) > 0) {
+    size_t old = out.size();
+    out.resize(old + len);
+    memcpy(out.data() + old, buf, len);
+  }
+  fclose(fout);
+  remove(tmp_out);
+  remove(tmp_gz);
+  return true;
 }
 
 void HexDump(const BYTE *data, size_t size) {
-    for (size_t i = 0; i < size; i++) {
-        if (i % 16 == 0) printf("\n%08zx: ", i);
-        printf("%02x ", data[i]);
-    }
-    printf("\n");
+  for (size_t i = 0; i < size; i++) {
+    if (i % 16 == 0)
+      printf("\n%08zx: ", i);
+    printf("%02x ", data[i]);
+  }
+  printf("\n");
 }
 
 int main(int argc, char **argv) {
-  if (argc < 2) { printf("Usage: %s <path/to/resource>\n", argv[0]); return 1; }
-  
+  if (argc < 2) {
+    printf("Usage: %s <path/to/resource>\n", argv[0]);
+    return 1;
+  }
+
   std::string full_path = argv[1];
   std::vector<std::string> segments;
   size_t start = 0, end;
   while ((end = full_path.find('/', start)) != std::string::npos) {
-      segments.push_back(full_path.substr(start, end - start));
-      start = end + 1;
+    segments.push_back(full_path.substr(start, end - start));
+    start = end + 1;
   }
   segments.push_back(full_path.substr(start));
 
   std::vector<BYTE> data;
   FILE *f = fopen(segments[0].c_str(), "rb");
-  if (!f) { perror("fopen"); return 1; }
-  fseek(f, 0, SEEK_END); size_t fsize = ftell(f); fseek(f, 0, SEEK_SET);
-  data.resize(fsize); fread(data.data(), 1, fsize, f);
+  if (!f) {
+    perror("fopen");
+    return 1;
+  }
+  fseek(f, 0, SEEK_END);
+  size_t fsize = ftell(f);
+  fseek(f, 0, SEEK_SET);
+  data.resize(fsize);
+  fread(data.data(), 1, fsize, f);
   fclose(f);
 
   for (size_t s = 0; s < segments.size(); s++) {
-      // 1. Decompress if needed
-      if (data.size() >= 2 && ((data[0] == 0x1f && data[1] == 0x8b) || (data[0] == 0x1e && data[1] == 0x8c))) {
-          std::vector<BYTE> dec;
-          if (DecompressData(data, dec, (int)s)) data = dec;
-      }
+    // 1. Decompress if needed
+    if (data.size() >= 2 && ((data[0] == 0x1f && data[1] == 0x8b) || (data[0] == 0x1e && data[1] == 0x8c))) {
+      std::vector<BYTE> dec;
+      if (DecompressData(data, dec, (int)s))
+        data = dec;
+    }
 
-      // 2. Check if it's a group
-      if (data.size() < sizeof(C4GroupHeader)) break;
-      C4GroupHeader head; memcpy(&head, data.data(), sizeof(C4GroupHeader));
-      
-      // Header is ALWAYS scrambled in GrpFiles
-      MemUnscramble((BYTE*)&head, sizeof(C4GroupHeader));
-      if (memcmp(head.id, "RedWolf Design GrpFolder", 24) != 0) {
-          // Try without unscramble
-          memcpy(&head, data.data(), sizeof(C4GroupHeader));
-          if (memcmp(head.id, "RedWolf Design GrpFolder", 24) != 0) break; // Not a group
-      }
+    // 2. Check if it's a group
+    if (data.size() < sizeof(C4GroupHeader))
+      break;
+    C4GroupHeader head;
+    memcpy(&head, data.data(), sizeof(C4GroupHeader));
 
-      // 3. Handle last segment
-      if (s == segments.size() - 1) {
-          printf("--- Group: %s ---\n", segments[s].c_str());
-          printf("Entries: %d | Maker: %.32s\n", head.Entries, head.Maker);
-          size_t offset = sizeof(C4GroupHeader);
-          for (int i = 0; i < head.Entries; i++) {
-              C4GroupEntryCore entry; memcpy(&entry, data.data() + offset, sizeof(C4GroupEntryCore));
-              // Entry headers are NEVER scrambled
-              printf("[%2d] %-32.256s | Size: %7d | Offset: %7d\n", i, entry.FileName, entry.Size, entry.Offset);
-              offset += sizeof(C4GroupEntryCore);
-          }
-          return 0;
-      }
+    // Header is ALWAYS scrambled in GrpFiles
+    MemUnscramble((BYTE *)&head, sizeof(C4GroupHeader));
+    if (memcmp(head.id, "RedWolf Design GrpFolder", 24) != 0) {
+      // Try without unscramble
+      memcpy(&head, data.data(), sizeof(C4GroupHeader));
+      if (memcmp(head.id, "RedWolf Design GrpFolder", 24) != 0)
+        break; // Not a group
+    }
 
-      // 4. Find next segment
-      bool found = false;
+    // 3. Handle last segment
+    if (s == segments.size() - 1) {
+      printf("--- Group: %s ---\n", segments[s].c_str());
+      printf("Entries: %d | Maker: %.32s\n", head.Entries, head.Maker);
       size_t offset = sizeof(C4GroupHeader);
       for (int i = 0; i < head.Entries; i++) {
-          C4GroupEntryCore entry; memcpy(&entry, data.data() + offset, sizeof(C4GroupEntryCore));
-          if (strcasecmp(entry.FileName, segments[s+1].c_str()) == 0) {
-              size_t data_start = sizeof(C4GroupHeader) + head.Entries * sizeof(C4GroupEntryCore) + entry.Offset;
-              std::vector<BYTE> next_data(entry.Size);
-              memcpy(next_data.data(), data.data() + data_start, entry.Size);
-              data = next_data;
-              found = true;
-              break;
-          }
-          offset += sizeof(C4GroupEntryCore);
+        C4GroupEntryCore entry;
+        memcpy(&entry, data.data() + offset, sizeof(C4GroupEntryCore));
+        // Entry headers are NEVER scrambled
+        printf("[%2d] %-32.256s | Size: %7d | Offset: %7d\n", i, entry.FileName, entry.Size, entry.Offset);
+        offset += sizeof(C4GroupEntryCore);
       }
-      if (!found) { printf("Segment '%s' not found\n", segments[s+1].c_str()); return 1; }
+      return 0;
+    }
+
+    // 4. Find next segment
+    bool found = false;
+    size_t offset = sizeof(C4GroupHeader);
+    for (int i = 0; i < head.Entries; i++) {
+      C4GroupEntryCore entry;
+      memcpy(&entry, data.data() + offset, sizeof(C4GroupEntryCore));
+      if (strcasecmp(entry.FileName, segments[s + 1].c_str()) == 0) {
+        size_t data_start = sizeof(C4GroupHeader) + head.Entries * sizeof(C4GroupEntryCore) + entry.Offset;
+        std::vector<BYTE> next_data(entry.Size);
+        memcpy(next_data.data(), data.data() + data_start, entry.Size);
+        data = next_data;
+        found = true;
+        break;
+      }
+      offset += sizeof(C4GroupEntryCore);
+    }
+    if (!found) {
+      printf("Segment '%s' not found\n", segments[s + 1].c_str());
+      return 1;
+    }
   }
 
   // Final display as file
@@ -161,14 +188,17 @@ int main(int argc, char **argv) {
   size_t dump_size = data.size() > 256 ? 256 : data.size();
   HexDump(data.data(), dump_size);
   if (data.size() > 0) {
-      bool printable = true;
-      for(size_t i=0; i < (data.size() < 20 ? data.size() : 20); i++) {
-          if (data[i] < 9 || (data[i] > 13 && data[i] < 32)) { printable = false; break; }
+    bool printable = true;
+    for (size_t i = 0; i < (data.size() < 20 ? data.size() : 20); i++) {
+      if (data[i] < 9 || (data[i] > 13 && data[i] < 32)) {
+        printable = false;
+        break;
       }
-      if (printable) {
-          int preview_len = data.size() > 1024 ? 1024 : (int)data.size();
-          printf("\nAs Text (preview):\n%.*s\n", preview_len, (char*)data.data());
-      }
+    }
+    if (printable) {
+      int preview_len = data.size() > 1024 ? 1024 : (int)data.size();
+      printf("\nAs Text (preview):\n%.*s\n", preview_len, (char *)data.data());
+    }
   }
 
   return 0;
