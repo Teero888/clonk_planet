@@ -4,6 +4,6 @@
 
 char *LoadResStr(WORD id);
 
-void SetStringResource(HINSTANCE hResInst, BOOL fExtended = FALSE);
+void SetStringResource(HINSTANCE hResInst, BOOL fExtended=FALSE);
 
-void SetResourceStringUnscramble(void (*pResourceStringUnscramble)(char *));
+void SetResourceStringUnscramble(void (*pResourceStringUnscramble)(char*));

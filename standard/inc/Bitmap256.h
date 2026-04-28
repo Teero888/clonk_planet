@@ -2,24 +2,24 @@
 
 /* A structure for handling 256-color bitmap files */
 
-#pragma pack(push, def_pack)
+#pragma pack( push, def_pack )
 
 #pragma pack(1)
 
-class CBitmap256Info {
-public:
-  CBitmap256Info();
+class CBitmap256Info
+	{
+	public:
+		CBitmap256Info();
+	public:
+		BITMAPFILEHEADER Head;
+		BITMAPINFOHEADER Info;
+		RGBQUAD Colors[256];
+	public:
+		void Default();
+		void Set(int iWdt, int iHgt, BYTE *bypPalette);
+		BOOL Valid();
+		int FileBitsOffset();
+	};
 
-public:
-  BITMAPFILEHEADER Head;
-  BITMAPINFOHEADER Info;
-  RGBQUAD Colors[256];
+#pragma pack( pop, def_pack )
 
-public:
-  void Default();
-  void Set(int iWdt, int iHgt, BYTE *bypPalette);
-  BOOL Valid();
-  int FileBitsOffset();
-};
-
-#pragma pack(pop, def_pack)

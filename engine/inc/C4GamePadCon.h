@@ -2,21 +2,20 @@
 
 /* Gamepad control */
 
-class C4GamePadControl {
-public:
-  C4GamePadControl();
-
-public:
-  BOOL Status;
-  int Plr;
-  int GamePad;
-  BOOL Extended;
-  DWORD Pos, Buttons;
-  DWORD LastPos, LastButtons;
-  BOOL CallOkay;
-
-public:
-  BOOL AnyButtonDown();
-  BOOL Initialize(int iPlr, int iGamepad);
-  void Execute();
-};
+class C4GamePadControl
+  {
+  public:
+    C4GamePadControl();
+  public:
+    BOOL Status;
+    int Plr;
+    int GamePad;
+		BOOL Extended;
+    DWORD Pos,Buttons;
+    DWORD LastPos,LastButtons;
+    BOOL CallOkay;
+  public:
+	  BOOL AnyButtonDown();
+    BOOL Initialize(int iPlr, int iGamepad);
+    void Execute();
+  };

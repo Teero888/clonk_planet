@@ -4,46 +4,41 @@
 
 #include <C4Include.h>
 
-//--------------------------------------- Random3
-//-------------------------------------------------------
+//--------------------------------------- Random3 -------------------------------------------------------
 
-const int FRndRes = 500;
+const int FRndRes=500;
 
 int FRndBuf3[FRndRes];
 int FRndPtr3;
 
-void Randomize3() {
+void Randomize3()
+  {
   FRndPtr3 = 0;
-  for (int cnt = 0; cnt < FRndRes; cnt++)
-    FRndBuf3[cnt] = Random(3) - 1;
-}
+  for (int cnt=0; cnt<FRndRes; cnt++) FRndBuf3[cnt]=Random(3)-1;
+  }
 
-int Rnd3() {
-  FRndPtr3++;
-  if (FRndPtr3 == FRndRes)
-    FRndPtr3 = 0;
+int Rnd3()
+  {
+	FRndPtr3++; if (FRndPtr3==FRndRes) FRndPtr3=0;
   return FRndBuf3[FRndPtr3];
-}
+  }
 
-//------------------------------------ Safe Random
-//--------------------------------------------------------
+//------------------------------------ Safe Random --------------------------------------------------------
 
-const int SafeRndRes = 500;
+const int SafeRndRes=500;
 
 int SafeRndBuf[SafeRndRes];
-int SafeRndPtr = 0;
+int SafeRndPtr=0;
 
-void InitSafeRandom() {
+void InitSafeRandom()
+  {
   int cnt;
-  for (cnt = 0; cnt < SafeRndRes; cnt++)
-    SafeRndBuf[cnt] = Random(100);
-}
+  for (cnt=0; cnt<SafeRndRes; cnt++) SafeRndBuf[cnt]=Random(100);
+  }
 
-int SafeRandom(int range) {
-  SafeRndPtr++;
-  if (SafeRndPtr == SafeRndRes)
-    SafeRndPtr = 0;
-  if (range == 0)
-    return 0;
-  return SafeRndBuf[SafeRndPtr] % range;
-}
+int SafeRandom(int range)
+  {
+  SafeRndPtr++; if (SafeRndPtr==SafeRndRes) SafeRndPtr=0;
+	if (range==0) return 0;
+  return SafeRndBuf[SafeRndPtr]%range;
+  }

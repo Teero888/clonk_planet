@@ -474,7 +474,8 @@ BOOL C4Group::Open(const char *szGroupName, BOOL fCreate) {
   char szRealGroup[_MAX_FNAME];
   SCopy(szGroupName, szRealGroup, _MAX_FNAME);
   do {
-    if (!TruncatePath(szRealGroup)) {
+    if (!TruncatePath(szRealGroup))
+    {
       printf("  TruncatePath failed, mother not found!\n");
       return Error("Open: File not found");
     }
@@ -493,9 +494,8 @@ BOOL C4Group::Open(const char *szGroupName, BOOL fCreate) {
     Clear();
     return Error("Open: Cannot open mother");
   }
-  const char *szEntryName = szGroupName + SLen(szRealGroup);
-  if (szEntryName[0] == '/' || szEntryName[0] == '\\')
-    szEntryName++;
+  const char* szEntryName = szGroupName + SLen(szRealGroup);
+  if (szEntryName[0] == '/' || szEntryName[0] == '\\') szEntryName++;
   printf("  Opening as child: %s\n", szEntryName);
   if (!OpenAsChild(pMother, szEntryName, TRUE)) {
     printf("  Failed to open as child: %s\n", szEntryName);
@@ -548,49 +548,45 @@ BOOL C4Group::OpenReal(const char *szFilename) {
   return Error("OpenReal: Not a valid group");
 }
 
-BOOL C4Group::OpenRealGrpFile() {
+BOOL C4Group::OpenRealGrpFile()
+  {
   printf("sizeof(C4GroupHeader) = %zu\n", sizeof(C4GroupHeader));
   printf("sizeof(C4GroupEntryCore) = %zu\n", sizeof(C4GroupEntryCore));
-  int cnt, file_entries;
+  int cnt,file_entries;
   C4GroupEntryCore corebuf;
 
   // Open StdFile
-  if (!StdFile.Open(FileName, TRUE))
-    return Error("OpenRealGrpFile: Cannot open standard file");
+  if (!StdFile.Open(FileName,TRUE)) return Error("OpenRealGrpFile: Cannot open standard file");
 
   // Read header
-  if (!StdFile.Read((BYTE *)&Head, sizeof(C4GroupHeader)))
-    return Error("OpenRealGrpFile: Error reading header");
+  if (!StdFile.Read((BYTE*)&Head,sizeof(C4GroupHeader))) return Error("OpenRealGrpFile: Error reading header");
   printf("Raw Header Hex: ");
-  for (int i = 0; i < 16; i++)
-    printf("%02x ", ((BYTE *)&Head)[i]);
+  for (int i=0; i<16; i++) printf("%02x ", ((BYTE*)&Head)[i]);
   printf("\n");
-  MemScramble((BYTE *)&Head, sizeof(C4GroupHeader));
-  EntryOffset += sizeof(C4GroupHeader);
-
+	MemScramble((BYTE*)&Head,sizeof(C4GroupHeader));
+  EntryOffset+=sizeof(C4GroupHeader);
+  
   // Check Header
-  if (!SEqual(Head.id, C4GroupFileID) || (Head.Ver1 != C4GroupFileVer1) ||
-      (Head.Ver2 > C4GroupFileVer2))
-    return Error("OpenRealGrpFile: Invalid header");
-
+  if (!SEqual(Head.id,C4GroupFileID)
+   || (Head.Ver1!=C4GroupFileVer1) || (Head.Ver2>C4GroupFileVer2))
+     return Error("OpenRealGrpFile: Invalid header");
+  
   // Read Entries
-  file_entries = Head.Entries;
-  Head.Entries = 0; // Reset, will be recounted by AddEntry
-  for (cnt = 0; cnt < file_entries; cnt++) {
-    if (!StdFile.Read((BYTE *)&corebuf, sizeof(C4GroupEntryCore)))
-      return Error("OpenRealGrpFile: Error reading entries");
-    if (!StdFile.IsCompressed())
-      MemScramble((BYTE *)&corebuf, sizeof(C4GroupEntryCore));
-    printf("  Found entry: %s (%d bytes)%s\n", corebuf.FileName, corebuf.Size,
-           corebuf.ChildGroup ? " [Group]" : "");
-    EntryOffset += sizeof(C4GroupEntryCore);
-    if (!AddEntry(C4GRES_InGroup, corebuf.ChildGroup, corebuf.FileName,
-                  corebuf.Size, corebuf.Time))
+	file_entries=Head.Entries;
+	Head.Entries=0; // Reset, will be recounted by AddEntry
+  for (cnt=0; cnt<file_entries; cnt++)
+    {
+    if (!StdFile.Read((BYTE*)&corebuf,sizeof(C4GroupEntryCore))) return Error("OpenRealGrpFile: Error reading entries");
+    if (!StdFile.IsCompressed()) MemScramble((BYTE*)&corebuf,sizeof(C4GroupEntryCore));
+    printf("  Found entry: %s (%d bytes)%s\n", corebuf.FileName, corebuf.Size, corebuf.ChildGroup ? " [Group]" : "");
+    EntryOffset+=sizeof(C4GroupEntryCore);
+    if (!AddEntry(C4GRES_InGroup,corebuf.ChildGroup,
+                  corebuf.FileName,corebuf.Size,corebuf.Time))
       return Error("OpenRealGrpFile: Cannot add entry");
-  }
+    }
 
   return TRUE;
-}
+  }
 
 BOOL C4Group::AddEntry(int status, BOOL childgroup, const char *fname,
                        long size, time_t time, const char *entryname,

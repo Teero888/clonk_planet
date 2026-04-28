@@ -4,6 +4,6 @@
 
 class C4Group;
 
-SURFACE GroupReadSurface(C4Group &hGroup, BYTE *bpPalette = NULL);
+SURFACE GroupReadSurface(C4Group &hGroup, BYTE *bpPalette=NULL);
 
 BOOL SaveSurface(const char *szFilename, SURFACE sfcSurface, BYTE *bpPalette);
