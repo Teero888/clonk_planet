@@ -2,6 +2,9 @@ import sys
 import os
 import subprocess
 import socket
+import struct
+import zlib
+import gzip
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QPushButton, 
                              QLabel, QTreeView, QTextEdit, QRadioButton, QButtonGroup,
                              QFrame, QDialog, QTabWidget, QVBoxLayout, 
@@ -145,20 +148,173 @@ class ClonkArea(QFrame):
         painter.setPen(QColor("#e3e3e3"))
         painter.drawLine(1, h-2, w-2, h-2)
         painter.drawLine(w-2, 1, w-2, h-2)
-        # Bottom-Right Outer: ffffff
-        painter.setPen(QColor("#ffffff"))
         painter.drawLine(0, h-1, w-1, h-1)
         painter.drawLine(w-1, 0, w-1, h-1)
+
+def unscramble(data_raw):
+    data = bytearray(data_raw)
+    # Inverse of (XOR then SWAP) is (SWAP then XOR)
+    for i in range(0, len(data) - 2, 3):
+        data[i], data[i+2] = data[i+2], data[i]
+    for i in range(len(data)):
+        data[i] ^= 237
+    return bytes(data)
+
+class C4Group:
+    def __init__(self, path):
+        self.path = path
+        self.entries = []
+        self.data = b''
+        self.load()
+
+    def load(self):
+        try:
+            with open(self.path, 'rb') as f:
+                raw_data = f.read()
+
+            if not raw_data: return
+
+            if raw_data[0:2] in (b'\x1f\x8b', b'\x1e\x8c'):
+                if raw_data[0:2] == b'\x1e\x8c':
+                    fixed = bytearray(raw_data)
+                    fixed[0] ^= 1; fixed[1] ^= 7
+                    self.data = gzip.decompress(fixed)
+                else:
+                    self.data = gzip.decompress(raw_data)
+            else:
+                self.data = raw_data
+
+            if len(self.data) < 204: return
+            header = unscramble(self.data[0:204])
+            if not header.startswith(b'RedWolf Design GrpFolder'):
+                return
+
+            num_entries = struct.unpack('<i', header[36:40])[0]
+            entry_base = 204
+            file_base = 204 + num_entries * 316
+
+            for i in range(num_entries):
+                e_data = self.data[entry_base + i*316 : entry_base + (i+1)*316]
+                name = e_data[0:260].split(b'\x00')[0].decode('ascii', errors='ignore')
+                packed, child = struct.unpack('<ii', e_data[260:268])
+                size, esize, offset = struct.unpack('<iii', e_data[268:280])
+
+                self.entries.append({
+                    'name': name,
+                    'size': size,
+                    'offset': file_base + offset,
+                    'is_group': bool(child)
+                })
+        except Exception as e:
+            print(f"Error loading {self.path}: {e}")
+
+    def get_file(self, name):
+        for e in self.entries:
+            if e['name'].lower() == name.lower():
+                return self.data[e['offset'] : e['offset'] + e['size']]
+        return None
 
 class ClonkLauncher(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        self.planet_data_path = os.path.join(self.base_path, 'planet_data')
         self.res_path = os.path.join(os.path.dirname(__file__), 'res')
-        self.wav_path = os.path.join(os.path.dirname(__file__), 'res_wav_fixed')
+        self.wav_path = os.path.join(os.path.dirname(__file__), 'res_wav')
         self.dump_path = os.path.join(os.path.dirname(__file__), 'res_dump')
         self.sound_start = self.load_sound('sound_7008.wav')
         self.sound_click = self.load_sound('sound_7002.wav')
         self.init_ui()
+        self.refresh_resources()
+
+    def refresh_resources(self):
+        self.tree_model.clear()
+
+        # Scenarios
+        scenario_root = QStandardItem("Scenarios")
+        self.tree_model.appendRow(scenario_root)
+
+        # Clonks
+        clonk_root = QStandardItem("Clonks")
+        self.tree_model.appendRow(clonk_root)
+
+        # Packages
+        package_root = QStandardItem("Packages")
+        self.tree_model.appendRow(package_root)
+
+        if not os.path.exists(self.planet_data_path):
+            return
+
+        for f in sorted(os.listdir(self.planet_data_path)):
+            path = os.path.join(self.planet_data_path, f)
+            if f.lower().endswith('.c4f'):
+                # Scenario Folder
+                item = QStandardItem(f)
+                item.setData({'path': path, 'type': 'folder'})
+                scenario_root.appendRow(item)
+                # Scan inside
+                grp = C4Group(path)
+                for e in grp.entries:
+                    if e['name'].lower().endswith('.c4s'):
+                        sub = QStandardItem(e['name'])
+                        sub.setData({'path': path, 'sub': e['name'], 'type': 'scenario'})
+                        item.appendRow(sub)
+            elif f.lower().endswith('.c4s'):
+                item = QStandardItem(f)
+                item.setData({'path': path, 'type': 'scenario'})
+                scenario_root.appendRow(item)
+            elif f.lower().endswith('.c4p'):
+                item = QStandardItem(f)
+                item.setData({'path': path, 'type': 'clonk'})
+                clonk_root.appendRow(item)
+            elif f.lower().endswith('.c4d') or f.lower().endswith('.c4g'):
+                item = QStandardItem(f)
+                item.setData({'path': path, 'type': 'package'})
+                package_root.appendRow(item)
+
+        self.tree.expandAll()
+
+    def on_tree_selection(self, selected, deselected):
+        indexes = selected.indexes()
+        if not indexes: return
+        item = self.tree_model.itemFromIndex(indexes[0])
+        data = item.data()
+        if not data: 
+            self.desc.setText("Select an item to see its description.")
+            self.preview.setPixmap(QPixmap())
+            return
+
+        path = data.get('path')
+        sub = data.get('sub')
+
+        grp = C4Group(path)
+        target_grp = grp
+        if sub:
+            # It's a group inside a group
+            sub_data = grp.get_file(sub)
+            if sub_data:
+                # We need a way to load from bytes. 
+                # For simplicity, let's just use a temp file or update C4Group
+                tmp_path = os.path.join(self.base_path, 'temp_sub.c4s')
+                with open(tmp_path, 'wb') as f: f.write(sub_data)
+                target_grp = C4Group(tmp_path)
+                os.remove(tmp_path)
+
+        # Description
+        desc_data = target_grp.get_file('DescUS.txt') or target_grp.get_file('DescDE.txt')
+        if desc_data:
+            self.desc.setText(desc_data.decode('latin-1', errors='ignore'))
+        else:
+            self.desc.setText("No description available.")
+
+        # Image
+        img_data = target_grp.get_file('Title.bmp') or target_grp.get_file('Icon.bmp')
+        if img_data:
+            pix = QPixmap()
+            pix.loadFromData(img_data)
+            self.preview.setPixmap(pix.scaled(self.preview.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        else:
+            self.preview.setPixmap(QPixmap())
 
     def load_sound(self, name):
         path = os.path.join(self.wav_path, name)
@@ -171,6 +327,7 @@ class ClonkLauncher(QMainWindow):
         if effect: effect.play()
 
     def init_ui(self):
+
         self.client_w, self.client_h = 578, 393
         self.setWindowTitle("Clonk Planet")
         self.central = QWidget(); self.setCentralWidget(self.central); self.central.setFixedSize(self.client_w, self.client_h)
@@ -222,6 +379,7 @@ class ClonkLauncher(QMainWindow):
         self.tree.setGeometry(2, 2, 239, 342)
         self.tree.setHeaderHidden(True); self.tree.setFrameShape(QFrame.NoFrame)
         self.tree_model = QStandardItemModel(); self.tree.setModel(self.tree_model)
+        self.tree.selectionModel().selectionChanged.connect(self.on_tree_selection)
         
         # Preview Area
         self.preview_frame = ClonkArea(self.ui_container, 261, 10, 212, 151, bg_color="black")
@@ -263,7 +421,28 @@ class ClonkLauncher(QMainWindow):
     def show_credits(self): CreditsDialog(self).exec_()
     def launch_game(self):
         clonk_bin = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'build', 'clonk'))
-        if os.path.exists(clonk_bin): subprocess.Popen([clonk_bin], cwd=os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+        if not os.path.exists(clonk_bin):
+            QMessageBox.critical(self, "Error", f"Executable not found at {clonk_bin}")
+            return
+
+        args = [clonk_bin]
+        indexes = self.tree.selectedIndexes()
+        if indexes:
+            item = self.tree_model.itemFromIndex(indexes[0])
+            data = item.data()
+            if data and data.get('type') == 'scenario':
+                path = data.get('path')
+                sub = data.get('sub')
+                if sub:
+                    # For nested scenarios, we might need a specific format
+                    # Standard Clonk uses relative paths or full paths
+                    # For now, let's try passing the archive/sub relative to planet_data
+                    rel_path = os.path.relpath(path, self.planet_data_path)
+                    args.append(os.path.join(rel_path, sub))
+                else:
+                    args.append(os.path.relpath(path, self.planet_data_path))
+
+        subprocess.Popen(args, cwd=self.planet_data_path)
 
 class Win3DFrame(QFrame):
     def __init__(self, parent=None, colors=None, bg_color="#f5f5f5"):
