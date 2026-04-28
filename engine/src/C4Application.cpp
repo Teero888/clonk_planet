@@ -118,17 +118,17 @@ void C4Application::Execute()
         Game.GraphicsSystem.GraphicsGo = TRUE;
         lastTick = now;
         
+    }
         
-        // Fullscreen mode: drive the game and menu
-        if (Fullscreen)
-            FullScreen.Execute();
-        // Console mode
-        else
-        {
-            Console.Execute();
-            // In windowed mode on Linux, we still want the game to run and render to our window
-            FullScreen.Execute();
-        }
+    // Fullscreen mode: drive the game and menu
+    if (Fullscreen)
+        FullScreen.Execute();
+    // Console mode
+    else
+    {
+        Console.Execute();
+        // In windowed mode on Linux, we still want the game to run and render to our window
+        FullScreen.Execute();
     }
 }
 
