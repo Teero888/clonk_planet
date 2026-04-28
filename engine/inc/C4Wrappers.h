@@ -2,13 +2,11 @@
 
 /* Some useful wrappers to globals */
 
-//=================================== ID2Def
-//==============================================
+//=================================== ID2Def ==============================================
 
 inline C4Def *C4Id2Def(C4ID id) { return Game.Defs.ID2Def(id); }
 
-//==================================== IFT
-//===============================================
+//==================================== IFT ===============================================
 
 inline BYTE PixColIFT(BYTE pixc) {
   if (pixc >= GBM + IFT)
@@ -16,8 +14,7 @@ inline BYTE PixColIFT(BYTE pixc) {
   return 0;
 }
 
-//==================================== Density
-//===========================================
+//==================================== Density ===========================================
 
 inline int DensitySolid(int dens) { return (dens >= C4M_Solid); }
 
@@ -27,8 +24,7 @@ inline int DensityLiquid(int dens) {
   return ((dens >= C4M_Liquid) && (dens < C4M_Solid));
 }
 
-//==================================== Materials
-//=========================================
+//==================================== Materials =========================================
 
 extern int MVehic, MTunnel, MWater, MSnow, MEarth, MGranite;
 
@@ -100,8 +96,7 @@ inline int GBackLiquid(int x, int y) {
   return DensityLiquid(GBackDensity(x, y));
 }
 
-//=============================== Sound
-//==================================================
+//=============================== Sound ==================================================
 
 // Plays a sound effect from the bank.
 //     iMode  0 Single Effect
@@ -134,13 +129,11 @@ inline BOOL SoundLevel(const char *szSndName, int iVolume = 100) {
   return Game.SoundSystem.SoundLevel(szSndName, iVolume);
 }
 
-//=========================== Graphics Resource
-//=========================================
+//=========================== Graphics Resource =========================================
 
 #define GfxR (&(Game.GraphicsResource))
 
-//=============================== Messages
-//=============================================
+//=============================== Messages =============================================
 
 inline void GameMsgObject(const char *szText, C4Object *pTarget,
                           int iFCol = FWhite) {
@@ -155,8 +148,7 @@ inline void GameMsgPlayer(const char *szText, int iPlayer, int iFCol = FWhite) {
   Game.Messages.New(szText, NULL, iPlayer, -1, -1, iFCol);
 }
 
-//============================== DirectDraw
-//==============================================
+//============================== DirectDraw ==============================================
 
 inline void DestroySurface(SURFACE sfcSurface) {
   Engine.DDraw.DestroySurface(sfcSurface);
@@ -183,8 +175,7 @@ inline BOOL GetSurfaceSize(SURFACE sfcSurface, int &iWdt, int &iHgt) {
   return Engine.DDraw.GetSurfaceSize(sfcSurface, iWdt, iHgt);
 }
 
-//===================================== Ticks
-//==========================================
+//===================================== Ticks ==========================================
 
 #define Tick2 Game.iTick2
 #define Tick3 Game.iTick3
@@ -195,8 +186,7 @@ inline BOOL GetSurfaceSize(SURFACE sfcSurface, int &iWdt, int &iHgt) {
 #define Tick500 Game.iTick500
 #define Tick1000 Game.iTick1000
 
-//================================== Players
-//============================================
+//================================== Players ============================================
 
 inline int ValidPlr(int plr) { return Game.Players.Valid(plr); }
 

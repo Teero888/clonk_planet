@@ -10,8 +10,7 @@
 #include <CStdFile.h>
 #include <StdBitmap.h>
 
-//================================= CStdBitmapHead
-//=======================================
+//================================= CStdBitmapHead =======================================
 
 CStdBitmapHead::CStdBitmapHead() { Clear(); }
 
@@ -33,8 +32,7 @@ BOOL CStdBitmapHead::Valid() {
   return TRUE;
 }
 
-//============================= CStdBitmapInfo
-//=========================================
+//============================= CStdBitmapInfo =========================================
 
 CStdBitmapInfo::CStdBitmapInfo() { Clear(); }
 
@@ -57,8 +55,7 @@ int CStdBitmapInfo::Pitch() {
   return biSizeImage / Abs(biHeight);
 }
 
-//=============================== CStdBitmap
-//===========================================
+//=============================== CStdBitmap ===========================================
 
 CStdBitmap::CStdBitmap() {
   Bits = NULL;

@@ -19,7 +19,7 @@ extern "C" {
 intptr_t _findfirst(const char *pattern, struct _finddata_t *data) {
   char cwd[1024];
   getcwd(cwd, sizeof(cwd));
-  printf("_findfirst: %s (cwd: %s)\n", pattern, cwd);
+  // printf("_findfirst: %s (cwd: %s)\n", pattern, cwd);
   _findstate_t *state = new _findstate_t();
 
   const char *lastSlash = strrchr(pattern, '/');
@@ -38,8 +38,8 @@ intptr_t _findfirst(const char *pattern, struct _finddata_t *data) {
     strcpy(state->pattern, pattern);
   }
 
-  printf("_findfirst: %s (path: %s, pattern: %s)\n", pattern, state->path,
-         state->pattern);
+  // printf("_findfirst: %s (path: %s, pattern: %s)\n", pattern, state->path,
+  //        state->pattern);
 
   state->dir = opendir(state->path);
   if (!state->dir) {
@@ -65,7 +65,7 @@ int _findnext(intptr_t handle, struct _finddata_t *data) {
   struct dirent *entry;
 
   while ((entry = readdir(state->dir)) != NULL) {
-    printf("  checking: %s against %s\n", entry->d_name, state->pattern);
+    // printf("  checking: %s against %s\n", entry->d_name, state->pattern);
     if (fnmatch(state->pattern, entry->d_name, FNM_CASEFOLD) == 0) {
       strcpy(data->name, entry->d_name);
 

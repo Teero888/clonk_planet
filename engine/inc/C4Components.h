@@ -2,8 +2,7 @@
 
 /* Known component file names */
 
-//========================= Component File Names
-//============================================
+//========================= Component File Names ============================================
 
 #define C4CFN_Engine "Clonk.c4x"
 
@@ -72,8 +71,7 @@
 #define C4CFN_QueueFiles "*.c4q"
 #define C4CFN_AnimationFiles "*.c4v"
 
-//================================= File Load Sequences
-//================================================
+//================================= File Load Sequences ================================================
 
 #define C4FLS_Scenario                                                         \
   "Loader*.bmp|Scenario.txt|Title.txt|Info.txt|Script*.c|Names.txt|Game.txt|"  \

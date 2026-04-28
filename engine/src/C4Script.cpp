@@ -4,8 +4,7 @@
 
 #include <C4Include.h>
 
-//========================== Some Support Functions
-//=======================================
+//========================== Some Support Functions =======================================
 
 char pscOSTR[500];
 
@@ -183,8 +182,7 @@ DWORD StringBitEval(const char *str) {
   return rval;
 }
 
-//=============================== C4Script Functions
-//====================================
+//=============================== C4Script Functions ====================================
 
 C4Object *Fn_this(C4Thread *cthr) { return cthr->cObj; }
 
@@ -2611,8 +2609,7 @@ long FnOCF_AttractLightning() { return OCF_AttractLightning; }
 C4Object *FnAnyContainer() { return ANY_CONTAINER; }
 C4Object *FnNoContainer() { return NO_CONTAINER; }
 
-//=========================== C4Script Function Map
-//===================================
+//=========================== C4Script Function Map ===================================
 
 #define MkFn                                                                   \
   (long (*)(C4Thread *, long, long, long, long, long, long, long, long, long,  \

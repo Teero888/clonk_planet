@@ -4,8 +4,7 @@
 
 #include <C4Include.h>
 
-//=============================== C4ControlJoinClient
-//================================================
+//=============================== C4ControlJoinClient ================================================
 
 C4ControlJoinClient::C4ControlJoinClient() { Default(); }
 
@@ -39,8 +38,7 @@ void C4ControlJoinClient::Execute() {
   Clear();
 }
 
-//===================================== C4ControlPacket
-//================================================
+//===================================== C4ControlPacket ================================================
 
 int iPacketDelay = 0;
 
@@ -52,11 +50,9 @@ void C4ControlPacket::Execute() {
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // - - - - - - - - - - -
   case C4PK_SetControlRate:
-    Game.ControlRate =
-        BoundBy(Game.ControlRate + *((int *)Data), 1, C4MaxControlRate);
+    Game.ControlRate = BoundBy(Game.ControlRate + *((int *)Data), 1, C4MaxControlRate);
     if (Game.Network.Host) {
-      sprintf(OSTR, LoadResStr(IDS_NET_CONTROLRATE), Game.ControlRate,
-              Game.FrameCounter);
+      sprintf(OSTR, LoadResStr(IDS_NET_CONTROLRATE), Game.ControlRate, Game.FrameCounter);
       Game.GraphicsSystem.FlashMessage(OSTR);
     }
     break;
@@ -76,8 +72,7 @@ void C4ControlPacket::Execute() {
   // - - - - - - - - - - -
   case C4PK_Message:
     // Quoted player message: reroute as cursor object message
-    if (pPlr = Game.GraphicsSystem.MessageBoard.GetMessagePlayer(
-            (const char *)Data))
+    if (pPlr = Game.GraphicsSystem.MessageBoard.GetMessagePlayer((const char *)Data))
       if (*((const char *)Data + SLen(pPlr->Name) + 2) == '"')
         if (pPlr->Cursor) {
           SCopy((const char *)Data + SLen(pPlr->Name) + 2, OSTR);
@@ -107,22 +102,17 @@ void C4ControlPacket::Execute() {
     pJoinPlayer = (C4ControlJoinPlayer *)Data;
     // Local player (join from local file)
     if (pJoinPlayer->AtClient == Game.Network.GetClientNumber()) {
-      Game.JoinPlayer(pJoinPlayer->Filename, pJoinPlayer->AtClient,
-                      pJoinPlayer->AtClientName);
+      Game.JoinPlayer(pJoinPlayer->Filename, pJoinPlayer->AtClient, pJoinPlayer->AtClientName);
     }
     // Remote player (join from temp saved file)
     else {
       char szPlayerFilename[_MAX_PATH + 1];
-      sprintf(szPlayerFilename, "%s-%s",
-              Config.AtNetworkPath(pJoinPlayer->AtClientName),
-              GetFilename(pJoinPlayer->Filename));
+      sprintf(szPlayerFilename, "%s-%s", Config.AtNetworkPath(pJoinPlayer->AtClientName), GetFilename(pJoinPlayer->Filename));
       EraseItem(szPlayerFilename);
       CStdFile hFile;
-      if (!hFile.Save(szPlayerFilename, Data + sizeof(C4ControlJoinPlayer),
-                      Size - sizeof(C4ControlJoinPlayer)))
+      if (!hFile.Save(szPlayerFilename, Data + sizeof(C4ControlJoinPlayer), Size - sizeof(C4ControlJoinPlayer)))
         break;
-      Game.JoinPlayer(szPlayerFilename, pJoinPlayer->AtClient,
-                      pJoinPlayer->AtClientName);
+      Game.JoinPlayer(szPlayerFilename, pJoinPlayer->AtClient, pJoinPlayer->AtClientName);
     }
     break;
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -193,8 +183,7 @@ void C4ControlPlayerCommand::Execute() {
   // %d",Player,CommandName(Command),X,Y,Target,Target2); Log(OSTR);
   C4Player *pPlr;
   if (pPlr = Game.Players.Get(Player))
-    pPlr->ObjectCommand(Command, Game.Objects.ObjectPointer(Target), X, Y,
-                        Game.Objects.ObjectPointer(Target2), Data, AddMode);
+    pPlr->ObjectCommand(Command, Game.Objects.ObjectPointer(Target), X, Y, Game.Objects.ObjectPointer(Target2), Data, AddMode);
 }
 
 // extern int ScreenRate;
@@ -224,16 +213,10 @@ void C4ControlSyncCheck::Execute() // And determine control time difference
   if (!MemEqual(this, &SyncCheck, sizeof(C4ControlSyncCheck))) {
     // Message
     NetLog("Synchronization loss!");
-    sprintf(OSTR,
-            "Host Frm %i Rnc %i Rn3 %i Cpx %i PXS %i MMi %i Obc %i Oei %i",
-            Frame, RandomCount, Random3, AllCrewPosX, PXSCount, MassMoverIndex,
-            ObjectCount, ObjectEnumerationIndex);
+    sprintf(OSTR, "Host Frm %i Rnc %i Rn3 %i Cpx %i PXS %i MMi %i Obc %i Oei %i", Frame, RandomCount, Random3, AllCrewPosX, PXSCount, MassMoverIndex, ObjectCount, ObjectEnumerationIndex);
     NetLog(OSTR);
-    sprintf(OSTR,
-            "Clnt Frm %i Rnc %i Rn3 %i Cpx %i PXS %i MMi %i Obc %i Oei %i",
-            SyncCheck.Frame, SyncCheck.RandomCount, SyncCheck.Random3,
-            SyncCheck.AllCrewPosX, SyncCheck.PXSCount, SyncCheck.MassMoverIndex,
-            SyncCheck.ObjectCount, SyncCheck.ObjectEnumerationIndex);
+    sprintf(OSTR, "Clnt Frm %i Rnc %i Rn3 %i Cpx %i PXS %i MMi %i Obc %i Oei %i", SyncCheck.Frame, SyncCheck.RandomCount, SyncCheck.Random3, SyncCheck.AllCrewPosX, SyncCheck.PXSCount,
+            SyncCheck.MassMoverIndex, SyncCheck.ObjectCount, SyncCheck.ObjectEnumerationIndex);
     NetLog(OSTR);
     SoundEffect("SyncError");
     // Deactivate
@@ -265,8 +248,7 @@ void C4ControlSyncCheck::Set() {
 
 C4ControlSyncCheck::C4ControlSyncCheck() { Set(); }
 
-//=========================================== C4Control
-//================================================
+//=========================================== C4Control ================================================
 
 C4Control::C4Control() { Default(); }
 
@@ -280,8 +262,7 @@ BOOL C4Control::AddPlayerControl(int iPlayer, int iCom, int iData) {
   PlayerControl.Data = iData;
   // Add packet
   C4Packet Packet;
-  Packet.Set(C4PK_PlayerControl, &PlayerControl,
-             sizeof(C4ControlPlayerControl));
+  Packet.Set(C4PK_PlayerControl, &PlayerControl, sizeof(C4ControlPlayerControl));
   AddStatic(Packet);
   // Success
   return TRUE;
@@ -449,9 +430,7 @@ BOOL C4Control::AddPlayerSelection(int iPlayer, C4ObjectList &rList) {
   return TRUE;
 }
 
-BOOL C4Control::AddPlayerCommand(int iPlayer, int iCommand, int iX, int iY,
-                                 C4Object *pTarget, C4Object *pTarget2,
-                                 int iData, int iAddMode) {
+BOOL C4Control::AddPlayerCommand(int iPlayer, int iCommand, int iX, int iY, C4Object *pTarget, C4Object *pTarget2, int iData, int iAddMode) {
   // Set packet data
   C4ControlPlayerCommand PlayerCommand;
   PlayerCommand.Player = iPlayer;

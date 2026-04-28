@@ -119,20 +119,8 @@ BOOL C4FullScreen::MenuCommand(const char *szCommand) {
 
   // LoadScenario
   if (SEqual2(szCommand, "LoadScenario:")) {
-    char szCmd[2048];
-    sprintf(szCmd, "\"%s\" Objects.c4d", szCommand + 13);
-    // Add joined players
-    int iPlrs = 0;
-    for (C4Player *pPlr = Game.Players.First; pPlr; pPlr = pPlr->Next) {
-      strcat(szCmd, " \"");
-      strcat(szCmd, pPlr->Filename);
-      strcat(szCmd, "\"");
-      iPlrs++;
-    }
-    // If no players, add default Twonky
-    if (iPlrs == 0)
-      strcat(szCmd, " Twonky.c4p");
-
+    char szCmd[1024];
+    sprintf(szCmd, "%s Objects.c4d Twonky.c4p", szCommand + 13);
     OpenGame(szCmd);
     return TRUE;
   }
