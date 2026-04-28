@@ -86,10 +86,6 @@ protected:
   void CrossMapMaterials();
 };
 
-const int C4M_Flat = 0, C4M_TopFlat = 1, C4M_Smooth = 2, C4M_Rough = 3,
-
-          // Material Density Levels
-
-    C4M_Solid = 50, C4M_SemiSolid = 25, C4M_Liquid = 25;
-
+// Material Density Levels
+const int C4M_Flat = 0, C4M_TopFlat = 1, C4M_Smooth = 2, C4M_Rough = 3, C4M_Solid = 50, C4M_SemiSolid = 25, C4M_Liquid = 25;
 const int MNone = -1;

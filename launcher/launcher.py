@@ -239,7 +239,7 @@ class ClonkLauncher(QMainWindow):
             btn = ClonkButton(text, self.ui_container, btn_bg_raw, global_offset); btn.move(x, y); btn.clicked.connect(lambda: self.play_sound(self.sound_click))
             return btn
 
-        self.btn_new = create_btn("New", 482, 10); self.btn_activate = create_btn("Activate", 482, 34); self.btn_rename = create_btn("Rename", 482, 59); self.btn_delete = create_btn("Delete", 482, 83); self.btn_props = create_btn("Properties", 482, 107); self.btn_props.clicked.connect(self.show_options)
+        self.btn_new = create_btn("New", 482, 10); self.btn_activate = create_btn("Activate", 482, 34); self.btn_rename = create_btn("Rename", 482, 59); self.btn_delete = create_btn("Delete", 482, 83); self.btn_props = create_btn("Properties", 482, 107);
         self.btn_start = create_btn("Start", 482, 310); self.btn_start.clicked.connect(self.launch_game); self.btn_quit = create_btn("Quit", 482, 335); self.btn_quit.clicked.connect(self.close)
 
         self.view_label = QLabel("View:", self.ui_container); self.view_label.setGeometry(482, 161, 72, 15); self.view_label.setStyleSheet("background: transparent;")
