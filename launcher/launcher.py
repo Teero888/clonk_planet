@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QPushButton,
                              QFrame, QDialog, QTabWidget, QVBoxLayout, 
                              QStackedWidget, QHBoxLayout, QGroupBox, QComboBox, 
                              QSpinBox, QCheckBox, QGridLayout, QSlider, QLineEdit, QMessageBox, QListWidget, QStyledItemDelegate, QStyle, QStyleOptionViewItem)
-from PyQt5.QtGui import QPixmap, QPalette, QBrush, QStandardItemModel, QStandardItem, QIcon, QPainter, QColor, QFont, QKeySequence
+from PyQt5.QtGui import QPixmap, QPalette, QBrush, QStandardItemModel, QStandardItem, QIcon, QPainter, QColor, QFont, QKeySequence, QImage
 from PyQt5.QtCore import Qt, QRect, QSize, QTimer, QUrl, QPoint
 from PyQt5.QtMultimedia import QSoundEffect
 
@@ -65,7 +65,10 @@ class PixelDelegate(QStyledItemDelegate):
 
         # 3. Draw Text (Display) with label-only highlight
         display_rect = style.subElementRect(QStyle.SE_ItemViewItemText, option, widget)
-        display_rect.translate(-4, 0)
+        if option.features & QStyleOptionViewItem.HasCheckIndicator:
+            display_rect.translate(-7, 0)
+        else:
+            display_rect.translate(-3, 0)
         text = index.data(Qt.DisplayRole)
         if text:
             painter.setFont(option.font)
@@ -374,6 +377,36 @@ class ClonkLauncher(QMainWindow):
         if '.' in title: title = title.rsplit('.', 1)[0]
         return title
 
+    def apply_clonk_transparency(self, pix):
+        if pix.isNull(): return pix
+        img = pix.toImage().convertToFormat(QPixmap.fromImage(QImage()).toImage().Format_ARGB32)
+        # We use a bitwise approach for speed on larger Title.bmp images
+        # Magic colors that Clonk uses for transparency
+        magic_colors = [
+            QColor("#ff00ff").rgb() & 0xFFFFFF, # Magenta
+            QColor("#c0c4fc").rgb() & 0xFFFFFF, # Clonk Blue
+            QColor("#000000").rgb() & 0xFFFFFF, # Black (often used in Title.bmp/Icon.bmp)
+            QColor("#008080").rgb() & 0xFFFFFF, # Teal
+            QColor("#ffff00").rgb() & 0xFFFFFF  # Yellow
+        ]
+        
+        bg_rgb = img.pixelColor(0, 0).rgb() & 0xFFFFFF
+        
+        # Always mask magenta and clonk-blue
+        to_mask = {magic_colors[0], magic_colors[1]}
+        # Only mask others if they are at the corner (0,0)
+        if bg_rgb in magic_colors:
+            to_mask.add(bg_rgb)
+            
+        modified = False
+        for y in range(img.height()):
+            for x in range(img.width()):
+                if (img.pixel(x, y) & 0xFFFFFF) in to_mask:
+                    img.setPixel(x, y, 0) # Set to fully transparent
+                    modified = True
+        
+        return QPixmap.fromImage(img) if modified else pix
+
     def refresh_resources(self):
         self.tree_model.clear()
         if not os.path.exists(self.planet_data_path): return
@@ -389,7 +422,18 @@ class ClonkLauncher(QMainWindow):
             elif ext == '.c4f': cat = 1
             elif ext == '.c4s': cat = 2
             elif ext == '.c4d': cat = 3
+            elif ext == '.c4v': cat = 1 # Treat Video groups as folders
             return {'name': name, 'grp': grp, 'title': title, 'cat': cat}
+
+        def set_item_icon(item, grp, default_atlas_idx):
+            icon_bmp = grp.get_file('Icon.bmp')
+            if icon_bmp:
+                pix = QPixmap()
+                pix.loadFromData(icon_bmp)
+                item.setIcon(QIcon(self.apply_clonk_transparency(pix)))
+            else:
+                if default_atlas_idx is not None:
+                    item.setIcon(self.get_atlas_icon(default_atlas_idx))
 
         def add_item(parent_item, name, grp, path, current_subs):
             info = get_item_info(name, grp)
@@ -404,10 +448,10 @@ class ClonkLauncher(QMainWindow):
             
             if item_type == 'folder':
                 item.setFont(bold_font)
-                item.setIcon(self.get_atlas_icon(4))
+                set_item_icon(item, grp, 4)
                 subs = []
                 for e in grp.entries:
-                    if e['name'].lower()[-4:] in ('.c4f', '.c4s', '.c4d', '.c4p'):
+                    if e['name'].lower()[-4:] in ('.c4f', '.c4s', '.c4d', '.c4p', '.c4v'):
                         sub_data = grp.get_file(e['name'])
                         if sub_data:
                             s_grp = C4Group(raw_data=sub_data)
@@ -419,13 +463,7 @@ class ClonkLauncher(QMainWindow):
             elif item_type == 'scenario':
                 icon_bmp = grp.get_file('Icon.bmp')
                 if icon_bmp:
-                    pix = QPixmap()
-                    pix.loadFromData(icon_bmp)
-                    img = pix.toImage()
-                    bg = img.pixelColor(0, 0)
-                    if bg.name() in ("#c0c4fc", "#ff00ff"):
-                        pix.setMask(pix.createMaskFromColor(bg, Qt.MaskInColor))
-                    item.setIcon(QIcon(pix))
+                    set_item_icon(item, grp, None)
                 else:
                     scen_data = grp.get_file('Scenario.txt')
                     icon_id = 0
@@ -434,7 +472,7 @@ class ClonkLauncher(QMainWindow):
                         if m: icon_id = int(m.group(1))
                     item.setIcon(self.get_atlas_icon(icon_id + 26))
             elif item_type == 'package':
-                item.setIcon(self.get_atlas_icon(12))
+                set_item_icon(item, grp, 12)
                 if not current_subs: # Root node
                     item.setCheckable(True)
                     item.setCheckState(Qt.Checked)
@@ -464,7 +502,7 @@ class ClonkLauncher(QMainWindow):
 
         roots = []
         for f in os.listdir(self.planet_data_path):
-            if f.lower()[-4:] in ('.c4f', '.c4s', '.c4p', '.c4d'):
+            if f.lower()[-4:] in ('.c4f', '.c4s', '.c4p', '.c4d', '.c4v'):
                 path = os.path.join(self.planet_data_path, f)
                 roots.append(get_item_info(f, C4Group(path)))
         
@@ -478,7 +516,7 @@ class ClonkLauncher(QMainWindow):
         if not item: return
         data = item.data()
         if data and data.get('type') == 'folder':
-            item.setIcon(self.get_atlas_icon(23))
+            item.setIcon(self.get_atlas_icon(22))
 
     def on_item_collapsed(self, index):
         item = self.tree_model.itemFromIndex(index)
@@ -704,12 +742,7 @@ class ClonkLauncher(QMainWindow):
             pix = QPixmap()
             pix.loadFromData(img_data)
             
-            # Mask out typical Clonk transparent background colors
-            img = pix.toImage()
-            bg_color = img.pixelColor(0, 0)
-            if bg_color.name() in ("#c0c4fc","#000000", "#ff00ff", "#008080", "#ffff00"):
-                mask = pix.createMaskFromColor(bg_color, Qt.MaskInColor)
-                pix.setMask(mask)
+            pix = self.apply_clonk_transparency(pix)
             
             if needs_crop:
                 defcore_data = target_grp.get_file('DefCore.txt')
@@ -824,7 +857,7 @@ class ClonkLauncher(QMainWindow):
         self.tree.expanded.connect(self.on_item_expanded)
         self.tree.collapsed.connect(self.on_item_collapsed)
         self.tree.setRootIsDecorated(False)
-        self.tree.setIndentation(15)
+        self.tree.setIndentation(20)
         self.tree.setExpandsOnDoubleClick(True)
         self.tree.setEditTriggers(QTreeView.NoEditTriggers)
         self.tree.setIconSize(QSize(16, 16))
@@ -896,10 +929,15 @@ class ClonkLauncher(QMainWindow):
     def launch_game(self):
         clonk_bin = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'build', 'clonk'))
         if not os.path.exists(clonk_bin):
-            QMessageBox.critical(self, "Error", f"Executable not found at {clonk_bin}")
-            return
+            # Try just 'clonk' in the same directory as well, or from PATH
+            if not os.path.exists(os.path.join(self.planet_data_path, 'clonk')):
+                 QMessageBox.critical(self, "Error", f"Executable not found at {clonk_bin}")
+                 return
+            clonk_bin = "./clonk"
 
         args = [clonk_bin]
+        
+        # 1. Add selected scenario
         indexes = self.tree.selectedIndexes()
         if indexes:
             item = self.tree_model.itemFromIndex(indexes[0])
@@ -908,14 +946,40 @@ class ClonkLauncher(QMainWindow):
                 path = data.get('path')
                 sub = data.get('sub')
                 if sub:
-                    # For nested scenarios, we might need a specific format
-                    # Standard Clonk uses relative paths or full paths
-                    # For now, let's try passing the archive/sub relative to planet_data
-                    rel_path = os.path.relpath(path, self.planet_data_path)
-                    args.append(os.path.join(rel_path, sub))
+                    # Path is the root group (e.g. Worlds.c4f), sub is the internal path
+                    rel_group = os.path.relpath(path, self.planet_data_path)
+                    if isinstance(sub, list):
+                        args.append(os.path.join(rel_group, *sub))
+                    else:
+                        args.append(os.path.join(rel_group, sub))
                 else:
                     args.append(os.path.relpath(path, self.planet_data_path))
 
+        # 2. Add checked players and definition packages
+        def collect_checked(parent_item):
+            for row in range(parent_item.rowCount()):
+                item = parent_item.child(row)
+                if item.isCheckable() and item.checkState() == Qt.Checked:
+                    data = item.data()
+                    if data:
+                        path = data.get('path')
+                        sub = data.get('sub')
+                        if path:
+                            rel_path = os.path.relpath(path, self.planet_data_path)
+                            if sub:
+                                if isinstance(sub, list):
+                                    args.append(os.path.join(rel_path, *sub))
+                                else:
+                                    args.append(os.path.join(rel_path, sub))
+                            else:
+                                args.append(rel_path)
+                
+                if item.hasChildren():
+                    collect_checked(item)
+
+        collect_checked(self.tree_model.invisibleRootItem())
+
+        print(f"Launching: {' '.join(args)}")
         subprocess.Popen(args, cwd=self.planet_data_path)
 
 class Win3DFrame(QFrame):
