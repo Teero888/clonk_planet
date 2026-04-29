@@ -5,14 +5,85 @@ import socket
 import struct
 import zlib
 import gzip
+import signal
+import tempfile
+import re
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QPushButton, 
                              QLabel, QTreeView, QTextEdit, QRadioButton, QButtonGroup,
                              QFrame, QDialog, QTabWidget, QVBoxLayout, 
                              QStackedWidget, QHBoxLayout, QGroupBox, QComboBox, 
-                             QSpinBox, QCheckBox, QGridLayout, QSlider, QLineEdit, QMessageBox, QListWidget)
+                             QSpinBox, QCheckBox, QGridLayout, QSlider, QLineEdit, QMessageBox, QListWidget, QStyledItemDelegate, QStyle, QStyleOptionViewItem)
 from PyQt5.QtGui import QPixmap, QPalette, QBrush, QStandardItemModel, QStandardItem, QIcon, QPainter, QColor, QFont, QKeySequence
 from PyQt5.QtCore import Qt, QRect, QSize, QTimer, QUrl, QPoint
 from PyQt5.QtMultimedia import QSoundEffect
+
+class PixelDelegate(QStyledItemDelegate):
+    def __init__(self, parent=None, check_on=None, check_off=None):
+        super().__init__(parent)
+        self.check_on = check_on
+        self.check_off = check_off
+
+    def paint(self, painter, option, index):
+        self.initStyleOption(option, index)
+        painter.save()
+        painter.setRenderHint(QPainter.Antialiasing, False)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform, False)
+        
+        widget = option.widget
+        style = widget.style() if widget else QApplication.style()
+
+        # 0. Draw background (without full-row selection highlight)
+        opts = QStyleOptionViewItem(option)
+        opts.state &= ~QStyle.State_Selected
+        style.drawPrimitive(QStyle.PE_PanelItemViewItem, opts, painter, widget)
+
+        # 1. Draw Checkbox
+        if option.features & QStyleOptionViewItem.HasCheckIndicator:
+            check_rect = style.subElementRect(QStyle.SE_ItemViewItemCheckIndicator, option, widget)
+            check_rect.translate(-1, 0)
+            pix = self.check_on if option.checkState == Qt.Checked else self.check_off
+            if pix and not pix.isNull():
+                tx = check_rect.x() + (check_rect.width() - pix.width()) // 2
+                ty = check_rect.y() + (check_rect.height() - pix.height()) // 2
+                painter.drawPixmap(tx, ty, pix)
+
+        # 2. Draw Icon (Decoration)
+        if option.features & QStyleOptionViewItem.HasDecoration:
+            decor_rect = style.subElementRect(QStyle.SE_ItemViewItemDecoration, option, widget)
+            if option.features & QStyleOptionViewItem.HasCheckIndicator:
+                decor_rect.translate(-6, 0)
+            else:
+                decor_rect.translate(-3, 0)
+            icon = index.data(Qt.DecorationRole)
+            if isinstance(icon, QIcon):
+                state = QIcon.On if option.state & QStyle.State_Open else QIcon.Off
+                pix = icon.pixmap(option.decorationSize, QIcon.Normal, state)
+                if not pix.isNull():
+                    tx = decor_rect.x() + (decor_rect.width() - pix.width()) // 2
+                    ty = decor_rect.y() + (decor_rect.height() - pix.height()) // 2
+                    painter.drawPixmap(tx, ty, pix)
+
+        # 3. Draw Text (Display) with label-only highlight
+        display_rect = style.subElementRect(QStyle.SE_ItemViewItemText, option, widget)
+        display_rect.translate(-4, 0)
+        text = index.data(Qt.DisplayRole)
+        if text:
+            painter.setFont(option.font)
+            fm = option.fontMetrics
+            text_w = fm.horizontalAdvance(text) if hasattr(fm, 'horizontalAdvance') else fm.width(text)
+            
+            if option.state & QStyle.State_Selected:
+                # Highlight only the text area
+                highlight_rect = QRect(display_rect.x() - 2, option.rect.y(), text_w + 6, option.rect.height())
+                group = QPalette.Active if option.state & QStyle.State_HasFocus else QPalette.Inactive
+                painter.fillRect(highlight_rect, option.palette.brush(group, QPalette.Highlight))
+                painter.setPen(option.palette.color(group, QPalette.HighlightedText))
+            else:
+                painter.setPen(option.palette.text().color())
+            
+            painter.drawText(display_rect, Qt.AlignVCenter | Qt.AlignLeft, text)
+
+        painter.restore()
 
 class HostDialog(QDialog):
     def __init__(self, parent=None, title="New host address", initial_text=""):
@@ -232,73 +303,189 @@ class ClonkLauncher(QMainWindow):
         self.res_path = os.path.join(os.path.dirname(__file__), 'res')
         self.wav_path = os.path.join(os.path.dirname(__file__), 'res_wav')
         self.dump_path = os.path.join(os.path.dirname(__file__), 'res_dump')
+        
+        # Load Atlases
+        icons_path = os.path.join(self.dump_path, 'Planet_fixed.bin_2_1015_1031.bmp')
+        self.icons_atlas = QPixmap(icons_path)
+        if not self.icons_atlas.isNull():
+            mask = self.icons_atlas.createMaskFromColor(QColor("#ff00ff"), Qt.MaskInColor)
+            self.icons_atlas.setMask(mask)
+
+        check_path = os.path.join(self.dump_path, 'Planet_fixed.bin_2_1016_1031.bmp')
+        self.check_atlas = QPixmap(check_path)
+        if not self.check_atlas.isNull():
+            mask = self.check_atlas.createMaskFromColor(QColor("#ff00ff"), Qt.MaskInColor)
+            self.check_atlas.setMask(mask)
+
+        self.temp_dir = tempfile.TemporaryDirectory()
+        self.check_on_pix = QPixmap()
+        self.check_off_pix = QPixmap()
+        if not self.check_atlas.isNull():
+            self.check_on_pix = self.check_atlas.copy(QRect(16, 0, 16, 16))
+            self.check_off_pix = self.check_atlas.copy(QRect(32, 0, 16, 16))
+
         self.sound_start = self.load_sound('sound_7008.wav')
         self.sound_click = self.load_sound('sound_7002.wav')
+        self.config_path = os.path.join(self.planet_data_path, 'clonk.ini')
+        self.language = "US"
+        self.load_config()
         self.init_ui()
         self.refresh_resources()
 
+    def load_config(self):
+        if os.path.exists(self.config_path):
+            try:
+                with open(self.config_path, 'r', encoding='latin-1') as f:
+                    content = f.read()
+                    m = re.search(r'Language=(DE|US)', content)
+                    if m: self.language = m.group(1)
+            except: pass
+
+    def save_config(self):
+        content = ""
+        if os.path.exists(self.config_path):
+            with open(self.config_path, 'r', encoding='latin-1') as f:
+                content = f.read()
+        
+        if "Language=" in content:
+            content = re.sub(r'Language=(DE|US)', f'Language={self.language}', content)
+        else:
+            # Simplistic append
+            if "[General]" not in content:
+                content += "\n[General]\n"
+            content = content.replace("[General]", f"[General]\nLanguage={self.language}")
+            
+        with open(self.config_path, 'w', encoding='latin-1') as f:
+            f.write(content)
+
+    def get_atlas_icon(self, index):
+        if self.icons_atlas.isNull(): return QIcon()
+        return QIcon(self.icons_atlas.copy(QRect(index * 16, 0, 16, 16)))
+
+    def get_group_title(self, grp, default_name):
+        title = default_name
+        title_data = grp.get_file('Title.txt') or grp.get_file('Names.txt')
+        if title_data:
+            lines = title_data.decode('latin-1', errors='ignore').splitlines()
+            for l in lines:
+                if l.startswith(self.language + ':'): title = l[3:]; break
+                elif ':' in l and not any(l.startswith(p+':') for p in ['DE', 'US']): title = l.split(':', 1)[1]
+                elif l and not ':' in l: title = l
+        if '.' in title: title = title.rsplit('.', 1)[0]
+        return title
+
     def refresh_resources(self):
         self.tree_model.clear()
+        if not os.path.exists(self.planet_data_path): return
 
-        # Scenarios
-        scenario_root = QStandardItem("Scenarios")
-        self.tree_model.appendRow(scenario_root)
+        bold_font = QFont()
+        bold_font.setBold(True)
 
-        # Clonks
-        clonk_root = QStandardItem("Clonks")
-        self.tree_model.appendRow(clonk_root)
+        def get_item_info(name, grp):
+            ext = name.lower()[-4:]
+            title = self.get_group_title(grp, name)
+            cat = 9
+            if ext == '.c4p': cat = 0
+            elif ext == '.c4f': cat = 1
+            elif ext == '.c4s': cat = 2
+            elif ext == '.c4d': cat = 3
+            return {'name': name, 'grp': grp, 'title': title, 'cat': cat}
 
-        # Packages
-        package_root = QStandardItem("Packages")
-        self.tree_model.appendRow(package_root)
-
-        if not os.path.exists(self.planet_data_path):
-            return
-
-        def add_sub_items(parent_item, grp, path, current_subs, item_type):
-            for e in grp.entries:
-                ext = e['name'].lower()[-4:]
-                if item_type == 'folder' and ext in ('.c4f', '.c4s'):
-                    sub_subs = current_subs + [e['name']]
-                    sub_type = 'folder' if ext == '.c4f' else 'scenario'
-                    sub_item = QStandardItem(e['name'])
-                    sub_item.setData({'path': path, 'sub': sub_subs, 'type': sub_type})
-                    parent_item.appendRow(sub_item)
-                    if ext == '.c4f':
+        def add_item(parent_item, name, grp, path, current_subs):
+            info = get_item_info(name, grp)
+            item = QStandardItem(info['title'])
+            item_type = 'unknown'
+            if info['cat'] == 0: item_type = 'clonk'
+            elif info['cat'] == 1: item_type = 'folder'
+            elif info['cat'] == 2: item_type = 'scenario'
+            elif info['cat'] == 3: item_type = 'package'
+            
+            item.setData({'path': path, 'sub': current_subs, 'type': item_type})
+            
+            if item_type == 'folder':
+                item.setFont(bold_font)
+                item.setIcon(self.get_atlas_icon(4))
+                subs = []
+                for e in grp.entries:
+                    if e['name'].lower()[-4:] in ('.c4f', '.c4s', '.c4d', '.c4p'):
                         sub_data = grp.get_file(e['name'])
                         if sub_data:
-                            add_sub_items(sub_item, C4Group(raw_data=sub_data), path, sub_subs, 'folder')
-                elif item_type == 'package' and ext == '.c4d':
-                    sub_subs = current_subs + [e['name']]
-                    sub_item = QStandardItem(e['name'])
-                    sub_item.setData({'path': path, 'sub': sub_subs, 'type': 'package'})
-                    parent_item.appendRow(sub_item)
-                    sub_data = grp.get_file(e['name'])
-                    if sub_data:
-                        add_sub_items(sub_item, C4Group(raw_data=sub_data), path, sub_subs, 'package')
+                            s_grp = C4Group(raw_data=sub_data)
+                            subs.append(get_item_info(e['name'], s_grp))
+                
+                for s in sorted(subs, key=lambda x: (x['cat'], x['title'].lower())):
+                    add_item(item, s['name'], s['grp'], path, current_subs + [s['name']])
+                    
+            elif item_type == 'scenario':
+                icon_bmp = grp.get_file('Icon.bmp')
+                if icon_bmp:
+                    pix = QPixmap()
+                    pix.loadFromData(icon_bmp)
+                    img = pix.toImage()
+                    bg = img.pixelColor(0, 0)
+                    if bg.name() in ("#c0c4fc", "#ff00ff"):
+                        pix.setMask(pix.createMaskFromColor(bg, Qt.MaskInColor))
+                    item.setIcon(QIcon(pix))
+                else:
+                    scen_data = grp.get_file('Scenario.txt')
+                    icon_id = 0
+                    if scen_data:
+                        m = re.search(r'^Icon=(\d+)', scen_data.decode('latin-1', errors='ignore'), re.MULTILINE)
+                        if m: icon_id = int(m.group(1))
+                    item.setIcon(self.get_atlas_icon(icon_id + 26))
+            elif item_type == 'package':
+                item.setIcon(self.get_atlas_icon(12))
+                if not current_subs: # Root node
+                    item.setCheckable(True)
+                    item.setCheckState(Qt.Checked)
+                subs = []
+                for e in grp.entries:
+                    if e['name'].lower().endswith('.c4d'):
+                        sub_data = grp.get_file(e['name'])
+                        if sub_data:
+                            s_grp = C4Group(raw_data=sub_data)
+                            subs.append(get_item_info(e['name'], s_grp))
+                for s in sorted(subs, key=lambda x: (x['cat'], x['title'].lower())):
+                    add_item(item, s['name'], s['grp'], path, current_subs + [s['name']])
+            elif item_type == 'clonk':
+                item.setCheckable(True)
+                item.setCheckState(Qt.Checked)
+                player_data = grp.get_file('Player.txt')
+                color = 1
+                if player_data:
+                    m = re.search(r'^Color=(\d+)', player_data.decode('latin-1', errors='ignore'), re.MULTILINE)
+                    if m: color = int(m.group(1))
+                item.setIcon(self.get_atlas_icon(99 + color - 1))
 
-        for f in sorted(os.listdir(self.planet_data_path)):
-            path = os.path.join(self.planet_data_path, f)
-            if f.lower().endswith('.c4f'):
-                item = QStandardItem(f)
-                item.setData({'path': path, 'type': 'folder'})
-                scenario_root.appendRow(item)
-                add_sub_items(item, C4Group(path), path, [], 'folder')
-            elif f.lower().endswith('.c4s'):
-                item = QStandardItem(f)
-                item.setData({'path': path, 'type': 'scenario'})
-                scenario_root.appendRow(item)
-            elif f.lower().endswith('.c4p'):
-                item = QStandardItem(f)
-                item.setData({'path': path, 'type': 'clonk'})
-                clonk_root.appendRow(item)
-            elif f.lower().endswith('.c4d'):
-                item = QStandardItem(f)
-                item.setData({'path': path, 'type': 'package'})
-                package_root.appendRow(item)
-                add_sub_items(item, C4Group(path), path, [], 'package')
+            if parent_item:
+                parent_item.appendRow(item)
+            else:
+                self.tree_model.appendRow(item)
 
-        self.tree.expandAll()
+        roots = []
+        for f in os.listdir(self.planet_data_path):
+            if f.lower()[-4:] in ('.c4f', '.c4s', '.c4p', '.c4d'):
+                path = os.path.join(self.planet_data_path, f)
+                roots.append(get_item_info(f, C4Group(path)))
+        
+        for r in sorted(roots, key=lambda x: (x['cat'], x['title'].lower())):
+            add_item(None, r['name'], r['grp'], os.path.join(self.planet_data_path, r['name']), [])
+
+        self.tree.collapseAll()
+
+    def on_item_expanded(self, index):
+        item = self.tree_model.itemFromIndex(index)
+        if not item: return
+        data = item.data()
+        if data and data.get('type') == 'folder':
+            item.setIcon(self.get_atlas_icon(23))
+
+    def on_item_collapsed(self, index):
+        item = self.tree_model.itemFromIndex(index)
+        if not item: return
+        data = item.data()
+        if data and data.get('type') == 'folder':
+            item.setIcon(self.get_atlas_icon(4))
 
     def on_tree_selection(self, selected, deselected):
         indexes = selected.indexes()
@@ -327,8 +514,11 @@ class ClonkLauncher(QMainWindow):
 
         # Description
         desc_data = None
-        for name in ['DescUS.rtf', 'DescUS.txt', 'DescDE.rtf', 'DescDE.txt']:
-            desc_data = target_grp.get_file(name)
+        lang_order = [self.language, 'US' if self.language == 'DE' else 'DE']
+        for l in lang_order:
+            for ext in ['.rtf', '.txt']:
+                desc_data = target_grp.get_file(f'Desc{l}{ext}')
+                if desc_data: break
             if desc_data: break
         
         if not desc_data:
@@ -487,13 +677,14 @@ class ClonkLauncher(QMainWindow):
                     if title_data:
                         lines = title_data.decode('latin-1', errors='ignore').splitlines()
                         for l in lines:
-                            if l.startswith('US:'): title_text = l[3:]; break
-                            elif ':' in l: title_text = l.split(':', 1)[1]
-                            elif l: title_text = l
+                            if l.startswith(self.language + ':'): title_text = l[3:]; break
+                            elif ':' in l and not any(l.startswith(p+':') for p in ['DE', 'US']): title_text = l.split(':', 1)[1]
+                            elif l and not ':' in l: title_text = l
                             
                     if not title_text:
                         sub_v = data.get('sub')
-                        title_text = (sub_v[-1] if isinstance(sub_v, list) else sub_v) or os.path.basename(data.get('path', ''))
+                        title_text = (sub_v[-1] if isinstance(sub_v, list) and sub_v else sub_v) or os.path.basename(data.get('path', ''))
+                        if isinstance(title_text, list): title_text = os.path.basename(data.get('path', ''))
                         if '.' in title_text: title_text = title_text.rsplit('.', 1)[0]
                         
                     safe_text = text.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br>')
@@ -506,7 +697,7 @@ class ClonkLauncher(QMainWindow):
         img_data = target_grp.get_file('Title.bmp') or target_grp.get_file('Icon.bmp')
         needs_crop = False
         if not img_data:
-            img_data = target_grp.get_file('Graphics.bmp') or target_grp.get_file('Picture.bmp')
+            img_data = target_grp.get_file('Graphics.bmp') or target_grp.get_file('Picture.bmp') or target_grp.get_file('Portrait.bmp')
             needs_crop = True
 
         if img_data:
@@ -516,7 +707,7 @@ class ClonkLauncher(QMainWindow):
             # Mask out typical Clonk transparent background colors
             img = pix.toImage()
             bg_color = img.pixelColor(0, 0)
-            if bg_color.name() in ("#c0c4fc", "#ff00ff", "#008080", "#ffff00"):
+            if bg_color.name() in ("#c0c4fc","#000000", "#ff00ff", "#008080", "#ffff00"):
                 mask = pix.createMaskFromColor(bg_color, Qt.MaskInColor)
                 pix.setMask(mask)
             
@@ -538,7 +729,9 @@ class ClonkLauncher(QMainWindow):
                             
             if pix.width() > 0 and pix.height() > 0:
                 is_scenario = data.get('type') in ('scenario', 'folder')
-                if is_scenario:
+                is_root_package = (data.get('type') in ('package', 'clonk') and not data.get('sub'))
+                
+                if is_scenario or is_root_package:
                     pix = pix.scaled(self.preview.size(), Qt.IgnoreAspectRatio, Qt.FastTransformation)
                     self.preview.setGraphicsEffect(None)
                 else:
@@ -584,7 +777,7 @@ class ClonkLauncher(QMainWindow):
         self.ui_container = QWidget(self.central); self.ui_container.setGeometry(0, 0, self.client_w, self.client_h); self.ui_container.hide()
         self.setup_main_ui()
         self.play_sound(self.sound_start)
-        self.intro_timer = QTimer(); self.intro_timer.timeout.connect(self.next_intro_frame); self.intro_timer.start(1000); self.next_intro_frame()
+        self.intro_timer = QTimer(); self.intro_timer.timeout.connect(self.next_intro_frame); self.intro_timer.start(100); self.next_intro_frame()
 
     def init_menu(self):
         import webbrowser
@@ -626,7 +819,34 @@ class ClonkLauncher(QMainWindow):
         self.tree.setGeometry(2, 2, 239, 342)
         self.tree.setHeaderHidden(True); self.tree.setFrameShape(QFrame.NoFrame)
         self.tree_model = QStandardItemModel(); self.tree.setModel(self.tree_model)
+        self.tree.setItemDelegate(PixelDelegate(self.tree, self.check_on_pix, self.check_off_pix))
         self.tree.selectionModel().selectionChanged.connect(self.on_tree_selection)
+        self.tree.expanded.connect(self.on_item_expanded)
+        self.tree.collapsed.connect(self.on_item_collapsed)
+        self.tree.setRootIsDecorated(False)
+        self.tree.setIndentation(15)
+        self.tree.setExpandsOnDoubleClick(True)
+        self.tree.setEditTriggers(QTreeView.NoEditTriggers)
+        self.tree.setIconSize(QSize(16, 16))
+        self.tree.setUniformRowHeights(True)
+        self.tree.setStyleSheet(f"""
+            QTreeView {{
+                background-color: white;
+                border: none;
+            }}
+            QTreeView::branch {{
+                image: none;
+            }}
+            QTreeView::branch:has-children {{
+                image: none;
+            }}
+        """)
+        
+        p = self.tree.palette()
+        p.setColor(QPalette.Highlight, QColor("#3096fa"))
+        p.setColor(QPalette.Inactive, QPalette.Highlight, QColor("#3096fa")) # Keep color when unfocused
+        self.tree.setPalette(p)
+
         
         # Preview Area
         self.preview_frame = ClonkArea(self.ui_container, 261, 10, 212, 151, bg_color=None)
@@ -651,7 +871,7 @@ class ClonkLauncher(QMainWindow):
         self.radio_player = QRadioButton("Player", self.ui_container); self.radio_player.setGeometry(482, 180, 90, 15);  #self.radio_player.toggled.connect(lambda c: self.set_background('Planet_fixed.bin_2_1010_1031.bmp', True) if c else None)
         self.radio_dev = QRadioButton("Developer", self.ui_container); self.radio_dev.setGeometry(482, 195, 90, 15);  self.radio_dev.setChecked(True) #self.radio_dev.toggled.connect(lambda c: self.set_background('Planet_fixed.bin_2_1019_1031.bmp', True) if c else None);
         self.view_group = QButtonGroup(self); self.view_group.addButton(self.radio_player); self.view_group.addButton(self.radio_dev)
-        self.author_label = QLabel("Author: RedWolf Design", self.ui_container); self.author_label.setGeometry(253, 351, 226, 15); self.author_label.setStyleSheet("background: transparent;")
+        self.author_label = QLabel("Author: RedWolf Design", self.ui_container); self.author_label.setGeometry(261, 341, 212, 15); self.author_label.setStyleSheet("background: transparent;")
 
         # Status Bar / Animation
         self.status_frame = ClonkArea(self.ui_container, 47, 364, 521, 24)
@@ -663,7 +883,14 @@ class ClonkLauncher(QMainWindow):
 
         self.separator = QFrame(self.ui_container); self.separator.setGeometry(0, 0, 580, 2); self.separator.setFrameShape(QFrame.HLine); self.separator.setFrameShadow(QFrame.Sunken)
 
-    def show_options(self): OptionsDialog(self).exec_()
+    def show_options(self):
+        if OptionsDialog(self).exec_() == QDialog.Accepted:
+            self.refresh_resources()
+            # Try to re-select or at least refresh preview
+            indexes = self.tree.selectedIndexes()
+            if indexes:
+                self.on_tree_selection(self.tree.selectionModel().selection(), None)
+
     def show_about(self): AboutDialog(self).exec_()
     def show_credits(self): CreditsDialog(self).exec_()
     def launch_game(self):
@@ -1172,6 +1399,13 @@ class OptionsDialog(QDialog):
         
         layout.addLayout(btn_layout)
 
+    def accept(self):
+        new_lang = "DE" if self.radio_german.isChecked() else "US"
+        if new_lang != self.parent().language:
+            self.parent().language = new_lang
+            self.parent().save_config()
+        super().accept()
+
     def create_program_page(self):
         page = QWidget()
         layout = QVBoxLayout(page)
@@ -1185,7 +1419,12 @@ class OptionsDialog(QDialog):
         lang_layout.setSpacing(4)
         self.radio_german = QRadioButton("German")
         self.radio_english = QRadioButton("English")
-        self.radio_english.setChecked(True)
+        
+        if self.parent().language == "DE":
+            self.radio_german.setChecked(True)
+        else:
+            self.radio_english.setChecked(True)
+            
         lang_layout.addWidget(self.radio_german)
         lang_layout.addWidget(self.radio_english)
         layout.addWidget(lang_group)
