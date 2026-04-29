@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QPushButton,
                              QStackedWidget, QHBoxLayout, QGroupBox, QComboBox, 
                              QSpinBox, QCheckBox, QGridLayout, QSlider, QLineEdit, QMessageBox, QListWidget, QStyledItemDelegate, QStyle, QStyleOptionViewItem)
 from PyQt5.QtGui import QPixmap, QPalette, QBrush, QStandardItemModel, QStandardItem, QIcon, QPainter, QColor, QFont, QKeySequence, QImage
-from PyQt5.QtCore import Qt, QRect, QSize, QTimer, QUrl, QPoint
+from PyQt5.QtCore import Qt, QRect, QSize, QTimer, QUrl, QPoint, pyqtSignal
 from PyQt5.QtMultimedia import QSoundEffect
 
 class PixelDelegate(QStyledItemDelegate):
@@ -87,6 +87,43 @@ class PixelDelegate(QStyledItemDelegate):
             painter.drawText(display_rect, Qt.AlignVCenter | Qt.AlignLeft, text)
 
         painter.restore()
+
+class SplashWindow(QWidget):
+    finished = pyqtSignal()
+    def __init__(self, intro_frames, sound_start):
+        super().__init__()
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.setFixedSize(550, 412)
+        self.label = QLabel(self)
+        self.label.setGeometry(0, 0, 550, 412)
+        self.intro_frames = intro_frames
+        self.intro_index = 0
+        self.sound_start = sound_start
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.next_frame)
+        
+        # Center on screen
+        screen = QApplication.primaryScreen().geometry()
+        self.move((screen.width() - self.width()) // 2, (screen.height() - self.height()) // 2)
+
+    def start(self):
+        if self.sound_start: self.sound_start.play()
+        self.timer.start(33)
+        self.show()
+
+    def next_frame(self):
+        if self.intro_index < len(self.intro_frames):
+            path = os.path.join(os.path.dirname(__file__), 'res_splash', self.intro_frames[self.intro_index])
+            if os.path.exists(path):
+                self.label.setPixmap(QPixmap(path))
+            self.intro_index += 1
+        elif self.intro_index < len(self.intro_frames) + 15:
+            # Stay at the last frame
+            self.intro_index += 1
+        else:
+            self.timer.stop()
+            self.finished.emit()
+            self.close()
 
 class HostDialog(QDialog):
     def __init__(self, parent=None, title="New host address", initial_text=""):
@@ -804,13 +841,9 @@ class ClonkLauncher(QMainWindow):
         self.central = QWidget(); self.setCentralWidget(self.central); self.central.setFixedSize(self.client_w, self.client_h)
         self.init_menu(); self.setFixedSize(self.sizeHint())
         self.bg_label = QLabel(self.central); self.bg_label.setGeometry(0, 0, self.client_w, self.client_h)
-        self.is_intro = True
-        self.intro_frames = ['Planet_fixed.bin_2_1000_1031.bmp', 'Planet_fixed.bin_2_1010_1031.bmp', 'Planet_fixed.bin_2_1021_1031.bmp', 'Planet_fixed.bin_2_1036_1031.bmp']
-        self.intro_index = 0
-        self.ui_container = QWidget(self.central); self.ui_container.setGeometry(0, 0, self.client_w, self.client_h); self.ui_container.hide()
+        self.set_background('Planet_fixed.bin_2_1019_1031.bmp', is_raw=True)
+        self.ui_container = QWidget(self.central); self.ui_container.setGeometry(0, 0, self.client_w, self.client_h)
         self.setup_main_ui()
-        self.play_sound(self.sound_start)
-        self.intro_timer = QTimer(); self.intro_timer.timeout.connect(self.next_intro_frame); self.intro_timer.start(100); self.next_intro_frame()
 
     def init_menu(self):
         import webbrowser
@@ -818,12 +851,6 @@ class ClonkLauncher(QMainWindow):
         menu_style = "QMenu { background-color: #c0c0c0; font-size: 11px; border: 2px outset #ffffff; color: black; } QMenu::item:selected { background-color: #000080; color: white; }"
         options_menu = menubar.addMenu("Options"); options_menu.setStyleSheet(menu_style); options_menu.addAction("Options...").triggered.connect(self.show_options); options_menu.addAction("Registration...")
         help_menu = menubar.addMenu("Help"); help_menu.setStyleSheet(menu_style); help_menu.addAction("Contents..."); help_menu.addAction("Credits...").triggered.connect(self.show_credits); help_menu.addAction("Clonk on the web").triggered.connect(lambda: webbrowser.open("http://www.clonk.de/")); help_menu.addSeparator(); help_menu.addAction("About Clonk Planet...").triggered.connect(self.show_about)
-
-    def next_intro_frame(self):
-        if self.intro_index < len(self.intro_frames):
-            self.set_background(self.intro_frames[self.intro_index], is_raw=True); self.intro_index += 1
-        else:
-            self.intro_timer.stop(); self.end_intro()
 
     def set_background(self, name, is_raw=False):
         dir_p = self.dump_path if is_raw else self.res_path
@@ -838,9 +865,6 @@ class ClonkLauncher(QMainWindow):
                 self.bg_label.setAutoFillBackground(False); self.bg_label.setPixmap(scaled.copy(crop_rect))
         else:
             self.bg_label.setAutoFillBackground(False); self.bg_label.setStyleSheet("background-color: #c0c0c0;")
-
-    def end_intro(self):
-        self.is_intro = False; self.set_background('Planet_fixed.bin_2_1019_1031.bmp', is_raw=True); self.ui_container.show()
 
     def setup_main_ui(self):
         font_style = "'Comic Sans MS', 'Chilanka', 'cursive'"
@@ -1977,12 +2001,16 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     
     app = QApplication(sys.argv)
-    
-    # Turn on the classic Win9x rendering engine globally!
     app.setStyle("Windows") 
-    
     app_font = QFont("MS Sans Serif", 8)
     app.setFont(app_font)
+
     launcher = ClonkLauncher()
-    launcher.show()
+    
+    # Setup Splash
+    splash_frames = [f'splash_{i:03d}.bmp' for i in range(1, 52)]
+    splash = SplashWindow(splash_frames, launcher.sound_start)
+    splash.finished.connect(launcher.show)
+    splash.start()
+
     sys.exit(app.exec_())
