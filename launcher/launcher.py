@@ -148,6 +148,8 @@ class ClonkArea(QFrame):
         painter.setPen(QColor("#e3e3e3"))
         painter.drawLine(1, h-2, w-2, h-2)
         painter.drawLine(w-2, 1, w-2, h-2)
+        # Bottom-Right Outer: ffffff
+        painter.setPen(QColor("#ffffff"))
         painter.drawLine(0, h-1, w-1, h-1)
         painter.drawLine(w-1, 0, w-1, h-1)
 
@@ -161,17 +163,25 @@ def unscramble(data_raw):
     return bytes(data)
 
 class C4Group:
-    def __init__(self, path):
+    def __init__(self, path=None, raw_data=None):
         self.path = path
         self.entries = []
         self.data = b''
-        self.load()
+        if raw_data is not None:
+            self.load_from_data(raw_data)
+        elif path is not None:
+            self.load()
 
     def load(self):
         try:
             with open(self.path, 'rb') as f:
                 raw_data = f.read()
+            self.load_from_data(raw_data)
+        except Exception as e:
+            print(f"Error loading {self.path}: {e}")
 
+    def load_from_data(self, raw_data):
+        try:
             if not raw_data: return
 
             if raw_data[0:2] in (b'\x1f\x8b', b'\x1e\x8c'):
@@ -206,7 +216,7 @@ class C4Group:
                     'is_group': bool(child)
                 })
         except Exception as e:
-            print(f"Error loading {self.path}: {e}")
+            print(f"Error parsing group data: {e}")
 
     def get_file(self, name):
         for e in self.entries:
@@ -245,20 +255,35 @@ class ClonkLauncher(QMainWindow):
         if not os.path.exists(self.planet_data_path):
             return
 
+        def add_sub_items(parent_item, grp, path, current_subs, item_type):
+            for e in grp.entries:
+                ext = e['name'].lower()[-4:]
+                if item_type == 'folder' and ext in ('.c4f', '.c4s'):
+                    sub_subs = current_subs + [e['name']]
+                    sub_type = 'folder' if ext == '.c4f' else 'scenario'
+                    sub_item = QStandardItem(e['name'])
+                    sub_item.setData({'path': path, 'sub': sub_subs, 'type': sub_type})
+                    parent_item.appendRow(sub_item)
+                    if ext == '.c4f':
+                        sub_data = grp.get_file(e['name'])
+                        if sub_data:
+                            add_sub_items(sub_item, C4Group(raw_data=sub_data), path, sub_subs, 'folder')
+                elif item_type == 'package' and ext == '.c4d':
+                    sub_subs = current_subs + [e['name']]
+                    sub_item = QStandardItem(e['name'])
+                    sub_item.setData({'path': path, 'sub': sub_subs, 'type': 'package'})
+                    parent_item.appendRow(sub_item)
+                    sub_data = grp.get_file(e['name'])
+                    if sub_data:
+                        add_sub_items(sub_item, C4Group(raw_data=sub_data), path, sub_subs, 'package')
+
         for f in sorted(os.listdir(self.planet_data_path)):
             path = os.path.join(self.planet_data_path, f)
             if f.lower().endswith('.c4f'):
-                # Scenario Folder
                 item = QStandardItem(f)
                 item.setData({'path': path, 'type': 'folder'})
                 scenario_root.appendRow(item)
-                # Scan inside
-                grp = C4Group(path)
-                for e in grp.entries:
-                    if e['name'].lower().endswith('.c4s'):
-                        sub = QStandardItem(e['name'])
-                        sub.setData({'path': path, 'sub': e['name'], 'type': 'scenario'})
-                        item.appendRow(sub)
+                add_sub_items(item, C4Group(path), path, [], 'folder')
             elif f.lower().endswith('.c4s'):
                 item = QStandardItem(f)
                 item.setData({'path': path, 'type': 'scenario'})
@@ -267,10 +292,11 @@ class ClonkLauncher(QMainWindow):
                 item = QStandardItem(f)
                 item.setData({'path': path, 'type': 'clonk'})
                 clonk_root.appendRow(item)
-            elif f.lower().endswith('.c4d') or f.lower().endswith('.c4g'):
+            elif f.lower().endswith('.c4d'):
                 item = QStandardItem(f)
                 item.setData({'path': path, 'type': 'package'})
                 package_root.appendRow(item)
+                add_sub_items(item, C4Group(path), path, [], 'package')
 
         self.tree.expandAll()
 
@@ -291,29 +317,248 @@ class ClonkLauncher(QMainWindow):
         target_grp = grp
         if sub:
             # It's a group inside a group
-            sub_data = grp.get_file(sub)
-            if sub_data:
-                # We need a way to load from bytes. 
-                # For simplicity, let's just use a temp file or update C4Group
-                tmp_path = os.path.join(self.base_path, 'temp_sub.c4s')
-                with open(tmp_path, 'wb') as f: f.write(sub_data)
-                target_grp = C4Group(tmp_path)
-                os.remove(tmp_path)
+            sub_list = sub if isinstance(sub, list) else [sub]
+            for s in sub_list:
+                sub_data = target_grp.get_file(s)
+                if sub_data:
+                    target_grp = C4Group(raw_data=sub_data)
+                else:
+                    break
 
         # Description
-        desc_data = target_grp.get_file('DescUS.txt') or target_grp.get_file('DescDE.txt')
+        desc_data = None
+        for name in ['DescUS.rtf', 'DescUS.txt', 'DescDE.rtf', 'DescDE.txt']:
+            desc_data = target_grp.get_file(name)
+            if desc_data: break
+        
+        if not desc_data:
+            for ini_name in ['Scenario.txt', 'Player.txt']:
+                ini_data = target_grp.get_file(ini_name)
+                if ini_data:
+                    ini_text = ini_data.decode('latin-1', errors='ignore')
+                    import re
+                    if ini_name == 'Player.txt':
+                        def get_field(name, default="0"):
+                            m = re.search(rf'^{name}=(.*)$', ini_text, re.MULTILINE)
+                            return m.group(1).strip() if m else default
+                        
+                        rank_name = get_field('RankName', 'Neuling')
+                        p_name = get_field('Name', 'Clonk')
+                        score = get_field('Score', '0')
+                        rounds = get_field('Rounds', '0')
+                        rounds_won = get_field('RoundsWon', '0')
+                        rounds_lost = get_field('RoundsLost', '0')
+                        
+                        play_time = int(get_field('TotalPlayingTime', '0'))
+                        secs = play_time // 36 if play_time > 1000 else play_time
+                        
+                        h = secs // 3600
+                        m_ = (secs % 3600) // 60
+                        s_ = secs % 60
+                        
+                        comment = get_field('Comment', '')
+                        
+                        desc_str = f"<b><span style='font-size: 10pt'>{rank_name} {p_name}</span></b><br><br>Score: {score}<br>Rounds: {rounds} ({rounds_won} won {rounds_lost} lost)<br>Playing time: {h:02d}:{m_:02d}:{s_:02d}<br>Comment: {comment}"
+                        desc_data = desc_str.encode('latin-1')
+                        break
+                    else:
+                        m = re.search(r'^Comment=(.*)$', ini_text, re.MULTILINE)
+                        if m:
+                            desc_data = m.group(1).encode('latin-1')
+                            break
+
         if desc_data:
-            self.desc.setText(desc_data.decode('latin-1', errors='ignore'))
+            text = desc_data.decode('latin-1', errors='ignore').rstrip('\x00')
+            if text.startswith(r'{\rtf'):
+                import re
+                skip_level = 0
+                html = ''
+                i = 0
+                bold = False
+                italic = False
+                strike = False
+                underline = False
+                curr_size = None
+                
+                while i < len(text):
+                    c = text[i]
+                    if c == '{':
+                        i += 1
+                        if skip_level > 0:
+                            skip_level += 1
+                        else:
+                            j = i
+                            while j < len(text) and text[j] in ('\n', '\r', ' '): j += 1
+                            if j < len(text) and text[j] == '\\':
+                                j += 1
+                                tag = ''
+                                if j < len(text) and text[j] == '*':
+                                    tag = '*'
+                                else:
+                                    while j < len(text) and text[j].isalpha():
+                                        tag += text[j]
+                                        j += 1
+                                if tag in ('fonttbl', 'colortbl', 'stylesheet', 'info', '*'):
+                                    skip_level = 1
+                    elif c == '}':
+                        i += 1
+                        if skip_level > 0: skip_level -= 1
+                    elif c == '\\':
+                        i += 1
+                        tag = ''
+                        if i < len(text) and not text[i].isalpha():
+                            tag = text[i]
+                            i += 1
+                            if tag == "'":
+                                if i + 2 <= len(text):
+                                    try:
+                                        if skip_level == 0: html += chr(int(text[i:i+2], 16))
+                                    except: pass
+                                    i += 2
+                                continue
+                        else:
+                            while i < len(text) and text[i].isalpha():
+                                tag += text[i]
+                                i += 1
+                            arg = ''
+                            if i < len(text) and text[i] == '-':
+                                arg += '-'
+                                i += 1
+                            while i < len(text) and text[i].isdigit():
+                                arg += text[i]
+                                i += 1
+                            if i < len(text) and text[i] == ' ': i += 1
+                        
+                        if skip_level == 0:
+                            if tag == 'par' or tag == 'line': html += '<br>'
+                            elif tag == 'tab': html += '&nbsp;&nbsp;&nbsp;&nbsp;'
+                            elif tag == 'b':
+                                if arg == '0':
+                                    if bold: html += '</b>'; bold = False
+                                else:
+                                    if not bold: html += '<b>'; bold = True
+                            elif tag == 'i':
+                                if arg == '0':
+                                    if italic: html += '</i>'; italic = False
+                                else:
+                                    if not italic: html += '<i>'; italic = True
+                            elif tag == 'strike':
+                                if arg == '0':
+                                    if strike: html += '</s>'; strike = False
+                                else:
+                                    if not strike: html += '<s>'; strike = True
+                            elif tag == 'ul' or tag == 'ulnone':
+                                if tag == 'ulnone' or arg == '0':
+                                    if underline: html += '</u>'; underline = False
+                                else:
+                                    if not underline: html += '<u>'; underline = True
+                            elif tag == 'fs' and arg:
+                                try:
+                                    size_pt = int(arg) // 2
+                                    if curr_size is not None:
+                                        html += '</span>'
+                                    html += f'<span style="font-size: {size_pt}pt">'
+                                    curr_size = size_pt
+                                except ValueError:
+                                    pass
+                    elif c in ('\r', '\n'):
+                        i += 1
+                    else:
+                        if skip_level == 0:
+                            if c == '<': html += '&lt;'
+                            elif c == '>': html += '&gt;'
+                            else: html += c
+                        i += 1
+                
+                if curr_size is not None: html += '</span>'
+                if bold: html += '</b>'
+                if italic: html += '</i>'
+                if strike: html += '</s>'
+                if underline: html += '</u>'
+                
+                html = re.sub(r'(<br>\s*){3,}', '<br><br>', html).strip()
+                self.desc.setHtml(html)
+            else:
+                if text.startswith('<b>'):
+                    self.desc.setHtml(text)
+                else:
+                    title_text = ""
+                    title_data = target_grp.get_file('Title.txt') or target_grp.get_file('Names.txt')
+                    if title_data:
+                        lines = title_data.decode('latin-1', errors='ignore').splitlines()
+                        for l in lines:
+                            if l.startswith('US:'): title_text = l[3:]; break
+                            elif ':' in l: title_text = l.split(':', 1)[1]
+                            elif l: title_text = l
+                            
+                    if not title_text:
+                        sub_v = data.get('sub')
+                        title_text = (sub_v[-1] if isinstance(sub_v, list) else sub_v) or os.path.basename(data.get('path', ''))
+                        if '.' in title_text: title_text = title_text.rsplit('.', 1)[0]
+                        
+                    safe_text = text.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br>')
+                    html_text = f"<b><span style='font-size: 10pt'>{title_text}</span></b><br><br>{safe_text}"
+                    self.desc.setHtml(html_text)
         else:
-            self.desc.setText("No description available.")
+            self.desc.setPlainText("No description available.")
 
         # Image
         img_data = target_grp.get_file('Title.bmp') or target_grp.get_file('Icon.bmp')
+        needs_crop = False
+        if not img_data:
+            img_data = target_grp.get_file('Graphics.bmp') or target_grp.get_file('Picture.bmp')
+            needs_crop = True
+
         if img_data:
             pix = QPixmap()
             pix.loadFromData(img_data)
-            self.preview.setPixmap(pix.scaled(self.preview.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            
+            # Mask out typical Clonk transparent background colors
+            img = pix.toImage()
+            bg_color = img.pixelColor(0, 0)
+            if bg_color.name() in ("#c0c4fc", "#ff00ff", "#008080", "#ffff00"):
+                mask = pix.createMaskFromColor(bg_color, Qt.MaskInColor)
+                pix.setMask(mask)
+            
+            if needs_crop:
+                defcore_data = target_grp.get_file('DefCore.txt')
+                if defcore_data:
+                    import re
+                    defcore_text = defcore_data.decode('latin-1', errors='ignore')
+                    m_pic = re.search(r'^Picture=\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)', defcore_text, re.MULTILINE)
+                    if m_pic:
+                        px, py, pw, ph = map(int, m_pic.groups())
+                        pix = pix.copy(px, py, pw, ph)
+                    else:
+                        m_w = re.search(r'^Width=\s*(\d+)', defcore_text, re.MULTILINE)
+                        m_h = re.search(r'^Height=\s*(\d+)', defcore_text, re.MULTILINE)
+                        if m_w and m_h:
+                            pw, ph = int(m_w.group(1)), int(m_h.group(1))
+                            pix = pix.copy(0, 0, pw, ph)
+                            
+            if pix.width() > 0 and pix.height() > 0:
+                is_scenario = data.get('type') in ('scenario', 'folder')
+                if is_scenario:
+                    pix = pix.scaled(self.preview.size(), Qt.IgnoreAspectRatio, Qt.FastTransformation)
+                    self.preview.setGraphicsEffect(None)
+                else:
+                    orig_w = pix.width()
+                    offset = QSize(20,20)
+                    pix = pix.scaled(self.preview.size() - offset, Qt.KeepAspectRatio, Qt.FastTransformation)
+                    f = pix.width() / orig_w if orig_w > 0 else 1.0
+                    
+                    from PyQt5.QtWidgets import QGraphicsDropShadowEffect
+                    effect = QGraphicsDropShadowEffect()
+                    effect.setBlurRadius(0)
+                    effect.setColor(QColor(0, 0, 0, 141))
+                    # Shadow offset is half a pixel of the scaled texture
+                    off = 3
+                    effect.setOffset(off, off)
+                    self.preview.setGraphicsEffect(effect)
+            
+            self.preview.setPixmap(pix)
         else:
+            self.preview.setGraphicsEffect(None)
             self.preview.setPixmap(QPixmap())
 
     def load_sound(self, name):
@@ -362,7 +607,9 @@ class ClonkLauncher(QMainWindow):
             if pix.width() < 500:
                 palette = self.bg_label.palette(); palette.setBrush(QPalette.Window, QBrush(pix)); self.bg_label.setPalette(palette); self.bg_label.setAutoFillBackground(True); self.bg_label.setPixmap(QPixmap()) 
             else:
-                self.bg_label.setAutoFillBackground(False); self.bg_label.setPixmap(pix.scaled(self.client_w, self.client_h, Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
+                scaled = pix.scaled(self.client_w, self.client_h, Qt.KeepAspectRatioByExpanding, Qt.FastTransformation)
+                crop_rect = QRect((scaled.width() - self.client_w) // 2, (scaled.height() - self.client_h) // 2, self.client_w, self.client_h)
+                self.bg_label.setAutoFillBackground(False); self.bg_label.setPixmap(scaled.copy(crop_rect))
         else:
             self.bg_label.setAutoFillBackground(False); self.bg_label.setStyleSheet("background-color: #c0c0c0;")
 
@@ -382,7 +629,7 @@ class ClonkLauncher(QMainWindow):
         self.tree.selectionModel().selectionChanged.connect(self.on_tree_selection)
         
         # Preview Area
-        self.preview_frame = ClonkArea(self.ui_container, 261, 10, 212, 151, bg_color="black")
+        self.preview_frame = ClonkArea(self.ui_container, 261, 10, 212, 151, bg_color=None)
         self.preview = QLabel(self.preview_frame); self.preview.setGeometry(2, 2, 208, 147); self.preview.setAlignment(Qt.AlignCenter)
 
         # Description Area
@@ -404,7 +651,7 @@ class ClonkLauncher(QMainWindow):
         self.radio_player = QRadioButton("Player", self.ui_container); self.radio_player.setGeometry(482, 180, 90, 15);  #self.radio_player.toggled.connect(lambda c: self.set_background('Planet_fixed.bin_2_1010_1031.bmp', True) if c else None)
         self.radio_dev = QRadioButton("Developer", self.ui_container); self.radio_dev.setGeometry(482, 195, 90, 15);  self.radio_dev.setChecked(True) #self.radio_dev.toggled.connect(lambda c: self.set_background('Planet_fixed.bin_2_1019_1031.bmp', True) if c else None);
         self.view_group = QButtonGroup(self); self.view_group.addButton(self.radio_player); self.view_group.addButton(self.radio_dev)
-        self.author_label = QLabel("Author: RedWolf Design", self.ui_container); self.author_label.setGeometry(261, 341, 212, 15); self.author_label.setStyleSheet("background: transparent;")
+        self.author_label = QLabel("Author: RedWolf Design", self.ui_container); self.author_label.setGeometry(253, 351, 226, 15); self.author_label.setStyleSheet("background: transparent;")
 
         # Status Bar / Animation
         self.status_frame = ClonkArea(self.ui_container, 47, 364, 521, 24)
@@ -1423,6 +1670,9 @@ class CreditsDialog(QDialog):
         self.layout.addWidget(self.label); self.label.mousePressEvent = lambda e: self.accept()
 
 if __name__ == "__main__":
+    import signal
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    
     app = QApplication(sys.argv)
     
     # Turn on the classic Win9x rendering engine globally!

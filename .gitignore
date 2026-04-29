@@ -4,3 +4,4 @@ build
 compile_commands.json
 clonk_output.txt
 original_source
+launcher/__pycache__
