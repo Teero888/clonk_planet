@@ -16,6 +16,8 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QPushButton,
 from PyQt5.QtGui import QPixmap, QPalette, QBrush, QStandardItemModel, QStandardItem, QIcon, QPainter, QColor, QFont, QKeySequence, QImage
 from PyQt5.QtCore import Qt, QRect, QSize, QTimer, QUrl, QPoint, pyqtSignal
 from PyQt5.QtMultimedia import QSoundEffect
+from clonk_ui import ClonkButton, ClonkArea, ClonkTexturedWidget
+from clonk_popup import ClonkPopupDialog
 
 class PixelDelegate(QStyledItemDelegate):
     def __init__(self, parent=None, check_on=None, check_off=None):
@@ -166,103 +168,29 @@ class HostDialog(QDialog):
         
     def get_address(self):
         return self.input.text()
-    
+
 class KeyBindInput(QLineEdit):
-    def __init__(self, action_name, default_key="", parent=None):
-        super().__init__(default_key, parent)
-        self.action_name = action_name # Store the name so we know what this binds to
+    def __init__(self, action_name, key_code=0, parent=None):
+        # Convert numeric key code to string
+        key_str = QKeySequence(key_code).toString() if key_code else ""
+        super().__init__(key_str, parent)
+        self.action_name = action_name 
+        self.key_code = key_code
         
-        # Make it look like a text box, but behave like a button
         self.setReadOnly(True) 
         self.setFixedSize(65, 20)
         self.setCursor(Qt.ArrowCursor)
 
     def keyPressEvent(self, event):
-        # Ignore if the user just presses a modifier key by itself (Shift, Ctrl, etc.)
         if event.key() in (Qt.Key_Shift, Qt.Key_Control, Qt.Key_Alt, Qt.Key_Meta):
             return
             
-        # Convert the keycode into a readable string (e.g., "Space", "Return", "A")
-        key_str = QKeySequence(event.key()).toString()
+        self.key_code = event.key()
+        key_str = QKeySequence(self.key_code).toString()
         self.setText(key_str)
-
-class ClonkButton(QPushButton):
-    def __init__(self, text, parent=None, bg_path=None, bg_offset=(0, 0)):
-        super().__init__(text, parent)
-        self.bg_pix = QPixmap(bg_path) if bg_path and os.path.exists(bg_path) else None
-        self.bg_offset = bg_offset
-        self.setFixedSize(86, 20)
-
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        rect = self.rect()
-        w = rect.width()
-        h = rect.height()
-
-        if self.bg_pix:
-            painter.drawTiledPixmap(rect, self.bg_pix, QPoint(self.bg_offset[0], self.bg_offset[1]))
-        else:
-            painter.fillRect(rect, QColor("#c0c0c0"))
-
-        font = self.font()
-        painter.setFont(font)
-        font.setBold(False)
-        painter.setFont(font)
-
-        t_rect = rect.adjusted(1, 1, 1, 1) if self.isDown() else rect
-
-        if self.isDown():
-            # Pressed state
-            painter.setPen(QColor("#6a6a6a"))
-            painter.drawLine(0, 0, w-1, 0)
-            painter.drawLine(0, 0, 0, h-1)
-            painter.setPen(QColor("#a6a6a6"))
-            painter.drawLine(1, 1, w-2, 1)
-            painter.drawLine(1, 1, 1, h-2)
-            painter.setPen(QColor("#ffffff"))
-            painter.drawLine(0, h-1, w-1, h-1)
-            painter.drawLine(w-1, 0, w-1, h-1)
-        else:
-            # Normal state (Raised)
-            painter.setPen(QColor("#e3e3e3")); painter.drawLine(0, 0, w-1, 0); painter.drawLine(0, 0, 0, h-1)
-            painter.setPen(QColor("#ffffff")); painter.drawLine(1, 1, w-2, 1); painter.drawLine(1, 1, 1, h-2)
-            painter.setPen(QColor("#a6a6a6")); painter.drawLine(1, h-2, w-2, h-2); painter.drawLine(w-2, 1, w-2, h-2)
-            painter.setPen(QColor("#6a6a6a")); painter.drawLine(0, h-1, w-1, h-1); painter.drawLine(w-1, 0, w-1, h-1)
-
-        painter.setPen(Qt.white); painter.drawText(t_rect.adjusted(1, 1, 1, 1), Qt.AlignCenter, self.text())
-        painter.setPen(Qt.black); painter.drawText(t_rect, Qt.AlignCenter, self.text())
-
-class ClonkArea(QFrame):
-    def __init__(self, parent, x, y, w, h, bg_color=None):
-        super().__init__(parent)
-        self.setGeometry(x, y, w, h)
-        self.bg_color = bg_color
-
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        w, h = self.width(), self.height()
-        
-        # Fill background inside border
-        if self.bg_color:
-            painter.fillRect(2, 2, w-4, h-4, QColor(self.bg_color))
-        
-        # Sunken Border
-        # Top-Left Outer: a6a6a6
-        painter.setPen(QColor("#a6a6a6"))
-        painter.drawLine(0, 0, w-1, 0)
-        painter.drawLine(0, 0, 0, h-1)
-        # Top-Left Inner: 6a6a6a
-        painter.setPen(QColor("#6a6a6a"))
-        painter.drawLine(1, 1, w-2, 1)
-        painter.drawLine(1, 1, 1, h-2)
-        # Bottom-Right Inner: e3e3e3
-        painter.setPen(QColor("#e3e3e3"))
-        painter.drawLine(1, h-2, w-2, h-2)
-        painter.drawLine(w-2, 1, w-2, h-2)
-        # Bottom-Right Outer: ffffff
-        painter.setPen(QColor("#ffffff"))
-        painter.drawLine(0, h-1, w-1, h-1)
-        painter.drawLine(w-1, 0, w-1, h-1)
+        # Update the parent dialog's cache
+        if hasattr(self.parent(), 'on_key_changed'):
+            self.parent().on_key_changed(self.action_name, self.key_code)
 
 def unscramble(data_raw):
     data = bytearray(data_raw)
@@ -373,30 +301,41 @@ class ClonkLauncher(QMainWindow):
         self.refresh_resources()
 
     def load_config(self):
+        self.config_data = {}
         if os.path.exists(self.config_path):
             try:
                 with open(self.config_path, 'r', encoding='latin-1') as f:
-                    content = f.read()
-                    m = re.search(r'Language=(DE|US)', content)
-                    if m: self.language = m.group(1)
-            except: pass
+                    current_section = None
+                    for line in f:
+                        line = line.strip()
+                        if not line or line.startswith(';'): continue
+                        if line.startswith('[') and line.endswith(']'):
+                            current_section = line[1:-1]
+                            continue
+                        if '=' in line:
+                            key, val = line.split('=', 1)
+                            self.config_data[key.strip()] = val.strip()
+            except Exception as e:
+                print(f"Error loading config: {e}")
+        
+        # Helper to get config values with defaults
+        def get_cfg(sub_key, default):
+            return self.config_data.get(f"RedWolf Design\\Clonk 4\\{sub_key}", default)
+
+        self.language = get_cfg("General\\Language", "US")
 
     def save_config(self):
-        content = ""
-        if os.path.exists(self.config_path):
-            with open(self.config_path, 'r', encoding='latin-1') as f:
-                content = f.read()
+        # Update specific keys that might have changed outside the options dialog
+        self.config_data["RedWolf Design\\Clonk 4\\General\\Language"] = self.language
         
-        if "Language=" in content:
-            content = re.sub(r'Language=(DE|US)', f'Language={self.language}', content)
-        else:
-            # Simplistic append
-            if "[General]" not in content:
-                content += "\n[General]\n"
-            content = content.replace("[General]", f"[General]\nLanguage={self.language}")
-            
-        with open(self.config_path, 'w', encoding='latin-1') as f:
-            f.write(content)
+        try:
+            # We want to preserve other sections if they exist, but mostly we care about [Software]
+            with open(self.config_path, 'w', encoding='latin-1') as f:
+                f.write("[Software]\n")
+                for key in sorted(self.config_data.keys()):
+                    f.write(f"{key}={self.config_data[key]}\n")
+        except Exception as e:
+            print(f"Error saving config: {e}")
 
     def get_atlas_icon(self, index):
         if self.icons_atlas.isNull(): return QIcon()
@@ -916,7 +855,7 @@ class ClonkLauncher(QMainWindow):
 
         # Buttons
         btn_bg_raw = os.path.join(self.dump_path, 'Planet_fixed.bin_2_1006_1031.bmp')
-        global_offset = (0, 0)
+        global_offset = (117, 14)
         def create_btn(text, x, y):
             btn = ClonkButton(text, self.ui_container, btn_bg_raw, global_offset); btn.move(x, y); btn.clicked.connect(lambda: self.play_sound(self.sound_click))
             return btn
@@ -962,11 +901,13 @@ class ClonkLauncher(QMainWindow):
         args = [clonk_bin]
         
         # 1. Add selected scenario
+        scenario_selected = False
         indexes = self.tree.selectedIndexes()
         if indexes:
             item = self.tree_model.itemFromIndex(indexes[0])
             data = item.data()
             if data and data.get('type') == 'scenario':
+                scenario_selected = True
                 path = data.get('path')
                 sub = data.get('sub')
                 if sub:
@@ -978,6 +919,11 @@ class ClonkLauncher(QMainWindow):
                         args.append(os.path.join(rel_group, sub))
                 else:
                     args.append(os.path.relpath(path, self.planet_data_path))
+
+        if not scenario_selected:
+            msg = "To start a round you need to select a scenario first. To do this, open a scenario folder (book) by double clicking on it and select the desired scenario. Then click 'start'."
+            ClonkPopupDialog(self, text=msg).exec_()
+            return
 
         # 2. Add checked players and definition packages
         def collect_checked(parent_item):
@@ -1380,9 +1326,10 @@ class OptionsDialog(QDialog):
         self.setWindowTitle("Properties")
         self.setFixedSize(380, 411)
         
+        self.launcher = parent
         self.icon_path = parent.res_path if parent else ""
 
-# Accurate Win9x styling
+        # Accurate Win9x styling
         self.setStyleSheet("""
             /* The DOT before QWidget is crucial! It stops the background color 
                from infecting the QComboBox and QSpinBox subclasses */
@@ -1412,6 +1359,17 @@ class OptionsDialog(QDialog):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(6, 7, 6, 6)
         layout.setSpacing(0)
+
+        # Helper to get config values
+        def get_cfg(sub_key, default):
+            return self.launcher.config_data.get(f"RedWolf Design\\Clonk 4\\{sub_key}", str(default))
+
+        # Keyboard Setup
+        self.key_codes = {}
+        for b in range(1, 5):
+            for i in range(1, 13):
+                key_name = f"Kbd{b}Key{i}"
+                self.key_codes[key_name] = int(get_cfg(f"Controls\\{key_name}", 0))
 
         # NEW TAB SETUP WITH TEXTURE ATLAS
         self.tab_widget = Win3DTabWidget(self)
@@ -1487,14 +1445,105 @@ class OptionsDialog(QDialog):
         
         layout.addLayout(btn_layout)
 
+    def on_key_changed(self, action_name, code):
+        key_id = f"Kbd{self.current_block}{action_name}"
+        self.key_codes[key_id] = code
+
+    def load_key_profile(self, block_num):
+        self.current_block = block_num
+        is_hardcoded = (block_num == 4)
+        
+        hardcoded_map = {
+            "Key1": Qt.Key_Insert, "Key2": Qt.Key_Home,   "Key3": Qt.Key_PageUp,
+            "Key4": Qt.Key_Delete, "Key5": Qt.Key_Up,     "Key6": Qt.Key_PageDown,
+            "Key7": Qt.Key_Left,   "Key8": Qt.Key_Down,   "Key9": Qt.Key_Right,
+            "Key10": Qt.Key_End,   "Key11": Qt.Key_Return, "Key12": Qt.Key_Backspace
+        }
+
+        for key_id, inp in self.key_inputs.items():
+            if is_hardcoded:
+                code = hardcoded_map.get(key_id, 0)
+            else:
+                code = self.key_codes.get(f"Kbd{block_num}{key_id}", 0)
+            
+            inp.setEnabled(not is_hardcoded)
+            inp.key_code = code
+            inp.setText(QKeySequence(code).toString() if code else "")
+        
+        if hasattr(self, 'btn_reset'):
+            self.btn_reset.setEnabled(not is_hardcoded)
+
+    def prompt_reset_controls(self):
+        reply = QMessageBox.warning(
+            self, 
+            "Clonk Planet", 
+            "Reset all controls?", 
+            QMessageBox.Ok | QMessageBox.Cancel
+        )
+
+        if reply == QMessageBox.Ok:
+            # Revert the current block back to default state (logic can be expanded here)
+            print("Resetting controls!")
+
     def accept(self):
-        new_lang = "DE" if self.radio_german.isChecked() else "US"
-        if new_lang != self.parent().language:
-            self.parent().language = new_lang
-            self.parent().save_config()
+        def set_cfg(sub_key, val):
+            self.launcher.config_data[f"RedWolf Design\\Clonk 4\\{sub_key}"] = str(val)
+
+        # Program page
+        self.launcher.language = "DE" if self.radio_german.isChecked() else "US"
+        set_cfg("General\\Language", self.launcher.language)
+        set_cfg("General\\FEFontName", self.combo_font.currentText())
+        set_cfg("General\\FEFontSize", self.spin_menus.value())
+        set_cfg("General\\RXFontName", self.combo_font.currentText())
+        set_cfg("General\\RXFontSize", self.spin_game.value())
+        set_cfg("Explorer\\ShowQuickStart", 1 if self.check_quick.isChecked() else 0)
+        set_cfg("Developer\\Active", 1 if self.check_dev.isChecked() else 0)
+
+        # Graphics page
+        res = 0
+        if self.radio_800.isChecked(): res = 1
+        elif self.radio_1024.isChecked(): res = 2
+        set_cfg("Graphics\\Resolution", res)
+        set_cfg("Graphics\\SmokeLevel", self.slider_smoke.value() * 2)
+        set_cfg("Graphics\\SplitscreenDividers", 1 if self.chk_viewport.isChecked() else 0)
+        set_cfg("Graphics\\ShowPlayerInfoAlways", 1 if self.chk_ext_info.isChecked() else 0)
+        set_cfg("Graphics\\ColorAnimation", 1 if self.chk_color_anim.isChecked() else 0)
+        set_cfg("Graphics\\ShowStartupMessages", 1 if self.chk_startup.isChecked() else 0)
+        set_cfg("Graphics\\ShowCommands", 1 if self.chk_obj_cmds.isChecked() else 0)
+        set_cfg("Graphics\\ShowPortraits", 1 if self.chk_portraits.isChecked() else 0)
+        set_cfg("Graphics\\DDrawAccel", 1 if self.chk_ddraw.isChecked() else 0)
+
+        # Sound page
+        set_cfg("Sound\\RXSound", 1 if self.chk_game_sfx.isChecked() else 0)
+        set_cfg("Sound\\RXSoundLoops", 1 if self.chk_game_loops.isChecked() else 0)
+        set_cfg("Sound\\RXMusic", 1 if self.chk_game_music.isChecked() else 0)
+        set_cfg("Sound\\FESamples", 1 if self.chk_front_sfx.isChecked() else 0)
+        set_cfg("Sound\\FEMusic", 1 if self.chk_front_music.isChecked() else 0)
+
+        # Keyboard page
+        for b in range(1, 4): # Only save blocks 1-3
+            for i in range(1, 13):
+                key = f"Kbd{b}Key{i}"
+                if key in self.key_codes:
+                    set_cfg(f"Controls\\{key}", self.key_codes[key])
+
+        # Network page
+        set_cfg("Network\\Active", 1 if self.chk_net_active.isChecked() else 0)
+        set_cfg("Network\\LocalName", self.inp_hostname.text())
+        set_cfg("Network\\MasterServerAddress", self.inp_master.text())
+        
+        hosts = []
+        for i in range(self.list_hosts.count()):
+            hosts.append(self.list_hosts.item(i).text())
+        set_cfg("Network\\Hosts", ";".join(hosts))
+
+        self.launcher.save_config()
         super().accept()
 
     def create_program_page(self):
+        def get_cfg(sub_key, default):
+            return self.launcher.config_data.get(f"RedWolf Design\\Clonk 4\\{sub_key}", str(default))
+
         page = QWidget()
         layout = QVBoxLayout(page)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -1508,7 +1557,7 @@ class OptionsDialog(QDialog):
         self.radio_german = QRadioButton("German")
         self.radio_english = QRadioButton("English")
         
-        if self.parent().language == "DE":
+        if self.launcher.language == "DE":
             self.radio_german.setChecked(True)
         else:
             self.radio_english.setChecked(True)
@@ -1524,7 +1573,8 @@ class OptionsDialog(QDialog):
         font_layout.setSpacing(8)
         
         self.combo_font = QComboBox()
-        self.combo_font.addItem("Comic Sans MS")
+        font_name = get_cfg("General\\FEFontName", "Comic Sans MS")
+        self.combo_font.addItem(font_name)
         self.combo_font.setFixedWidth(220) 
         font_layout.addWidget(self.combo_font)
         
@@ -1536,7 +1586,7 @@ class OptionsDialog(QDialog):
         menus_layout.setSpacing(2)
         menus_layout.addWidget(QLabel("Menus"))
         self.spin_menus = QSpinBox()
-        self.spin_menus.setValue(9)
+        self.spin_menus.setValue(int(get_cfg("General\\FEFontSize", 9)))
         self.spin_menus.setFixedWidth(45) 
         menus_layout.addWidget(self.spin_menus)
         
@@ -1544,7 +1594,7 @@ class OptionsDialog(QDialog):
         game_layout.setSpacing(2)
         game_layout.addWidget(QLabel("Game"))
         self.spin_game = QSpinBox()
-        self.spin_game.setValue(10)
+        self.spin_game.setValue(int(get_cfg("General\\RXFontSize", 10)))
         self.spin_game.setFixedWidth(45) 
         game_layout.addWidget(self.spin_game)
         
@@ -1560,7 +1610,7 @@ class OptionsDialog(QDialog):
         front_layout = QVBoxLayout(front_group)
         front_layout.setContentsMargins(8, 16, 8, 8)
         self.check_quick = QCheckBox("Display quick start screen")
-        self.check_quick.setChecked(True)
+        self.check_quick.setChecked(get_cfg("Explorer\\ShowQuickStart", "1") == "1")
         front_layout.addWidget(self.check_quick)
         layout.addWidget(front_group)
 
@@ -1569,6 +1619,7 @@ class OptionsDialog(QDialog):
         mode_layout = QVBoxLayout(mode_group)
         mode_layout.setContentsMargins(8, 16, 8, 8)
         self.check_dev = QCheckBox("Enable developer mode")
+        self.check_dev.setChecked(get_cfg("Developer\\Active", "0") == "1")
         mode_layout.addWidget(self.check_dev)
         layout.addWidget(mode_group)
 
@@ -1576,6 +1627,9 @@ class OptionsDialog(QDialog):
         return page
     
     def create_graphics_page(self):
+        def get_cfg(sub_key, default):
+            return self.launcher.config_data.get(f"RedWolf Design\\Clonk 4\\{sub_key}", str(default))
+
         page = QWidget()
         layout = QVBoxLayout(page)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -1594,7 +1648,11 @@ class OptionsDialog(QDialog):
         self.radio_640 = QRadioButton("640x480")
         self.radio_800 = QRadioButton("800x600")
         self.radio_1024 = QRadioButton("1024x768")
-        self.radio_1024.setChecked(True) # Set default
+        
+        res_val = int(get_cfg("Graphics\\Resolution", "1"))
+        if res_val == 0: self.radio_640.setChecked(True)
+        elif res_val == 1: self.radio_800.setChecked(True)
+        else: self.radio_1024.setChecked(True)
         
         res_layout.addWidget(self.radio_640)
         res_layout.addWidget(self.radio_800)
@@ -1609,7 +1667,7 @@ class OptionsDialog(QDialog):
         
         self.slider_smoke = QSlider(Qt.Horizontal)
         self.slider_smoke.setRange(0, 100)
-        self.slider_smoke.setValue(75) # Match the screenshot position
+        self.slider_smoke.setValue(int(get_cfg("Graphics\\SmokeLevel", "200")) // 2)
         smoke_layout.addWidget(self.slider_smoke)
         
         labels_layout = QHBoxLayout()
@@ -1632,12 +1690,18 @@ class OptionsDialog(QDialog):
         disp_layout.setContentsMargins(8, 16, 8, 8)
         disp_layout.setSpacing(2)
         
-        self.chk_viewport = QCheckBox("Viewport delimiters"); self.chk_viewport.setChecked(True)
-        self.chk_ext_info = QCheckBox("Extended player info"); self.chk_ext_info.setChecked(True)
-        self.chk_color_anim = QCheckBox("Color animation"); self.chk_color_anim.setChecked(True)
-        self.chk_startup = QCheckBox("Startup messages"); self.chk_startup.setChecked(True)
-        self.chk_obj_cmds = QCheckBox("Object commands"); self.chk_obj_cmds.setChecked(True)
+        self.chk_viewport = QCheckBox("Viewport delimiters")
+        self.chk_viewport.setChecked(get_cfg("Graphics\\SplitscreenDividers", "1") == "1")
+        self.chk_ext_info = QCheckBox("Extended player info")
+        self.chk_ext_info.setChecked(get_cfg("Graphics\\ShowPlayerInfoAlways", "1") == "1")
+        self.chk_color_anim = QCheckBox("Color animation")
+        self.chk_color_anim.setChecked(get_cfg("Graphics\\ColorAnimation", "1") == "1")
+        self.chk_startup = QCheckBox("Startup messages")
+        self.chk_startup.setChecked(get_cfg("Graphics\\ShowStartupMessages", "1") == "1")
+        self.chk_obj_cmds = QCheckBox("Object commands")
+        self.chk_obj_cmds.setChecked(get_cfg("Graphics\\ShowCommands", "1") == "1")
         self.chk_portraits = QCheckBox("Portraits")
+        self.chk_portraits.setChecked(get_cfg("Graphics\\ShowPortraits", "0") == "1")
         
         disp_layout.addWidget(self.chk_viewport)
         disp_layout.addWidget(self.chk_ext_info)
@@ -1654,6 +1718,7 @@ class OptionsDialog(QDialog):
         trouble_layout.setContentsMargins(8, 16, 8, 8)
         
         self.chk_ddraw = QCheckBox("DirectDraw software emulation")
+        self.chk_ddraw.setChecked(get_cfg("Graphics\\DDrawAccel", "0") == "1")
         trouble_layout.addWidget(self.chk_ddraw)
         
         layout.addWidget(trouble_group)
@@ -1663,6 +1728,9 @@ class OptionsDialog(QDialog):
         return page
     
     def create_sound_page(self):
+        def get_cfg(sub_key, default):
+            return self.launcher.config_data.get(f"RedWolf Design\\Clonk 4\\{sub_key}", str(default))
+
         page = QWidget()
         layout = QVBoxLayout(page)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -1675,11 +1743,11 @@ class OptionsDialog(QDialog):
         game_layout.setSpacing(4)
         
         self.chk_game_sfx = QCheckBox("Sound effects")
-        self.chk_game_sfx.setChecked(True)
+        self.chk_game_sfx.setChecked(get_cfg("Sound\\RXSound", "1") == "1")
         self.chk_game_loops = QCheckBox("Sound loops")
-        self.chk_game_loops.setChecked(True)
+        self.chk_game_loops.setChecked(get_cfg("Sound\\RXSoundLoops", "1") == "1")
         self.chk_game_music = QCheckBox("Music")
-        self.chk_game_music.setChecked(True)
+        self.chk_game_music.setChecked(get_cfg("Sound\\RXMusic", "1") == "1")
         
         game_layout.addWidget(self.chk_game_sfx)
         game_layout.addWidget(self.chk_game_loops)
@@ -1694,9 +1762,9 @@ class OptionsDialog(QDialog):
         front_layout.setSpacing(4)
         
         self.chk_front_sfx = QCheckBox("Sound effects")
-        self.chk_front_sfx.setChecked(True)
+        self.chk_front_sfx.setChecked(get_cfg("Sound\\FESamples", "1") == "1")
         self.chk_front_music = QCheckBox("Music")
-        self.chk_front_music.setChecked(True)
+        self.chk_front_music.setChecked(get_cfg("Sound\\FEMusic", "1") == "1")
         
         front_layout.addWidget(self.chk_front_sfx)
         front_layout.addWidget(self.chk_front_music)
@@ -1729,15 +1797,8 @@ class OptionsDialog(QDialog):
         layout.setContentsMargins(8, 14, 8, 8) 
         layout.setSpacing(12)
 
-        # Keybind Profiles Data # fill them up later with defaults
-        self.key_profiles = {
-            1: {"Select left": "Q", "Select toggle": "W", "Select right": "E", "Throw": "A", "Up / jump": "S", "Dig": "D", "Left": "Y", "Down / stop": "X", "Right": "C", "Player menu": "<", "Special 1": "V", "Special 2": "F"},
-            2: {"Select left": "", "Select toggle": "", "Select right": "", "Throw": "", "Up / jump": "", "Dig": "", "Left": "", "Down / stop": "", "Right": "", "Player menu": "", "Special 1": "", "Special 2": ""},
-            3: {"Select left": "", "Select toggle": "", "Select right": "", "Throw": "", "Up / jump": "", "Dig": "", "Left": "", "Down / stop": "", "Right": "", "Player menu": "", "Special 1": "", "Special 2": ""},
-            4: {"Select left": "", "Select toggle": "", "Select right": "", "Throw": "", "Up / jump": "", "Dig": "", "Left": "", "Down / stop": "", "Right": "", "Player menu": "", "Special 1": "", "Special 2": ""}
-        }
         self.current_block = 1
-        self.key_inputs = {} # We will store our KeyBindInput widgets here
+        self.key_inputs = {} # ActionName -> Widget
 
         # Top Row (Block Selection)
         top_row = QHBoxLayout()
@@ -1789,19 +1850,20 @@ class OptionsDialog(QDialog):
         grid.setHorizontalSpacing(15)
         grid.setVerticalSpacing(6)
 
+        # Map display labels to "KeyN" IDs
         keybinds_info = [
-            ("Select left", 0, 0, 0), ("Select toggle", 1, 0, 1), ("Select right", 2, 0, 2),
-            ("Throw", 3, 1, 0),       ("Up / jump", 4, 1, 1),     ("Dig", 5, 1, 2),
-            ("Left", 6, 2, 0),        ("Down / stop", 7, 2, 1),   ("Right", 8, 2, 2),
-            ("Player menu", 9, 3, 0), ("Special 1", 10, 3, 1),    ("Special 2", 11, 3, 2),
+            ("Select left",   "Key1",  0, 0), ("Select toggle", "Key2",  0, 1), ("Select right", "Key3",  0, 2),
+            ("Throw",         "Key4",  1, 0), ("Up / jump",     "Key5",  1, 1), ("Dig",           "Key6",  1, 2),
+            ("Left",          "Key7",  2, 0), ("Down / stop",   "Key8",  2, 1), ("Right",         "Key9",  2, 2),
+            ("Player menu",   "Key10", 3, 0), ("Special 1",    "Key11", 3, 1), ("Special 2",    "Key12", 3, 2),
         ]
 
-        for label_text, atlas_idx, row, col in keybinds_info:
+        for label_text, key_id, row, col in keybinds_info:
             item_layout = QHBoxLayout()
             item_layout.setSpacing(6)
             
             icon_label = QLabel()
-            icon_label.setPixmap(get_kb_icon(atlas_idx))
+            icon_label.setPixmap(get_kb_icon(int(key_id[3:])-1))
             item_layout.addWidget(icon_label)
             
             text_layout = QVBoxLayout()
@@ -1809,9 +1871,10 @@ class OptionsDialog(QDialog):
             
             lbl = QLabel(label_text)
             
-            # Using our new Key Catcher!
-            inp = KeyBindInput(label_text, self.key_profiles[1][label_text])
-            self.key_inputs[label_text] = inp
+            # Load initial code for block 1
+            code = self.key_codes.get(f"Kbd1{key_id}", 0)
+            inp = KeyBindInput(key_id, code, self)
+            self.key_inputs[key_id] = inp
             
             text_layout.addWidget(lbl)
             text_layout.addWidget(inp)
@@ -1827,7 +1890,7 @@ class OptionsDialog(QDialog):
         reset_layout = QHBoxLayout()
         self.btn_reset = Win3DButton("Reset all")
         self.btn_reset.setFixedSize(100, 23)
-        self.btn_reset.clicked.connect(self.prompt_reset_controls) # Connect to the warning dialog!
+        self.btn_reset.clicked.connect(self.prompt_reset_controls)
         
         reset_layout.addStretch()
         reset_layout.addWidget(self.btn_reset)
@@ -1836,34 +1899,11 @@ class OptionsDialog(QDialog):
         layout.addLayout(reset_layout)
 
         return page
-    
-    def load_key_profile(self, block_num):
-        # First, save whatever the user typed into the current block
-        for action, inp_widget in self.key_inputs.items():
-            self.key_profiles[self.current_block][action] = inp_widget.text()
-            
-        # Change the active block
-        self.current_block = block_num
-        
-        # Load the new block's keys into the UI
-        for action, inp_widget in self.key_inputs.items():
-            inp_widget.setText(self.key_profiles[block_num][action])
 
-    def prompt_reset_controls(self):
-        # Because we globally set the app style to "Windows", this will automatically 
-        # spawn with the classic 90s warning icon and retro buttons!
-        reply = QMessageBox.warning(
-            self, 
-            "Clonk Planet", # Title of the window
-            "Reset all controls?", 
-            QMessageBox.Ok | QMessageBox.Cancel
-        )
-        
-        if reply == QMessageBox.Ok:
-            # Revert the current block back to default state (implement your actual default reset logic here)
-            print("Resetting controls!")
-    
     def create_network_page(self):
+        def get_cfg(sub_key, default):
+            return self.launcher.config_data.get(f"RedWolf Design\\Clonk 4\\{sub_key}", str(default))
+
         page = QWidget()
         layout = QVBoxLayout(page)
         layout.setContentsMargins(8, 14, 8, 8)
@@ -1872,7 +1912,7 @@ class OptionsDialog(QDialog):
         # Top Row (Active & IP Config)
         top_row = QHBoxLayout()
         self.chk_net_active = QCheckBox("Active")
-        self.chk_net_active.setChecked(False)
+        self.chk_net_active.setChecked(get_cfg("Network\\Active", "0") == "1")
         top_row.addWidget(self.chk_net_active)
         
         top_row.addStretch()
@@ -1892,7 +1932,7 @@ class OptionsDialog(QDialog):
         sys_hostname = socket.gethostname()
         
         local_layout.addWidget(QLabel("Name"))
-        self.inp_hostname = QLineEdit(sys_hostname.upper())
+        self.inp_hostname = QLineEdit(get_cfg("Network\\LocalName", sys_hostname.upper()))
         local_layout.addWidget(self.inp_hostname)
         local_layout.addWidget(QLabel(f"Address: {sys_hostname.lower()}"))
         
@@ -1904,6 +1944,10 @@ class OptionsDialog(QDialog):
         hosts_layout.setContentsMargins(8, 16, 8, 8)
         
         self.list_hosts = QListWidget()
+        hosts_str = get_cfg("Network\\Hosts", "")
+        if hosts_str:
+            for host in hosts_str.split(";"):
+                if host: self.list_hosts.addItem(host)
         hosts_layout.addWidget(self.list_hosts)
         
         hosts_btn_layout = QVBoxLayout()
@@ -1934,7 +1978,7 @@ class OptionsDialog(QDialog):
         master_layout = QVBoxLayout(master_group)
         master_layout.setContentsMargins(8, 16, 8, 8)
         
-        self.inp_master = QLineEdit("www.clonk.de")
+        self.inp_master = QLineEdit(get_cfg("Network\\MasterServerAddress", "www.clonk.de"))
         master_layout.addWidget(self.inp_master)
         
         layout.addWidget(master_group)
