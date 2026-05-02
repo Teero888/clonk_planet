@@ -123,4 +123,4 @@ def extract_resources(pe_path, output_dir):
     parse_dir(res_raw_ptr)
 
 if __name__ == "__main__":
-    extract_resources('dumps/Planet_fixed.bin', 'launcher/res_dump')
+    extract_resources('dumps/Planet_dump_large.bin', 'launcher/res_dump')

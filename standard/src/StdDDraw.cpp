@@ -92,12 +92,11 @@ static void GetOrthoMatrix(float *mat, float left, float right, float bottom, fl
 
 static void SyncSurfaceGPU(CGLSurface *surf) {
   if (surf->dirty_cpu && surf->tex && std::this_thread::get_id() == g_mainThreadId) {
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTextureSubImage2D(surf->tex, 0, 0, 0, surf->w, surf->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, surf->bits);
     surf->dirty_cpu = false;
   }
 }
-
-static inline void SyncSurfaceCPU(CGLSurface *surf) {}
 
 CStdDDraw::CStdDDraw() {
   lpPrimary = NULL;
@@ -452,9 +451,9 @@ void CStdDDraw::DestroySurface(SURFACE sfcSurface) {
 }
 
 SURFACE CStdDDraw::CreateSurface(int iWdt, int iHgt) {
-  if (iWdt <= 0 || iWdt > 4096)
+  if (iWdt <= 0)
     iWdt = 1;
-  if (iHgt <= 0 || iHgt > 4096)
+  if (iHgt <= 0)
     iHgt = 1;
   CGLSurface *s = new CGLSurface();
   s->w = iWdt;
@@ -487,7 +486,7 @@ void CStdDDraw::SurfaceShiftColor(SURFACE sfcSfc, int iShift) {
   if (!sfcSfc)
     return;
   CGLSurface *s = (CGLSurface *)sfcSfc;
-  SyncSurfaceCPU(s);
+  
   for (int i = 0; i < s->pitch * s->h; i++) {
     if (s->bits[i])
       s->bits[i] = (BYTE)BoundBy((int)s->bits[i] + iShift, 0, 255);
@@ -535,8 +534,8 @@ BOOL CStdDDraw::Blit(SURFACE sfcSource, int fx, int fy, int fwdt, int fhgt, SURF
   CGLSurface *src = (CGLSurface *)sfcSource;
   CGLSurface *dst = (CGLSurface *)sfcTarget;
 
-  SyncSurfaceCPU(src);
-  SyncSurfaceCPU(dst);
+  
+  
 
   int clipX1 = std::max(0, ClipX1);
   int clipX2 = std::min(dst->w - 1, ClipX2);
@@ -578,8 +577,8 @@ BOOL CStdDDraw::BlitRotate(SURFACE sfcSource, int fx, int fy, int fwdt, int fhgt
   CGLSurface *src = (CGLSurface *)sfcSource;
   CGLSurface *dst = (CGLSurface *)sfcTarget;
 
-  SyncSurfaceCPU(src);
-  SyncSurfaceCPU(dst);
+  
+  
 
   double angle = (double)iAngle * 3.14159265 / 180.0;
   double ca = cos(-angle);
@@ -675,7 +674,7 @@ BYTE CStdDDraw::GetPixel(SURFACE sfcSource, int fx, int fy) {
   if (!sfcSource)
     return 0;
   CGLSurface *src = (CGLSurface *)sfcSource;
-  SyncSurfaceCPU(src);
+  
   if (fx >= 0 && fx < src->w && fy >= 0 && fy < src->h) {
     return src->bits[fy * src->pitch + fx];
   }
@@ -686,7 +685,7 @@ void CStdDDraw::DrawBox(SURFACE sfcDest, int x1, int y1, int x2, int y2, BYTE co
   if (!sfcDest)
     return;
   CGLSurface *dst = (CGLSurface *)sfcDest;
-  SyncSurfaceCPU(dst);
+  
   
   if (x1 < std::max(0, ClipX1)) x1 = std::max(0, ClipX1);
   if (x2 > std::min(dst->w - 1, ClipX2)) x2 = std::min(dst->w - 1, ClipX2);
@@ -769,7 +768,7 @@ void CStdDDraw::DrawFrame(SURFACE sfcDest, int x1, int y1, int x2, int y2, BYTE 
 void CStdDDraw::DrawInline(SURFACE sfcDest, int iX1, int iY1, int iX2, int iY2, BYTE byCol, BYTE byOnCol, BYTE byAdjacentCol) {
   if (!sfcDest) return;
   CGLSurface *dst = (CGLSurface *)sfcDest;
-  SyncSurfaceCPU(dst);
+  
   
   if ((iX2 < std::max(0, ClipX1)) || (iX1 > std::min(dst->w - 1, ClipX2)) 
    || (iY2 < std::max(0, ClipY1)) || (iY1 > std::min(dst->h - 1, ClipY2))) {

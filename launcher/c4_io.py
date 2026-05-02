@@ -69,17 +69,13 @@ class C4Group:
 
             self.entries = []
             for i in range(num_entries):
-                e_data_raw = self.data[entry_base + i*316 : entry_base + (i+1)*316]
+                e_data = self.data[entry_base + i*316 : entry_base + (i+1)*316]
                 
-                # RULE: PACKED GROUPS DO NOT SCRAMBLE ENTRIES. UNPACKED GROUPS DO.
-                if self.is_packed:
-                    e_data = e_data_raw
-                else:
-                    e_data = unscramble(e_data_raw)
-                    
+                # RULE: ENTRIES ARE NEVER SCRAMBLED. ONLY THE HEADER IS.
                 name = e_data[0:260].split(b'\x00')[0].decode('ascii', errors='ignore')
                 packed, child = struct.unpack('<ii', e_data[260:268])
                 size, esize, offset = struct.unpack('<iii', e_data[268:280])
+                time_val = struct.unpack('<i', e_data[280:284])[0]
 
                 self.entries.append({
                     'name': name,
@@ -87,7 +83,8 @@ class C4Group:
                     'entry_size': esize,
                     'offset': file_base + offset,
                     'packed': bool(packed),
-                    'is_group': bool(child)
+                    'is_group': bool(child),
+                    'time': time_val
                 })
         except Exception as e:
             print(f"Error parsing group data: {e}")
@@ -123,16 +120,16 @@ class C4GroupWriter:
     def _make_header(self):
         # Header is 204 bytes
         header = bytearray(204)
-        # id (24+1 bytes)
+        # id (28 bytes)
         id_str = b"RedWolf Design GrpFolder\x00"
         header[0:len(id_str)] = id_str
         # Ver1 (1), Ver2 (2), Entries at 36.
         struct.pack_into('<iii', header, 28, 1, 2, len(self.entries))
-        # Maker (30+1 bytes) at offset 44
-        m_bytes = self.maker.encode('ascii', errors='ignore')[:30]
-        header[44:44+len(m_bytes)] = m_bytes
-        # Creation, Original at offset 108
-        struct.pack_into('<ii', header, 108, int(time.time()), 1)
+        # Maker (32 bytes) at offset 40
+        m_bytes = self.maker.encode('ascii', errors='ignore')[:31]
+        header[40:40+len(m_bytes)] = m_bytes
+        # Creation (104), Original (108)
+        struct.pack_into('<ii', header, 104, int(time.time()), 1)
         
         return scramble(header)
 
@@ -152,14 +149,11 @@ class C4GroupWriter:
         
         struct.pack_into('<ii', core, 260, packed, child_group)
         struct.pack_into('<iii', core, 268, size, entry_size, offset)
-        # Time
+        # Time (280)
         struct.pack_into('<i', core, 280, entry['time'])
         
-        # RULE: SCRAMBLE ENTRIES ONLY IF NOT PACKING
-        if self.pack:
-            return core, data
-        else:
-            return scramble(core), data
+        # RULE: ENTRIES ARE NEVER SCRAMBLED.
+        return core, data
 
     def write_to_file(self, path):
         # 1. Prepare data and entry cores

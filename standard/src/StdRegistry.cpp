@@ -17,11 +17,30 @@ static std::map<std::string, std::string> &GetRegistryMap() {
   return *g_registry;
 }
 
+static std::string GetConfigPath() {
+  char buf[1024];
+  ssize_t len = readlink("/proc/self/exe", buf, sizeof(buf) - 1);
+  if (len != -1) {
+    buf[len] = '\0';
+    char *lastSlash = strrchr(buf, '/');
+    if (lastSlash) {
+      strcpy(lastSlash + 1, "clonk.ini");
+      return std::string(buf);
+    }
+  }
+  return "clonk.ini";
+}
+
 static void LoadRegistry() {
   if (g_registryLoaded)
     return;
   auto &reg = GetRegistryMap();
-  std::ifstream f("clonk.ini");
+  std::string path = "clonk.ini";
+  std::ifstream f(path);
+  if (!f.is_open()) {
+    path = GetConfigPath();
+    f.open(path);
+  }
   if (!f.is_open()) {
     g_registryLoaded = true;
     return;
@@ -48,7 +67,12 @@ static void SaveRegistry() {
   if (!g_registry)
     return;
   auto &reg = *g_registry;
-  std::ofstream f("clonk.ini");
+  std::string path = "clonk.ini";
+  std::ifstream check(path);
+  if (!check.is_open()) {
+    path = GetConfigPath();
+  }
+  std::ofstream f(path);
   std::string currentSection;
   for (auto const &[key, val] : reg) {
     size_t pos = key.find('\\');

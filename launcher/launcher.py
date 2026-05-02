@@ -328,7 +328,6 @@ class ClonkLauncher(QMainWindow):
             elif ext == '.c4f': cat = 1
             elif ext == '.c4s': cat = 2
             elif ext == '.c4d': cat = 3
-            elif ext == '.c4v': cat = 1 # Treat Video groups as folders
             return {'name': name, 'grp': grp, 'title': title, 'cat': cat}
 
         def set_item_icon(item, grp, default_atlas_idx):
@@ -357,7 +356,7 @@ class ClonkLauncher(QMainWindow):
                 set_item_icon(item, grp, 4)
                 subs = []
                 for e in grp.entries:
-                    if e['name'].lower()[-4:] in ('.c4f', '.c4s', '.c4d', '.c4p', '.c4v'):
+                    if e['name'].lower()[-4:] in ('.c4f', '.c4s', '.c4d', '.c4p'):
                         sub_data = grp.get_file(e['name'])
                         if sub_data:
                             s_grp = C4Group(raw_data=sub_data)
@@ -376,7 +375,7 @@ class ClonkLauncher(QMainWindow):
                     if scen_data:
                         m = re.search(r'^Icon=(\d+)', scen_data.decode('latin-1', errors='ignore'), re.MULTILINE)
                         if m: icon_id = int(m.group(1))
-                    item.setIcon(self.get_atlas_icon(icon_id + 26))
+                    item.setIcon(self.get_atlas_icon(icon_id + 24))
             elif item_type == 'package':
                 set_item_icon(item, grp, 12)
                 if not current_subs: # Root node
@@ -408,7 +407,7 @@ class ClonkLauncher(QMainWindow):
 
         roots = []
         for f in os.listdir(self.planet_data_path):
-            if f.lower()[-4:] in ('.c4f', '.c4s', '.c4p', '.c4d', '.c4v'):
+            if f.lower()[-4:] in ('.c4f', '.c4s', '.c4p', '.c4d'):
                 path = os.path.join(self.planet_data_path, f)
                 roots.append(get_item_info(f, C4Group(path)))
         

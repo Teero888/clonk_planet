@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
+find_package(Freetype REQUIRED)
 
 add_definitions(-DLINUX -DC4ENGINE)
 
@@ -16,6 +17,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/standard/inc/external
     ${CMAKE_SOURCE_DIR}/standard/unibase
     ${CMAKE_SOURCE_DIR}/standard/zlib
+    ${FREETYPE_INCLUDE_DIRS}
 )
 
 file(GLOB_RECURSE SRC_FILES
@@ -49,7 +51,7 @@ endforeach()
 add_custom_target(planet_data_sync ALL DEPENDS ${DATA_SYMLINKS})
 
 add_executable(clonk ${SRC_FILES})
-target_link_libraries(clonk PRIVATE OpenGL::GL GLEW::GLEW glfw z m)
+target_link_libraries(clonk PRIVATE OpenGL::GL GLEW::GLEW glfw z m ${FREETYPE_LIBRARIES})
 add_dependencies(clonk planet_data_sync)
 
 add_executable(test_loading tests/test_loading.cpp)
