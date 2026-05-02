@@ -2,9 +2,9 @@
 
 /* Class providing a quick bitmap font in DirectDraw created using true type */
 
-#include <Compat.h>
-#include <stdio.h>
-// #include <DDraw.h>
+#include <Windows.h>
+#include <StdIO.h>
+#include <DDraw.h>
 
 #include <Standard.h>
 #include <StdSurface.h>
@@ -14,319 +14,174 @@
 
 const int FNT_CharSpace = 0;
 
-CStdFont::CStdFont() { Default(); }
+CStdFont::CStdFont()
+	{
+	Default();
+	}
 
-CStdFont::~CStdFont() { Clear(); }
+CStdFont::~CStdFont()
+	{
+	Clear();
+	}
 
-void CStdFont::Default() {
-  Surface.Default();
-  for (int cnt = 0; cnt < FNT_MaxChar; cnt++)
-    Character[cnt].Default();
-}
+void CStdFont::Default()
+	{
+	Surface.Default();
+	for (int cnt=0; cnt<FNT_MaxChar; cnt++)	Character[cnt].Default();
+	}
 
-void CStdFont::Clear() {
-  Surface.Clear();
-  for (int cnt = 0; cnt < FNT_MaxChar; cnt++)
-    Character[cnt].Clear();
-}
+void CStdFont::Clear()
+	{
+	Surface.Clear();
+	for (int cnt=0; cnt<FNT_MaxChar; cnt++)	Character[cnt].Clear();
+	}
 
-#define STB_TRUETYPE_IMPLEMENTATION
-#include <stb_truetype.h>
-#include <vector>
+BOOL CStdFont::Init(HDC hdc, const char *szFontname, int iSize)
+	{
+	BYTE byColorIndex[FNT_MaxCol]={31,16,39,47,55,63,71,79,87,95};
+	char szChar[2];
+	
+	// Create windows font
+	HFONT hFont = CreateFont(hdc,szFontname,iSize,0);
+	if (!hFont) return FALSE;
+	SelectObject(hdc,hFont);
+	
+	// Get character & surface extent
+	SIZE csize;
+	int iSfcWdt=0,iFontHgt=0;
+	for (int cnt=0; cnt<FNT_MaxChar; cnt++)
+		{
+		szChar[0]=cnt; szChar[1]=0;
+		if (GetTextExtentPoint32(hdc,szChar,1,&csize)) 
+			{ 
+			Character[cnt].Wdt=csize.cx;
+			iSfcWdt+=csize.cx+FNT_CharSpace; iFontHgt=Max(iFontHgt,csize.cy); 
+			}
+		}
 
-static const uint8_t g_font8x8[95][8] = {
-    {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // space
-    {0x18, 0x3c, 0x3c, 0x18, 0x18, 0x00, 0x18, 0x00}, // !
-    {0x6c, 0x6c, 0x6c, 0x00, 0x00, 0x00, 0x00, 0x00}, // "
-    {0x6c, 0x6c, 0xfe, 0x6c, 0xfe, 0x6c, 0x6c, 0x00}, // #
-    {0x18, 0x3e, 0x60, 0x3c, 0x06, 0x7c, 0x18, 0x00}, // $
-    {0x00, 0xc6, 0xcc, 0x18, 0x30, 0x66, 0xc6, 0x00}, // %
-    {0x38, 0x6c, 0x38, 0x76, 0xdc, 0xcc, 0x76, 0x00}, // &
-    {0x30, 0x30, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00}, // '
-    {0x18, 0x30, 0x60, 0x60, 0x60, 0x30, 0x18, 0x00}, // (
-    {0x60, 0x30, 0x18, 0x18, 0x18, 0x30, 0x60, 0x00}, // )
-    {0x00, 0x66, 0x3c, 0xff, 0x3c, 0x66, 0x00, 0x00}, // *
-    {0x00, 0x18, 0x18, 0x7e, 0x18, 0x18, 0x00, 0x00}, // +
-    {0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x18, 0x30}, // ,
-    {0x00, 0x00, 0x00, 0x7e, 0x00, 0x00, 0x00, 0x00}, // -
-    {0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x18, 0x00}, // .
-    {0x06, 0x0c, 0x18, 0x30, 0x60, 0xc0, 0x80, 0x00}, // /
-    {0x7c, 0xc6, 0xce, 0xde, 0xf6, 0xe6, 0x7c, 0x00}, // 0
-    {0x30, 0x70, 0x30, 0x30, 0x30, 0x30, 0xfc, 0x00}, // 1
-    {0x78, 0xcc, 0x0c, 0x38, 0x60, 0xcc, 0xfc, 0x00}, // 2
-    {0x78, 0xcc, 0x0c, 0x38, 0x0c, 0xcc, 0x78, 0x00}, // 3
-    {0x1c, 0x3c, 0x6c, 0xcc, 0xfe, 0x0c, 0x1e, 0x00}, // 4
-    {0xfc, 0xc0, 0xf8, 0x0c, 0x0c, 0xcc, 0x78, 0x00}, // 5
-    {0x38, 0x60, 0xc0, 0xf8, 0xcc, 0xcc, 0x78, 0x00}, // 6
-    {0xfc, 0xcc, 0x0c, 0x18, 0x30, 0x30, 0x30, 0x00}, // 7
-    {0x78, 0xcc, 0xcc, 0x78, 0xcc, 0xcc, 0x78, 0x00}, // 8
-    {0x78, 0xcc, 0xcc, 0x7c, 0x0c, 0x18, 0x70, 0x00}, // 9
-    {0x00, 0x18, 0x18, 0x00, 0x18, 0x18, 0x00, 0x00}, // :
-    {0x00, 0x18, 0x18, 0x00, 0x18, 0x18, 0x30, 0x00}, // ;
-    {0x18, 0x30, 0x60, 0xc0, 0x60, 0x30, 0x18, 0x00}, // <
-    {0x00, 0x00, 0x7e, 0x00, 0x7e, 0x00, 0x00, 0x00}, // =
-    {0x60, 0x30, 0x18, 0x0c, 0x18, 0x30, 0x60, 0x00}, // >
-    {0x78, 0xcc, 0x0c, 0x18, 0x30, 0x00, 0x30, 0x00}, // ?
-    {0x7c, 0xc6, 0xde, 0xde, 0xde, 0xc0, 0x78, 0x00}, // @
-    {0x30, 0x78, 0xcc, 0xcc, 0xfc, 0xcc, 0xcc, 0x00}, // A
-    {0xfc, 0x66, 0x66, 0x7c, 0x66, 0x66, 0xfc, 0x00}, // B
-    {0x3c, 0x66, 0xc0, 0xc0, 0xc0, 0x66, 0x3c, 0x00}, // C
-    {0xf8, 0x6c, 0x66, 0x66, 0x66, 0x6c, 0xf8, 0x00}, // D
-    {0xfe, 0x62, 0x68, 0x78, 0x68, 0x62, 0xfe, 0x00}, // E
-    {0xfe, 0x62, 0x68, 0x78, 0x68, 0x60, 0xf0, 0x00}, // F
-    {0x3c, 0x66, 0xc0, 0xc0, 0xce, 0x66, 0x3e, 0x00}, // G
-    {0xcc, 0xcc, 0xcc, 0xfc, 0xcc, 0xcc, 0xcc, 0x00}, // H
-    {0x78, 0x30, 0x30, 0x30, 0x30, 0x30, 0x78, 0x00}, // I
-    {0x1e, 0x0c, 0x0c, 0x0c, 0x0c, 0xcc, 0x78, 0x00}, // J
-    {0xe6, 0x66, 0x6c, 0x78, 0x6c, 0x66, 0xe6, 0x00}, // K
-    {0xf0, 0x60, 0x60, 0x60, 0x62, 0x66, 0xfe, 0x00}, // L
-    {0xc6, 0xee, 0xfe, 0xfe, 0xd6, 0xc6, 0xc6, 0x00}, // M
-    {0xc6, 0xe6, 0xf6, 0xde, 0xce, 0xc6, 0xc6, 0x00}, // N
-    {0x38, 0x6c, 0xc6, 0xc6, 0xc6, 0x6c, 0x38, 0x00}, // O
-    {0xfc, 0x66, 0x66, 0x7c, 0x60, 0x60, 0xf0, 0x00}, // P
-    {0x78, 0xcc, 0xcc, 0xcc, 0xdc, 0x78, 0x1c, 0x00}, // Q
-    {0xfc, 0x66, 0x66, 0x7c, 0x6c, 0x66, 0xe6, 0x00}, // R
-    {0x78, 0xcc, 0xe0, 0x70, 0x1c, 0xcc, 0x78, 0x00}, // S
-    {0xfc, 0xb4, 0x30, 0x30, 0x30, 0x30, 0x78, 0x00}, // T
-    {0xcc, 0xcc, 0xcc, 0xcc, 0xcc, 0xcc, 0x78, 0x00}, // U
-    {0xcc, 0xcc, 0xcc, 0xcc, 0xcc, 0x78, 0x30, 0x00}, // V
-    {0xc6, 0xc6, 0xc6, 0xd6, 0xfe, 0xee, 0xc6, 0x00}, // W
-    {0xc6, 0xc6, 0x6c, 0x38, 0x6c, 0xc6, 0xc6, 0x00}, // X
-    {0xcc, 0xcc, 0xcc, 0x78, 0x30, 0x30, 0x78, 0x00}, // Y
-    {0xfe, 0xc6, 0x8c, 0x18, 0x32, 0x66, 0xfe, 0x00}, // Z
-    {0x78, 0x60, 0x60, 0x60, 0x60, 0x60, 0x78, 0x00}, // [
-    {0xc0, 0x60, 0x30, 0x18, 0x0c, 0x06, 0x02, 0x00}, // \
-    {0x78,0x18,0x18,0x18,0x18,0x18,0x78,0x00}, // ]
-    {0x10, 0x38, 0x6c, 0xc6, 0x00, 0x00, 0x00, 0x00}, // ^
-    {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff}, // _
-    {0x30, 0x30, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00}, // `
-    {0x00, 0x00, 0x78, 0x0c, 0x7c, 0xcc, 0x7e, 0x00}, // a
-    {0xe0, 0x60, 0x7c, 0x66, 0x66, 0x66, 0x7c, 0x00}, // b
-    {0x00, 0x00, 0x3c, 0x66, 0x60, 0x66, 0x3c, 0x00}, // c
-    {0x1c, 0x0c, 0x7c, 0xcc, 0xcc, 0xcc, 0x7e, 0x00}, // d
-    {0x00, 0x00, 0x7c, 0xcc, 0xfc, 0x60, 0x3c, 0x00}, // e
-    {0x38, 0x6c, 0x60, 0xf0, 0x60, 0x60, 0xf0, 0x00}, // f
-    {0x00, 0x00, 0x7e, 0xcc, 0xcc, 0x7c, 0x0c, 0x78}, // g
-    {0xe0, 0x60, 0x6c, 0x76, 0x66, 0x66, 0x66, 0x00}, // h
-    {0x30, 0x00, 0x30, 0x30, 0x30, 0x30, 0x78, 0x00}, // i
-    {0x0c, 0x00, 0x0c, 0x0c, 0x0c, 0xcc, 0xcc, 0x78}, // j
-    {0xe0, 0x60, 0x66, 0x6c, 0x78, 0x6c, 0x66, 0x00}, // k
-    {0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x78, 0x00}, // l
-    {0x00, 0x00, 0xcc, 0xfe, 0xfe, 0xd6, 0xc6, 0x00}, // m
-    {0x00, 0x00, 0xf8, 0xcc, 0xcc, 0xcc, 0xcc, 0x00}, // n
-    {0x00, 0x00, 0x78, 0xcc, 0xcc, 0xcc, 0x78, 0x00}, // o
-    {0x00, 0x00, 0xfc, 0x66, 0x66, 0x7c, 0x60, 0xf0}, // p
-    {0x00, 0x00, 0x7e, 0xcc, 0xcc, 0x7c, 0x0c, 0x1e}, // q
-    {0x00, 0x00, 0xdc, 0x76, 0x60, 0x60, 0xf0, 0x00}, // r
-    {0x00, 0x00, 0x7c, 0xc0, 0x78, 0x0c, 0xf8, 0x00}, // s
-    {0x10, 0x30, 0x7c, 0x30, 0x30, 0x34, 0x18, 0x00}, // t
-    {0x00, 0x00, 0xcc, 0xcc, 0xcc, 0xcc, 0x7e, 0x00}, // u
-    {0x00, 0x00, 0xcc, 0xcc, 0xcc, 0x78, 0x30, 0x00}, // v
-    {0x00, 0x00, 0xc6, 0xd6, 0xfe, 0xfe, 0x6c, 0x00}, // w
-    {0x00, 0x00, 0xc6, 0x6c, 0x38, 0x6c, 0xc6, 0x00}, // x
-    {0x00, 0x00, 0xcc, 0xcc, 0xcc, 0x7c, 0x0c, 0x78}, // y
-    {0x00, 0x00, 0xfc, 0x98, 0x30, 0x64, 0xfc, 0x00}, // z
-    {0x1c, 0x30, 0x30, 0xe0, 0x30, 0x30, 0x1c, 0x00}, // {
-    {0x18, 0x18, 0x18, 0x00, 0x18, 0x18, 0x18, 0x00}, // |
-    {0xe0, 0x30, 0x30, 0x1c, 0x30, 0x30, 0xe0, 0x00}, // }
-    {0x76, 0xdc, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // ~
-};
+	// Create font surface
+	if (!Surface.Create(iSfcWdt,(iFontHgt+2)*FNT_MaxCol)) { DeleteObject(hFont); return FALSE; }
+	// Set font index colors
+	for (cnt=0; cnt<FNT_MaxCol; cnt++) Surface.SetPalette(byColorIndex[cnt],20*cnt+30,10*cnt,5*cnt);
+	Surface.AttachPalette();
 
-BOOL CStdFont::Init(HDC hdc, const char *szFontname, int iSize) {
-  BYTE byColorIndex[FNT_MaxCol] = {31, 16, 39, 47, 55, 63, 71, 79, 87, 95};
+	// Set & draw characters
+	int cx=0,cy=0;
+	HDC hdc2 = Surface.GetDC();
+	if (!hdc2) { DeleteObject(hFont); return FALSE; }
+	SelectObject(hdc2,hFont);
+	SetTextAlign(hdc2,TA_LEFT); 
+  SetBkMode(hdc2,TRANSPARENT);
+	for (int cnt2=0; cnt2<FNT_MaxCol; cnt2++)
+		{
+		SetTextColor(hdc2,RGB(20*cnt2+30,10*cnt2,5*cnt2));
+		for (cnt=0; cnt<FNT_MaxChar; cnt++)
+			{
+			szChar[0]=cnt; szChar[1]=0;
+			RECT rect; rect.left=cx; rect.top=cy; rect.right=cx+Character[cnt].Wdt; rect.bottom=cy+iFontHgt;
+			BOOL fResult = ExtTextOut(hdc2,cx,cy,ETO_CLIPPED,&rect,szChar,1,NULL);
+			Character[cnt].Set(Surface.Surface,cx,0,Character[cnt].Wdt,iFontHgt);
+			cx+=Character[cnt].Wdt+FNT_CharSpace; 
+			}
+		cy+=iFontHgt+FNT_CharSpace; cx=0;
+		}
+	Surface.ReleaseDC(hdc2);
 
-  // Attempt to load a TrueType font
-  const char *fontPaths[] = {"/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", "/usr/share/fonts/TTF/DejaVuSans.ttf", "/usr/share/fonts/liberation/LiberationSans-Regular.ttf",
-                             "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf", "C:\\Windows\\Fonts\\arial.ttf"};
+	// Delete windows font
+  DeleteObject(hFont);
+	
+	// Success 
+	return TRUE;
+	}
 
-  std::vector<uint8_t> ttf_buffer;
-  bool loaded = false;
-  for (auto path : fontPaths) {
-    FILE *f = fopen(path, "rb");
-    if (f) {
-      fseek(f, 0, SEEK_END);
-      size_t size = ftell(f);
-      fseek(f, 0, SEEK_SET);
-      ttf_buffer.resize(size);
-      fread(ttf_buffer.data(), 1, size, f);
-      fclose(f);
-      loaded = true;
-      break;
-    }
-  }
+HFONT CStdFont::CreateFont(HDC hdc, const char *szFacename, int iPtHeight, int iAttributes)
+	{
+	HFONT hFont;
+	LOGFONT lf;
+	SaveDC(hdc);
+	SetGraphicsMode(hdc, GM_ADVANCED);
+	ModifyWorldTransform(hdc, NULL, MWT_IDENTITY);
+	SetViewportOrgEx(hdc, 0, 0, NULL);
+	SetWindowOrgEx(hdc, 0, 0, NULL);
+	lf.lfHeight         = iPtHeight;
+	lf.lfWidth          = 0 ;
+	lf.lfEscapement     = 0 ;
+	lf.lfOrientation    = 0 ;
+	lf.lfWeight         = 0 ;
+	lf.lfItalic         = 0 ;
+	lf.lfUnderline      = 0 ;
+	lf.lfStrikeOut      = 0 ;
+	lf.lfCharSet        = 0 ;
+	lf.lfOutPrecision   = 0 ;
+	lf.lfClipPrecision  = 0 ;
+	lf.lfQuality        = 0 ;
+	lf.lfPitchAndFamily = 0 ;
+	strcpy(lf.lfFaceName, szFacename);
+	hFont = CreateFontIndirect (&lf);
+	RestoreDC(hdc, -1);
+	return hFont ;
+	}
 
-  if (loaded) {
-    stbtt_fontinfo font;
-    if (!stbtt_InitFont(&font, ttf_buffer.data(), 0))
-      loaded = false;
-    else {
-      float scale = stbtt_ScaleForPixelHeight(&font, (float)iSize);
-      int ascent, descent, lineGap;
-      stbtt_GetFontVMetrics(&font, &ascent, &descent, &lineGap);
-      int baseline = (int)(ascent * scale);
-      int fontHgt = (int)((ascent - descent + lineGap) * scale);
+BOOL CStdFont::CharOut(BYTE chChar, SURFACE sfcSurface, int iX, int iY, int iColor)
+	{
+	if (iColor!=FTrans)	Character[chChar].Draw(sfcSurface,iX,iY,0,BoundBy(iColor,0,FNT_MaxCol-1));
+	return TRUE;
+	}
 
-      int totalWdt = 0;
-      for (int i = 0; i < FNT_MaxChar; i++) {
-        int advance, lsb;
-        stbtt_GetCodepointHMetrics(&font, i, &advance, &lsb);
-        Character[i].Wdt = (int)(advance * scale);
-        totalWdt += Character[i].Wdt;
-      }
+BOOL CStdFont::StringOut(const char *szText, SURFACE sfcDest, int iTx, int iTy, int iFCol, int iBCol, BYTE byForm)
+	{
+	if (!szText) return FALSE;
+	// Alignment
+	switch (byForm)
+		{
+		case ACenter: iTx-=GetTextWidth(szText)/2; break;
+		case ARight:  iTx-=GetTextWidth(szText);	 break;
+		}
+	// Draw string
+	for (szText; *szText; szText++)
+		{
+		CharOut(*((BYTE*)szText),sfcDest,iTx+1,iTy+1,iBCol);
+		CharOut(*((BYTE*)szText),sfcDest,iTx,iTy,iFCol);
+		iTx+=Character[*((BYTE*)szText)].Wdt;
+		}
+	return TRUE;
+	}
 
-      if (!Surface.Create(totalWdt, (fontHgt + 2) * FNT_MaxCol))
-        return FALSE;
-      for (int cnt = 0; cnt < FNT_MaxCol; cnt++)
-        Surface.SetPalette(byColorIndex[cnt], 20 * cnt + 30, 10 * cnt, 5 * cnt);
-      Surface.AttachPalette();
+int CStdFont::GetTextWidth(const char *szText)
+	{
+	if (!szText) return FALSE;
+	int iLineWidth=0,iMaxLineWidth=0;
+	for (const char *cPos=szText; *cPos; *cPos++)
+		{
+		// Line break
+		if (*cPos == '|') iLineWidth=0;
+		// Add line width
+		else iLineWidth += Character[*((BYTE*)cPos)].Wdt;
+		// Get max line
+		if (iLineWidth>iMaxLineWidth) iMaxLineWidth=iLineWidth;
+		}
+	return iMaxLineWidth;
+	}
 
-      for (int col = 0; col < FNT_MaxCol; col++) {
-        int cx = 0;
-        int cy = col * (fontHgt + 2);
-        for (int i = 0; i < FNT_MaxChar; i++) {
-          int x1, y1, x2, y2;
-          stbtt_GetCodepointBitmapBox(&font, i, scale, scale, &x1, &y1, &x2, &y2);
-          int charW = x2 - x1;
-          int charH = y2 - y1;
-          if (charW > 0 && charH > 0) {
-            std::vector<uint8_t> bitmap(charW * charH);
-            stbtt_MakeCodepointBitmap(&font, bitmap.data(), charW, charH, charW, scale, scale, i);
-            for (int by = 0; by < charH; by++) {
-              for (int bx = 0; bx < charW; bx++) {
-                if (bitmap[by * charW + bx] > 128) {
-                  Surface.Pix(cx + x1 + bx, cy + baseline + y1 + by, byColorIndex[col]);
-                }
-              }
-            }
-          }
-          Character[i].Set(Surface.Surface, cx, cy, Character[i].Wdt, fontHgt);
-          cx += Character[i].Wdt;
-        }
-      }
-      return TRUE;
-    }
-  }
+int CStdFont::GetTextHeight(const char *szText)
+	{
+	if (!szText) return Character[0].Hgt;
+	int iLines = 1 + SCharCount('|',szText);
+	for (int iResult=0; *szText; szText++) iResult=Max(iResult,Character[*((BYTE*)szText)].Hgt);
+	iResult*=iLines; 
+	return iResult;
+	}
 
-  // Fallback to 8x8 bitmap font
-  int fontHgt = 8;
-  int totalWdt = FNT_MaxChar * 8;
-  if (!Surface.Create(totalWdt, (fontHgt + 2) * FNT_MaxCol))
-    return FALSE;
-  for (int cnt = 0; cnt < FNT_MaxCol; cnt++)
-    Surface.SetPalette(byColorIndex[cnt], 20 * cnt + 30, 10 * cnt, 5 * cnt);
-  Surface.AttachPalette();
+BOOL CStdFont::TextOut(const char *szText, SURFACE sfcDest, int iTx, int iTy, int iFCol, int iBCol, BYTE byForm)
+	{
+	static char szLinebuf[2500+1];
+	for (int cnt=0; SCopySegment(szText,cnt,szLinebuf,'|',2500); cnt++,iTy+=GetTextHeight())
+		StringOut(szLinebuf,sfcDest,iTx,iTy,iFCol,iBCol,byForm);
+	return TRUE;
+	}
 
-  for (int col = 0; col < FNT_MaxCol; col++) {
-    for (int i = 0; i < FNT_MaxChar; i++) {
-      Character[i].Wdt = 8;
-      Character[i].Set(Surface.Surface, i * 8, col * 10, 8, 8);
-      if (i >= 32 && i < 127) {
-        for (int y = 0; y < 8; y++) {
-          for (int x = 0; x < 8; x++) {
-            if (g_font8x8[i - 32][y] & (1 << (7 - x))) {
-              Surface.Pix(i * 8 + x, col * 10 + y, byColorIndex[col]);
-            }
-          }
-        }
-      }
-    }
-  }
-  return TRUE;
-}
-
-HFONT CStdFont::CreateFont(HDC hdc, const char *szFacename, int iPtHeight, int iAttributes) {
-  HFONT hFont;
-  LOGFONT lf;
-  SaveDC(hdc);
-  SetGraphicsMode(hdc, GM_ADVANCED);
-  ModifyWorldTransform(hdc, NULL, MWT_IDENTITY);
-  SetViewportOrgEx(hdc, 0, 0, NULL);
-  SetWindowOrgEx(hdc, 0, 0, NULL);
-  lf.lfHeight = iPtHeight;
-  lf.lfWidth = 0;
-  lf.lfEscapement = 0;
-  lf.lfOrientation = 0;
-  lf.lfWeight = 0;
-  lf.lfItalic = 0;
-  lf.lfUnderline = 0;
-  lf.lfStrikeOut = 0;
-  lf.lfCharSet = 0;
-  lf.lfOutPrecision = 0;
-  lf.lfClipPrecision = 0;
-  lf.lfQuality = 0;
-  lf.lfPitchAndFamily = 0;
-  strcpy(lf.lfFaceName, szFacename);
-  hFont = CreateFontIndirect(&lf);
-  RestoreDC(hdc, -1);
-  return hFont;
-}
-
-BOOL CStdFont::CharOut(BYTE chChar, SURFACE sfcSurface, int iX, int iY, int iColor) {
-  if (iColor != FTrans)
-    Character[chChar].Draw(sfcSurface, iX, iY, 0, BoundBy(iColor, 0, FNT_MaxCol - 1));
-  return TRUE;
-}
-
-BOOL CStdFont::StringOut(const char *szText, SURFACE sfcDest, int iTx, int iTy, int iFCol, int iBCol, BYTE byForm) {
-  if (!szText)
-    return FALSE;
-  // Alignment
-  switch (byForm) {
-  case ACenter:
-    iTx -= GetTextWidth(szText) / 2;
-    break;
-  case ARight:
-    iTx -= GetTextWidth(szText);
-    break;
-  }
-  // Draw string
-  for (const char *pChar = szText; *pChar; pChar++) {
-    CharOut(*((BYTE *)pChar), sfcDest, iTx + 1, iTy + 1, iBCol);
-    CharOut(*((BYTE *)pChar), sfcDest, iTx, iTy, iFCol);
-    iTx += Character[*((BYTE *)pChar)].Wdt;
-  }
-  return TRUE;
-}
-
-int CStdFont::GetTextWidth(const char *szText) {
-  if (!szText)
-    return FALSE;
-  int iLineWidth = 0, iMaxLineWidth = 0;
-  for (const char *cPos = szText; *cPos; cPos++) {
-    // Line break
-    if (*cPos == '|')
-      iLineWidth = 0;
-    // Add line width
-    else
-      iLineWidth += Character[*((BYTE *)cPos)].Wdt;
-    // Get max line
-    if (iLineWidth > iMaxLineWidth)
-      iMaxLineWidth = iLineWidth;
-  }
-  return iMaxLineWidth;
-}
-
-int CStdFont::GetTextHeight(const char *szText) {
-  if (!szText)
-    return Character[0].Hgt;
-  int iLines = 1 + SCharCount('|', szText);
-  int iMaxHeight = 0;
-  for (const char *pChar = szText; *pChar; pChar++)
-    iMaxHeight = Max(iMaxHeight, (int)Character[*((BYTE *)pChar)].Hgt);
-  if (!iMaxHeight)
-    iMaxHeight = Character[0].Hgt;
-  return iMaxHeight * iLines;
-}
-
-BOOL CStdFont::TextOut(const char *szText, SURFACE sfcDest, int iTx, int iTy, int iFCol, int iBCol, BYTE byForm) {
-  static char szLinebuf[2500 + 1];
-  for (int cnt = 0; SCopySegment(szText, cnt, szLinebuf, '|', 2500); cnt++, iTy += GetTextHeight())
-    StringOut(szLinebuf, sfcDest, iTx, iTy, iFCol, iBCol, byForm);
-  return TRUE;
-}
-
-BOOL CStdFont::TextExtent(const char *szText, int &rWdt, int &rHgt) {
-  rWdt = GetTextWidth(szText);
-  rHgt = GetTextHeight(szText);
-  return TRUE;
-}
+BOOL CStdFont::TextExtent(const char *szText, int &rWdt, int &rHgt)
+	{
+	rWdt = GetTextWidth(szText); rHgt = GetTextHeight(szText);
+	return TRUE;
+	}

@@ -39,6 +39,8 @@ class Win3DFrame(QFrame):
         painter.drawLine(w-1, 0, w-1, h-1)
         
 class Win3DButton(QPushButton):
+    click_sound = None
+    
     def __init__(self, *args, **kwargs):
         # Custom properties
         raised_colors = kwargs.pop('raised_colors', None)
@@ -64,6 +66,13 @@ class Win3DButton(QPushButton):
         # Clonk style font
         font_family = "Comic Sans MS, Chilanka, cursive"
         self.setFont(QFont(font_family, 9))
+        
+        # Audio feedback
+        self.clicked.connect(self._play_click)
+
+    def _play_click(self):
+        if Win3DButton.click_sound:
+            Win3DButton.click_sound.play()
 
     def paintEvent(self, event):
         painter = QPainter(self)

@@ -225,6 +225,11 @@ class ClonkLauncher(QMainWindow):
 
         self.sound_start = self.load_sound('sound_7008.wav')
         self.sound_click = self.load_sound('sound_7002.wav')
+        
+        # Global access for UI components
+        ClonkButton.click_sound = self.sound_click
+        Win3DButton.click_sound = self.sound_click
+
         self.config_path = os.path.join(self.planet_data_path, 'clonk.ini')
         self.language = "US"
         self.load_config()
@@ -861,19 +866,23 @@ class ClonkLauncher(QMainWindow):
 
             # Build updated group
             writer = C4GroupWriter()
+            writer.pack = target_grp.is_packed # Keep packing status
+            
             # Add all existing files except Player.txt
             writer.add_from_group(target_grp, exclude=['Player.txt'])
             # Add updated Player.txt
             writer.add_file('Player.txt', final_data)
             
             # If it's a top-level group, we can write directly to disk
-            #if not sub:
-            #    try:
-            #        writer.write_to_file(path)
-            #        ClonkPopupDialog(self, text="Player properties updated successfully.").exec_()
-            #    except Exception as e:
-            #        ClonkPopupDialog(self, text=f"Error saving player: {e}").exec_()
-            if sub:
+            if not sub:
+                try:
+                    writer.write_to_file(path)
+                    #ClonkPopupDialog(self, text="Player properties updated successfully.").exec_()
+                    self.refresh_resources()
+                except Exception as e:
+                    print(f"Error saving player: {e}")
+                    #ClonkPopupDialog(self, text=f"Error saving player: {e}").exec_()
+            else:
                 # Nested saving is complex (requires recursive group rebuilding)
                 # For this prototype, we inform the user
                 print(f"Updated Player.txt for nested group {path}/{'/'.join(sub)}:\n{final_content}")

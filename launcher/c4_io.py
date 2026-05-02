@@ -29,6 +29,7 @@ class C4Group:
         self.path = path
         self.entries = []
         self.data = b''
+        self.is_packed = False
         if raw_data is not None:
             self.load_from_data(raw_data)
         elif path is not None:
@@ -47,6 +48,7 @@ class C4Group:
             if not raw_data: return
 
             if raw_data[0:2] in (b'\x1f\x8b', b'\x1e\x8c'):
+                self.is_packed = True
                 if raw_data[0:2] == b'\x1e\x8c':
                     fixed = bytearray(raw_data)
                     fixed[0] ^= 1; fixed[1] ^= 7
@@ -68,7 +70,13 @@ class C4Group:
             self.entries = []
             for i in range(num_entries):
                 e_data_raw = self.data[entry_base + i*316 : entry_base + (i+1)*316]
-                e_data = unscramble(e_data_raw)
+                
+                # RULE: PACKED GROUPS DO NOT SCRAMBLE ENTRIES. UNPACKED GROUPS DO.
+                if self.is_packed:
+                    e_data = e_data_raw
+                else:
+                    e_data = unscramble(e_data_raw)
+                    
                 name = e_data[0:260].split(b'\x00')[0].decode('ascii', errors='ignore')
                 packed, child = struct.unpack('<ii', e_data[260:268])
                 size, esize, offset = struct.unpack('<iii', e_data[268:280])
@@ -94,6 +102,7 @@ class C4GroupWriter:
     def __init__(self):
         self.entries = []
         self.maker = "Gemini Launcher"
+        self.pack = False # Default to unpacked (scrambled entries)
 
     def add_file(self, name, data, packed=False):
         self.entries.append({
@@ -109,7 +118,6 @@ class C4GroupWriter:
             if e['name'].lower() not in [x.lower() for x in exclude]:
                 data = source_grp.get_file(e['name'])
                 if data:
-                    # Keep packed status from source
                     self.add_file(e['name'], data, packed=e['packed'])
 
     def _make_header(self):
@@ -118,8 +126,7 @@ class C4GroupWriter:
         # id (24+1 bytes)
         id_str = b"RedWolf Design GrpFolder\x00"
         header[0:len(id_str)] = id_str
-        # Ver1 (1), Ver2 (2) at offset 28 and 32? No, Ver1 at 28, Ver2 at 32, Entries at 36.
-        # C4Group.cpp: num_entries = struct.unpack('<i', header[36:40])[0]
+        # Ver1 (1), Ver2 (2), Entries at 36.
         struct.pack_into('<iii', header, 28, 1, 2, len(self.entries))
         # Maker (30+1 bytes) at offset 44
         m_bytes = self.maker.encode('ascii', errors='ignore')[:30]
@@ -141,21 +148,18 @@ class C4GroupWriter:
         packed = 1 if entry['packed'] else 0
         
         size = len(data)
-        # In C4Group, ChildGroup is true if the entry is another group
         child_group = 1 if entry['name'].lower().endswith(('.c4p', '.c4f', '.c4s', '.c4d', '.c4v')) else 0
-        
-        # struct C4GroupEntryCore: FileName[261], Packed, ChildGroup, Size, EntrySize, Offset, Time, fbuf[30]
-        # BUT header reading suggests different offsets. 
-        # header[36:40] is num_entries. 
-        # C4Group.cpp: name = e_data[0:260], packed/child = struct.unpack('<ii', e_data[260:268])
-        # size, esize, offset = struct.unpack('<iii', e_data[268:280])
         
         struct.pack_into('<ii', core, 260, packed, child_group)
         struct.pack_into('<iii', core, 268, size, entry_size, offset)
-        # Time is usually after offset (offset 280)
+        # Time
         struct.pack_into('<i', core, 280, entry['time'])
         
-        return scramble(core), data
+        # RULE: SCRAMBLE ENTRIES ONLY IF NOT PACKING
+        if self.pack:
+            return core, data
+        else:
+            return scramble(core), data
 
     def write_to_file(self, path):
         # 1. Prepare data and entry cores
@@ -171,17 +175,26 @@ class C4GroupWriter:
             total_data.append(data)
             current_offset += len(data)
 
-        # 2. Write to disk
-        with open(path, 'wb') as f:
-            # Header
-            header = self._make_header()
-            f.write(header)
-            # Index
-            for core in entry_cores:
-                f.write(core)
-            # Data blocks
-            for data in total_data:
-                f.write(data)
+        # 2. Build final bytes
+        output = bytearray()
+        output.extend(self._make_header())
+        for core in entry_cores:
+            output.extend(core)
+        for data in total_data:
+            output.extend(data)
+            
+        # 3. Pack if requested
+        if self.pack:
+            # Simple gzip with C4 prefix
+            packed_data = gzip.compress(output)
+            final_data = bytearray(packed_data)
+            # Apply Clonk's "packed" marker (swap first two bytes)
+            final_data[0] ^= 1; final_data[1] ^= 7
+            with open(path, 'wb') as f:
+                f.write(final_data)
+        else:
+            with open(path, 'wb') as f:
+                f.write(output)
 
 def parse_c4_text(content):
     """Parses C4-style .txt files with sections like [SectionName]"""

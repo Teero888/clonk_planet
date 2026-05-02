@@ -67,6 +67,8 @@ class ClonkTextArea(QFrame):
         painter.drawLine(w-1, 0, w-1, h-1)
 
 class ClonkButton(QPushButton):
+    click_sound = None
+    
     def __init__(self, text, parent=None, bg_path=None, bg_offset=(0, 0), size=(86, 20)):
         super().__init__(text, parent)
         self.bg_pix = QPixmap(bg_path) if bg_path and os.path.exists(bg_path) else None
@@ -77,6 +79,13 @@ class ClonkButton(QPushButton):
         # Clonk style font
         font_family = "Comic Sans MS, Chilanka, cursive"
         self.setFont(QFont(font_family, 9))
+        
+        # Audio feedback
+        self.clicked.connect(self._play_click)
+
+    def _play_click(self):
+        if ClonkButton.click_sound:
+            ClonkButton.click_sound.play()
 
     def paintEvent(self, event):
         painter = QPainter(self)
