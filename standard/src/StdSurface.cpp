@@ -290,6 +290,7 @@ BOOL CSurface::Create(int iWdt, int iHgt) {
     return FALSE;
   Wdt = iWdt;
   Hgt = iHgt;
+  NoClip();
   return TRUE;
 }
 

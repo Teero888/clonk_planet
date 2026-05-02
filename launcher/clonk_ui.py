@@ -1,14 +1,15 @@
 import os
 from PyQt5.QtWidgets import QPushButton, QFrame, QWidget, QDialog, QLabel
-from PyQt5.QtGui import QPixmap, QPainter, QColor
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtGui import QPixmap, QPainter, QColor, QFont
+from PyQt5.QtCore import Qt, QPoint, QRect
 
 class ClonkArea(QFrame):
-    def __init__(self, parent, x=None, y=None, w=None, h=None, bg_color=None):
+    def __init__(self, parent, x=None, y=None, w=None, h=None, **kwargs):
         super().__init__(parent)
         if all(v is not None for v in (x, y, w, h)):
             self.setGeometry(x, y, w, h)
-        self.bg_color = bg_color
+        self.bg_color = kwargs.get('bg_color')
+        self.border_colors = kwargs.get('border_colors') or ("#a6a6a6", "#6a6a6a", "#e3e3e3", "#ffffff")
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -18,28 +19,28 @@ class ClonkArea(QFrame):
             painter.fillRect(2, 2, w-4, h-4, QColor(self.bg_color))
         
         # Sunken Border
-        painter.setPen(QColor("#a6a6a6"))
+        painter.setPen(QColor(self.border_colors[0]))
         painter.drawLine(0, 0, w-1, 0)
         painter.drawLine(0, 0, 0, h-1)
         
-        painter.setPen(QColor("#6a6a6a"))
+        painter.setPen(QColor(self.border_colors[1]))
         painter.drawLine(1, 1, w-2, 1)
         painter.drawLine(1, 1, 1, h-2)
         
-        painter.setPen(QColor("#e3e3e3"))
+        painter.setPen(QColor(self.border_colors[2]))
         painter.drawLine(1, h-2, w-2, h-2)
         painter.drawLine(w-2, 1, w-2, h-2)
         
-        painter.setPen(QColor("#ffffff"))
+        painter.setPen(QColor(self.border_colors[3]))
         painter.drawLine(0, h-1, w-1, h-1)
         painter.drawLine(w-1, 0, w-1, h-1)
         
 class ClonkTextArea(QFrame):
-    def __init__(self, parent, x=None, y=None, w=None, h=None, bg_color=None):
+    def __init__(self, parent, x=None, y=None, w=None, h=None, **kwargs):
         super().__init__(parent)
         if all(v is not None for v in (x, y, w, h)):
             self.setGeometry(x, y, w, h)
-        self.bg_color = bg_color
+        self.bg_color = kwargs.get('bg_color')
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -71,6 +72,11 @@ class ClonkButton(QPushButton):
         self.bg_pix = QPixmap(bg_path) if bg_path and os.path.exists(bg_path) else None
         self.bg_offset = bg_offset
         self.setFixedSize(*size)
+        self.setFocusPolicy(Qt.NoFocus)
+        
+        # Clonk style font
+        font_family = "Comic Sans MS, Chilanka, cursive"
+        self.setFont(QFont(font_family, 9))
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -108,6 +114,42 @@ class ClonkButton(QPushButton):
 
         painter.setPen(Qt.white); painter.drawText(t_rect.adjusted(1, 1, 1, 1), Qt.AlignCenter, self.text())
         painter.setPen(Qt.black); painter.drawText(t_rect, Qt.AlignCenter, self.text())
+
+from PyQt5.QtCore import Qt, QPoint, QRect, pyqtSignal
+
+class ClonkAtlasWidget(QWidget):
+    clicked = pyqtSignal()
+    
+    def __init__(self, parent, bg_path, sub_size, index=0):
+        super().__init__(parent)
+        self.bg_pix = QPixmap(bg_path) if bg_path and os.path.exists(bg_path) else None
+        self.sub_size = sub_size # (w, h)
+        self.index = index
+
+    def setIndex(self, index):
+        self.index = index
+        self.update()
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.clicked.emit()
+        super().mousePressEvent(event)
+
+    def paintEvent(self, event):
+        if not self.bg_pix or self.bg_pix.isNull():
+            return
+        painter = QPainter(self)
+        # NO anti-aliasing for pixel graphics
+        # Source rect from atlas
+        src_x = self.index * self.sub_size[0]
+        src_y = 0
+        src_rect = QRect(src_x, src_y, self.sub_size[0], self.sub_size[1])
+        
+        # Target rect (the entire widget area)
+        target_rect = self.rect()
+        
+        # Draw the sub-pixmap scaled into the target rect
+        painter.drawPixmap(target_rect, self.bg_pix, src_rect)
 
 class ClonkTexturedWidget(QWidget):
     def __init__(self, parent=None, bg_path=None):

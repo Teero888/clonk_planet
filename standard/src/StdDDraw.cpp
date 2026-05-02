@@ -12,7 +12,9 @@ struct CGLSurface {
   int w, h, pitch;
   uint8_t *bits;
   GLuint tex;
-  bool dirty;
+  GLuint fbo;
+  bool dirty_cpu;
+  bool dirty_gpu;
 };
 
 // Global instance
@@ -42,8 +44,9 @@ static const char *vertexShaderSrc = R"(
 layout(location = 0) in vec2 aPos;
 layout(location = 1) in vec2 aTexCoord;
 out vec2 TexCoord;
+uniform mat4 projection;
 void main() {
-    gl_Position = vec4(aPos, 0.0, 1.0);
+    gl_Position = projection * vec4(aPos, 0.0, 1.0);
     TexCoord = aTexCoord;
 }
 )";
@@ -76,6 +79,25 @@ static GLuint CompileShader(GLenum type, const char *source) {
   }
   return shader;
 }
+
+static void GetOrthoMatrix(float *mat, float left, float right, float bottom, float top) {
+  memset(mat, 0, 16 * sizeof(float));
+  mat[0] = 2.0f / (right - left);
+  mat[5] = 2.0f / (top - bottom);
+  mat[10] = -1.0f;
+  mat[12] = -(right + left) / (right - left);
+  mat[13] = -(top + bottom) / (top - bottom);
+  mat[15] = 1.0f;
+}
+
+static void SyncSurfaceGPU(CGLSurface *surf) {
+  if (surf->dirty_cpu && surf->tex && std::this_thread::get_id() == g_mainThreadId) {
+    glTextureSubImage2D(surf->tex, 0, 0, 0, surf->w, surf->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, surf->bits);
+    surf->dirty_cpu = false;
+  }
+}
+
+static inline void SyncSurfaceCPU(CGLSurface *surf) {}
 
 CStdDDraw::CStdDDraw() {
   lpPrimary = NULL;
@@ -203,6 +225,72 @@ BOOL CStdDDraw::Init(HWND hWnd, BOOL Fullscreen, int iResX, int iResY, BOOL fUse
   return TRUE;
 }
 
+static void DrawHardwareQuad(CGLSurface *src, CGLSurface *dst, int tx, int ty, int twdt, int thgt, int sx = 0, int sy = 0, int swdt = -1, int shgt = -1, bool useScissor = true) {
+  if (!src || !src->tex) return;
+  if (swdt == -1) swdt = src->w;
+  if (shgt == -1) shgt = src->h;
+  
+  SyncSurfaceGPU(src);
+  
+  if (dst) {
+    SyncSurfaceGPU(dst); // Ensure target is up to date if cpu modified it before this GPU draw
+    glBindFramebuffer(GL_FRAMEBUFFER, dst->fbo);
+    glViewport(0, 0, dst->w, dst->h);
+    dst->dirty_gpu = true;
+  } else {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    int w, h;
+    glfwGetFramebufferSize(g_window, &w, &h);
+    glViewport(0, 0, w, h);
+  }
+
+  if (useScissor && lpDDraw && dst) {
+    glEnable(GL_SCISSOR_TEST);
+    int scX = std::max(0, lpDDraw->ClipX1);
+    int scY = std::max(0, lpDDraw->ClipY1);
+    int scW = std::max(0, lpDDraw->ClipX2 - lpDDraw->ClipX1 + 1);
+    int scH = std::max(0, lpDDraw->ClipY2 - lpDDraw->ClipY1 + 1);
+    glScissor(scX, dst->h - scY - scH, scW, scH);
+  } else {
+    glDisable(GL_SCISSOR_TEST);
+  }
+
+  glUseProgram(g_shaderProgram);
+  
+  float projection[16];
+  if (dst) GetOrthoMatrix(projection, 0.0f, dst->w, dst->h, 0.0f);
+  else {
+    int w, h;
+    glfwGetFramebufferSize(g_window, &w, &h);
+    GetOrthoMatrix(projection, 0.0f, w, h, 0.0f);
+  }
+  glUniformMatrix4fv(glGetUniformLocation(g_shaderProgram, "projection"), 1, GL_FALSE, projection);
+
+  glBindTextureUnit(0, src->tex);
+  glUniform1i(glGetUniformLocation(g_shaderProgram, "texImage"), 0);
+  glBindTextureUnit(1, g_paletteTex);
+  glUniform1i(glGetUniformLocation(g_shaderProgram, "texPalette"), 1);
+
+  float u1 = (float)sx / src->w;
+  float v1 = (float)sy / src->h;
+  float u2 = (float)(sx + swdt) / src->w;
+  float v2 = (float)(sy + shgt) / src->h;
+
+  float vertices[] = {
+    (float)tx,        (float)ty,        u1, v1,
+    (float)(tx+twdt), (float)ty,        u2, v1,
+    (float)(tx+twdt), (float)(ty+thgt), u2, v2,
+    (float)(tx+twdt), (float)(ty+thgt), u2, v2,
+    (float)tx,        (float)(ty+thgt), u1, v2,
+    (float)tx,        (float)ty,        u1, v1
+  };
+
+  glBindVertexArray(g_vao);
+  glNamedBufferData(g_vbo, sizeof(vertices), vertices, GL_STREAM_DRAW);
+  glDrawArrays(GL_TRIANGLES, 0, 6);
+  glDisable(GL_SCISSOR_TEST);
+}
+
 BOOL CStdDDraw::PageFlip() {
   if (std::this_thread::get_id() != g_mainThreadId)
     return FALSE;
@@ -213,26 +301,11 @@ BOOL CStdDDraw::PageFlip() {
   if (surf->w <= 0 || surf->h <= 0)
     return FALSE;
 
-  glViewport(0, 0, surf->w, surf->h);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT);
-  if (surf->dirty && surf->tex) {
-    glTextureSubImage2D(surf->tex, 0, 0, 0, surf->w, surf->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, surf->bits);
-    surf->dirty = false;
-  }
 
-  glUseProgram(g_shaderProgram);
-  glBindTextureUnit(0, surf->tex);
-  glUniform1i(glGetUniformLocation(g_shaderProgram, "texImage"), 0);
-
-  glBindTextureUnit(1, g_paletteTex);
-  glUniform1i(glGetUniformLocation(g_shaderProgram, "texPalette"), 1);
-
-  float vertices[] = {-1.0f, -1.0f, 0.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f};
-
-  glBindVertexArray(g_vao);
-  glNamedBufferData(g_vbo, sizeof(vertices), vertices, GL_STREAM_DRAW);
-  glDrawArrays(GL_TRIANGLES, 0, 6);
+  DrawHardwareQuad(surf, nullptr, 0, 0, surf->w, surf->h, 0, 0, -1, -1, false);
 
   glfwSwapBuffers(g_window);
   glfwPollEvents();
@@ -310,7 +383,15 @@ BYTE *CStdDDraw::LockSurface(SURFACE sfcSurface, int &lPitch, int *lpSfcWdt, int
     *lpSfcWdt = s->w;
   if (lpSfcHgt)
     *lpSfcHgt = s->h;
-  s->dirty = true;
+  
+  if (s->dirty_gpu && s->fbo && std::this_thread::get_id() == g_mainThreadId) {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, s->fbo);
+    glReadPixels(0, 0, s->w, s->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, s->bits);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    s->dirty_gpu = false;
+  }
+  
+  s->dirty_cpu = true;
   return s->bits;
 }
 
@@ -332,7 +413,7 @@ BOOL CStdDDraw::WipeSurface(SURFACE sfcSurface) {
     return FALSE;
   CGLSurface *s = (CGLSurface *)sfcSurface;
   memset(s->bits, 0, s->pitch * s->h);
-  s->dirty = true;
+  s->dirty_cpu = true;
   return TRUE;
 }
 
@@ -344,8 +425,16 @@ SURFACE CStdDDraw::DuplicateSurface(SURFACE sfcSurface) {
   if (!ns)
     return NULL;
   CGLSurface *ns2 = (CGLSurface *)ns;
+  
+  if (s->dirty_gpu && s->fbo && std::this_thread::get_id() == g_mainThreadId) {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, s->fbo);
+    glReadPixels(0, 0, s->w, s->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, s->bits);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    s->dirty_gpu = false;
+  }
+  
   memcpy(ns2->bits, s->bits, s->pitch * s->h);
-  ns2->dirty = true;
+  ns2->dirty_cpu = true;
   return ns;
 }
 
@@ -353,8 +442,9 @@ void CStdDDraw::DestroySurface(SURFACE sfcSurface) {
   if (!sfcSurface)
     return;
   CGLSurface *s = (CGLSurface *)sfcSurface;
-  if (std::this_thread::get_id() == g_mainThreadId && s->tex) {
-    glDeleteTextures(1, &s->tex);
+  if (std::this_thread::get_id() == g_mainThreadId) {
+    if (s->tex) glDeleteTextures(1, &s->tex);
+    if (s->fbo) glDeleteFramebuffers(1, &s->fbo);
   }
   if (s->bits)
     delete[] s->bits;
@@ -381,10 +471,15 @@ SURFACE CStdDDraw::CreateSurface(int iWdt, int iHgt) {
     glTextureParameteri(s->tex, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTextureParameteri(s->tex, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTextureSubImage2D(s->tex, 0, 0, 0, s->w, s->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, s->bits);
+    
+    glCreateFramebuffers(1, &s->fbo);
+    glNamedFramebufferTexture(s->fbo, GL_COLOR_ATTACHMENT0, s->tex, 0);
   } else {
     s->tex = 0;
+    s->fbo = 0;
   }
-  s->dirty = false;
+  s->dirty_cpu = false;
+  s->dirty_gpu = false;
   return (SURFACE)s;
 }
 
@@ -392,11 +487,12 @@ void CStdDDraw::SurfaceShiftColor(SURFACE sfcSfc, int iShift) {
   if (!sfcSfc)
     return;
   CGLSurface *s = (CGLSurface *)sfcSfc;
+  SyncSurfaceCPU(s);
   for (int i = 0; i < s->pitch * s->h; i++) {
     if (s->bits[i])
       s->bits[i] = (BYTE)BoundBy((int)s->bits[i] + iShift, 0, 255);
   }
-  s->dirty = true;
+  s->dirty_cpu = true;
 }
 
 void CStdDDraw::SurfaceShiftColorRange(SURFACE sfcSfc, int iRngLo, int iRngHi, int iShift) {
@@ -408,13 +504,25 @@ void CStdDDraw::SurfaceShiftColorRange(SURFACE sfcSfc, int iRngLo, int iRngHi, i
       s->bits[i] = (BYTE)BoundBy((int)s->bits[i] + iShift, 0, 255);
     }
   }
-  s->dirty = true;
+  s->dirty_cpu = true;
 }
 
 void CStdDDraw::SurfaceAllowColor(SURFACE sfcSfc, BYTE iRngLo, BYTE iRngHi, BOOL fAllowZero) {
-  // This was likely used in DirectDraw to manage color keys or palette usage.
-  // In our OpenGL software blitter, we don't have a direct equivalent but we
-  // can at least ensure the surface is marked dirty if needed.
+  BYTE *sfcbuf, *lbuf;
+  int xcnt, ycnt, pitch, wdt, hgt;
+  if (iRngHi < iRngLo) return;
+  if (!(sfcbuf = LockSurface(sfcSfc, pitch, &wdt, &hgt))) return;
+  for (ycnt = 0; ycnt < hgt; ycnt++) {
+    lbuf = sfcbuf + pitch * ycnt;
+    for (xcnt = 0; xcnt < wdt; xcnt++, lbuf++) {
+      if ((*lbuf != 0) || !fAllowZero) {
+        if ((*lbuf < iRngLo) || (*lbuf > iRngHi)) {
+          *lbuf = iRngLo + *lbuf % (iRngHi - iRngLo + 1);
+        }
+      }
+    }
+  }
+  UnLockSurface(sfcSfc);
 }
 
 BOOL CStdDDraw::BlitFast(SURFACE sfcSource, int fx, int fy, SURFACE sfcTarget, int tx, int ty, int wdt, int hgt) { return Blit(sfcSource, fx, fy, wdt, hgt, sfcTarget, tx, ty, wdt, hgt, TRUE); }
@@ -427,10 +535,21 @@ BOOL CStdDDraw::Blit(SURFACE sfcSource, int fx, int fy, int fwdt, int fhgt, SURF
   CGLSurface *src = (CGLSurface *)sfcSource;
   CGLSurface *dst = (CGLSurface *)sfcTarget;
 
-  for (int y = 0; y < thgt; y++) {
+  SyncSurfaceCPU(src);
+  SyncSurfaceCPU(dst);
+
+  int clipX1 = std::max(0, ClipX1);
+  int clipX2 = std::min(dst->w - 1, ClipX2);
+  int clipY1 = std::max(0, ClipY1);
+  int clipY2 = std::min(dst->h - 1, ClipY2);
+
+  int startY = std::max(0, clipY1 - ty);
+  int endY = std::min(thgt - 1, clipY2 - ty);
+  int startX = std::max(0, clipX1 - tx);
+  int endX = std::min(twdt - 1, clipX2 - tx);
+
+  for (int y = startY; y <= endY; y++) {
     int dy = ty + y;
-    if (dy < 0 || dy >= dst->h)
-      continue;
     int sy = fy + (y * fhgt / thgt);
     if (sy < 0 || sy >= src->h)
       continue;
@@ -438,21 +557,18 @@ BOOL CStdDDraw::Blit(SURFACE sfcSource, int fx, int fy, int fwdt, int fhgt, SURF
     uint8_t *pSrcLine = src->bits + sy * src->pitch;
     uint8_t *pDstLine = dst->bits + dy * dst->pitch;
 
-    for (int x = 0; x < twdt; x++) {
-      int dx = tx + x;
-      if (dx < 0 || dx >= dst->w)
-        continue;
+    for (int x = startX; x <= endX; x++) {
       int sx = fx + (x * fwdt / twdt);
       if (sx < 0 || sx >= src->w)
         continue;
 
       uint8_t c = pSrcLine[sx];
       if (!fSrcColKey || c != 0) {
-        pDstLine[dx] = c;
+        pDstLine[tx + x] = c;
       }
     }
   }
-  dst->dirty = true;
+  dst->dirty_cpu = true;
   return TRUE;
 }
 
@@ -461,6 +577,9 @@ BOOL CStdDDraw::BlitRotate(SURFACE sfcSource, int fx, int fy, int fwdt, int fhgt
     return FALSE;
   CGLSurface *src = (CGLSurface *)sfcSource;
   CGLSurface *dst = (CGLSurface *)sfcTarget;
+
+  SyncSurfaceCPU(src);
+  SyncSurfaceCPU(dst);
 
   double angle = (double)iAngle * 3.14159265 / 180.0;
   double ca = cos(-angle);
@@ -471,11 +590,11 @@ BOOL CStdDDraw::BlitRotate(SURFACE sfcSource, int fx, int fy, int fwdt, int fhgt
 
   for (int y = 0; y < thgt; y++) {
     int dy = ty + y;
-    if (dy < 0 || dy >= dst->h)
+    if (dy < std::max(0, ClipY1) || dy > std::min(dst->h - 1, ClipY2))
       continue;
     for (int x = 0; x < twdt; x++) {
       int dx = tx + x;
-      if (dx < 0 || dx >= dst->w)
+      if (dx < std::max(0, ClipX1) || dx > std::min(dst->w - 1, ClipX2))
         continue;
 
       double rx = (double)(dx - midX);
@@ -492,7 +611,7 @@ BOOL CStdDDraw::BlitRotate(SURFACE sfcSource, int fx, int fy, int fwdt, int fhgt
       }
     }
   }
-  dst->dirty = true;
+  dst->dirty_cpu = true;
   return TRUE;
 }
 
@@ -547,7 +666,7 @@ BOOL CStdDDraw::SetPixel(SURFACE sfcDest, int tx, int ty, BYTE col) {
   CGLSurface *dst = (CGLSurface *)sfcDest;
   if (tx >= 0 && tx < dst->w && ty >= 0 && ty < dst->h) {
     dst->bits[ty * dst->pitch + tx] = col;
-    dst->dirty = true;
+    dst->dirty_cpu = true;
   }
   return TRUE;
 }
@@ -556,6 +675,7 @@ BYTE CStdDDraw::GetPixel(SURFACE sfcSource, int fx, int fy) {
   if (!sfcSource)
     return 0;
   CGLSurface *src = (CGLSurface *)sfcSource;
+  SyncSurfaceCPU(src);
   if (fx >= 0 && fx < src->w && fy >= 0 && fy < src->h) {
     return src->bits[fy * src->pitch + fx];
   }
@@ -566,34 +686,56 @@ void CStdDDraw::DrawBox(SURFACE sfcDest, int x1, int y1, int x2, int y2, BYTE co
   if (!sfcDest)
     return;
   CGLSurface *dst = (CGLSurface *)sfcDest;
-  int startX = std::max(0, x1);
-  int endX = std::min(dst->w - 1, x2);
-  int startY = std::max(0, y1);
-  int endY = std::min(dst->h - 1, y2);
-  for (int y = startY; y <= endY; y++) {
+  SyncSurfaceCPU(dst);
+  
+  if (x1 < std::max(0, ClipX1)) x1 = std::max(0, ClipX1);
+  if (x2 > std::min(dst->w - 1, ClipX2)) x2 = std::min(dst->w - 1, ClipX2);
+  if (y1 < std::max(0, ClipY1)) y1 = std::max(0, ClipY1);
+  if (y2 > std::min(dst->h - 1, ClipY2)) y2 = std::min(dst->h - 1, ClipY2);
+  
+  if (x1 > x2 || y1 > y2) return;
+
+  for (int y = y1; y <= y2; y++) {
     uint8_t *pLine = dst->bits + y * dst->pitch;
-    for (int x = startX; x <= endX; x++) {
-      pLine[x] = col;
+    if (!Pattern) {
+      for (int x = x1; x <= x2; x++) {
+        pLine[x] = col;
+      }
+    } else {
+      uint8_t *bypPatLine;
+      if (PatQuickMod) {
+        bypPatLine = Pattern + PatWdt * (y & PatHgtMod);
+        for (int x = x1; x <= x2; x++) {
+          pLine[x] = col + bypPatLine[x & PatWdtMod];
+        }
+      } else {
+        bypPatLine = Pattern + PatWdt * (y % PatHgt);
+        for (int x = x1; x <= x2; x++) {
+          pLine[x] = col + bypPatLine[x % PatWdt];
+        }
+      }
     }
   }
-  dst->dirty = true;
+  dst->dirty_cpu = true;
 }
 
 void CStdDDraw::DrawBoxColorTable(SURFACE sfcDest, int x1, int y1, int x2, int y2, BYTE *bypColorTable) {
   if (!sfcDest || !bypColorTable)
     return;
   CGLSurface *dst = (CGLSurface *)sfcDest;
-  int startX = std::max(0, x1);
-  int endX = std::min(dst->w - 1, x2);
-  int startY = std::max(0, y1);
-  int endY = std::min(dst->h - 1, y2);
-  for (int y = startY; y <= endY; y++) {
+  if (x1 < std::max(0, ClipX1)) x1 = std::max(0, ClipX1);
+  if (x2 > std::min(dst->w - 1, ClipX2)) x2 = std::min(dst->w - 1, ClipX2);
+  if (y1 < std::max(0, ClipY1)) y1 = std::max(0, ClipY1);
+  if (y2 > std::min(dst->h - 1, ClipY2)) y2 = std::min(dst->h - 1, ClipY2);
+  if (x1 > x2 || y1 > y2) return;
+
+  for (int y = y1; y <= y2; y++) {
     uint8_t *pLine = dst->bits + y * dst->pitch;
-    for (int x = startX; x <= endX; x++) {
+    for (int x = x1; x <= x2; x++) {
       pLine[x] = bypColorTable[pLine[x]];
     }
   }
-  dst->dirty = true;
+  dst->dirty_cpu = true;
 }
 
 void CStdDDraw::DrawCircle(SURFACE sfcDest, int x, int y, int r, BYTE col) {
@@ -607,9 +749,15 @@ void CStdDDraw::DrawCircle(SURFACE sfcDest, int x, int y, int r, BYTE col) {
   }
 }
 
-void CStdDDraw::DrawHorizontalLine(SURFACE sfcDest, int x1, int x2, int y, BYTE col) { DrawBox(sfcDest, x1, y, x2, y, col); }
+void CStdDDraw::DrawHorizontalLine(SURFACE sfcDest, int x1, int x2, int y, BYTE col) { 
+  if (x1 > x2) std::swap(x1, x2);
+  DrawBox(sfcDest, x1, y, x2, y, col); 
+}
 
-void CStdDDraw::DrawVerticalLine(SURFACE sfcDest, int x, int y1, int y2, BYTE col) { DrawBox(sfcDest, x, y1, x, y2, col); }
+void CStdDDraw::DrawVerticalLine(SURFACE sfcDest, int x, int y1, int y2, BYTE col) { 
+  if (y1 > y2) std::swap(y1, y2);
+  DrawBox(sfcDest, x, y1, x, y2, col); 
+}
 
 void CStdDDraw::DrawFrame(SURFACE sfcDest, int x1, int y1, int x2, int y2, BYTE col) {
   DrawHorizontalLine(sfcDest, x1, x2, y1, col);
@@ -618,7 +766,35 @@ void CStdDDraw::DrawFrame(SURFACE sfcDest, int x1, int y1, int x2, int y2, BYTE 
   DrawVerticalLine(sfcDest, x2, y1, y2, col);
 }
 
-void CStdDDraw::DrawInline(SURFACE sfcDest, int iX1, int iY1, int iX2, int iY2, BYTE byCol, BYTE byOnCol, BYTE byAdjacentCol) {}
+void CStdDDraw::DrawInline(SURFACE sfcDest, int iX1, int iY1, int iX2, int iY2, BYTE byCol, BYTE byOnCol, BYTE byAdjacentCol) {
+  if (!sfcDest) return;
+  CGLSurface *dst = (CGLSurface *)sfcDest;
+  SyncSurfaceCPU(dst);
+  
+  if ((iX2 < std::max(0, ClipX1)) || (iX1 > std::min(dst->w - 1, ClipX2)) 
+   || (iY2 < std::max(0, ClipY1)) || (iY1 > std::min(dst->h - 1, ClipY2))) {
+    return;
+  }
+  
+  if (iX1 < std::max(0, ClipX1)) iX1 = std::max(0, ClipX1); 
+  if (iX2 > std::min(dst->w - 1, ClipX2)) iX2 = std::min(dst->w - 1, ClipX2); 
+  if (iY1 < std::max(0, ClipY1)) iY1 = std::max(0, ClipY1); 
+  if (iY2 > std::min(dst->h - 1, ClipY2)) iY2 = std::min(dst->h - 1, ClipY2);
+  
+  for (int cx = iX1; cx <= iX2; cx++) {
+    for (int cy = iY1; cy <= iY2; cy++) {
+      if (dst->bits[dst->pitch * cy + cx] == byOnCol) {
+        if ((cx == iX1) || (dst->bits[dst->pitch * cy + cx - 1] == byAdjacentCol)
+         || (cx == iX2) || (dst->bits[dst->pitch * cy + cx + 1] == byAdjacentCol)
+         || (cy == iY1) || (dst->bits[dst->pitch * (cy - 1) + cx] == byAdjacentCol)
+         || (cy == iY2) || (dst->bits[dst->pitch * (cy + 1) + cx] == byAdjacentCol)) {
+          dst->bits[dst->pitch * cy + cx] = byCol;
+        }
+      }
+    }
+  }
+  dst->dirty_cpu = true;
+}
 
 BOOL CStdDDraw::DrawLine(SURFACE sfcTarget, int x1, int y1, int x2, int y2, BYTE byCol) {
   int dx = abs(x2 - x1);
@@ -677,8 +853,34 @@ BOOL CStdDDraw::DrawPolygon(SURFACE sfcTarget, int iNum, int *ipVtx, int iCol) {
   return TRUE;
 }
 
-BOOL CStdDDraw::DefinePattern(SURFACE sfcSource) { return TRUE; }
-void CStdDDraw::NoPattern() {}
+BOOL CStdDDraw::DefinePattern(SURFACE sfcSource) {
+  int lPitch, lWdt, lHgt;
+  BYTE *sfcbuf;
+  if (!sfcSource) return FALSE;
+  NoPattern();
+  if (!(sfcbuf = LockSurface(sfcSource, lPitch, &lWdt, &lHgt))) return FALSE;
+  PatWdt = lWdt; PatHgt = lHgt;
+  int twdt, thgt;
+  for (twdt = 1; twdt < lWdt; twdt <<= 1);
+  for (thgt = 1; thgt < lHgt; thgt <<= 1);
+  if ((twdt == lWdt) && (thgt == lHgt)) {
+    PatQuickMod = TRUE; PatWdtMod = PatWdt - 1; PatHgtMod = PatHgt - 1;
+  }
+  if (!(Pattern = new BYTE[PatWdt * PatHgt])) {
+    UnLockSurface(sfcSource);
+    return FALSE;
+  }
+  for (int cy = 0; cy < PatHgt; cy++)
+    memcpy(Pattern + cy * PatWdt, sfcbuf + cy * lPitch, PatWdt);
+  UnLockSurface(sfcSource);
+  return TRUE;
+}
+
+void CStdDDraw::NoPattern() {
+  if (Pattern) delete[] Pattern;
+  Pattern = NULL;
+  PatQuickMod = FALSE;
+}
 
 BOOL CStdDDraw::CreatePrimaryPalette(SURFACE sfcAttachTo) { return TRUE; }
 BOOL CStdDDraw::CreatePrimaryClipper() { return TRUE; }
