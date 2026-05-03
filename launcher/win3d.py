@@ -40,6 +40,7 @@ class Win3DFrame(QFrame):
         
 class Win3DButton(QPushButton):
     click_sound = None
+    font_family = "Comic Sans MS, Chilanka, cursive"
     
     def __init__(self, *args, **kwargs):
         # Custom properties
@@ -64,8 +65,7 @@ class Win3DButton(QPushButton):
         self.setFocusPolicy(Qt.NoFocus)
         
         # Clonk style font
-        font_family = "Comic Sans MS, Chilanka, cursive"
-        self.setFont(QFont(font_family, 9))
+        self.setFont(QFont(self.font_family, 9))
         
         # Audio feedback
         self.clicked.connect(self._play_click)

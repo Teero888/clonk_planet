@@ -61,6 +61,10 @@ add_dependencies(test_loading planet_data_sync)
 add_executable(test_zlib tests/test_zlib.cpp)
 target_link_libraries(test_zlib PRIVATE z)
 
+add_executable(clonk_midi launcher/clonk_midi.cpp)
+target_link_libraries(clonk_midi PRIVATE m dl pthread)
+add_dependencies(clonk_midi planet_data_sync)
+
 # enable_testing()
 # add_test(NAME HeadlessTest 
 #          COMMAND ${CMAKE_COMMAND} -E env CLONK_TEST_HEADLESS=1 $<TARGET_FILE:clonk> Twonky.c4p

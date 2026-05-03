@@ -13,9 +13,9 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QPushButton,
                              QFrame, QDialog, QTabWidget, QVBoxLayout, 
                              QStackedWidget, QHBoxLayout, QGroupBox, QComboBox, 
                              QSpinBox, QCheckBox, QGridLayout, QSlider, QLineEdit, QMessageBox, QListWidget, QStyledItemDelegate, QStyle, QStyleOptionViewItem)
-from PyQt5.QtGui import QPixmap, QPalette, QBrush, QStandardItemModel, QStandardItem, QIcon, QPainter, QColor, QFont, QKeySequence, QImage
-from PyQt5.QtCore import Qt, QRect, QSize, QTimer, QUrl, QPoint, pyqtSignal
-from PyQt5.QtMultimedia import QSoundEffect
+from PyQt5.QtGui import QPixmap, QPalette, QBrush, QStandardItemModel, QStandardItem, QIcon, QPainter, QColor, QFont, QKeySequence, QImage, QFontDatabase
+from PyQt5.QtCore import Qt, QRect, QSize, QTimer, QUrl, QPoint, pyqtSignal, QProcess
+from PyQt5.QtMultimedia import QSoundEffect, QMediaPlayer, QMediaContent
 from clonk_ui import ClonkButton, ClonkArea, ClonkTexturedWidget
 from clonk_popup import ClonkPopupDialog, ClonkPlayerPropertiesDialog
 from win3d import Win3DGroupBox, Win3DButton, Win3DTabWidget
@@ -200,8 +200,10 @@ class ClonkLauncher(QMainWindow):
         self.base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
         self.planet_data_path = os.path.join(self.base_path, 'planet_data')
         self.res_path = os.path.join(os.path.dirname(__file__), 'res')
+        self.res_music_path = os.path.join(os.path.dirname(__file__), 'res_music')
         self.wav_path = os.path.join(os.path.dirname(__file__), 'res_wav')
         self.dump_path = os.path.join(os.path.dirname(__file__), 'res_dump')
+        self.comic_font_family = "Comic Sans MS"
         
         # Load Atlases
         icons_path = os.path.join(self.dump_path, 'Planet_fixed.bin_2_1015_1031.bmp')
@@ -226,9 +228,17 @@ class ClonkLauncher(QMainWindow):
         self.sound_start = self.load_sound('sound_7008.wav')
         self.sound_click = self.load_sound('sound_7002.wav')
         
+        # Music Player
+        self.music_player = QMediaPlayer(self)
+        self.midi_process = QProcess(self)
+        self.current_music_path = None
+        self.extract_frontend_music()
+
         # Global access for UI components
         ClonkButton.click_sound = self.sound_click
+        ClonkButton.font_family = self.comic_font_family
         Win3DButton.click_sound = self.sound_click
+        Win3DButton.font_family = self.comic_font_family
 
         self.config_path = os.path.join(self.planet_data_path, 'clonk.ini')
         self.language = "US"
@@ -254,11 +264,7 @@ class ClonkLauncher(QMainWindow):
             except Exception as e:
                 print(f"Error loading config: {e}")
         
-        # Helper to get config values with defaults
-        def get_cfg(sub_key, default):
-            return self.config_data.get(f"RedWolf Design\\Clonk 4\\{sub_key}", default)
-
-        self.language = get_cfg("General\\Language", "US")
+        self.language = self.get_cfg("General\\Language", "US")
 
     def save_config(self):
         # Update specific keys that might have changed outside the options dialog
@@ -317,7 +323,7 @@ class ClonkLauncher(QMainWindow):
         self.tree_model.clear()
         if not os.path.exists(self.planet_data_path): return
 
-        bold_font = QFont()
+        bold_font = QFont(self.comic_font_family)
         bold_font.setBold(True)
 
         def get_item_info(name, grp):
@@ -702,6 +708,63 @@ class ClonkLauncher(QMainWindow):
     def play_sound(self, effect):
         if effect: effect.play()
 
+    def extract_frontend_music(self):
+        # 1. Check if already dumped in res_music
+        for name in ('Frontend.mid', 'Frontend Old.mid'):
+            path = os.path.join(self.res_music_path, name)
+            if os.path.exists(path):
+                self.current_music_path = path
+                return
+
+        # 2. Extract from Music.c4g
+        music_grp_path = os.path.join(self.planet_data_path, 'Music.c4g')
+        if os.path.exists(music_grp_path):
+            try:
+                grp = C4Group(music_grp_path)
+                # Try Frontend.mid or Frontend Old.mid
+                song_data = grp.get_file('Frontend.mid') or grp.get_file('Frontend Old.mid')
+                if song_data:
+                    temp_path = os.path.join(self.temp_dir.name, 'frontend.mid')
+                    with open(temp_path, 'wb') as f:
+                        f.write(song_data)
+                    self.current_music_path = temp_path
+            except Exception as e:
+                print(f"Error extracting music: {e}")
+
+    def get_cfg(self, sub_key, default):
+        return self.config_data.get(f"RedWolf Design\\Clonk 4\\{sub_key}", str(default))
+
+    def start_music(self):
+        if self.current_music_path and os.path.exists(self.current_music_path):
+            if self.get_cfg("Sound\\FEMusic", "1") == "1":
+                # Check for SoundFont and our custom C++ player
+                sf_path = os.path.join(self.res_music_path, "FluidR3_GM_GS.sf2")
+                midi_player_bin = os.path.abspath(os.path.join(self.base_path, 'build', 'clonk_midi'))
+                
+                if os.path.exists(sf_path) and os.path.exists(midi_player_bin):
+                    # Play via clonk_midi process
+                    self.stop_music()
+                    args = [midi_player_bin, self.current_music_path, sf_path]
+                    self.midi_process.start(midi_player_bin, args[1:])
+                else:
+                    # Fallback to QMediaPlayer (may not work on all systems)
+                    self.music_player.setMedia(QMediaContent(QUrl.fromLocalFile(os.path.abspath(self.current_music_path))))
+                    self.music_player.play()
+
+    def stop_music(self):
+        if self.midi_process.state() != QProcess.NotRunning:
+            self.midi_process.terminate()
+            if not self.midi_process.waitForFinished(1000):
+                self.midi_process.kill()
+        self.music_player.stop()
+
+    def update_music(self):
+        if self.get_cfg("Sound\\FEMusic", "1") == "1":
+            if self.music_player.state() != QMediaPlayer.PlayingState:
+                self.start_music()
+        else:
+            self.stop_music()
+
     def init_ui(self):
 
         self.client_w, self.client_h = 578, 393
@@ -735,7 +798,7 @@ class ClonkLauncher(QMainWindow):
             self.bg_label.setAutoFillBackground(False); self.bg_label.setStyleSheet("background-color: #c0c0c0;")
 
     def setup_main_ui(self):
-        font_style = "'Comic Sans MS', 'Chilanka', 'cursive'"
+        font_style = f"'{self.comic_font_family}', 'Chilanka', 'cursive'"
         self.ui_container.setStyleSheet(f"* {{ font-family: {font_style}; font-size: 11px; color: black; }}")
 
         # Tree View Area
@@ -887,6 +950,7 @@ class ClonkLauncher(QMainWindow):
                 print(f"Updated Player.txt for nested group {path}/{'/'.join(sub)}:\n{final_content}")
                 #ClonkPopupDialog(self, text="Updated (nested groups simulated in prototype)").exec_()
     def launch_game(self):
+        self.stop_music()
         clonk_bin = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'build', 'clonk'))
         if not os.path.exists(clonk_bin):
             # Try just 'clonk' in the same directory as well, or from PATH
@@ -990,16 +1054,12 @@ class OptionsDialog(QDialog):
         layout.setContentsMargins(6, 7, 6, 6)
         layout.setSpacing(0)
 
-        # Helper to get config values
-        def get_cfg(sub_key, default):
-            return self.launcher.config_data.get(f"RedWolf Design\\Clonk 4\\{sub_key}", str(default))
-
         # Keyboard Setup
         self.key_codes = {}
         for b in range(1, 5):
             for i in range(1, 13):
                 key_name = f"Kbd{b}Key{i}"
-                self.key_codes[key_name] = int(get_cfg(f"Controls\\{key_name}", 0))
+                self.key_codes[key_name] = int(self.launcher.get_cfg(f"Controls\\{key_name}", 0))
 
         # NEW TAB SETUP WITH TEXTURE ATLAS
         self.tab_widget = Win3DTabWidget(self)
@@ -1168,12 +1228,10 @@ class OptionsDialog(QDialog):
         set_cfg("Network\\Hosts", ";".join(hosts))
 
         self.launcher.save_config()
+        self.launcher.update_music()
         super().accept()
 
     def create_program_page(self):
-        def get_cfg(sub_key, default):
-            return self.launcher.config_data.get(f"RedWolf Design\\Clonk 4\\{sub_key}", str(default))
-
         page = QWidget()
         layout = QVBoxLayout(page)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -1203,7 +1261,7 @@ class OptionsDialog(QDialog):
         font_layout.setSpacing(8)
         
         self.combo_font = QComboBox()
-        font_name = get_cfg("General\\FEFontName", "Comic Sans MS")
+        font_name = self.launcher.get_cfg("General\\FEFontName", self.launcher.comic_font_family)
         self.combo_font.addItem(font_name)
         self.combo_font.setFixedWidth(220) 
         font_layout.addWidget(self.combo_font)
@@ -1216,7 +1274,7 @@ class OptionsDialog(QDialog):
         menus_layout.setSpacing(2)
         menus_layout.addWidget(QLabel("Menus"))
         self.spin_menus = QSpinBox()
-        self.spin_menus.setValue(int(get_cfg("General\\FEFontSize", 9)))
+        self.spin_menus.setValue(int(self.launcher.get_cfg("General\\FEFontSize", 9)))
         self.spin_menus.setFixedWidth(45) 
         menus_layout.addWidget(self.spin_menus)
         
@@ -1224,7 +1282,7 @@ class OptionsDialog(QDialog):
         game_layout.setSpacing(2)
         game_layout.addWidget(QLabel("Game"))
         self.spin_game = QSpinBox()
-        self.spin_game.setValue(int(get_cfg("General\\RXFontSize", 10)))
+        self.spin_game.setValue(int(self.launcher.get_cfg("General\\RXFontSize", 10)))
         self.spin_game.setFixedWidth(45) 
         game_layout.addWidget(self.spin_game)
         
@@ -1240,7 +1298,7 @@ class OptionsDialog(QDialog):
         front_layout = QVBoxLayout(front_group)
         front_layout.setContentsMargins(8, 16, 8, 8)
         self.check_quick = QCheckBox("Display quick start screen")
-        self.check_quick.setChecked(get_cfg("Explorer\\ShowQuickStart", "1") == "1")
+        self.check_quick.setChecked(self.launcher.get_cfg("Explorer\\ShowQuickStart", "1") == "1")
         front_layout.addWidget(self.check_quick)
         layout.addWidget(front_group)
 
@@ -1249,7 +1307,12 @@ class OptionsDialog(QDialog):
         mode_layout = QVBoxLayout(mode_group)
         mode_layout.setContentsMargins(8, 16, 8, 8)
         self.check_dev = QCheckBox("Enable developer mode")
-        self.check_dev.setChecked(get_cfg("Developer\\Active", "0") == "1")
+        self.check_dev.setChecked(self.launcher.get_cfg("Developer\\Active", "0") == "1")
+        mode_layout.addWidget(self.check_dev)
+        layout.addWidget(mode_group)
+        
+        layout.addStretch()
+        return page
         mode_layout.addWidget(self.check_dev)
         layout.addWidget(mode_group)
 
@@ -1257,9 +1320,6 @@ class OptionsDialog(QDialog):
         return page
     
     def create_graphics_page(self):
-        def get_cfg(sub_key, default):
-            return self.launcher.config_data.get(f"RedWolf Design\\Clonk 4\\{sub_key}", str(default))
-
         page = QWidget()
         layout = QVBoxLayout(page)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -1279,7 +1339,7 @@ class OptionsDialog(QDialog):
         self.radio_800 = QRadioButton("800x600")
         self.radio_1024 = QRadioButton("1024x768")
         
-        res_val = int(get_cfg("Graphics\\Resolution", "1"))
+        res_val = int(self.launcher.get_cfg("Graphics\\Resolution", "1"))
         if res_val == 0: self.radio_640.setChecked(True)
         elif res_val == 1: self.radio_800.setChecked(True)
         else: self.radio_1024.setChecked(True)
@@ -1297,7 +1357,7 @@ class OptionsDialog(QDialog):
         
         self.slider_smoke = QSlider(Qt.Horizontal)
         self.slider_smoke.setRange(0, 100)
-        self.slider_smoke.setValue(int(get_cfg("Graphics\\SmokeLevel", "200")) // 2)
+        self.slider_smoke.setValue(int(self.launcher.get_cfg("Graphics\\SmokeLevel", "200")) // 2)
         smoke_layout.addWidget(self.slider_smoke)
         
         labels_layout = QHBoxLayout()
@@ -1321,17 +1381,17 @@ class OptionsDialog(QDialog):
         disp_layout.setSpacing(2)
         
         self.chk_viewport = QCheckBox("Viewport delimiters")
-        self.chk_viewport.setChecked(get_cfg("Graphics\\SplitscreenDividers", "1") == "1")
+        self.chk_viewport.setChecked(self.launcher.get_cfg("Graphics\\SplitscreenDividers", "1") == "1")
         self.chk_ext_info = QCheckBox("Extended player info")
-        self.chk_ext_info.setChecked(get_cfg("Graphics\\ShowPlayerInfoAlways", "1") == "1")
+        self.chk_ext_info.setChecked(self.launcher.get_cfg("Graphics\\ShowPlayerInfoAlways", "1") == "1")
         self.chk_color_anim = QCheckBox("Color animation")
-        self.chk_color_anim.setChecked(get_cfg("Graphics\\ColorAnimation", "1") == "1")
+        self.chk_color_anim.setChecked(self.launcher.get_cfg("Graphics\\ColorAnimation", "1") == "1")
         self.chk_startup = QCheckBox("Startup messages")
-        self.chk_startup.setChecked(get_cfg("Graphics\\ShowStartupMessages", "1") == "1")
+        self.chk_startup.setChecked(self.launcher.get_cfg("Graphics\\ShowStartupMessages", "1") == "1")
         self.chk_obj_cmds = QCheckBox("Object commands")
-        self.chk_obj_cmds.setChecked(get_cfg("Graphics\\ShowCommands", "1") == "1")
+        self.chk_obj_cmds.setChecked(self.launcher.get_cfg("Graphics\\ShowCommands", "1") == "1")
         self.chk_portraits = QCheckBox("Portraits")
-        self.chk_portraits.setChecked(get_cfg("Graphics\\ShowPortraits", "0") == "1")
+        self.chk_portraits.setChecked(self.launcher.get_cfg("Graphics\\ShowPortraits", "0") == "1")
         
         disp_layout.addWidget(self.chk_viewport)
         disp_layout.addWidget(self.chk_ext_info)
@@ -1348,7 +1408,7 @@ class OptionsDialog(QDialog):
         trouble_layout.setContentsMargins(8, 16, 8, 8)
         
         self.chk_ddraw = QCheckBox("DirectDraw software emulation")
-        self.chk_ddraw.setChecked(get_cfg("Graphics\\DDrawAccel", "0") == "1")
+        self.chk_ddraw.setChecked(self.launcher.get_cfg("Graphics\\DDrawAccel", "0") == "1")
         trouble_layout.addWidget(self.chk_ddraw)
         
         layout.addWidget(trouble_group)
@@ -1358,9 +1418,6 @@ class OptionsDialog(QDialog):
         return page
     
     def create_sound_page(self):
-        def get_cfg(sub_key, default):
-            return self.launcher.config_data.get(f"RedWolf Design\\Clonk 4\\{sub_key}", str(default))
-
         page = QWidget()
         layout = QVBoxLayout(page)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -1373,11 +1430,11 @@ class OptionsDialog(QDialog):
         game_layout.setSpacing(4)
         
         self.chk_game_sfx = QCheckBox("Sound effects")
-        self.chk_game_sfx.setChecked(get_cfg("Sound\\RXSound", "1") == "1")
+        self.chk_game_sfx.setChecked(self.launcher.get_cfg("Sound\\RXSound", "1") == "1")
         self.chk_game_loops = QCheckBox("Sound loops")
-        self.chk_game_loops.setChecked(get_cfg("Sound\\RXSoundLoops", "1") == "1")
+        self.chk_game_loops.setChecked(self.launcher.get_cfg("Sound\\RXSoundLoops", "1") == "1")
         self.chk_game_music = QCheckBox("Music")
-        self.chk_game_music.setChecked(get_cfg("Sound\\RXMusic", "1") == "1")
+        self.chk_game_music.setChecked(self.launcher.get_cfg("Sound\\RXMusic", "1") == "1")
         
         game_layout.addWidget(self.chk_game_sfx)
         game_layout.addWidget(self.chk_game_loops)
@@ -1392,9 +1449,9 @@ class OptionsDialog(QDialog):
         front_layout.setSpacing(4)
         
         self.chk_front_sfx = QCheckBox("Sound effects")
-        self.chk_front_sfx.setChecked(get_cfg("Sound\\FESamples", "1") == "1")
+        self.chk_front_sfx.setChecked(self.launcher.get_cfg("Sound\\FESamples", "1") == "1")
         self.chk_front_music = QCheckBox("Music")
-        self.chk_front_music.setChecked(get_cfg("Sound\\FEMusic", "1") == "1")
+        self.chk_front_music.setChecked(self.launcher.get_cfg("Sound\\FEMusic", "1") == "1")
         
         front_layout.addWidget(self.chk_front_sfx)
         front_layout.addWidget(self.chk_front_music)
@@ -1531,9 +1588,6 @@ class OptionsDialog(QDialog):
         return page
 
     def create_network_page(self):
-        def get_cfg(sub_key, default):
-            return self.launcher.config_data.get(f"RedWolf Design\\Clonk 4\\{sub_key}", str(default))
-
         page = QWidget()
         layout = QVBoxLayout(page)
         layout.setContentsMargins(8, 14, 8, 8)
@@ -1542,7 +1596,7 @@ class OptionsDialog(QDialog):
         # Top Row (Active & IP Config)
         top_row = QHBoxLayout()
         self.chk_net_active = QCheckBox("Active")
-        self.chk_net_active.setChecked(get_cfg("Network\\Active", "0") == "1")
+        self.chk_net_active.setChecked(self.launcher.get_cfg("Network\\Active", "0") == "1")
         top_row.addWidget(self.chk_net_active)
         
         top_row.addStretch()
@@ -1562,7 +1616,7 @@ class OptionsDialog(QDialog):
         sys_hostname = socket.gethostname()
         
         local_layout.addWidget(QLabel("Name"))
-        self.inp_hostname = QLineEdit(get_cfg("Network\\LocalName", sys_hostname.upper()))
+        self.inp_hostname = QLineEdit(self.launcher.get_cfg("Network\\LocalName", sys_hostname.upper()))
         local_layout.addWidget(self.inp_hostname)
         local_layout.addWidget(QLabel(f"Address: {sys_hostname.lower()}"))
         
@@ -1574,7 +1628,7 @@ class OptionsDialog(QDialog):
         hosts_layout.setContentsMargins(8, 16, 8, 8)
         
         self.list_hosts = QListWidget()
-        hosts_str = get_cfg("Network\\Hosts", "")
+        hosts_str = self.launcher.get_cfg("Network\\Hosts", "")
         if hosts_str:
             for host in hosts_str.split(";"):
                 if host: self.list_hosts.addItem(host)
@@ -1608,7 +1662,7 @@ class OptionsDialog(QDialog):
         master_layout = QVBoxLayout(master_group)
         master_layout.setContentsMargins(8, 16, 8, 8)
         
-        self.inp_master = QLineEdit(get_cfg("Network\\MasterServerAddress", "www.clonk.de"))
+        self.inp_master = QLineEdit(self.launcher.get_cfg("Network\\MasterServerAddress", "www.clonk.de"))
         master_layout.addWidget(self.inp_master)
         
         layout.addWidget(master_group)
@@ -1676,15 +1730,26 @@ if __name__ == "__main__":
     
     app = QApplication(sys.argv)
     app.setStyle("Windows") 
-    app_font = QFont("MS Sans Serif", 8)
+
+    # Load custom font
+    font_path = os.path.join(os.path.dirname(__file__), '..', 'planet_data', 'Comic.ttf')
+    comic_font_family = "Comic Sans MS"
+    if os.path.exists(font_path):
+        font_id = QFontDatabase.addApplicationFont(font_path)
+        if font_id != -1:
+            comic_font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
+    
+    app_font = QFont(comic_font_family, 8)
     app.setFont(app_font)
 
     launcher = ClonkLauncher()
+    launcher.comic_font_family = comic_font_family
     
     # Setup Splash
     splash_frames = [f'splash_{i:03d}.bmp' for i in range(1, 52)]
     splash = SplashWindow(splash_frames, launcher.sound_start)
     splash.finished.connect(launcher.show)
+    splash.finished.connect(launcher.start_music)
     splash.start()
 
     sys.exit(app.exec_())

@@ -106,25 +106,37 @@ BOOL CStdFont::Init(HDC hdc, const char *szFontname, int iSize)
     FT_Library ft;
     if (FT_Init_FreeType(&ft)) return FALSE;
 
-    const char *fontPath = "/usr/share/fonts/TTF/Comic.TTF";
-    const char* fallbacks[] = {
-        "/usr/share/fonts/truetype/msttcorefonts/comic.ttf",
-        "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
-        "/usr/share/fonts/TTF/DejaVuSans.ttf",
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        NULL
-    };
     FT_Face face;
-    if (FT_New_Face(ft, fontPath, 0, &face)) {
-        bool found = false;
-        for (int i = 0; fallbacks[i]; i++) {
-            if (!FT_New_Face(ft, fallbacks[i], 0, &face)) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) { FT_Done_FreeType(ft); return FALSE; }
+    bool found = false;
+
+    // If Comic Sans is requested, try local bundled font first
+    if (SEqualNoCase(szFontname, "Comic Sans MS")) {
+        if (!FT_New_Face(ft, "planet_data/Comic.ttf", 0, &face)) found = true;
+        else if (!FT_New_Face(ft, "Comic.ttf", 0, &face)) found = true;
     }
+
+    if (!found) {
+        const char *fontPath = "/usr/share/fonts/TTF/Comic.TTF";
+        const char* fallbacks[] = {
+            "/usr/share/fonts/truetype/msttcorefonts/comic.ttf",
+            "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+            "/usr/share/fonts/TTF/DejaVuSans.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            NULL
+        };
+        if (FT_New_Face(ft, fontPath, 0, &face)) {
+            for (int i = 0; fallbacks[i]; i++) {
+                if (!FT_New_Face(ft, fallbacks[i], 0, &face)) {
+                    found = true;
+                    break;
+                }
+            }
+        } else {
+            found = true;
+        }
+    }
+
+    if (!found) { FT_Done_FreeType(ft); return FALSE; }
 
     // GDI with positive lfHeight = iSize matches FT_Set_Pixel_Sizes(0, iSize)
     // Actually, GDI's tmHeight = tmAscent + tmDescent.

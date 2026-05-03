@@ -68,6 +68,7 @@ class ClonkTextArea(QFrame):
 
 class ClonkButton(QPushButton):
     click_sound = None
+    font_family = "Comic Sans MS, Chilanka, cursive"
     
     def __init__(self, text, parent=None, bg_path=None, bg_offset=(0, 0), size=(86, 20)):
         super().__init__(text, parent)
@@ -77,8 +78,7 @@ class ClonkButton(QPushButton):
         self.setFocusPolicy(Qt.NoFocus)
         
         # Clonk style font
-        font_family = "Comic Sans MS, Chilanka, cursive"
-        self.setFont(QFont(font_family, 9))
+        self.setFont(QFont(self.font_family, 9))
         
         # Audio feedback
         self.clicked.connect(self._play_click)
