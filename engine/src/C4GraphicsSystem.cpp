@@ -79,6 +79,10 @@ void C4GraphicsSystem::Execute() {
   // Execution timing flag
   GraphicsGo = FALSE;
 
+  // Wipe surfaces (no hardware flipping on Linux)
+  Engine.DDraw.WipeSurface(Engine.DDraw.lpBack);
+  Engine.DDraw.WipeSurface(Engine.DDraw.lpPrimary);
+
   // Message board
   MessageBoard.Execute();
 
@@ -249,8 +253,9 @@ BOOL C4GraphicsSystem::InitLoaderScreen(const char *szGroup) {
     sprintf(OSTR, "Loader%d.bmp", 1 + SafeRandom(iLoaders));
     if (fctLoader.Load(hGroup, OSTR)) {
       Engine.DDraw.SetPrimaryPalette(fctLoader.GetPalette());
-      cgo.Set(Engine.DDraw.lpPrimary, 0, 0, Config.Graphics.ResX, Config.Graphics.ResY);
+      cgo.Set(Engine.DDraw.lpBack, 0, 0, Config.Graphics.ResX, Config.Graphics.ResY);
       fctLoader.Draw(cgo, FALSE);
+      Engine.DDraw.PageFlip();
       hGroup.Close();
       return TRUE;
     }

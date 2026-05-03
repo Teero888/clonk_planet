@@ -7,6 +7,7 @@ std::thread::id g_mainThreadId;
 #include <memory.h>
 #include <string.h>
 #include <math.h>
+#include <sys/time.h>
 #include <sys/timeb.h>
 
 #include <Standard.h>
@@ -934,12 +935,11 @@ void StdBlit(BYTE *bypSource, int iSourcePitch, int iSrcBufHgt, int iSrcX, int i
 //---------------------------------- Global Milliseconds -------------------------------------
 
 DWORD time_msecs() {
-  /* struct _timeb timebuffer; */
-  // _ftime(&timebuffer);
-  DWORD secs = 0;
-  DWORD msecs = 0;
-  return secs * 1000 + msecs;
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  return (DWORD)(tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
+
 
 //------------------------- A global variable used by StdRandom -------------------------------
 
