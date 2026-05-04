@@ -47,27 +47,28 @@ void C4ControlPacket::Execute() {
   C4ObjectList olList;
 
   switch (Type) {
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - - - - - - - -
-  case C4PK_SetControlRate:
-    Game.ControlRate = BoundBy(Game.ControlRate + *((int *)Data), 1, C4MaxControlRate);
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  case C4PK_SetControlRate: {
+    int iRate;
+    memcpy(&iRate, Data, sizeof(int));
+    Game.ControlRate = BoundBy(Game.ControlRate + iRate, 1, C4MaxControlRate);
     if (Game.Network.Host) {
       sprintf(OSTR, LoadResStr(IDS_NET_CONTROLRATE), Game.ControlRate, Game.FrameCounter);
       Game.GraphicsSystem.FlashMessage(OSTR);
     }
-    break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - - - - - - - -
-  case C4PK_SyncCheck:
-    ((C4ControlSyncCheck *)Data)->Execute();
-    break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - - - - - - - -
-  case C4PK_JoinClient:
-    // Store client join data in Game.ControlJoinClient buffer (for later
-    // execution)
-    Game.ControlJoinClient = *((C4ControlJoinClient *)Data);
-    break;
+  } break;
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  case C4PK_SyncCheck: {
+    C4ControlSyncCheck pk;
+    memcpy(&pk, Data, sizeof(C4ControlSyncCheck));
+    pk.Execute();
+  } break;
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  case C4PK_JoinClient: {
+    C4ControlJoinClient pk;
+    memcpy(&pk, Data, sizeof(C4ControlJoinClient));
+    Game.ControlJoinClient = pk;
+  } break;
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // - - - - - - - - - - -
   case C4PK_Message:
@@ -84,97 +85,98 @@ void C4ControlPacket::Execute() {
     // Message string to log
     Log((const char *)Data);
     break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - - - - - - - -
-  case C4PK_PlayerControl:
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  case C4PK_PlayerControl: {
     // Get player control data
-    C4ControlPlayerControl *pPlayerControl;
-    pPlayerControl = (C4ControlPlayerControl *)Data;
+    C4ControlPlayerControl pk;
+    memcpy(&pk, Data, sizeof(C4ControlPlayerControl));
     // Player incom
-    if (pPlr = Game.Players.Get(pPlayerControl->Player))
-      pPlr->InCom(pPlayerControl->Com, pPlayerControl->Data);
-    break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - - - - - - - -
-  case C4PK_JoinPlayer:
+    if (pPlr = Game.Players.Get(pk.Player))
+      pPlr->InCom(pk.Com, pk.Data);
+  } break;
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  case C4PK_JoinPlayer: {
     // Get player join data
-    C4ControlJoinPlayer *pJoinPlayer;
-    pJoinPlayer = (C4ControlJoinPlayer *)Data;
+    C4ControlJoinPlayer pk;
+    memcpy(&pk, Data, sizeof(C4ControlJoinPlayer));
     // Local player (join from local file)
-    if (pJoinPlayer->AtClient == Game.Network.GetClientNumber()) {
-      Game.JoinPlayer(pJoinPlayer->Filename, pJoinPlayer->AtClient, pJoinPlayer->AtClientName);
+    if (pk.AtClient == Game.Network.GetClientNumber()) {
+      Game.JoinPlayer(pk.Filename, pk.AtClient, pk.AtClientName);
     }
     // Remote player (join from temp saved file)
     else {
       char szPlayerFilename[_MAX_PATH + 1];
-      sprintf(szPlayerFilename, "%s-%s", Config.AtNetworkPath(pJoinPlayer->AtClientName), GetFilename(pJoinPlayer->Filename));
+      sprintf(szPlayerFilename, "%s-%s", Config.AtNetworkPath(pk.AtClientName), GetFilename(pk.Filename));
       EraseItem(szPlayerFilename);
       CStdFile hFile;
       if (!hFile.Save(szPlayerFilename, Data + sizeof(C4ControlJoinPlayer), Size - sizeof(C4ControlJoinPlayer)))
         break;
-      Game.JoinPlayer(szPlayerFilename, pJoinPlayer->AtClient, pJoinPlayer->AtClientName);
+      Game.JoinPlayer(szPlayerFilename, pk.AtClient, pk.AtClientName);
     }
-    break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - - - - - - - -
-  case C4PK_SurrenderPlayer:
+  } break;
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  case C4PK_SurrenderPlayer: {
     // Surrender player
-    if (pPlr = Game.Players.Get(*((int *)Data)))
+    int iPlayer;
+    memcpy(&iPlayer, Data, sizeof(int));
+    if (pPlr = Game.Players.Get(iPlayer))
       pPlr->Surrender();
-    break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - - - - - - - -
-  case C4PK_RemovePlayer:
+  } break;
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  case C4PK_RemovePlayer: {
     // Log message
-    if (pPlr = Game.Players.Get(*((int *)Data))) {
+    int iPlayer;
+    memcpy(&iPlayer, Data, sizeof(int));
+    if (pPlr = Game.Players.Get(iPlayer)) {
       sprintf(OSTR, LoadResStr(IDS_PRC_REMOVEPLR), pPlr->Name);
       Log(OSTR);
     }
     // Remove player
-    Game.Players.Remove(*((int *)Data));
-    break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - - - - - - - -
-  case C4PK_RemoveClient:
+    Game.Players.Remove(iPlayer);
+  } break;
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  case C4PK_RemoveClient: {
     // Remove client
-    Game.Network.RemoveClient(*((int *)Data), (char *)(Data + sizeof(int)));
-    break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - - - - - - - -
-  case C4PK_SetHostility:
+    int iClient;
+    memcpy(&iClient, Data, sizeof(int));
+    Game.Network.RemoveClient(iClient, (char *)(Data + sizeof(int)));
+  } break;
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  case C4PK_SetHostility: {
     // Get set-hostility data
-    C4ControlSetHostility *pSetHostility;
-    pSetHostility = (C4ControlSetHostility *)Data;
+    C4ControlSetHostility pk;
+    memcpy(&pk, Data, sizeof(C4ControlSetHostility));
     // Set hostility
-    if (pPlr = Game.Players.Get(pSetHostility->Player))
-      pPlr->SetHostility(pSetHostility->Opponent, pSetHostility->Hostility);
-    break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - - - - - - - -
-  case C4PK_PlayerSelection:
+    if (pPlr = Game.Players.Get(pk.Player))
+      pPlr->SetHostility(pk.Opponent, pk.Hostility);
+  } break;
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  case C4PK_PlayerSelection: {
     // Get player selection data
     int iCnt, iPlayer, iCount;
-    iPlayer = ((int *)Data)[0];
-    iCount = ((int *)Data)[1];
-    for (iCnt = 0; iCnt < iCount; iCnt++)
-      olList.Add(Game.Objects.ObjectPointer(((int *)Data)[2 + iCnt]));
+    memcpy(&iPlayer, Data, sizeof(int));
+    memcpy(&iCount, (BYTE *)Data + sizeof(int), sizeof(int));
+    for (iCnt = 0; iCnt < iCount; iCnt++) {
+      int iObjNumber;
+      memcpy(&iObjNumber, (BYTE *)Data + 2 * sizeof(int) + iCnt * sizeof(int), sizeof(int));
+      olList.Add(Game.Objects.ObjectPointer(iObjNumber));
+    }
     // Player selection
     if (pPlr = Game.Players.Get(iPlayer))
       pPlr->SelectCrew(olList);
-    break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - - - - - - - -
-  case C4PK_PlayerCommand:
-    ((C4ControlPlayerCommand *)Data)->Execute();
-    break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - - - - - - - -
+  } break;
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  case C4PK_PlayerCommand: {
+    C4ControlPlayerCommand pk;
+    memcpy(&pk, Data, sizeof(C4ControlPlayerCommand));
+    pk.Execute();
+  } break;
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   default:
     sprintf(OSTR, "Undefined packet %i in control packet", Type);
     NetLog(OSTR);
     break;
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // - - - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   }
 }
 

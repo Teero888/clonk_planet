@@ -10,7 +10,7 @@ const int C4SCR_Access_Public = 0, C4SCR_Access_Protected = 1, C4SCR_Access_Priv
 
 struct C4ScriptFnDef {
   const char *Identifier;
-  long (*Function)(C4Thread *, long, long, long, long, long, long, long, long, long, long);
+  long (*Function)(C4Thread *, long, long, long, long, long, long, long, long, long, long, long, long);
   BOOL Public;
 };
 extern C4ScriptFnDef C4ScriptFnMap[];

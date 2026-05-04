@@ -155,7 +155,7 @@ long C4Thread::ExecuteStatement() {
 
   // Engine function
   if (C4ScriptFnMap[psc].Identifier)
-    return (long)C4ScriptFnMap[psc].Function(this, parameter[0], parameter[1], parameter[2], parameter[3], parameter[4], parameter[5], parameter[6], parameter[7], parameter[8], parameter[9]);
+    return (long)C4ScriptFnMap[psc].Function(this, parameter[0], parameter[1], parameter[2], parameter[3], parameter[4], parameter[5], parameter[6], parameter[7], parameter[8], parameter[9], 0, 0);
 
   // Object script function
   if (cObj)

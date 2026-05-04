@@ -213,7 +213,7 @@ long Fn_while(C4Thread *cthr, long fCondition) {
   return TRUE;
 }
 
-long FnChangeDef(C4Thread *cthr, C4ID to_id, C4Object *pObj) {
+long FnChangeDef(C4Thread *cthr, long to_id, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -314,7 +314,7 @@ long FnEnter(C4Thread *cthr, C4Object *pTarget, C4Object *pObj) {
   return pObj->Enter(pTarget);
 }
 
-long FnExit(C4Thread *cthr, C4Object *pObj, int tx, int ty, int tr, int txdir, int tydir, int trdir) {
+long FnExit(C4Thread *cthr, C4Object *pObj, long tx, long ty, long tr, long txdir, long tydir, long trdir) {
   if (!IsObjectValid(pObj))
     return FALSE;
   if (cthr->cObj) {
@@ -750,7 +750,7 @@ long FnSetPhase(C4Thread *cthr, long iVal, C4Object *pObj) {
   return pObj->SetPhase(iVal);
 }
 
-long FnSetCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Object *pTarget, int iTx, int iTy, C4Object *pTarget2, int iData, int iRetries) {
+long FnSetCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Object *pTarget, long iTx, long iTy, C4Object *pTarget2, long iData, long iRetries) {
   // Object
   if (!pObj)
     pObj = cthr->cObj;
@@ -774,7 +774,7 @@ long FnSetCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Objec
   return TRUE;
 }
 
-long FnAddCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Object *pTarget, int iTx, int iTy, C4Object *pTarget2, int iUpdateInterval, int iData, int iRetries) {
+long FnAddCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Object *pTarget, long iTx, long iTy, C4Object *pTarget2, long iUpdateInterval, long iData, long iRetries) {
   // Object
   if (!pObj)
     pObj = cthr->cObj;
@@ -794,7 +794,7 @@ long FnAddCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Objec
   return pObj->AddCommand(iCommand, pTarget, iTx, iTy, iUpdateInterval, pTarget2, TRUE, iData, FALSE, iRetries, szText);
 }
 
-long FnAppendCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Object *pTarget, int iTx, int iTy, C4Object *pTarget2, int iUpdateInterval, int iData, int iRetries) {
+long FnAppendCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Object *pTarget, long iTx, long iTy, C4Object *pTarget2, long iUpdateInterval, long iData, long iRetries) {
   // Object
   if (!pObj)
     pObj = cthr->cObj;
@@ -1074,7 +1074,7 @@ long FnGetController(C4Thread *cthr, C4Object *pObj) {
   return pObj->Controller;
 }
 
-long FnGetCategory(C4Thread *cthr, C4Object *pObj, C4ID idDef) {
+long FnGetCategory(C4Thread *cthr, C4Object *pObj, long idDef) {
   // Def category
   C4Def *pDef;
   if (idDef)
@@ -1104,7 +1104,7 @@ long FnGetDamage(C4Thread *cthr, C4Object *pObj) {
   return pObj->Damage;
 }
 
-long FnGetValue(C4Thread *cthr, C4Object *pObj, C4ID idDef) {
+long FnGetValue(C4Thread *cthr, C4Object *pObj, long idDef) {
   // Def value
   C4Def *pDef;
   if (idDef)
@@ -1128,7 +1128,7 @@ long FnGetRank(C4Thread *cthr, C4Object *pObj) {
   return pObj->Info->Rank;
 }
 
-long FnValue(C4Thread *cthr, C4ID id) {
+long FnValue(C4Thread *cthr, long id) {
   C4Def *pDef = C4Id2Def(id);
   if (pDef)
     return pDef->Value;
@@ -1169,7 +1169,7 @@ long FnGetMenu(C4Thread *cthr, C4Object *pObj) {
   return C4MN_None;
 }
 
-long FnCreateMenu(C4Thread *cthr, int iSymbol, C4Object *pMenuObj, C4Object *pCommandObj, int iExtra, const char *szCaption, int iExtraData, int iStyle, BOOL fPermanent) {
+long FnCreateMenu(C4Thread *cthr, long iSymbol, C4Object *pMenuObj, C4Object *pCommandObj, long iExtra, const char *szCaption, long iExtraData, long iStyle, long fPermanent) {
   if (!pMenuObj)
     pMenuObj = cthr->cObj;
   if (!IsObjectValid(pMenuObj))
@@ -1200,7 +1200,7 @@ long FnCreateMenu(C4Thread *cthr, int iSymbol, C4Object *pMenuObj, C4Object *pCo
   return TRUE;
 }
 
-long FnAddMenuItem(C4Thread *cthr, const char *szCaption, const char *szCommand, C4ID idItem, C4Object *pMenuObj, int iCount, int iParameter, const char *szInfoCaption) {
+long FnAddMenuItem(C4Thread *cthr, const char *szCaption, const char *szCommand, long idItem, C4Object *pMenuObj, long iCount, long iParameter, const char *szInfoCaption) {
   if (!pMenuObj)
     pMenuObj = cthr->cObj;
   if (!IsObjectValid(pMenuObj))
@@ -1327,7 +1327,7 @@ C4Object *FnScrollContents(C4Thread *cthr, C4Object *pObj) {
   return pObj->Contents.GetObject();
 }
 
-long FnContentsCount(C4Thread *cthr, C4ID id, C4Object *pObj) {
+long FnContentsCount(C4Thread *cthr, long id, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1405,7 +1405,7 @@ long FnOnFire(C4Thread *cthr, C4Object *pObj) {
   return pObj->OnFire;
 }
 
-long FnComponentAll(C4Thread *cthr, C4Object *pObj, C4ID c_id) {
+long FnComponentAll(C4Thread *cthr, C4Object *pObj, long c_id) {
   int cnt;
   if (!IsObjectValid(pObj))
     return FALSE;
@@ -1460,7 +1460,7 @@ C4Object *FnComposeContents(C4Thread *cthr, C4ID c_id, C4Object *pObj) {
   return pObj->ComposeContents(c_id);
 }
 
-long FnFindConstructionSite(C4Thread *cthr, C4ID id, long iVarX, long iVarY) {
+long FnFindConstructionSite(C4Thread *cthr, long id, long iVarX, long iVarY) {
 
   C4Def *pDef;
   if (!(pDef = C4Id2Def(id)))
@@ -1478,7 +1478,7 @@ long FnFindConstructionSite(C4Thread *cthr, C4ID id, long iVarX, long iVarY) {
 
 C4Object *FnFindBase(C4Thread *cthr, int iOwner, int iIndex) { return Game.FindBase(iOwner, iIndex); }
 
-long FnObjectCount(C4Thread *cthr, C4ID id, int x, int y, int wdt, int hgt, int dwOCF, const char *szAction, C4Object *pActionTarget, C4Object *pContainer, int iOwner) {
+long FnObjectCount(C4Thread *cthr, long id, long x, long y, long wdt, long hgt, long dwOCF, const char *szAction, C4Object *pActionTarget, C4Object *pContainer, long iOwner) {
   // Local call adjust coordinates
   if (cthr->cObj)
     if (x || y || wdt || hgt) // if not default full range
@@ -1776,7 +1776,7 @@ long FnCastPXS(C4Thread *cthr, const char *mat_name, long amt, long level, long 
   return TRUE;
 }
 
-long FnCastObjects(C4Thread *cthr, C4ID id, long amt, long level, long tx, long ty) {
+long FnCastObjects(C4Thread *cthr, long id, long amt, long level, long tx, long ty) {
   if (cthr->cObj) {
     tx += cthr->cObj->x;
     ty += cthr->cObj->y;
@@ -1853,7 +1853,7 @@ long FnGetPlrView(C4Thread *cthr, long iPlr) {
   return Game.Players.Get(iPlr)->ViewMode;
 }
 
-long FnDoHomebaseMaterial(C4Thread *cthr, long iPlr, C4ID id, long iChange) {
+long FnDoHomebaseMaterial(C4Thread *cthr, long iPlr, long id, long iChange) {
   if (!ValidPlr(iPlr))
     return FALSE;
   int iLastcount = Game.Players.Get(iPlr)->HomeBaseMaterial.GetIDCount(id);
@@ -1866,13 +1866,13 @@ long FnGetPlrDownDouble(C4Thread *cthr, long iPlr) {
   return Game.Players.Get(iPlr)->LastComDownDouble;
 }
 
-long FnSetPlrKnowledge(C4Thread *cthr, long iPlr, C4ID id) {
+long FnSetPlrKnowledge(C4Thread *cthr, long iPlr, long id) {
   if (!ValidPlr(iPlr))
     return FALSE;
   return Game.Players.Get(iPlr)->Knowledge.SetIDCount(id, 1, TRUE);
 }
 
-long FnSetComponent(C4Thread *cthr, C4ID idComponent, long iCount, C4Object *pObj) {
+long FnSetComponent(C4Thread *cthr, long idComponent, long iCount, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1880,7 +1880,7 @@ long FnSetComponent(C4Thread *cthr, C4ID idComponent, long iCount, C4Object *pOb
   return pObj->Component.SetIDCount(idComponent, iCount, TRUE);
 }
 
-long FnGetPlrKnowledge(C4Thread *cthr, long iPlr, C4ID id, long iIndex, DWORD dwCategory) {
+long FnGetPlrKnowledge(C4Thread *cthr, long iPlr, long id, long iIndex, DWORD dwCategory) {
   if (!ValidPlr(iPlr))
     return FALSE;
   // Search by id, check if available, return BOOL
@@ -1902,7 +1902,7 @@ C4ID FnGetDefinition(C4Thread *cthr, int iIndex, DWORD dwCategory) {
   return pDef->id;
 }
 
-long FnGetComponent(C4Thread *cthr, C4ID idComponent, long iIndex, C4Object *pObj, C4ID idDef) {
+long FnGetComponent(C4Thread *cthr, long idComponent, long iIndex, C4Object *pObj, long idDef) {
   // Def component
   if (idDef) {
     // Get def
@@ -1931,7 +1931,7 @@ long FnGetComponent(C4Thread *cthr, C4ID idComponent, long iIndex, C4Object *pOb
   return 0;
 }
 
-long FnGetHomebaseMaterial(C4Thread *cthr, long iPlr, C4ID id, long iIndex, DWORD dwCategory) {
+long FnGetHomebaseMaterial(C4Thread *cthr, long iPlr, long id, long iIndex, DWORD dwCategory) {
   if (!ValidPlr(iPlr))
     return FALSE;
   // Search by id, return available count
@@ -1941,13 +1941,13 @@ long FnGetHomebaseMaterial(C4Thread *cthr, long iPlr, C4ID id, long iIndex, DWOR
   return Game.Players.Get(iPlr)->HomeBaseMaterial.GetID(Game.Defs, dwCategory, iIndex);
 }
 
-long FnSetPlrMagic(C4Thread *cthr, long iPlr, C4ID id) {
+long FnSetPlrMagic(C4Thread *cthr, long iPlr, long id) {
   if (!ValidPlr(iPlr))
     return FALSE;
   return Game.Players.Get(iPlr)->Magic.SetIDCount(id, 1, TRUE);
 }
 
-long FnGetPlrMagic(C4Thread *cthr, long iPlr, C4ID id, long iIndex) {
+long FnGetPlrMagic(C4Thread *cthr, long iPlr, long id, long iIndex) {
   if (!ValidPlr(iPlr))
     return FALSE;
   // Search by id, check if available, return BOOL
@@ -2352,7 +2352,7 @@ long FnPar(C4Thread *cthr, long iParIndex) {
   return cthr->Parameter[iParIndex];
 }
 
-long FnCall(C4Thread *cthr, const char *szFunction, int par0, int par1, int par2, int par3, int par4, int par5, int par6, int par7, int par8, int par9) {
+long FnCall(C4Thread *cthr, const char *szFunction, long par0, long par1, long par2, long par3, long par4, long par5, long par6, long par7, long par8, long par9) {
   if (!szFunction)
     return FALSE;
   if (!cthr->cObj)
@@ -2360,7 +2360,7 @@ long FnCall(C4Thread *cthr, const char *szFunction, int par0, int par1, int par2
   return cthr->cObj->Call(FnStringPar(szFunction), par0, par1, par2, par3, par4, par5, par6, par7, par8, par9);
 }
 
-long FnObjectCall(C4Thread *cthr, C4Object *pObj, const char *szFunction, int par0, int par1, int par2, int par3, int par4, int par5, int par6, int par7, int par8, int par9) {
+long FnObjectCall(C4Thread *cthr, C4Object *pObj, const char *szFunction, long par0, long par1, long par2, long par3, long par4, long par5, long par6, long par7, long par8, long par9) {
   if (!IsObjectValid(pObj) || !szFunction)
     return FALSE;
   // Make failsafe
@@ -2370,7 +2370,7 @@ long FnObjectCall(C4Thread *cthr, C4Object *pObj, const char *szFunction, int pa
   return pObj->Call(cthr, szFunc2, par0, par1, par2, par3, par4, par5, par6, par7, par8, par9);
 }
 
-long FnDefinitionCall(C4Thread *cthr, C4ID idID, const char *szFunction, int par0, int par1, int par2, int par3, int par4, int par5, int par6, int par7, int par8, int par9) {
+long FnDefinitionCall(C4Thread *cthr, long idID, const char *szFunction, long par0, long par1, long par2, long par3, long par4, long par5, long par6, long par7, long par8, long par9) {
   if (!idID || !szFunction)
     return FALSE;
   // Make failsafe
@@ -2384,7 +2384,7 @@ long FnDefinitionCall(C4Thread *cthr, C4ID idID, const char *szFunction, int par
   return pDef->Script.Call(cthr, szFunc2, par0, par1, par2, par3, par4, par5, par6, par7, par8, par9);
 }
 
-long FnGameCall(C4Thread *cthr, const char *szFunction, int par0, int par1, int par2, int par3, int par4, int par5, int par6, int par7, int par8, int par9) {
+long FnGameCall(C4Thread *cthr, const char *szFunction, long par0, long par1, long par2, long par3, long par4, long par5, long par6, long par7, long par8, long par9) {
   if (!szFunction)
     return FALSE;
   // Make failsafe
@@ -2457,7 +2457,7 @@ C4Object *FnNoContainer() { return NO_CONTAINER; }
 
 //=========================== C4Script Function Map ===================================
 
-#define MkFn (long (*)(C4Thread *, long, long, long, long, long, long, long, long, long, long))
+#define MkFn (long (*)(C4Thread *, long, long, long, long, long, long, long, long, long, long, long, long))
 
 C4ScriptFnDef C4ScriptFnMap[] = {
 
