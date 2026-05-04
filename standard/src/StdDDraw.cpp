@@ -159,6 +159,7 @@ static void SyncSurfaceGPU(CGLSurface *surf) {
 
 static void SyncSurfaceCPU(CGLSurface *surf) {
   if (surf && surf->dirty_gpu && surf->fbo && std::this_thread::get_id() == g_mainThreadId) {
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
     glBindFramebuffer(GL_READ_FRAMEBUFFER, surf->fbo);
     glReadPixels(0, 0, surf->w, surf->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, surf->bits);
     glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
@@ -589,8 +590,8 @@ SURFACE CStdDDraw::CreateSurface(int iWdt, int iHgt) {
   s->w = iWdt;
   s->h = iHgt;
   s->pitch = iWdt;
-  s->bits = new uint8_t[s->pitch * s->h];
-  memset(s->bits, 0, s->pitch * s->h);
+  s->bits = new uint8_t[s->pitch * s->h + 32]; // Padding for driver block-writes
+  memset(s->bits, 0, s->pitch * s->h + 32);
   s->ColorKey = 0;
   s->useColorKey = true;
   s->fClipped = false;
