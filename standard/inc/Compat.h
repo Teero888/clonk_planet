@@ -327,10 +327,34 @@ inline HANDLE CreateThread(void *lpThreadAttributes, DWORD dwStackSize, DWORD(WI
 inline BOOL PostMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) { return FALSE; }
 inline LRESULT SendMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) { return 0; }
 
-inline BOOL DeleteObject(HGDIOBJ ho) { return FALSE; }
+struct StdBitmap {
+  BITMAPINFOHEADER bmi;
+  BYTE *pBits;
+};
+
+inline BOOL DeleteObject(HGDIOBJ ho) {
+  if (!ho)
+    return FALSE;
+  StdBitmap *pBmp = (StdBitmap *)ho;
+  if (pBmp->pBits)
+    delete[] pBmp->pBits;
+  delete pBmp;
+  return TRUE;
+}
 inline HDC GetDC(HWND hWnd) { return 0; }
 inline int ReleaseDC(HWND hWnd, HDC hDC) { return 0; }
-inline HBITMAP CreateDIBitmap(HDC hdc, const void *lpbmih, DWORD fdwInit, const void *lpbInit, const void *lpbmi, UINT fuUsage) { return 0; }
+inline HBITMAP CreateDIBitmap(HDC hdc, const void *lpbmih, DWORD fdwInit, const void *lpbInit, const void *lpbmi, UINT fuUsage) {
+  BITMAPINFOHEADER *pHeader = (BITMAPINFOHEADER *)lpbmih;
+  StdBitmap *pBmp = new StdBitmap();
+  memcpy(&pBmp->bmi, pHeader, sizeof(BITMAPINFOHEADER));
+  int iSize = pHeader->biHeight * ((pHeader->biWidth * pHeader->biBitCount + 31) / 32 * 4);
+  pBmp->pBits = new BYTE[iSize];
+  if (lpbInit)
+    memcpy(pBmp->pBits, lpbInit, iSize);
+  else
+    memset(pBmp->pBits, 0, iSize);
+  return (HBITMAP)pBmp;
+}
 inline HICON CreateIconFromResource(PBYTE presbits, DWORD dwResSize, BOOL fIcon, DWORD dwVer) { return 0; }
 inline DWORD GetLastError() { return 0; }
 

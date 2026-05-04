@@ -9,11 +9,11 @@
 #include <Standard.h>
 #include <StdJoystick.h>
 
-#ifdef _WIN32
+#include <GLFW/glfw3.h>
 
-DWORD dwStdGamepadMaxX = 0;
+DWORD dwStdGamepadMaxX = 65535;
 DWORD dwStdGamepadMinX = 0;
-DWORD dwStdGamepadMaxY = 0;
+DWORD dwStdGamepadMaxY = 65535;
 DWORD dwStdGamepadMinY = 0;
 
 BOOL StdSetGamepadCalibration(int iMinX, int iMaxX, int iMinY, int iMaxY) {
@@ -33,62 +33,62 @@ BOOL StdGetGamepadCalibration(int &iMinX, int &iMaxX, int &iMinY, int &iMaxY) {
 }
 
 BOOL StdGetGamepad(int id, BOOL fExtended, DWORD &dwPos, DWORD &dwButtons) {
-  DWORD dwXPos, dwYPos;
-
-  if (!StdGetJoyPos(id, fExtended, dwXPos, dwYPos, dwButtons))
+  int jid = (id == 0) ? GLFW_JOYSTICK_1 : GLFW_JOYSTICK_2;
+  if (!glfwJoystickPresent(jid))
     return FALSE;
 
-  // Calibration range
-  dwStdGamepadMaxX = Max(dwStdGamepadMaxX, dwXPos);
-  dwStdGamepadMinX = Min(dwStdGamepadMinX, dwXPos);
-  dwStdGamepadMaxY = Max(dwStdGamepadMaxY, dwYPos);
-  dwStdGamepadMinY = Min(dwStdGamepadMinY, dwYPos);
+  int count;
+  const float *axes = glfwGetJoystickAxes(jid, &count);
+  const unsigned char *buttons = glfwGetJoystickButtons(jid, &count);
 
-  DWORD dwCenterX = (dwStdGamepadMaxX + dwStdGamepadMinX) / 2;
-  DWORD dwCenterY = (dwStdGamepadMaxY + dwStdGamepadMinY) / 2;
-  DWORD dwRangeX = (dwStdGamepadMaxX - dwCenterX) / 3;
-  DWORD dwRangeY = (dwStdGamepadMaxY - dwCenterY) / 3;
+  dwButtons = 0;
+  if (buttons) {
+    for (int i = 0; i < count && i < 32; i++) {
+      if (buttons[i] == GLFW_PRESS)
+        dwButtons |= (1 << i);
+    }
+  }
 
-  // Evaluate
   dwPos = PAD_None;
-  if (dwXPos < dwCenterX - dwRangeX)
-    dwPos |= PAD_Left;
-  if (dwXPos > dwCenterX + dwRangeX)
-    dwPos |= PAD_Right;
-  if (dwYPos < dwCenterY - dwRangeY)
-    dwPos |= PAD_Up;
-  if (dwYPos > dwCenterY + dwRangeY)
-    dwPos |= PAD_Down;
+  if (axes && count >= 2) {
+    if (axes[0] < -0.3f)
+      dwPos |= PAD_Left;
+    if (axes[0] > 0.3f)
+      dwPos |= PAD_Right;
+    if (axes[1] < -0.3f)
+      dwPos |= PAD_Up;
+    if (axes[1] > 0.3f)
+      dwPos |= PAD_Down;
+  }
 
   return TRUE;
 }
 
 BOOL StdGetJoyPos(int id, BOOL fExtended, DWORD &dwXPos, DWORD &dwYPos, DWORD &dwButtons) {
-  MMRESULT lResult;
+  int jid = (id == 0) ? GLFW_JOYSTICK_1 : GLFW_JOYSTICK_2;
+  if (!glfwJoystickPresent(jid))
+    return FALSE;
 
-  if (fExtended) {
-    JOYINFOEX joyInfoEx;
-    joyInfoEx.dwSize = sizeof(joyInfoEx);
-    joyInfoEx.dwFlags = JOY_RETURNBUTTONS | JOY_RETURNRAWDATA | JOY_RETURNX | JOY_RETURNY;
-    if ((lResult = joyGetPosEx(JOYSTICKID1, &joyInfoEx)) == JOYERR_NOERROR) {
-      dwXPos = joyInfoEx.dwXpos;
-      dwYPos = joyInfoEx.dwYpos;
-      dwButtons = joyInfoEx.dwButtons;
-      return TRUE;
+  int count;
+  const float *axes = glfwGetJoystickAxes(jid, &count);
+  const unsigned char *buttons = glfwGetJoystickButtons(jid, &count);
+
+  dwButtons = 0;
+  if (buttons) {
+    for (int i = 0; i < count && i < 32; i++) {
+      if (buttons[i] == GLFW_PRESS)
+        dwButtons |= (1 << i);
     }
   }
 
-  else {
-    JOYINFO joyInfo;
-    if ((lResult = joyGetPos(JOYSTICKID1, &joyInfo)) == JOYERR_NOERROR) {
-      dwXPos = joyInfo.wXpos;
-      dwYPos = joyInfo.wYpos;
-      dwButtons = joyInfo.wButtons;
-      return TRUE;
-    }
+  dwXPos = 32768;
+  dwYPos = 32768;
+  if (axes && count >= 2) {
+    dwXPos = (DWORD)((axes[0] + 1.0f) * 32767.5f);
+    dwYPos = (DWORD)((axes[1] + 1.0f) * 32767.5f);
   }
 
-  return FALSE;
+  return TRUE;
 }
 
 int GetFirstSetBit(DWORD dwBitArray) {
@@ -98,10 +98,3 @@ int GetFirstSetBit(DWORD dwBitArray) {
 
   return -1;
 }
-
-#endif
-
-#ifndef _WIN32
-BOOL StdSetGamepadCalibration(int iMinX, int iMaxX, int iMinY, int iMaxY) { return FALSE; }
-BOOL StdGetGamepad(int iGamepad, int iAxis, DWORD &rdwButtons, DWORD &rdwStatus) { return FALSE; }
-#endif

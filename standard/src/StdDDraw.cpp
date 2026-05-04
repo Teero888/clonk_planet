@@ -7,7 +7,6 @@
 #include <string.h>
 #include <thread>
 #include <algorithm>
-
 struct CGLSurface {
   int w, h, pitch;
   uint8_t *bits;
@@ -15,6 +14,10 @@ struct CGLSurface {
   GLuint fbo;
   bool dirty_cpu;
   bool dirty_gpu;
+  uint8_t ColorKey;
+  bool useColorKey;
+  int ClipX1, ClipY1, ClipX2, ClipY2;
+  bool fClipped;
 };
 
 // Global instance
@@ -41,6 +44,10 @@ static void glfwErrorCallback(int error, const char *description) {
   std::cerr << buf << std::endl;
 }
 
+static void glfwWindowSizeCallback(GLFWwindow *window, int width, int height) {
+  // Not used yet, engine uses fixed ResX/ResY
+}
+
 static const char *vertexShaderSrc = R"(
 #version 330 core
 layout(location = 0) in vec2 aPos;
@@ -59,10 +66,12 @@ out vec4 FragColor;
 in vec2 TexCoord;
 uniform usampler2D texImage;
 uniform sampler1D texPalette;
+uniform uint colKey;
+uniform bool useColKey;
 void main() {
     ivec2 itexCoord = ivec2(TexCoord * vec2(textureSize(texImage, 0)));
     uint idx = texelFetch(texImage, itexCoord, 0).r;
-    if (idx == 0u) discard;
+    if (useColKey && idx == colKey) discard;
     FragColor = texelFetch(texPalette, int(idx), 0);
 }
 )";
@@ -72,11 +81,12 @@ static const char *fragmentShaderBlitSrc = R"(
 layout(location = 0) out uint Index;
 in vec2 TexCoord;
 uniform usampler2D texImage;
+uniform uint colKey;
 uniform bool useColKey;
 void main() {
     ivec2 itexCoord = ivec2(TexCoord * vec2(textureSize(texImage, 0)));
     uint idx = texelFetch(texImage, itexCoord, 0).r;
-    if (useColKey && idx == 0u) discard;
+    if (useColKey && idx == colKey) discard;
     Index = idx;
 }
 )";
@@ -290,11 +300,20 @@ static void DrawHardwareQuad(CGLSurface *src, CGLSurface *dst, int tx, int ty, i
   }
 
   if (useScissor && lpDDraw) {
+    int scX, scY, scW, scH;
+    if (dst && dst->fClipped) {
+      scX = std::max(0, dst->ClipX1);
+      scY = std::max(0, dst->ClipY1);
+      scW = std::max(0, dst->ClipX2 - dst->ClipX1 + 1);
+      scH = std::max(0, dst->ClipY2 - dst->ClipY1 + 1);
+    } else {
+      scX = std::max(0, lpDDraw->ClipX1);
+      scY = std::max(0, lpDDraw->ClipY1);
+      scW = std::max(0, lpDDraw->ClipX2 - lpDDraw->ClipX1 + 1);
+      scH = std::max(0, lpDDraw->ClipY2 - lpDDraw->ClipY1 + 1);
+    }
+
     glEnable(GL_SCISSOR_TEST);
-    int scX = std::max(0, lpDDraw->ClipX1);
-    int scY = std::max(0, lpDDraw->ClipY1);
-    int scW = std::max(0, lpDDraw->ClipX2 - lpDDraw->ClipX1 + 1);
-    int scH = std::max(0, lpDDraw->ClipY2 - lpDDraw->ClipY1 + 1);
     if (dst) {
       // FBO is bottom-up (Logic 0 at physical bottom).
       glScissor(scX, scY, scW, scH);
@@ -327,11 +346,15 @@ static void DrawHardwareQuad(CGLSurface *src, CGLSurface *dst, int tx, int ty, i
   if (src) {
     glBindTextureUnit(0, src->tex);
     glUniform1i(glGetUniformLocation(program, "texImage"), 0);
+    bool activeColKey = src->useColorKey && fSrcColKey;
     if (program == g_shaderProgramScreen) {
       glBindTextureUnit(1, g_paletteTex);
       glUniform1i(glGetUniformLocation(program, "texPalette"), 1);
+      glUniform1ui(glGetUniformLocation(program, "colKey"), (uint32_t)src->ColorKey);
+      glUniform1i(glGetUniformLocation(program, "useColKey"), activeColKey ? 1 : 0);
     } else if (program == g_shaderProgramBlit) {
-      glUniform1i(glGetUniformLocation(program, "useColKey"), fSrcColKey ? 1 : 0);
+      glUniform1ui(glGetUniformLocation(program, "colKey"), (uint32_t)src->ColorKey);
+      glUniform1i(glGetUniformLocation(program, "useColKey"), activeColKey ? 1 : 0);
     }
   }
 
@@ -392,7 +415,8 @@ BOOL CStdDDraw::PageFlip() {
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT);
 
-  DrawHardwareQuad(surf, nullptr, 0, 0, surf->w, surf->h, 0, 0, -1, -1, false, 0.0f, true, g_shaderProgramScreen);
+  // When rendering to screen, we don't usually want colorkeying for the whole backbuffer 
+  DrawHardwareQuad(surf, nullptr, 0, 0, surf->w, surf->h, 0, 0, -1, -1, false, 0.0f, false, g_shaderProgramScreen);
 
   glfwSwapBuffers(g_window);
   glfwPollEvents();
@@ -458,8 +482,25 @@ BOOL CStdDDraw::NoPrimaryClipper() {
   ClipY2 = 4096;
   return TRUE;
 }
-BOOL CStdDDraw::ApplyPrimaryClipper(SURFACE sfcSurface) { return TRUE; }
-BOOL CStdDDraw::DetachPrimaryClipper(SURFACE sfcSurface) { return TRUE; }
+BOOL CStdDDraw::ApplyPrimaryClipper(SURFACE sfcSurface) {
+  if (!sfcSurface)
+    return FALSE;
+  CGLSurface *s = (CGLSurface *)sfcSurface;
+  s->ClipX1 = ClipX1;
+  s->ClipY1 = ClipY1;
+  s->ClipX2 = ClipX2;
+  s->ClipY2 = ClipY2;
+  s->fClipped = true;
+  return TRUE;
+}
+
+BOOL CStdDDraw::DetachPrimaryClipper(SURFACE sfcSurface) {
+  if (!sfcSurface)
+    return FALSE;
+  CGLSurface *s = (CGLSurface *)sfcSurface;
+  s->fClipped = false;
+  return TRUE;
+}
 
 BYTE *CStdDDraw::LockSurface(SURFACE sfcSurface, int &lPitch, int *lpSfcWdt, int *lpSfcHgt) {
   if (!sfcSurface)
@@ -545,6 +586,9 @@ SURFACE CStdDDraw::CreateSurface(int iWdt, int iHgt) {
   s->pitch = iWdt;
   s->bits = new uint8_t[s->pitch * s->h];
   memset(s->bits, 0, s->pitch * s->h);
+  s->ColorKey = 0;
+  s->useColorKey = true;
+  s->fClipped = false;
 
   if (std::this_thread::get_id() == g_mainThreadId && g_window) {
     glCreateTextures(GL_TEXTURE_2D, 1, &s->tex);
@@ -912,8 +956,39 @@ BOOL CStdDDraw::CreatePrimaryPalette(SURFACE sfcAttachTo) { return TRUE; }
 BOOL CStdDDraw::CreatePrimaryClipper() { return TRUE; }
 BOOL CStdDDraw::CreatePrimarySurfaces(BOOL fFlipAttach) { return TRUE; }
 BOOL CStdDDraw::Error(const char *szMsg) { return FALSE; }
-BOOL CStdDDraw::SetDisplayMode(int iResX, int iResY, int iColorDepth) { return TRUE; }
-BOOL CStdDDraw::SetCooperativeLevel(HWND hWnd, DWORD dwLevel) { return TRUE; }
+BOOL CStdDDraw::SetDisplayMode(int iResX, int iResY, int iColorDepth) {
+  if (std::this_thread::get_id() != g_mainThreadId)
+    return FALSE;
+  if (!g_window)
+    return FALSE;
+  glfwSetWindowSize(g_window, iResX, iResY);
+  return TRUE;
+}
+
+BOOL CStdDDraw::SetCooperativeLevel(HWND hWnd, DWORD dwLevel) {
+  if (std::this_thread::get_id() != g_mainThreadId)
+    return FALSE;
+  if (!g_window)
+    return FALSE;
+  // DDraw levels: DDSCL_FULLSCREEN (0x00000001)
+  if (dwLevel & 0x00000001) {
+    GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+    glfwSetWindowMonitor(g_window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+  } else {
+    glfwSetWindowMonitor(g_window, NULL, 100, 100, 800, 600, 0);
+  }
+  return TRUE;
+}
+
 BOOL CStdDDraw::CreateDirectDraw() { return TRUE; }
 int CStdDDraw::SfcCall(HRESULT ddrval) { return 0; }
-BOOL CStdDDraw::SurfaceSetColorKey(SURFACE sfcSurface, BYTE byCol) { return TRUE; }
+
+BOOL CStdDDraw::SurfaceSetColorKey(SURFACE sfcSurface, BYTE byCol) {
+  if (!sfcSurface)
+    return FALSE;
+  CGLSurface *s = (CGLSurface *)sfcSurface;
+  s->ColorKey = byCol;
+  s->useColorKey = true;
+  return TRUE;
+}

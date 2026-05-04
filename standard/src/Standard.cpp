@@ -657,7 +657,7 @@ char *SGetFilename(const char *szFilepath) {
   int iPos;
   for (iPos = 0; szFilepath[iPos]; iPos++)
     ;
-  while ((iPos > 0) && (szFilepath[iPos - 1] != '\\'))
+  while ((iPos > 0) && (szFilepath[iPos - 1] != '\\') && (szFilepath[iPos - 1] != '/'))
     iPos--;
   return (char *)szFilepath + iPos;
 }

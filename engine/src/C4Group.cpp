@@ -1599,7 +1599,6 @@ BOOL C4Group::Add(const char *szName, void *pBuffer, int iSize, BOOL fChild, BOO
 }
 
 HBITMAP C4Group::SubReadDDB(HDC hdc, int sx, int sy, int swdt, int shgt, int twdt, int thgt, BOOL transcol) {
-#ifdef _WIN32
   HBITMAP hbmp;
   BITMAPFILEHEADER fhead;
   BITMAPINFO *pbmi = (BITMAPINFO *)new BYTE[sizeof(BITMAPINFOHEADER) + 256 * sizeof(RGBQUAD)];
@@ -1705,9 +1704,7 @@ HBITMAP C4Group::SubReadDDB(HDC hdc, int sx, int sy, int swdt, int shgt, int twd
   delete pbmi;
 
   return hbmp;
-#else
   return NULL;
-#endif
 }
 
 BOOL C4Group::ReadDDB(HBITMAP *lphBitmap, HDC hdc) {
