@@ -84,7 +84,7 @@ void C4MenuItem::Default() {
 
 void C4MenuItem::Clear() { Symbol.Clear(); }
 
-void C4MenuItem::Set(const char *szCaption, C4FacetEx &fctSymbol, const char *szCommand, int iCount, C4Object *pObject, int iParameter, const char *szInfoCaption, C4ID idID, const char *szCommand2) {
+void C4MenuItem::Set(const char *szCaption, const C4FacetEx &fctSymbol, const char *szCommand, int iCount, C4Object *pObject, int iParameter, const char *szInfoCaption, C4ID idID, const char *szCommand2) {
   SCopy(szCaption, Caption, C4MaxTitle);
   SCopy(szCommand, Command, _MAX_FNAME + 30);
   SCopy(szCommand2, Command2, _MAX_FNAME + 30);
@@ -206,7 +206,7 @@ void C4Menu::Close() {
   Active = FALSE;
 }
 
-BOOL C4Menu::Init(C4FacetEx fctSymbol, const char *szEmpty, int iPlayer, int iExtra, int iExtraData, int iId, int iStyle) {
+BOOL C4Menu::Init(const C4FacetEx &fctSymbol, const char *szEmpty, int iPlayer, int iExtra, int iExtraData, int iId, int iStyle) {
   Clear();
   Default();
   Active = TRUE;
@@ -220,7 +220,7 @@ BOOL C4Menu::Init(C4FacetEx fctSymbol, const char *szEmpty, int iPlayer, int iEx
   return TRUE;
 }
 
-BOOL C4Menu::Init(C4FacetEx fctSymbol, const char *szEmpty, C4Object *pObject, int iExtra, int iExtraData, int iId, int iStyle) {
+BOOL C4Menu::Init(const C4FacetEx &fctSymbol, const char *szEmpty, C4Object *pObject, int iExtra, int iExtraData, int iId, int iStyle) {
   Clear();
   Default();
   Active = TRUE;
@@ -235,7 +235,7 @@ BOOL C4Menu::Init(C4FacetEx fctSymbol, const char *szEmpty, C4Object *pObject, i
   return TRUE;
 }
 
-BOOL C4Menu::Add(const char *szCaption, C4FacetEx fctSymbol, const char *szCommand, int iCount, C4Object *pObject, int iParameter, const char *szInfoCaption, C4ID idID, const char *szCommand2) {
+BOOL C4Menu::Add(const char *szCaption, const C4FacetEx &fctSymbol, const char *szCommand, int iCount, C4Object *pObject, int iParameter, const char *szInfoCaption, C4ID idID, const char *szCommand2) {
   if (!Active)
     return FALSE;
   C4MenuItem *pNew, *pLast;

@@ -1704,7 +1704,6 @@ HBITMAP C4Group::SubReadDDB(HDC hdc, int sx, int sy, int swdt, int shgt, int twd
   delete pbmi;
 
   return hbmp;
-  return NULL;
 }
 
 BOOL C4Group::ReadDDB(HBITMAP *lphBitmap, HDC hdc) {

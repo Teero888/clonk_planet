@@ -7,6 +7,8 @@
 #include <string.h>
 #include <thread>
 #include <algorithm>
+#include <math.h>
+
 struct CGLSurface {
   int w, h, pitch;
   uint8_t *bits;
@@ -146,13 +148,148 @@ static void GetOrthoMatrix(float *mat, float left, float right, float bottom, fl
 }
 
 static void SyncSurfaceGPU(CGLSurface *surf) {
-  if (surf->dirty_cpu && surf->tex && std::this_thread::get_id() == g_mainThreadId) {
+  if (surf && surf->dirty_cpu && surf->tex && std::this_thread::get_id() == g_mainThreadId) {
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    // Standard OpenGL: first row is bottom. Logic: first row is top.
-    // Row 0 logic -> physical row 0 (bottom).
-    glTextureSubImage2D(surf->tex, 0, 0, 0, surf->w, surf->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, surf->bits);
+    glBindTexture(GL_TEXTURE_2D, surf->tex);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surf->w, surf->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, surf->bits);
+    glBindTexture(GL_TEXTURE_2D, 0);
     surf->dirty_cpu = false;
   }
+}
+
+static void SyncSurfaceCPU(CGLSurface *surf) {
+  if (surf && surf->dirty_gpu && surf->fbo && std::this_thread::get_id() == g_mainThreadId) {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, surf->fbo);
+    glReadPixels(0, 0, surf->w, surf->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, surf->bits);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    surf->dirty_gpu = false;
+  }
+}
+
+static void DrawHardwareQuad(CGLSurface *src, CGLSurface *dst, int tx, int ty, int twdt, int thgt, int sx = 0, int sy = 0, int swdt = -1, int shgt = -1, bool useScissor = true, float angle = 0.0f,
+                            bool fSrcColKey = true, GLuint program = 0, uint32_t color = 0) {
+  if ((!src || !src->tex) && program != g_shaderProgramSolid)
+    return;
+  if (twdt <= 0 || thgt <= 0) return;
+  if (src) {
+    if (swdt == -1)
+      swdt = src->w;
+    if (shgt == -1)
+      shgt = src->h;
+    SyncSurfaceGPU(src);
+  }
+
+  if (dst) {
+    SyncSurfaceGPU(dst);
+    glBindFramebuffer(GL_FRAMEBUFFER, dst->fbo);
+    glViewport(0, 0, dst->w, dst->h);
+    dst->dirty_gpu = true;
+  } else {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    int w, h;
+    glfwGetFramebufferSize(g_window, &w, &h);
+    glViewport(0, 0, w, h);
+  }
+
+  if (useScissor && lpDDraw) {
+    int scX, scY, scW, scH;
+    if (dst && dst->fClipped) {
+      scX = std::max(0, lpDDraw->ClipX1); // Primary clipper
+      scY = std::max(0, lpDDraw->ClipY1);
+      scW = std::max(0, lpDDraw->ClipX2 - lpDDraw->ClipX1 + 1);
+      scH = std::max(0, lpDDraw->ClipY2 - lpDDraw->ClipY1 + 1);
+    } else {
+      scX = std::max(0, lpDDraw->ClipX1);
+      scY = std::max(0, lpDDraw->ClipY1);
+      scW = std::max(0, lpDDraw->ClipX2 - lpDDraw->ClipX1 + 1);
+      scH = std::max(0, lpDDraw->ClipY2 - lpDDraw->ClipY1 + 1);
+    }
+
+    glEnable(GL_SCISSOR_TEST);
+    if (dst) {
+      glScissor(scX, scY, scW, scH);
+    } else {
+      int w, h;
+      glfwGetFramebufferSize(g_window, &w, &h);
+      glScissor(scX, h - scY - scH, scW, scH);
+    }
+  } else {
+    glDisable(GL_SCISSOR_TEST);
+  }
+
+  if (program == 0)
+    program = g_shaderProgramScreen;
+  glUseProgram(program);
+
+  float projection[16];
+  if (dst) {
+    GetOrthoMatrix(projection, 0.0f, (float)dst->w, 0.0f, (float)dst->h);
+  } else {
+    int w, h;
+    glfwGetFramebufferSize(g_window, &w, &h);
+    GetOrthoMatrix(projection, 0.0f, (float)w, (float)h, 0.0f);
+  }
+  glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, projection);
+
+  if (src) {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, src->tex);
+    glUniform1i(glGetUniformLocation(program, "texImage"), 0);
+    bool activeColKey = src->useColorKey && fSrcColKey;
+    if (program == g_shaderProgramScreen) {
+      glActiveTexture(GL_TEXTURE1);
+      glBindTexture(GL_TEXTURE_1D, g_paletteTex);
+      glUniform1i(glGetUniformLocation(program, "texPalette"), 1);
+      glUniform1ui(glGetUniformLocation(program, "colKey"), (uint32_t)src->ColorKey);
+      glUniform1i(glGetUniformLocation(program, "useColKey"), activeColKey ? 1 : 0);
+    } else if (program == g_shaderProgramBlit) {
+      glUniform1ui(glGetUniformLocation(program, "colKey"), (uint32_t)src->ColorKey);
+      glUniform1i(glGetUniformLocation(program, "useColKey"), activeColKey ? 1 : 0);
+    }
+  }
+
+  if (program == g_shaderProgramSolid) {
+    glUniform1ui(glGetUniformLocation(program, "color"), color);
+  }
+
+  float u1 = src ? (float)sx / src->w : 0.0f;
+  float v1 = src ? (float)sy / src->h : 0.0f;
+  float u2 = src ? (float)(sx + swdt) / src->w : 1.0f;
+  float v2 = src ? (float)(sy + shgt) / src->h : 1.0f;
+
+  float midX = tx + twdt / 2.0f;
+  float midY = ty + thgt / 2.0f;
+  float angle_rad;
+  if (!dst) {
+    angle_rad = angle * 3.14159265f / 180.0f;
+  } else {
+    angle_rad = -angle * 3.14159265f / 180.0f;
+  }
+  float s = sin(angle_rad);
+  float c = cos(angle_rad);
+
+  auto rotate = [&](float x, float y, float &rx, float &ry) {
+    float dx = x - midX;
+    float dy = y - midY;
+    rx = midX + dx * c - dy * s;
+    ry = midY + dx * s + dy * c;
+  };
+
+  float rx0, ry0, rx1, ry1, rx2, ry2, rx3, ry3;
+  rotate((float)tx, (float)ty, rx0, ry0);
+  rotate((float)tx + twdt, (float)ty, rx1, ry1);
+  rotate((float)tx + twdt, (float)ty + thgt, rx2, ry2);
+  rotate((float)tx, (float)ty + thgt, rx3, ry3);
+
+  float vertices[] = {rx0, ry0, u1, v1, rx1, ry1, u2, v1, rx2, ry2, u2, v2, rx2, ry2, u2, v2, rx3, ry3, u1, v2, rx0, ry0, u1, v1};
+
+  glBindVertexArray(g_vao);
+  glBindBuffer(GL_ARRAY_BUFFER, g_vbo);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+  glDrawArrays(GL_TRIANGLES, 0, 6);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+  glDisable(GL_SCISSOR_TEST);
 }
 
 CStdDDraw::CStdDDraw() {
@@ -195,7 +332,6 @@ void CStdDDraw::Clear() {
 }
 
 BOOL CStdDDraw::Init(HWND hWnd, BOOL Fullscreen, int iResX, int iResY, BOOL fUsePageLock) {
-  // Note: ignore hWnd, we use GLFW
   g_mainThreadId = std::this_thread::get_id();
   DebugLog("DDraw Init Start");
 
@@ -209,8 +345,8 @@ BOOL CStdDDraw::Init(HWND hWnd, BOOL Fullscreen, int iResX, int iResY, BOOL fUse
   if (!glfwInit())
     return FALSE;
   printf("glfwInit successful\n");
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   if (getenv("CLONK_TEST_HEADLESS"))
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
@@ -219,13 +355,14 @@ BOOL CStdDDraw::Init(HWND hWnd, BOOL Fullscreen, int iResX, int iResY, BOOL fUse
   glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 
   printf("glfwCreateWindow(%dx%d)...\n", iResX, iResY);
-  // Force windowed mode to avoid driver crashes reported by user
+  // Force windowed mode to avoid driver crashes
   g_window = glfwCreateWindow(iResX, iResY, "Clonk Planet", NULL, NULL);
   if (!g_window)
     return FALSE;
   printf("glfwCreateWindow successful\n");
 
   glfwMakeContextCurrent(g_window);
+  glfwSetWindowSizeCallback(g_window, glfwWindowSizeCallback);
   glfwSwapInterval(1);
 
   printf("glewInit...\n");
@@ -237,168 +374,36 @@ BOOL CStdDDraw::Init(HWND hWnd, BOOL Fullscreen, int iResX, int iResY, BOOL fUse
 
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-  glCreateTextures(GL_TEXTURE_1D, 1, &g_paletteTex);
-  glTextureStorage1D(g_paletteTex, 1, GL_RGB8, 256);
-  glTextureParameteri(g_paletteTex, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTextureParameteri(g_paletteTex, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTextureParameteri(g_paletteTex, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glGenTextures(1, &g_paletteTex);
+  glBindTexture(GL_TEXTURE_1D, g_paletteTex);
+  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB8, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   uint8_t dummyPal[768] = {0};
-  glTextureSubImage1D(g_paletteTex, 0, 0, 256, GL_RGB, GL_UNSIGNED_BYTE, dummyPal);
+  glTexSubImage1D(GL_TEXTURE_1D, 0, 0, 256, GL_RGB, GL_UNSIGNED_BYTE, dummyPal);
+  glBindTexture(GL_TEXTURE_1D, 0);
 
   g_shaderProgramScreen = CreateProgram(vertexShaderSrc, fragmentShaderScreenSrc);
   g_shaderProgramBlit = CreateProgram(vertexShaderSrc, fragmentShaderBlitSrc);
   g_shaderProgramSolid = CreateProgram(vertexShaderSrc, fragmentShaderSolidSrc);
 
-  glCreateVertexArrays(1, &g_vao);
-  glCreateBuffers(1, &g_vbo);
-  glVertexArrayVertexBuffer(g_vao, 0, g_vbo, 0, 4 * sizeof(float));
-  glEnableVertexArrayAttrib(g_vao, 0);
-  glEnableVertexArrayAttrib(g_vao, 1);
-  glVertexArrayAttribFormat(g_vao, 0, 2, GL_FLOAT, GL_FALSE, 0);
-  glVertexArrayAttribFormat(g_vao, 1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
-  glVertexArrayAttribBinding(g_vao, 0, 0);
-  glVertexArrayAttribBinding(g_vao, 1, 0);
+  glGenVertexArrays(1, &g_vao);
+  glGenBuffers(1, &g_vbo);
+  glBindVertexArray(g_vao);
+  glBindBuffer(GL_ARRAY_BUFFER, g_vbo);
+  glEnableVertexAttribArray(0);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(2 * sizeof(float)));
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
 
   lpPrimary = CreateSurface(iResX, iResY);
   lpBack = CreateSurface(iResX, iResY);
 
   DebugLog("DDraw Init Successful");
   return TRUE;
-}
-
-static void SyncSurfaceCPU(CGLSurface *surf) {
-  if (surf->dirty_gpu && surf->fbo && std::this_thread::get_id() == g_mainThreadId) {
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, surf->fbo);
-    glReadPixels(0, 0, surf->w, surf->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, surf->bits);
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-    surf->dirty_gpu = false;
-  }
-}
-
-static void DrawHardwareQuad(CGLSurface *src, CGLSurface *dst, int tx, int ty, int twdt, int thgt, int sx = 0, int sy = 0, int swdt = -1, int shgt = -1, bool useScissor = true, float angle = 0.0f,
-                            bool fSrcColKey = true, GLuint program = 0, uint32_t color = 0) {
-  if ((!src || !src->tex) && program != g_shaderProgramSolid)
-    return;
-  if (src) {
-    if (swdt == -1)
-      swdt = src->w;
-    if (shgt == -1)
-      shgt = src->h;
-    SyncSurfaceGPU(src);
-  }
-
-  if (dst) {
-    SyncSurfaceGPU(dst); // Ensure target is up to date if cpu modified it before this GPU draw
-    glBindFramebuffer(GL_FRAMEBUFFER, dst->fbo);
-    glViewport(0, 0, dst->w, dst->h);
-    dst->dirty_gpu = true;
-  } else {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    int w, h;
-    glfwGetFramebufferSize(g_window, &w, &h);
-    glViewport(0, 0, w, h);
-  }
-
-  if (useScissor && lpDDraw) {
-    int scX, scY, scW, scH;
-    if (dst && dst->fClipped) {
-      scX = std::max(0, dst->ClipX1);
-      scY = std::max(0, dst->ClipY1);
-      scW = std::max(0, dst->ClipX2 - dst->ClipX1 + 1);
-      scH = std::max(0, dst->ClipY2 - dst->ClipY1 + 1);
-    } else {
-      scX = std::max(0, lpDDraw->ClipX1);
-      scY = std::max(0, lpDDraw->ClipY1);
-      scW = std::max(0, lpDDraw->ClipX2 - lpDDraw->ClipX1 + 1);
-      scH = std::max(0, lpDDraw->ClipY2 - lpDDraw->ClipY1 + 1);
-    }
-
-    glEnable(GL_SCISSOR_TEST);
-    if (dst) {
-      // FBO is bottom-up (Logic 0 at physical bottom).
-      glScissor(scX, scY, scW, scH);
-    } else {
-      // Screen is top-down (Logic 0 at physical top).
-      int w, h;
-      glfwGetFramebufferSize(g_window, &w, &h);
-      glScissor(scX, h - scY - scH, scW, scH);
-    }
-  } else {
-    glDisable(GL_SCISSOR_TEST);
-  }
-
-  if (program == 0)
-    program = g_shaderProgramScreen;
-  glUseProgram(program);
-
-  float projection[16];
-  if (dst) {
-    // For FBOs, we want Logic Y=0 to be at the physical bottom (row 0).
-    GetOrthoMatrix(projection, 0.0f, (float)dst->w, 0.0f, (float)dst->h);
-  } else {
-    // For the screen, we want Logic Y=0 to be at the physical top.
-    int w, h;
-    glfwGetFramebufferSize(g_window, &w, &h);
-    GetOrthoMatrix(projection, 0.0f, (float)w, (float)h, 0.0f);
-  }
-  glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, projection);
-
-  if (src) {
-    glBindTextureUnit(0, src->tex);
-    glUniform1i(glGetUniformLocation(program, "texImage"), 0);
-    bool activeColKey = src->useColorKey && fSrcColKey;
-    if (program == g_shaderProgramScreen) {
-      glBindTextureUnit(1, g_paletteTex);
-      glUniform1i(glGetUniformLocation(program, "texPalette"), 1);
-      glUniform1ui(glGetUniformLocation(program, "colKey"), (uint32_t)src->ColorKey);
-      glUniform1i(glGetUniformLocation(program, "useColKey"), activeColKey ? 1 : 0);
-    } else if (program == g_shaderProgramBlit) {
-      glUniform1ui(glGetUniformLocation(program, "colKey"), (uint32_t)src->ColorKey);
-      glUniform1i(glGetUniformLocation(program, "useColKey"), activeColKey ? 1 : 0);
-    }
-  }
-
-  if (program == g_shaderProgramSolid) {
-    glUniform1ui(glGetUniformLocation(program, "color"), color);
-  }
-
-  float u1 = src ? (float)sx / src->w : 0.0f;
-  float v1 = src ? (float)sy / src->h : 0.0f;
-  float u2 = src ? (float)(sx + swdt) / src->w : 1.0f;
-  float v2 = src ? (float)(sy + shgt) / src->h : 1.0f;
-
-  float midX = tx + twdt / 2.0f;
-  float midY = ty + thgt / 2.0f;
-  float angle_rad;
-  if (!dst) {
-    // Screen (Top-Down): Positive angle is Clockwise.
-    angle_rad = angle * 3.14159265f / 180.0f;
-  } else {
-    // FBO (Bottom-Up): Negative angle is Clockwise.
-    angle_rad = -angle * 3.14159265f / 180.0f;
-  }
-  float s = sin(angle_rad);
-  float c = cos(angle_rad);
-
-  auto rotate = [&](float x, float y, float &rx, float &ry) {
-    float dx = x - midX;
-    float dy = y - midY;
-    rx = midX + dx * c - dy * s;
-    ry = midY + dx * s + dy * c;
-  };
-
-  float rx0, ry0, rx1, ry1, rx2, ry2, rx3, ry3;
-  rotate((float)tx, (float)ty, rx0, ry0);
-  rotate((float)tx + twdt, (float)ty, rx1, ry1);
-  rotate((float)tx + twdt, (float)ty + thgt, rx2, ry2);
-  rotate((float)tx, (float)ty + thgt, rx3, ry3);
-
-  float vertices[] = {rx0, ry0, u1, v1, rx1, ry1, u2, v1, rx2, ry2, u2, v2, rx2, ry2, u2, v2, rx3, ry3, u1, v2, rx0, ry0, u1, v1};
-
-  glBindVertexArray(g_vao);
-  glNamedBufferData(g_vbo, sizeof(vertices), vertices, GL_STREAM_DRAW);
-  glDrawArrays(GL_TRIANGLES, 0, 6);
-  glDisable(GL_SCISSOR_TEST);
 }
 
 BOOL CStdDDraw::PageFlip() {
@@ -415,7 +420,6 @@ BOOL CStdDDraw::PageFlip() {
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT);
 
-  // When rendering to screen, we don't usually want colorkeying for the whole backbuffer 
   DrawHardwareQuad(surf, nullptr, 0, 0, surf->w, surf->h, 0, 0, -1, -1, false, 0.0f, false, g_shaderProgramScreen);
 
   glfwSwapBuffers(g_window);
@@ -434,7 +438,9 @@ BOOL CStdDDraw::SetPrimaryPalette(BYTE *pBuf) {
     return FALSE;
   if (!g_paletteTex || !pBuf)
     return FALSE;
-  glTextureSubImage1D(g_paletteTex, 0, 0, 256, GL_RGB, GL_UNSIGNED_BYTE, pBuf);
+  glBindTexture(GL_TEXTURE_1D, g_paletteTex);
+  glTexSubImage1D(GL_TEXTURE_1D, 0, 0, 256, GL_RGB, GL_UNSIGNED_BYTE, pBuf);
+  glBindTexture(GL_TEXTURE_1D, 0);
   return TRUE;
 }
 
@@ -449,7 +455,9 @@ BOOL CStdDDraw::SetPrimaryPaletteQuad(BYTE *pBuf) {
     rgb[i * 3 + 1] = pBuf[i * 4 + 1];
     rgb[i * 3 + 2] = pBuf[i * 4 + 0];
   }
-  glTextureSubImage1D(g_paletteTex, 0, 0, 256, GL_RGB, GL_UNSIGNED_BYTE, rgb);
+  glBindTexture(GL_TEXTURE_1D, g_paletteTex);
+  glTexSubImage1D(GL_TEXTURE_1D, 0, 0, 256, GL_RGB, GL_UNSIGNED_BYTE, rgb);
+  glBindTexture(GL_TEXTURE_1D, 0);
   return TRUE;
 }
 
@@ -482,14 +490,11 @@ BOOL CStdDDraw::NoPrimaryClipper() {
   ClipY2 = 4096;
   return TRUE;
 }
+
 BOOL CStdDDraw::ApplyPrimaryClipper(SURFACE sfcSurface) {
   if (!sfcSurface)
     return FALSE;
   CGLSurface *s = (CGLSurface *)sfcSurface;
-  s->ClipX1 = ClipX1;
-  s->ClipY1 = ClipY1;
-  s->ClipX2 = ClipX2;
-  s->ClipY2 = ClipY2;
   s->fClipped = true;
   return TRUE;
 }
@@ -591,16 +596,19 @@ SURFACE CStdDDraw::CreateSurface(int iWdt, int iHgt) {
   s->fClipped = false;
 
   if (std::this_thread::get_id() == g_mainThreadId && g_window) {
-    glCreateTextures(GL_TEXTURE_2D, 1, &s->tex);
-    glTextureStorage2D(s->tex, 1, GL_R8UI, s->w, s->h);
-    glTextureParameteri(s->tex, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTextureParameteri(s->tex, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTextureParameteri(s->tex, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTextureParameteri(s->tex, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTextureSubImage2D(s->tex, 0, 0, 0, s->w, s->h, GL_RED_INTEGER, GL_UNSIGNED_BYTE, s->bits);
-    
-    glCreateFramebuffers(1, &s->fbo);
-    glNamedFramebufferTexture(s->fbo, GL_COLOR_ATTACHMENT0, s->tex, 0);
+    glGenTextures(1, &s->tex);
+    glBindTexture(GL_TEXTURE_2D, s->tex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8UI, s->w, s->h, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, s->bits);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glGenFramebuffers(1, &s->fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, s->fbo);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, s->tex, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
   } else {
     s->tex = 0;
     s->fbo = 0;
@@ -696,6 +704,7 @@ BOOL CStdDDraw::BlitSurfaceTile(SURFACE sfcSurface, SURFACE sfcTarget, int iToX,
 
   CGLSurface *src = (CGLSurface *)sfcSurface;
   CGLSurface *dst = (CGLSurface *)sfcTarget;
+  if (!src || !dst) return FALSE;
 
   // GPU tile blit would require a different shader or sampler settings.
   // For now, keep it on CPU or implement better.
@@ -758,6 +767,7 @@ void CStdDDraw::DrawBox(SURFACE sfcDest, int x1, int y1, int x2, int y2, BYTE co
   if (!sfcDest)
     return;
   CGLSurface *dst = (CGLSurface *)sfcDest;
+  if (x2 < x1 || y2 < y1) return;
   
   if (Pattern) {
     SyncSurfaceCPU(dst);
@@ -793,6 +803,7 @@ void CStdDDraw::DrawBoxColorTable(SURFACE sfcDest, int x1, int y1, int x2, int y
   if (!sfcDest || !bypColorTable)
     return;
   CGLSurface *dst = (CGLSurface *)sfcDest;
+  SyncSurfaceCPU(dst);
   if (x1 < std::max(0, ClipX1)) x1 = std::max(0, ClipX1);
   if (x2 > std::min(dst->w - 1, ClipX2)) x2 = std::min(dst->w - 1, ClipX2);
   if (y1 < std::max(0, ClipY1)) y1 = std::max(0, ClipY1);
@@ -839,7 +850,7 @@ void CStdDDraw::DrawFrame(SURFACE sfcDest, int x1, int y1, int x2, int y2, BYTE 
 void CStdDDraw::DrawInline(SURFACE sfcDest, int iX1, int iY1, int iX2, int iY2, BYTE byCol, BYTE byOnCol, BYTE byAdjacentCol) {
   if (!sfcDest) return;
   CGLSurface *dst = (CGLSurface *)sfcDest;
-  
+  SyncSurfaceCPU(dst);
   
   if ((iX2 < std::max(0, ClipX1)) || (iX1 > std::min(dst->w - 1, ClipX2)) 
    || (iY2 < std::max(0, ClipY1)) || (iY1 > std::min(dst->h - 1, ClipY2))) {
@@ -891,9 +902,10 @@ BOOL CStdDDraw::DrawLine(SURFACE sfcTarget, int x1, int y1, int x2, int y2, BYTE
 }
 
 BOOL CStdDDraw::DrawPolygon(SURFACE sfcTarget, int iNum, int *ipVtx, int iCol) {
-  if (iNum < 3)
+  if (iNum < 3 || !sfcTarget)
     return FALSE;
   CGLSurface *dst = (CGLSurface *)sfcTarget;
+  SyncSurfaceCPU(dst);
   int top = dst->h, bottom = 0;
   for (int i = 0; i < iNum; i++) {
     if (ipVtx[i * 2 + 1] < top)

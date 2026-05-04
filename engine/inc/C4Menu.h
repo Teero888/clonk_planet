@@ -40,7 +40,7 @@ protected:
 
 protected:
   void Draw(C4Facet &cgo, int iIndex, BOOL fSelected, int iStyle, C4Menu *pMenu, C4RegionList *pRegions);
-  void Set(const char *szCaption, C4FacetEx &fctSymbol, const char *szCommand, int iCount, C4Object *pObject, int iParameter, const char *szInfoCaption, C4ID idID, const char *szCommand2);
+  void Set(const char *szCaption, const C4FacetEx &fctSymbol, const char *szCommand, int iCount, C4Object *pObject, int iParameter, const char *szInfoCaption, C4ID idID, const char *szCommand2);
   void Clear();
   void Default();
 };
@@ -109,10 +109,10 @@ public:
   BOOL IsActive();
   BOOL Draw(C4Facet &cgo, C4RegionList *pRegions = NULL, BOOL fResetLocation = FALSE);
   BOOL Control(BYTE byCom, int iData);
-  BOOL Add(const char *szCaption, C4FacetEx fctSymbol, const char *szCommand, int iCount = C4MN_Item_NoCount, C4Object *pObject = NULL, int iParameter = 0, const char *szInfoCaption = NULL,
+  BOOL Add(const char *szCaption, const C4FacetEx &fctSymbol, const char *szCommand, int iCount = C4MN_Item_NoCount, C4Object *pObject = NULL, int iParameter = 0, const char *szInfoCaption = NULL,
            C4ID idID = C4ID_None, const char *szCommand2 = NULL);
-  BOOL Init(C4FacetEx fctSymbol, const char *szEmpty, int iPlayer, int iExtra = C4MN_Extra_None, int iExtraData = 0, int iId = 0, int iStyle = C4MN_Style_Normal);
-  BOOL Init(C4FacetEx fctSymbol, const char *szEmpty, C4Object *pObject, int iExtra = C4MN_Extra_None, int iExtraData = 0, int iId = 0, int iStyle = C4MN_Style_Normal);
+  BOOL Init(const C4FacetEx &fctSymbol, const char *szEmpty, int iPlayer, int iExtra = C4MN_Extra_None, int iExtraData = 0, int iId = 0, int iStyle = C4MN_Style_Normal);
+  BOOL Init(const C4FacetEx &fctSymbol, const char *szEmpty, C4Object *pObject, int iExtra = C4MN_Extra_None, int iExtraData = 0, int iId = 0, int iStyle = C4MN_Style_Normal);
   BOOL ActivateNewPlayer(int iPlayer);
   void Close();
   void Clear();

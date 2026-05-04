@@ -107,6 +107,8 @@ void C4Application::Execute() {
     Game.GameGo = TRUE;
     Game.GraphicsSystem.GraphicsGo = TRUE;
     lastTick = now;
+  } else {
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
 #endif
 
