@@ -62,6 +62,11 @@ BOOL C4Compiler::CompileLine(C4CompilerValue *pRefs, const char *szSection, cons
       sscanf(szSegment, "%i", ((int *)pTarget) + cnt);
     break;
 
+  case C4CV_Variable:
+    for (cnt = 0; (cnt < cRef->Size) && SCopySegment(szLine, cnt, szSegment, ',', C4MaxName); cnt++)
+      sscanf(szSegment, "%li", ((long *)pTarget) + cnt);
+    break;
+
   case C4CV_NameList:
     ((C4NameList *)pTarget)->Read(szLine, 0);
     break;
@@ -236,6 +241,35 @@ BOOL C4Compiler::DecompileStructure(C4CompilerValue *pRefs, void *vpData, void *
         if (cnt)
           SAppend(",", *ppOutput);
         sprintf(ostr, "%i", ipData[cnt]);
+        SAppend(ostr, *ppOutput);
+      }
+      SAppend(LineFeed, *ppOutput);
+      break;
+
+    case C4CV_Variable:
+      // Access data
+      long *lpData, *lpDefault;
+      lpData = (long *)(pData + cRef->Offset);
+      lpDefault = (long *)(pDefault + cRef->Offset);
+      // Compare to default
+      iDiff = 0;
+      for (cnt = 0; cnt < cRef->Size; cnt++)
+        if (lpData[cnt] != lpDefault[cnt])
+          iDiff = cnt + 1;
+      if (!iDiff)
+        break;
+      // Section name check
+      if (!secput) {
+        SAppend(secname, *ppOutput);
+        secput = TRUE;
+      }
+      // Append to output
+      SAppend(cRef->Name, *ppOutput);
+      SAppend("=", *ppOutput);
+      for (cnt = 0; cnt < iDiff; cnt++) {
+        if (cnt)
+          SAppend(",", *ppOutput);
+        sprintf(ostr, "%li", lpData[cnt]);
         SAppend(ostr, *ppOutput);
       }
       SAppend(LineFeed, *ppOutput);

@@ -2,7 +2,7 @@
 
 /* Scan ini-type text component files to run-time data structures */
 
-const int C4CV_String = 1, C4CV_Id = 2, C4CV_Integer = 3, C4CV_NameList = 4, C4CV_IdList = 5, C4CV_ObjectList = 6,
+const int C4CV_String = 1, C4CV_Id = 2, C4CV_Integer = 3, C4CV_NameList = 4, C4CV_IdList = 5, C4CV_ObjectList = 6, C4CV_Variable = 7,
 
           C4CV_Section = 10, C4CV_End = 0;
 

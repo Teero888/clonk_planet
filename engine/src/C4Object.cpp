@@ -33,7 +33,7 @@ C4CompilerValue C4CR_Object[] = {
     {"Breath", C4CV_Integer, offsC4O(Breath), 1},
     {"FirePhase", C4CV_Integer, offsC4O(FirePhase), 1},
     {"Color", C4CV_Integer, offsC4O(Color), 1},
-    {"Locals", C4CV_Integer, offsC4O(Local), C4MaxVariable},
+    {"Locals", C4CV_Variable, offsC4O(Local), C4MaxVariable},
     {"FixX", C4CV_Integer, offsC4O(fix_x), 1},
     {"FixY", C4CV_Integer, offsC4O(fix_y), 1},
     {"FixR", C4CV_Integer, offsC4O(fix_r), 1},
