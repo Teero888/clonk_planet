@@ -308,7 +308,8 @@ void SCopy(const char *szSource, char *sTarget, int iMaxL) {
     *sTarget = 0;
     if (!szSource)
       return;
-    strcpy(sTarget, szSource);
+    // who knows if this is correct but it fixes a crash
+    memmove(sTarget, szSource, strlen(szSource) + 1);
   } else
     SCopyL(szSource, sTarget, iMaxL);
 }
