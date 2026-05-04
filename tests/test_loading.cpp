@@ -6,6 +6,11 @@
 #include <zlib.h>
 #include <string>
 
+#ifdef _WIN32
+#include <fcntl.h>
+#include <io.h>
+#endif
+
 typedef uint8_t BYTE;
 
 #pragma pack(push, 1)
@@ -31,7 +36,6 @@ struct C4GroupEntryCore {
 void MemUnscramble(BYTE *bypBuffer, int iSize) {
   int cnt;
   BYTE temp;
-  // Scramble order from original source: XOR then SWAP
   for (cnt = 0; cnt < iSize; cnt++)
     bypBuffer[cnt] ^= 237;
   for (cnt = 0; cnt + 2 < iSize; cnt += 3) {
@@ -96,12 +100,23 @@ void HexDump(const BYTE *data, size_t size) {
 }
 
 int main(int argc, char **argv) {
-  if (argc < 2) {
-    printf("Usage: %s <path/to/resource>\n", argv[0]);
+  bool raw_mode = false;
+  std::string full_path = "";
+
+  // Parse arguments
+  for (int i = 1; i < argc; i++) {
+    if (strcmp(argv[i], "--raw") == 0) {
+      raw_mode = true;
+    } else {
+      full_path = argv[i];
+    }
+  }
+
+  if (full_path.empty()) {
+    fprintf(stderr, "Usage: %s <path/to/resource> [--raw]\n", argv[0]);
     return 1;
   }
 
-  std::string full_path = argv[1];
   std::vector<std::string> segments;
   size_t start = 0, end;
   while ((end = full_path.find('/', start)) != std::string::npos) {
@@ -137,24 +152,29 @@ int main(int argc, char **argv) {
     C4GroupHeader head;
     memcpy(&head, data.data(), sizeof(C4GroupHeader));
 
-    // Header is ALWAYS scrambled in GrpFiles
     MemUnscramble((BYTE *)&head, sizeof(C4GroupHeader));
     if (memcmp(head.id, "RedWolf Design GrpFolder", 24) != 0) {
-      // Try without unscramble
       memcpy(&head, data.data(), sizeof(C4GroupHeader));
       if (memcmp(head.id, "RedWolf Design GrpFolder", 24) != 0)
-        break; // Not a group
+        break;
     }
 
     // 3. Handle last segment
     if (s == segments.size() - 1) {
+      if (raw_mode) {
+#ifdef _WIN32
+        _setmode(_fileno(stdout), _O_BINARY);
+#endif
+        fwrite(data.data(), 1, data.size(), stdout);
+        return 0;
+      }
+
       printf("--- Group: %s ---\n", segments[s].c_str());
       printf("Entries: %d | Maker: %.32s\n", head.Entries, head.Maker);
       size_t offset = sizeof(C4GroupHeader);
       for (int i = 0; i < head.Entries; i++) {
         C4GroupEntryCore entry;
         memcpy(&entry, data.data() + offset, sizeof(C4GroupEntryCore));
-        // Entry headers are NEVER scrambled
         printf("[%2d] %-32.256s | Size: %7d | Offset: %7d\n", i, entry.FileName, entry.Size, entry.Offset);
         offset += sizeof(C4GroupEntryCore);
       }
@@ -178,15 +198,24 @@ int main(int argc, char **argv) {
       offset += sizeof(C4GroupEntryCore);
     }
     if (!found) {
-      printf("Segment '%s' not found\n", segments[s + 1].c_str());
+      fprintf(stderr, "Segment '%s' not found\n", segments[s + 1].c_str());
       return 1;
     }
   }
 
-  // Final display as file
+  // 5. Final Output (File/Raw Data)
+  if (raw_mode) {
+#ifdef _WIN32
+    _setmode(_fileno(stdout), _O_BINARY);
+#endif
+    fwrite(data.data(), 1, data.size(), stdout);
+    return 0;
+  }
+
   printf("--- File: %s (%zu bytes) ---\n", segments.back().c_str(), data.size());
   size_t dump_size = data.size() > 256 ? 256 : data.size();
   HexDump(data.data(), dump_size);
+
   if (data.size() > 0) {
     bool printable = true;
     for (size_t i = 0; i < (data.size() < 20 ? data.size() : 20); i++) {
