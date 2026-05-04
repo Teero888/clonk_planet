@@ -637,7 +637,7 @@ int C4DefList::LoadFolderLocal(const char *szPath, DWORD dwLoadWhat, const char 
   // Scan path for folder names
   int cnt, iBackslash, iDefs;
   char szFoldername[_MAX_PATH + 1];
-  for (cnt = 0; (iBackslash = SCharPos('\\', szPath, cnt)) > -1; cnt++) {
+  for (cnt = 0; (iBackslash = SCharPos('/', szPath, cnt)) > -1; cnt++) {
     SCopy(szPath, szFoldername, iBackslash);
     // Load from parent folder
     if (SEqualNoCase(GetExtension(szFoldername), "c4f"))

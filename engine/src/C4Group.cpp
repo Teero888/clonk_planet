@@ -1295,7 +1295,7 @@ BOOL C4Group::DeleteEntry(const char *szFilename) {
   case GRPF_Folder:
     StdFile.Close();
     char szPath[_MAX_FNAME + 1];
-    sprintf(szPath, "%s\\%s", FileName, szFilename);
+    sprintf(szPath, "%s/%s", FileName, szFilename);
     if (!EraseItem(szPath))
       return FALSE;
     break;
@@ -1435,7 +1435,7 @@ BOOL C4Group::ExtractEntry(const char *szFilename, const char *szExtractTo) {
     break;
   case GRPF_Folder: // Copy item from folder to target
     char szPath[_MAX_FNAME + 1];
-    sprintf(szPath, "%s\\%s", FileName, szFilename);
+    sprintf(szPath, "%s/%s", FileName, szFilename);
     if (!CopyItem(szPath, szTargetFName))
       return Error("ExtractEntry: Cannot copy item");
     break;
@@ -1786,7 +1786,7 @@ int C4Group::EntryTime(const char *szFilename) {
     break;
   case GRPF_Folder:
     char szPath[_MAX_FNAME + 1];
-    sprintf(szPath, "%s\\%s", FileName, szFilename);
+    sprintf(szPath, "%s/%s", FileName, szFilename);
     iTime = FileTime(szPath);
     break;
   }
@@ -1957,7 +1957,7 @@ BOOL C4Group::EnsureChildFilePtr(C4Group *pChild) {
   // Open standard file is not the child file			...or StdFile
   // ptr does not match pChild->FilePtr
   char szChildPath[_MAX_PATH + 1];
-  sprintf(szChildPath, "%s\\%s", FileName, GetFilename(pChild->FileName));
+  sprintf(szChildPath, "%s/%s", FileName, GetFilename(pChild->FileName));
   if (!ItemIdentical(StdFile.Name, szChildPath)) {
     // Reopen correct child stdfile
     if (!SetFilePtr2Entry(GetFilename(pChild->FileName)))

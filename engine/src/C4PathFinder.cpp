@@ -616,7 +616,7 @@ BOOL C4PathFinder::Execute() {
   return fContinue;
 }
 
-BOOL C4PathFinder::Find(int iFromX, int iFromY, int iToX, int iToY, BOOL (*fnSetWaypoint)(int, int, int, int), int iWaypointParameter) {
+BOOL C4PathFinder::Find(int iFromX, int iFromY, int iToX, int iToY, BOOL (*fnSetWaypoint)(int, int, int, intptr_t), intptr_t iWaypointParameter) {
 
   // Prepare
   Clear();

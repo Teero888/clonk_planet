@@ -49,9 +49,9 @@ public:
 
 protected:
   BOOL (*PointFree)(int, int);
-  BOOL (*SetWaypoint)(int, int, int, int);
+  BOOL (*SetWaypoint)(int, int, int, intptr_t);
   C4PathFinderRay *FirstRay;
-  int WaypointParameter;
+  intptr_t WaypointParameter;
   BOOL Success;
   C4TransferZones *TransferZones;
 
@@ -60,7 +60,7 @@ public:
   void Clear();
   void Default();
   void Init(BOOL (*fnPointFree)(int, int), C4TransferZones *pTransferZones = NULL);
-  BOOL Find(int iFromX, int iFromY, int iToX, int iToY, BOOL (*fnSetWaypoint)(int, int, int, int), int iWaypointParameter);
+  BOOL Find(int iFromX, int iFromY, int iToX, int iToY, BOOL (*fnSetWaypoint)(int, int, int, intptr_t), intptr_t iWaypointParameter);
 
 protected:
   void Run();

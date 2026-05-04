@@ -126,8 +126,8 @@ void C4Command::Default() {
   Next = NULL;
 }
 
-BOOL ObjectAddWaypoint(int iX, int iY, int iTransferTarget, int ipObject) {
-  C4Object *cObj = (C4Object *)(intptr_t)ipObject;
+BOOL ObjectAddWaypoint(int iX, int iY, int iTransferTarget, intptr_t ipObject) {
+  C4Object *cObj = (C4Object *)ipObject;
   if (!cObj)
     return FALSE;
 
