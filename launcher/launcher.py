@@ -404,7 +404,7 @@ class ClonkLauncher(QMainWindow):
                 if player_data:
                     m = re.search(r'^Color=(\d+)', player_data.decode('latin-1', errors='ignore'), re.MULTILINE)
                     if m: color = int(m.group(1))
-                item.setIcon(self.get_atlas_icon(99 + color - 1))
+                item.setIcon(self.get_atlas_icon(99 + color))
 
             if parent_item:
                 parent_item.appendRow(item)
