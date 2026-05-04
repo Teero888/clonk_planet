@@ -13,6 +13,7 @@ void C4Viewport::Default() {
   ViewX = ViewY = ViewWdt = ViewHgt = 0;
   DrawX = DrawY = OutX = OutY = OutWdt = OutHgt = 0;
   Next = NULL;
+  PlayerLock = TRUE;
   ResetMenuPositions = FALSE;
   Regions.Default();
   SetRegions = NULL;
@@ -21,8 +22,8 @@ void C4Viewport::Default() {
 void C4Viewport::Clear() { Regions.Clear(); }
 
 void C4Viewport::Execute() {
-  // Update view position
-  // UpdateViewPosition();
+  // Adjust position
+  AdjustPosition();
 
   // Draw
   Draw();
@@ -309,8 +310,23 @@ void C4Viewport::DrawPlayerControls(C4FacetEx &cgo) {
 }
 
 void C4Viewport::AdjustPosition() {
+  // View size
   ViewWdt = BoundBy(OutWdt, 0, GBackWdt);
   ViewHgt = BoundBy(OutHgt, 0, GBackHgt);
+  // View size safety for SBack
+  ViewWdt = BoundBy(ViewWdt, 0, MaxResX);
+  ViewHgt = BoundBy(ViewHgt, 0, MaxResY);
+
+  // View position
+  if (PlayerLock && ValidPlr(Player)) {
+    int iScrollRange = Min(ViewWdt / 10, ViewHgt / 10);
+    if (Game.Players.Get(Player)->ViewMode == C4PVM_Scrolling)
+      iScrollRange = 0;
+    int iPlrViewX = Game.Players.Get(Player)->ViewX - ViewWdt / 2;
+    int iPlrViewY = Game.Players.Get(Player)->ViewY - ViewHgt / 2;
+    ViewX = BoundBy(ViewX, iPlrViewX - iScrollRange, iPlrViewX + iScrollRange);
+    ViewY = BoundBy(ViewY, iPlrViewY - iScrollRange, iPlrViewY + iScrollRange);
+  }
   ViewX = BoundBy(ViewX, 0, GBackWdt - ViewWdt);
   ViewY = BoundBy(ViewY, 0, GBackHgt - ViewHgt);
 }
@@ -349,7 +365,17 @@ void C4Viewport::BlitOutput() {
 
 void C4Viewport::ClearPointers(C4Object *pObj) { Regions.ClearPointers(pObj); }
 BOOL C4Viewport::DropFiles(HANDLE hDrop) { return FALSE; }
-BOOL C4Viewport::TogglePlayerLock() { return FALSE; }
+BOOL C4Viewport::TogglePlayerLock() {
+  // Disable player lock
+  if (PlayerLock) {
+    PlayerLock = FALSE;
+  }
+  // Enable player lock
+  else if (ValidPlr(Player)) {
+    PlayerLock = TRUE;
+  }
+  return TRUE;
+}
 
 BOOL C4Viewport::UpdateOutputSize() {
   ViewWdt = OutWdt;
