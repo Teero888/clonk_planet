@@ -52,11 +52,7 @@ BOOL C4Application::Init(HINSTANCE hInst, int nCmdShow, char *szCmdLine) {
     C4Group_SetMaker(LoadResStr(IDS_PRC_UNREGUSER));
 
   // Fullscreen mode switch (ignored, we force windowed-fullscreen on Linux)
-#ifndef _WIN32
-  Fullscreen = TRUE;
-#else
-  Fullscreen = FALSE;
-#endif
+  Fullscreen = false;
 
   // Init carrier window
   printf("Console.Init...\n");
@@ -64,9 +60,7 @@ BOOL C4Application::Init(HINSTANCE hInst, int nCmdShow, char *szCmdLine) {
     Clear();
     return FALSE;
   }
-#ifndef _WIN32
   FullScreen.Init(hInstance);
-#endif
   // Init engine
   printf("Engine.Init...\n");
   if (!Engine.Init(hInstance, hWindow, Fullscreen)) {
@@ -98,7 +92,6 @@ void C4Application::Run() {
 void C4Application::Clear() { Engine.Clear(); }
 
 void C4Application::Execute() {
-#ifndef _WIN32
   // Drive engine flags on Linux
   static uint32_t lastTick = 0;
   uint32_t now = glfwGetTime() * 1000;
@@ -110,7 +103,6 @@ void C4Application::Execute() {
   } else {
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
-#endif
 
   // Fullscreen mode
   if (Fullscreen)
@@ -134,7 +126,6 @@ BOOL C4Application::ProcessCallback(const char *szMessage, int iProcess) {
 // Forward declare internal window handle from StdDDraw.cpp
 extern "C" void *GetGLFWWindow();
 
-#ifndef _WIN32
 static int GLFWKeyToVK(int key) {
   switch (key) {
   case GLFW_KEY_ENTER:
@@ -264,10 +255,8 @@ static void glfw_mouse_button_callback(GLFWwindow *window, int button, int actio
 }
 
 static void glfw_cursor_pos_callback(GLFWwindow *window, double xpos, double ypos) { Game.MouseControl.Move(C4MC_Button_None, (int)xpos, (int)ypos, 0); }
-#endif
 
 int C4Application::HandleMessage() {
-#ifndef _WIN32
   GLFWwindow *window = (GLFWwindow *)GetGLFWWindow();
   if (window) {
     if (glfwWindowShouldClose(window))
@@ -282,28 +271,4 @@ int C4Application::HandleMessage() {
   }
   glfwPollEvents();
   return 0; // Drive Execute()
-#else
-  MSG msg;
-  BOOL MsgDone;
-  // Peek message
-  if (!PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
-    return 0;
-  // Handle message
-  if (!GetMessage(&msg, NULL, 0, 0))
-    return 2;
-  // Dialog message transfer
-  MsgDone = FALSE;
-  if (!MsgDone)
-    if (Console.hDialog && IsDialogMessage(Console.hDialog, &msg))
-      MsgDone = TRUE;
-  if (!MsgDone)
-    if (Console.PropertyDlg.hDialog && IsDialogMessage(Console.PropertyDlg.hDialog, &msg))
-      MsgDone = TRUE;
-  if (!MsgDone) {
-    TranslateMessage(&msg);
-    DispatchMessage(&msg);
-  }
-  // Done
-  return 1;
-#endif
 }

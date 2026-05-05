@@ -1,9 +1,7 @@
 #include <C4Include.h>
 
-#ifndef _WIN32
 LRESULT APIENTRY ViewportWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) { return 0; }
 void UpdateWindowLayout(HWND hwnd) {}
-#endif
 
 C4Viewport::C4Viewport() { Default(); }
 C4Viewport::~C4Viewport() { Clear(); }
@@ -357,10 +355,6 @@ BOOL C4Viewport::Init(int iPlayer) {
 BOOL C4Viewport::Init(HWND hParent, HINSTANCE hInst, int iPlayer) { return Init(iPlayer); }
 
 void C4Viewport::BlitOutput() {
-#ifdef _WIN32
-  if (hWnd)
-    Engine.DDraw.BlitSurface2Window(Engine.DDraw.lpBack, DrawX, DrawY, ViewWdt, ViewHgt, hWnd, OutX, OutY, ViewWdt, ViewHgt);
-#endif
 }
 
 void C4Viewport::ClearPointers(C4Object *pObj) { Regions.ClearPointers(pObj); }

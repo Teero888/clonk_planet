@@ -12,7 +12,6 @@ const int MaxFnStringParLen = 500;
 char FnStringParBuf[MaxFnStringParLen + 1];
 char FnStringFormatBuf[MaxFnStringParLen + 1];
 
-#ifndef _WIN32
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -29,15 +28,6 @@ static bool IsPointerValid(const void *ptr) {
     return true;
   return write(g_null_fd, ptr, 1) != -1 || errno != EFAULT;
 }
-#else
-static bool IsPointerValid(const void *ptr) {
-  if (!ptr)
-    return false;
-  if ((uintptr_t)ptr < 65536)
-    return false;
-  return !IsBadReadPtr(ptr, 1);
-}
-#endif
 
 static bool IsObjectValid(C4Object *pObj) {
   if (!IsPointerValid(pObj))

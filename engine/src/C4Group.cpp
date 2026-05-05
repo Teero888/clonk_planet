@@ -4,11 +4,7 @@
 
 #include <C4Include.h>
 
-#ifdef _WIN32
-#include <Sys\UTime.h>
-#else
 #include <utime.h>
-#endif
 
 //------------------------------ File Sort Lists -------------------------------------------
 
@@ -786,9 +782,6 @@ BOOL C4Group::Close() {
   Clear();
 
   // Delete old group file, rename new file
-#ifdef _WIN32
-  _chmod(szGrpFileName, 200);
-#endif
   if (FileExists(szGrpFileName))
     if (!EraseFile(szGrpFileName))
       return Error("Close: Cannot erase temp file");

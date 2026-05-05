@@ -208,19 +208,16 @@ void C4ConfigGeneral::DeterminePaths() {
   // WorkPath (force working directory to exe path)
   BOOL fOkay = SetCurrentDirectory(ExePath);
   printf("DeterminePaths: SetCurrentDirectory(%s): %d\n", ExePath, fOkay);
-#ifndef _WIN32
-  AppendBackslash(ExePath); // Clonk expects trailing backslash for its own path
-                            // joins
-#endif                      // Temp path
+  AppendBackslash(ExePath); // Clonk expects trailing backslash for its own path joins
+
+  // Temp path
   GetTempPath(CFG_MaxString, TempPath);
   if (TempPath[0])
     AppendBackslash(TempPath);
   // Log path
   SCopy(ExePath, LogPath);
-#ifdef _WIN32
   if (LogPath[0])
     AppendBackslash(LogPath);
-#endif
   // Player path
   if (PlayerPath[0])
     AppendBackslash(PlayerPath);

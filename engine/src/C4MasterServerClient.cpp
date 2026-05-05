@@ -4,9 +4,6 @@
 
 #include <C4Include.h>
 
-#ifdef _WIN32
-#include <Winsock.h>
-#else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -16,7 +13,6 @@
 #define INVALID_SOCKET -1
 #define SOCKET_ERROR -1
 #define closesocket close
-#endif
 #include <StdHTTP.h>
 
 C4MasterServerClient::C4MasterServerClient() { Default(); }
