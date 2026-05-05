@@ -71,7 +71,8 @@ uniform sampler1D texPalette;
 uniform uint colKey;
 uniform bool useColKey;
 void main() {
-    ivec2 itexCoord = ivec2(TexCoord * vec2(textureSize(texImage, 0)));
+    ivec2 size = textureSize(texImage, 0);
+    ivec2 itexCoord = clamp(ivec2(TexCoord * vec2(size)), ivec2(0), size - ivec2(1));
     uint idx = texelFetch(texImage, itexCoord, 0).r;
     if (useColKey && idx == colKey) discard;
     FragColor = texelFetch(texPalette, int(idx), 0);
@@ -86,7 +87,8 @@ uniform usampler2D texImage;
 uniform uint colKey;
 uniform bool useColKey;
 void main() {
-    ivec2 itexCoord = ivec2(TexCoord * vec2(textureSize(texImage, 0)));
+    ivec2 size = textureSize(texImage, 0);
+    ivec2 itexCoord = clamp(ivec2(TexCoord * vec2(size)), ivec2(0), size - ivec2(1));
     uint idx = texelFetch(texImage, itexCoord, 0).r;
     if (useColKey && idx == colKey) discard;
     Index = idx;
@@ -139,6 +141,13 @@ static GLuint CreateProgram(const char *vsSrc, const char *fsSrc) {
 
 static void GetOrthoMatrix(float *mat, float left, float right, float bottom, float top) {
   memset(mat, 0, 16 * sizeof(float));
+  if (right - left == 0.0f || top - bottom == 0.0f) {
+    mat[0] = 1.0f;
+    mat[5] = 1.0f;
+    mat[10] = 1.0f;
+    mat[15] = 1.0f;
+    return;
+  }
   mat[0] = 2.0f / (right - left);
   mat[5] = 2.0f / (top - bottom);
   mat[10] = -1.0f;
