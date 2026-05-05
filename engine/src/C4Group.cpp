@@ -1407,7 +1407,7 @@ BOOL C4Group::ExtractEntry(const char *szFilename, const char *szExtractTo) {
     SCopy(szTargetFName, szTempFName);
     MakeTempFilename(szTempFName);
     // Create temp target file
-    if (!tfile.Create(szTempFName, pEntry->ChildGroup))
+    if (!tfile.Create(szTempFName, pEntry->ChildGroup)) // Use ChildGroup flag so only subgroups are compressed
       return Error("Extract: Cannot create target file");
     // Write entry file to temp target file
     if (!AppendEntry2StdFile(pEntry, tfile)) {

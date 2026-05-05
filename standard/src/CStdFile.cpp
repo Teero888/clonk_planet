@@ -222,9 +222,7 @@ BOOL CStdFile::Rewind() {
   if (hFile)
     rewind(hFile);
   if (hgzFile) {
-    if (gzclose(hgzFile) != Z_OK)
-      return FALSE;
-    if (!(hgzFile = gzopen(Name, "rb")))
+    if (gzrewind(hgzFile) != 0)
       return FALSE;
   }
   return TRUE;
