@@ -430,7 +430,30 @@ BOOL CStdDDraw::PageFlip() {
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT);
 
-  DrawHardwareQuad(surf, nullptr, 0, 0, surf->w, surf->h, 0, 0, -1, -1, false, 0.0f, false, g_shaderProgramScreen);
+  int win_w, win_h;
+  glfwGetFramebufferSize(g_window, &win_w, &win_h);
+
+  if (win_w > 0 && win_h > 0) {
+    float aspect_src = (float)surf->w / surf->h;
+    float aspect_dst = (float)win_w / win_h;
+
+    int draw_w = win_w;
+    int draw_h = win_h;
+    int draw_x = 0;
+    int draw_y = 0;
+
+    if (aspect_dst > aspect_src) {
+      // Window is wider than source, pillarbox
+      draw_w = (int)(win_h * aspect_src);
+      draw_x = (win_w - draw_w) / 2;
+    } else {
+      // Window is taller than source, letterbox
+      draw_h = (int)(win_w / aspect_src);
+      draw_y = (win_h - draw_h) / 2;
+    }
+
+    DrawHardwareQuad(surf, nullptr, draw_x, draw_y, draw_w, draw_h, 0, 0, -1, -1, false, 0.0f, false, g_shaderProgramScreen);
+  }
 
   glfwSwapBuffers(g_window);
   glfwPollEvents();

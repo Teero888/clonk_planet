@@ -227,9 +227,36 @@ static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int act
   }
 }
 
+static void ScaleMouseCoordinate(GLFWwindow *window, double &xpos, double &ypos) {
+  int win_w, win_h;
+  glfwGetFramebufferSize(window, &win_w, &win_h);
+  if (win_w <= 0 || win_h <= 0) return;
+
+  float aspect_src = (float)Config.Graphics.ResX / Config.Graphics.ResY;
+  float aspect_dst = (float)win_w / win_h;
+
+  int draw_w = win_w;
+  int draw_h = win_h;
+  int draw_x = 0;
+  int draw_y = 0;
+
+  if (aspect_dst > aspect_src) {
+    draw_w = (int)(win_h * aspect_src);
+    draw_x = (win_w - draw_w) / 2;
+  } else {
+    draw_h = (int)(win_w / aspect_src);
+    draw_y = (win_h - draw_h) / 2;
+  }
+
+  xpos = (xpos - draw_x) * Config.Graphics.ResX / draw_w;
+  ypos = (ypos - draw_y) * Config.Graphics.ResY / draw_h;
+}
+
 static void glfw_mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
   double xpos, ypos;
   glfwGetCursorPos(window, &xpos, &ypos);
+  ScaleMouseCoordinate(window, xpos, ypos);
+
   WORD flags = 0;
   if (mods & GLFW_MOD_CONTROL)
     flags |= MK_CONTROL;
@@ -254,7 +281,10 @@ static void glfw_mouse_button_callback(GLFWwindow *window, int button, int actio
   }
 }
 
-static void glfw_cursor_pos_callback(GLFWwindow *window, double xpos, double ypos) { Game.MouseControl.Move(C4MC_Button_None, (int)xpos, (int)ypos, 0); }
+static void glfw_cursor_pos_callback(GLFWwindow *window, double xpos, double ypos) {
+  ScaleMouseCoordinate(window, xpos, ypos);
+  Game.MouseControl.Move(C4MC_Button_None, (int)xpos, (int)ypos, 0); 
+}
 
 int C4Application::HandleMessage() {
   GLFWwindow *window = (GLFWwindow *)GetGLFWWindow();
