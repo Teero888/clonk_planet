@@ -28,9 +28,15 @@ void C4Viewport::Execute() {
 
   // Blit
   BlitOutput();
+
+  // Reset first frame flag
+  FirstFrame = FALSE;
 }
 
 void C4Viewport::Draw() {
+  // Clear viewport area in backbuffer (to avoid hall-of-mirrors artifacts where the sky doesn't overdraw)
+  Engine.DDraw.DrawBox(Engine.DDraw.lpBack, DrawX, DrawY, DrawX + ViewWdt - 1, DrawY + ViewHgt - 1, 0);
+
   // Current graphics output
   C4FacetEx cgo;
   cgo.Set(Engine.DDraw.lpBack, DrawX, DrawY, ViewWdt, ViewHgt, ViewX, ViewY);
@@ -318,7 +324,7 @@ void C4Viewport::AdjustPosition() {
   // View position
   if (PlayerLock && ValidPlr(Player)) {
     int iScrollRange = Min(ViewWdt / 10, ViewHgt / 10);
-    if (Game.Players.Get(Player)->ViewMode == C4PVM_Scrolling)
+    if (Game.Players.Get(Player)->ViewMode == C4PVM_Scrolling || FirstFrame)
       iScrollRange = 0;
     int iPlrViewX = Game.Players.Get(Player)->ViewX - ViewWdt / 2;
     int iPlrViewY = Game.Players.Get(Player)->ViewY - ViewHgt / 2;

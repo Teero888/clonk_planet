@@ -22,6 +22,7 @@ protected:
   BOOL PlayerLock;
   int OutX, OutY, OutWdt, OutHgt;
   BOOL ResetMenuPositions;
+  BOOL FirstFrame;
   C4RegionList *SetRegions;
   C4Viewport *Next;
 
