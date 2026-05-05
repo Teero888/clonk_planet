@@ -738,7 +738,7 @@ class ClonkLauncher(QMainWindow):
         if self.current_music_path and os.path.exists(self.current_music_path):
             if self.get_cfg("Sound\\FEMusic", "1") == "1":
                 # Check for SoundFont and our custom C++ player
-                sf_path = os.path.join(self.res_music_path, "FluidR3_GM_GS.sf2")
+                sf_path = os.path.join(self.planet_data_path, "FluidR3_GM_GS.sf2")
                 midi_player_bin = os.path.abspath(os.path.join(self.base_path, 'build', 'clonk_midi'))
                 
                 if os.path.exists(sf_path) and os.path.exists(midi_player_bin):
