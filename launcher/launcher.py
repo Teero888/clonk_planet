@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QPushButton,
                              QStackedWidget, QHBoxLayout, QGroupBox, QComboBox, 
                              QSpinBox, QCheckBox, QGridLayout, QSlider, QLineEdit, QMessageBox, QListWidget, QStyledItemDelegate, QStyle, QStyleOptionViewItem)
 from PyQt5.QtGui import QPixmap, QPalette, QBrush, QStandardItemModel, QStandardItem, QIcon, QPainter, QColor, QFont, QKeySequence, QImage, QFontDatabase
-from PyQt5.QtCore import Qt, QRect, QSize, QTimer, QUrl, QPoint, pyqtSignal, QProcess
+from PyQt5.QtCore import Qt, QRect, QSize, QTimer, QUrl, QPoint, pyqtSignal, QProcess, QEvent
 from PyQt5.QtMultimedia import QSoundEffect, QMediaPlayer, QMediaContent
 from clonk_ui import ClonkButton, ClonkArea, ClonkTexturedWidget
 from clonk_popup import ClonkPopupDialog, ClonkPlayerPropertiesDialog
@@ -22,10 +22,12 @@ from win3d import Win3DGroupBox, Win3DButton, Win3DTabWidget
 from c4_io import C4Group, C4GroupWriter, unscramble, parse_c4_text, update_c4_text, get_group_title
 
 class PixelDelegate(QStyledItemDelegate):
-    def __init__(self, parent=None, check_on=None, check_off=None):
+    def __init__(self, parent=None, check_on=None, check_off=None, check_locked_on=None, check_locked_off=None):
         super().__init__(parent)
         self.check_on = check_on
         self.check_off = check_off
+        self.check_locked_on = check_locked_on
+        self.check_locked_off = check_locked_off
 
     def paint(self, painter, option, index):
         self.initStyleOption(option, index)
@@ -45,7 +47,15 @@ class PixelDelegate(QStyledItemDelegate):
         if option.features & QStyleOptionViewItem.HasCheckIndicator:
             check_rect = style.subElementRect(QStyle.SE_ItemViewItemCheckIndicator, option, widget)
             check_rect.translate(-1, 0)
-            pix = self.check_on if option.checkState == Qt.Checked else self.check_off
+            
+            data = index.data(Qt.UserRole + 1)
+            is_locked = data.get('is_locked', False) if data else False
+            
+            if is_locked:
+                pix = self.check_locked_on if option.checkState == Qt.Checked else self.check_locked_off
+            else:
+                pix = self.check_on if option.checkState == Qt.Checked else self.check_off
+                
             if pix and not pix.isNull():
                 tx = check_rect.x() + (check_rect.width() - pix.width()) // 2
                 ty = check_rect.y() + (check_rect.height() - pix.height()) // 2
@@ -91,6 +101,13 @@ class PixelDelegate(QStyledItemDelegate):
             painter.drawText(display_rect, Qt.AlignVCenter | Qt.AlignLeft, text)
 
         painter.restore()
+
+    def editorEvent(self, event, model, option, index):
+        if event.type() in (QEvent.MouseButtonPress, QEvent.MouseButtonRelease, QEvent.MouseButtonDblClick):
+            data = index.data(Qt.UserRole + 1)
+            if data and data.get('is_locked', False):
+                return False # Block interaction
+        return super().editorEvent(event, model, option, index)
 
 class SplashWindow(QWidget):
     finished = pyqtSignal()
@@ -172,28 +189,45 @@ class HostDialog(QDialog):
         return self.input.text()
 
 class KeyBindInput(QLineEdit):
-    def __init__(self, action_name, key_code=0, parent=None):
+    def __init__(self, action_name, key_code=0, dialog=None):
         # Convert numeric key code to string
         key_str = QKeySequence(key_code).toString() if key_code else ""
-        super().__init__(key_str, parent)
-        self.action_name = action_name 
+        super().__init__(key_str)
+        self.action_name = action_name
         self.key_code = key_code
-        
-        self.setReadOnly(True) 
+        self.dialog = dialog
+
+        self.setReadOnly(True)
         self.setFixedSize(65, 20)
         self.setCursor(Qt.ArrowCursor)
 
     def keyPressEvent(self, event):
         if event.key() in (Qt.Key_Shift, Qt.Key_Control, Qt.Key_Alt, Qt.Key_Meta):
             return
-            
-        self.key_code = event.key()
-        key_str = QKeySequence(self.key_code).toString()
-        self.setText(key_str)
-        # Update the parent dialog's cache
-        if hasattr(self.parent(), 'on_key_changed'):
-            self.parent().on_key_changed(self.action_name, self.key_code)
 
+        # Clonk 4 (Windows) expects Virtual Key codes.
+        # Map common non-ASCII Qt keys to Windows VK codes.
+        qt_to_vk = {
+            Qt.Key_Left: 37, Qt.Key_Up: 38, Qt.Key_Right: 39, Qt.Key_Down: 40,
+            Qt.Key_Insert: 45, Qt.Key_Delete: 46, Qt.Key_Home: 36, Qt.Key_End: 35,
+            Qt.Key_PageUp: 33, Qt.Key_PageDown: 34, Qt.Key_Return: 13, Qt.Key_Enter: 13,
+            Qt.Key_Backspace: 8, Qt.Key_Space: 32, Qt.Key_Tab: 9, Qt.Key_Escape: 27
+        }
+        
+        raw_key = event.key()
+        self.key_code = qt_to_vk.get(raw_key, raw_key)
+        
+        # If it's a letter, Qt uses ASCII but sometimes we need to ensure it's uppercase
+        if 0x41 <= self.key_code <= 0x5A: # A-Z
+             pass
+        elif 0x61 <= self.key_code <= 0x7A: # a-z
+             self.key_code -= 0x20
+             
+        key_str = QKeySequence(raw_key).toString()
+        self.setText(key_str)
+        # Update the dialog's cache
+        if self.dialog and hasattr(self.dialog, 'on_key_changed'):
+            self.dialog.on_key_changed(self.action_name, self.key_code)
 class ClonkLauncher(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -221,9 +255,13 @@ class ClonkLauncher(QMainWindow):
         self.temp_dir = tempfile.TemporaryDirectory()
         self.check_on_pix = QPixmap()
         self.check_off_pix = QPixmap()
+        self.check_locked_on_pix = QPixmap()
+        self.check_locked_off_pix = QPixmap()
         if not self.check_atlas.isNull():
             self.check_on_pix = self.check_atlas.copy(QRect(16, 0, 16, 16))
             self.check_off_pix = self.check_atlas.copy(QRect(32, 0, 16, 16))
+            self.check_locked_on_pix = self.check_atlas.copy(QRect(112, 0, 16, 16))
+            self.check_locked_off_pix = self.check_atlas.copy(QRect(128, 0, 16, 16))
 
         self.sound_start = self.load_sound('sound_7008.wav')
         self.sound_click = self.load_sound('sound_7002.wav')
@@ -248,6 +286,7 @@ class ClonkLauncher(QMainWindow):
 
     def load_config(self):
         self.config_data = {}
+        self.other_sections = {}
         if os.path.exists(self.config_path):
             try:
                 with open(self.config_path, 'r', encoding='latin-1') as f:
@@ -257,27 +296,49 @@ class ClonkLauncher(QMainWindow):
                         if not line or line.startswith(';'): continue
                         if line.startswith('[') and line.endswith(']'):
                             current_section = line[1:-1]
+                            if current_section.lower() != 'software':
+                                self.other_sections[current_section] = []
                             continue
-                        if '=' in line:
+                        
+                        if current_section.lower() == 'software' and '=' in line:
                             key, val = line.split('=', 1)
                             self.config_data[key.strip()] = val.strip()
+                        elif current_section is not None and current_section.lower() != 'software':
+                            self.other_sections[current_section].append(line)
             except Exception as e:
                 print(f"Error loading config: {e}")
         
         self.language = self.get_cfg("General\\Language", "US")
 
     def save_config(self):
-        # Update specific keys that might have changed outside the options dialog
+        # Update language
         self.config_data["RedWolf Design\\Clonk 4\\General\\Language"] = self.language
         
+        abs_path = os.path.abspath(self.config_path)
+        print(f"DEBUG: Saving config to: {abs_path}")
         try:
-            # We want to preserve other sections if they exist, but mostly we care about [Software]
-            with open(self.config_path, 'w', encoding='latin-1') as f:
-                f.write("[Software]\n")
-                for key in sorted(self.config_data.keys()):
-                    f.write(f"{key}={self.config_data[key]}\n")
+            with open(self.config_path, 'wb') as f:
+                # Write [Software] section
+                f.write(b"[Software]\r\n")
+                # Case-insensitive sort for keys
+                keys = sorted(self.config_data.keys(), key=lambda x: x.lower())
+                # print(f"DEBUG: Total keys in [Software]: {len(keys)}")
+                for key in keys:
+                    val = self.config_data[key]
+                    line = f"{key}={val}"
+                    #if "Controls" in key:
+                        # print(f"DEBUG: Writing keybind to file: {line}")
+                    f.write(f"{line}\r\n".encode('latin-1'))
+                
+                # Write other sections
+                for section, lines in self.other_sections.items():
+                    f.write(f"[{section}]\r\n".encode('latin-1'))
+                    for line in lines:
+                        f.write(f"{line}\r\n".encode('latin-1'))
+            # print(f"DEBUG: Save complete. Size: {os.path.getsize(self.config_path)} bytes")
         except Exception as e:
-            print(f"Error saving config: {e}")
+            print(f"ERROR: {e}")
+            QMessageBox.critical(None, "Error", f"Could not save config: {e}")
 
     def get_atlas_icon(self, index):
         if self.icons_atlas.isNull(): return QIcon()
@@ -328,7 +389,10 @@ class ClonkLauncher(QMainWindow):
 
         def get_item_info(name, grp):
             ext = name.lower()[-4:]
-            title = self.get_group_title(grp, name)
+            default_name = name
+            if ext in ('.c4p', '.c4f', '.c4s', '.c4d', '.c4v'):
+                default_name = name[:-4]
+            title = self.get_group_title(grp, default_name)
             cat = 9
             if ext == '.c4p': cat = 0
             elif ext == '.c4f': cat = 1
@@ -368,7 +432,24 @@ class ClonkLauncher(QMainWindow):
                             s_grp = C4Group(raw_data=sub_data)
                             subs.append(get_item_info(e['name'], s_grp))
                 
-                for s in sorted(subs, key=lambda x: (x['cat'], x['title'].lower())):
+                def tutorial_sort_key(s):
+                    keyboard_order = [
+                        "A Clonk", "More Clonks", "Air Travel", "Production Line",
+                        "Gold Mine", "Underground", "Acid Lake", "Wipf Rescue",
+                        "Arctic Ocean", "Volcanic"
+                    ]
+                    mouse_order = [
+                        "Settlement", "Goldmine", "Production", "Objects"
+                    ]
+                    
+                    t = s['title']
+                    if info['title'] == "Keyboard Control" and t in keyboard_order:
+                        return (0, keyboard_order.index(t))
+                    if info['title'] == "Mouse Control" and t in mouse_order:
+                        return (0, mouse_order.index(t))
+                    return (s['cat'], t.lower())
+
+                for s in sorted(subs, key=tutorial_sort_key):
                     add_item(item, s['name'], s['grp'], path, current_subs + [s['name']])
                     
             elif item_type == 'scenario':
@@ -386,7 +467,8 @@ class ClonkLauncher(QMainWindow):
                 set_item_icon(item, grp, 12)
                 if not current_subs: # Root node
                     item.setCheckable(True)
-                    item.setCheckState(Qt.Checked)
+                    is_objects = (name.lower() == 'objects.c4d' or info['title'] == 'Objects')
+                    item.setCheckState(Qt.Checked if is_objects else Qt.Unchecked)
                 subs = []
                 for e in grp.entries:
                     if e['name'].lower().endswith('.c4d'):
@@ -394,7 +476,24 @@ class ClonkLauncher(QMainWindow):
                         if sub_data:
                             s_grp = C4Group(raw_data=sub_data)
                             subs.append(get_item_info(e['name'], s_grp))
-                for s in sorted(subs, key=lambda x: (x['cat'], x['title'].lower())):
+                def tutorial_sort_key(s):
+                    keyboard_order = [
+                        "A Clonk", "More Clonks", "Air Travel", "Production Line",
+                        "Gold Mine", "Underground", "Acid Lake", "Wipf Rescue",
+                        "Arctic Ocean", "Volcanic"
+                    ]
+                    mouse_order = [
+                        "Settlement", "Goldmine", "Production", "Objects"
+                    ]
+                    
+                    t = s['title']
+                    if info['title'] == "Keyboard Control" and t in keyboard_order:
+                        return (0, keyboard_order.index(t))
+                    if info['title'] == "Mouse Control" and t in mouse_order:
+                        return (0, mouse_order.index(t))
+                    return (s['cat'], t.lower())
+
+                for s in sorted(subs, key=tutorial_sort_key):
                     add_item(item, s['name'], s['grp'], path, current_subs + [s['name']])
             elif item_type == 'clonk':
                 item.setCheckable(True)
@@ -439,7 +538,11 @@ class ClonkLauncher(QMainWindow):
     def on_tree_selection(self, selected, deselected):
         indexes = selected.indexes()
         if not indexes: return
-        item = self.tree_model.itemFromIndex(indexes[0])
+        # Always use column 0 item
+        idx = indexes[0]
+        if idx.column() != 0:
+            idx = idx.siblingAtColumn(0)
+        item = self.tree_model.itemFromIndex(idx)
         data = item.data()
         if not data: 
             self.desc.setText("Select an item to see its description.")
@@ -643,7 +746,13 @@ class ClonkLauncher(QMainWindow):
             self.desc.setPlainText("No description available.")
 
         # Image
-        img_data = target_grp.get_file('Title.bmp') or target_grp.get_file('Icon.bmp')
+        is_title = False
+        img_data = target_grp.get_file('Title.bmp')
+        if img_data:
+            is_title = True
+        else:
+            img_data = target_grp.get_file('Icon.bmp')
+
         needs_crop = False
         if not img_data:
             img_data = target_grp.get_file('Graphics.bmp') or target_grp.get_file('Picture.bmp') or target_grp.get_file('Portrait.bmp')
@@ -652,9 +761,9 @@ class ClonkLauncher(QMainWindow):
         if img_data:
             pix = QPixmap()
             pix.loadFromData(img_data)
-            
-            pix = self.apply_clonk_transparency(pix)
-            
+
+            if not is_title:
+                pix = self.apply_clonk_transparency(pix)            
             if needs_crop:
                 defcore_data = target_grp.get_file('DefCore.txt')
                 if defcore_data:
@@ -674,7 +783,7 @@ class ClonkLauncher(QMainWindow):
             if pix.width() > 0 and pix.height() > 0:
                 is_scenario = data.get('type') in ('scenario', 'folder')
                 is_root_package = (data.get('type') in ('package', 'clonk') and not data.get('sub'))
-                
+
                 if is_scenario or is_root_package:
                     pix = pix.scaled(self.preview.size(), Qt.IgnoreAspectRatio, Qt.FastTransformation)
                     self.preview.setGraphicsEffect(None)
@@ -683,7 +792,7 @@ class ClonkLauncher(QMainWindow):
                     offset = QSize(20,20)
                     pix = pix.scaled(self.preview.size() - offset, Qt.KeepAspectRatio, Qt.FastTransformation)
                     f = pix.width() / orig_w if orig_w > 0 else 1.0
-                    
+
                     from PyQt5.QtWidgets import QGraphicsDropShadowEffect
                     effect = QGraphicsDropShadowEffect()
                     effect.setBlurRadius(0)
@@ -692,9 +801,65 @@ class ClonkLauncher(QMainWindow):
                     off = 3
                     effect.setOffset(off, off)
                     self.preview.setGraphicsEffect(effect)
-            
+
             self.preview.setPixmap(pix)
+
+        # Handle Package Locking
+        root = self.tree_model.invisibleRootItem()
+        if item.data().get('type') == 'scenario':
+            scen_title = item.text()
+            scen_path = item.data().get('path', '')
+            scen_file = os.path.basename(scen_path).lower()
+            scen_sub = item.data().get('sub', [])
+            if scen_sub:
+                scen_file = scen_sub[-1].lower() if isinstance(scen_sub, list) else scen_sub.lower()
+
+            locks = {}
+            # Robust matching for special scenarios
+            if "research" in scen_title.lower() or scen_file == "research.c4s":
+                locks = {"Hazard": True, "Knights": False, "Objects": False}
+            elif "dunkelfels" in scen_title.lower() or scen_file == "dunkelfels.c4s":
+                locks = {"Hazard": False, "Knights": True, "Objects": True}
+            
+            for row in range(root.rowCount()):
+                it = root.child(row)
+                it_data = it.data()
+                if it_data and it_data.get('type') == 'package':
+                    pkg_title = it.text().lower()
+                    pkg_path = it_data.get('path', '').lower()
+                    pkg_file = os.path.basename(pkg_path)
+                    if pkg_file.endswith('.c4d'): pkg_file = pkg_file[:-4]
+
+                    # Reset to default state first (Objects only)
+                    is_obj = (pkg_title == "objects" or pkg_file == "objects")
+                    it.setCheckState(Qt.Checked if is_obj else Qt.Unchecked)
+
+                    # Check if this package should be locked
+                    matched_lock = None
+                    for lock_name, lock_state in locks.items():
+                        if pkg_title == lock_name.lower() or pkg_file == lock_name.lower():
+                            matched_lock = lock_state
+                            break
+
+                    d = it.data() or {}
+                    if matched_lock is not None:
+                        d['is_locked'] = True
+                        it.setCheckState(Qt.Checked if matched_lock else Qt.Unchecked)
+                    else:
+                        d['is_locked'] = False
+                    it.setData(d)
         else:
+            # Unlock everything if not a scenario
+            for row in range(root.rowCount()):
+                it = root.child(row)
+                it_data = it.data()
+                if it_data and it_data.get('type') == 'package':
+                    d = it.data() or {}
+                    d['is_locked'] = False
+                    it.setData(d)
+        
+        # Reset effect if no image
+        if not img_data:
             self.preview.setGraphicsEffect(None)
             self.preview.setPixmap(QPixmap())
 
@@ -732,7 +897,11 @@ class ClonkLauncher(QMainWindow):
                 print(f"Error extracting music: {e}")
 
     def get_cfg(self, sub_key, default):
-        return self.config_data.get(f"RedWolf Design\\Clonk 4\\{sub_key}", str(default))
+        search_key = f"RedWolf Design\\Clonk 4\\{sub_key}".lower()
+        for k, v in self.config_data.items():
+            if k.lower() == search_key:
+                return v
+        return str(default)
 
     def start_music(self):
         if self.current_music_path and os.path.exists(self.current_music_path):
@@ -740,7 +909,8 @@ class ClonkLauncher(QMainWindow):
                 # Check for SoundFont and our custom C++ player
                 sf_path = os.path.join(self.planet_data_path, "FluidR3_GM_GS.sf2")
                 midi_player_bin = os.path.abspath(os.path.join(self.base_path, 'build', 'clonk_midi'))
-                
+
+                # print(f"DEBUG: Starting music from {self.current_music_path}")
                 if os.path.exists(sf_path) and os.path.exists(midi_player_bin):
                     # Play via clonk_midi process
                     self.stop_music()
@@ -752,6 +922,7 @@ class ClonkLauncher(QMainWindow):
                     self.music_player.play()
 
     def stop_music(self):
+        # print("DEBUG: Stopping music")
         if self.midi_process.state() != QProcess.NotRunning:
             self.midi_process.terminate()
             if not self.midi_process.waitForFinished(1000):
@@ -760,11 +931,14 @@ class ClonkLauncher(QMainWindow):
 
     def update_music(self):
         if self.get_cfg("Sound\\FEMusic", "1") == "1":
-            if self.music_player.state() != QMediaPlayer.PlayingState:
+            # Check if MIDI process is starting or running, or if QMediaPlayer is playing
+            is_playing = (self.music_player.state() == QMediaPlayer.PlayingState or 
+                          self.midi_process.state() != QProcess.NotRunning)
+            # print(f"DEBUG: update_music - is_playing={is_playing}, player_state={self.music_player.state()}, midi_state={self.midi_process.state()}")
+            if not is_playing:
                 self.start_music()
         else:
             self.stop_music()
-
     def init_ui(self):
 
         self.client_w, self.client_h = 578, 393
@@ -807,7 +981,7 @@ class ClonkLauncher(QMainWindow):
         self.tree.setGeometry(2, 2, 239, 342)
         self.tree.setHeaderHidden(True); self.tree.setFrameShape(QFrame.NoFrame)
         self.tree_model = QStandardItemModel(); self.tree.setModel(self.tree_model)
-        self.tree.setItemDelegate(PixelDelegate(self.tree, self.check_on_pix, self.check_off_pix))
+        self.tree.setItemDelegate(PixelDelegate(self.tree, self.check_on_pix, self.check_off_pix, self.check_locked_on_pix, self.check_locked_off_pix))
         self.tree.selectionModel().selectionChanged.connect(self.on_tree_selection)
         self.tree.expanded.connect(self.on_item_expanded)
         self.tree.collapsed.connect(self.on_item_collapsed)
@@ -874,8 +1048,8 @@ class ClonkLauncher(QMainWindow):
 
     def show_options(self):
         if OptionsDialog(self).exec_() == QDialog.Accepted:
-            self.refresh_resources()
-            # Try to re-select or at least refresh preview
+            # Try to refresh preview or other states without clearing the whole tree
+            self.update_music()
             indexes = self.tree.selectedIndexes()
             if indexes:
                 self.on_tree_selection(self.tree.selectionModel().selection(), None)
@@ -939,8 +1113,16 @@ class ClonkLauncher(QMainWindow):
             if not sub:
                 try:
                     writer.write_to_file(path)
-                    #ClonkPopupDialog(self, text="Player properties updated successfully.").exec_()
-                    self.refresh_resources()
+                    
+                    # Instead of full refresh, just update the icon
+                    item = self.tree_model.itemFromIndex(indexes[0])
+                    color = 1
+                    m = re.search(r'^Color=(\d+)', final_content, re.MULTILINE)
+                    if m: color = int(m.group(1))
+                    item.setIcon(self.get_atlas_icon(99 + color))
+                    
+                    # Also update description if it was changed
+                    self.on_tree_selection_changed()
                 except Exception as e:
                     print(f"Error saving player: {e}")
                     #ClonkPopupDialog(self, text=f"Error saving player: {e}").exec_()
@@ -1059,7 +1241,11 @@ class OptionsDialog(QDialog):
         for b in range(1, 5):
             for i in range(1, 13):
                 key_name = f"Kbd{b}Key{i}"
-                self.key_codes[key_name] = int(self.launcher.get_cfg(f"Controls\\{key_name}", 0))
+                cfg_val = self.launcher.get_cfg(f"Controls\\{key_name}", "0")
+                try:
+                    self.key_codes[key_name] = int(cfg_val)
+                except ValueError:
+                    self.key_codes[key_name] = 0
 
         # NEW TAB SETUP WITH TEXTURE ATLAS
         self.tab_widget = Win3DTabWidget(self)
@@ -1137,6 +1323,7 @@ class OptionsDialog(QDialog):
 
     def on_key_changed(self, action_name, code):
         key_id = f"Kbd{self.current_block}{action_name}"
+        #print(f"DEBUG: Key changed - {key_id} = {code}")
         self.key_codes[key_id] = code
 
     def load_key_profile(self, block_num):
@@ -1176,8 +1363,17 @@ class OptionsDialog(QDialog):
             print("Resetting controls!")
 
     def accept(self):
+        #print(f"Applying settings... Current key_codes: {self.key_codes}")
         def set_cfg(sub_key, val):
-            self.launcher.config_data[f"RedWolf Design\\Clonk 4\\{sub_key}"] = str(val)
+            full_key = f"RedWolf Design\\Clonk 4\\{sub_key}"
+            # Case-insensitive update: find existing key to avoid duplicates
+            target_key = full_key
+            for k in list(self.launcher.config_data.keys()):
+                if k.lower() == full_key.lower():
+                    target_key = k
+                    break
+            #print(f"DEBUG: set_cfg - {target_key} = {val}")
+            self.launcher.config_data[target_key] = str(val)
 
         # Program page
         self.launcher.language = "DE" if self.radio_german.isChecked() else "US"
@@ -1211,11 +1407,14 @@ class OptionsDialog(QDialog):
         set_cfg("Sound\\FEMusic", 1 if self.chk_front_music.isChecked() else 0)
 
         # Keyboard page
+        #print(f"DEBUG: Saving keys... current keys in config: {len(self.launcher.config_data)}")
         for b in range(1, 4): # Only save blocks 1-3
             for i in range(1, 13):
                 key = f"Kbd{b}Key{i}"
                 if key in self.key_codes:
-                    set_cfg(f"Controls\\{key}", self.key_codes[key])
+                    val = self.key_codes[key]
+                    set_cfg(f"Controls\\{key}", val)
+        #print(f"DEBUG: After saving keys... current keys in config: {len(self.launcher.config_data)}")
 
         # Network page
         set_cfg("Network\\Active", 1 if self.chk_net_active.isChecked() else 0)
@@ -1228,7 +1427,6 @@ class OptionsDialog(QDialog):
         set_cfg("Network\\Hosts", ";".join(hosts))
 
         self.launcher.save_config()
-        self.launcher.update_music()
         super().accept()
 
     def create_program_page(self):

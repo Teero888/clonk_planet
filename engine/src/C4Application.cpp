@@ -51,8 +51,7 @@ BOOL C4Application::Init(HINSTANCE hInst, int nCmdShow, char *szCmdLine) {
   if (!Config.Registered())
     C4Group_SetMaker(LoadResStr(IDS_PRC_UNREGUSER));
 
-  // Fullscreen mode switch (ignored, we force windowed-fullscreen on Linux)
-  Fullscreen = false;
+  Fullscreen = TRUE;
 
   // Init carrier window
   printf("Console.Init...\n");
@@ -230,7 +229,8 @@ static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int act
 static void ScaleMouseCoordinate(GLFWwindow *window, double &xpos, double &ypos) {
   int win_w, win_h;
   glfwGetFramebufferSize(window, &win_w, &win_h);
-  if (win_w <= 0 || win_h <= 0) return;
+  if (win_w <= 0 || win_h <= 0)
+    return;
 
   float aspect_src = (float)Config.Graphics.ResX / Config.Graphics.ResY;
   float aspect_dst = (float)win_w / win_h;
@@ -283,7 +283,7 @@ static void glfw_mouse_button_callback(GLFWwindow *window, int button, int actio
 
 static void glfw_cursor_pos_callback(GLFWwindow *window, double xpos, double ypos) {
   ScaleMouseCoordinate(window, xpos, ypos);
-  Game.MouseControl.Move(C4MC_Button_None, (int)xpos, (int)ypos, 0); 
+  Game.MouseControl.Move(C4MC_Button_None, (int)xpos, (int)ypos, 0);
 }
 
 int C4Application::HandleMessage() {
