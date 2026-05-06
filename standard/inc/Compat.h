@@ -319,10 +319,10 @@ typedef struct tagWNDCLASSEX {
 #define MAKEINTRESOURCE(i) ((LPCSTR)((DWORD)((WORD)(i))))
 
 #define STILL_ACTIVE 259
-inline BOOL GetExitCodeThread(HANDLE hThread, LPDWORD lpExitCode) { return FALSE; }
-inline void Sleep(DWORD dwMilliseconds) { usleep(dwMilliseconds * 1000); }
-inline BOOL TerminateThread(HANDLE hThread, DWORD dwExitCode) { return FALSE; }
-inline HANDLE CreateThread(void *lpThreadAttributes, DWORD dwStackSize, DWORD(WINAPI *lpStartAddress)(void *), void *lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId) { return 0; }
+BOOL GetExitCodeThread(HANDLE hThread, LPDWORD lpExitCode);
+void Sleep(DWORD dwMilliseconds);
+BOOL TerminateThread(HANDLE hThread, DWORD dwExitCode);
+HANDLE CreateThread(void *lpThreadAttributes, DWORD dwStackSize, DWORD(WINAPI *lpStartAddress)(void *), void *lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId);
 
 inline BOOL PostMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) { return FALSE; }
 inline LRESULT SendMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) { return 0; }

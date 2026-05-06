@@ -98,3 +98,67 @@ void _findclose(intptr_t handle) {
   g_findHandles.erase(handle);
 }
 }
+
+#include <pthread.h>
+#include <unistd.h>
+
+struct C4ThreadState {
+  pthread_t thread;
+  DWORD(WINAPI *start_address)(void *);
+  void *parameter;
+  DWORD exit_code;
+  bool is_active;
+};
+
+static void *C4ThreadWrapper(void *arg) {
+  C4ThreadState *state = (C4ThreadState *)arg;
+  // pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+  state->is_active = true;
+  state->exit_code = state->start_address(state->parameter);
+  state->is_active = false;
+  return NULL;
+}
+
+BOOL GetExitCodeThread(HANDLE hThread, LPDWORD lpExitCode) {
+  if (!hThread || !lpExitCode) return FALSE;
+  C4ThreadState *state = (C4ThreadState *)hThread;
+  if (state->is_active) {
+    *lpExitCode = STILL_ACTIVE;
+  } else {
+    *lpExitCode = state->exit_code;
+  }
+  return TRUE;
+}
+
+void Sleep(DWORD dwMilliseconds) {
+  usleep(dwMilliseconds * 1000);
+}
+
+BOOL TerminateThread(HANDLE hThread, DWORD dwExitCode) {
+  if (!hThread) return FALSE;
+  C4ThreadState *state = (C4ThreadState *)hThread;
+  pthread_cancel(state->thread);
+  state->is_active = false;
+  state->exit_code = dwExitCode;
+  return TRUE;
+}
+
+HANDLE CreateThread(void *lpThreadAttributes, DWORD dwStackSize, DWORD(WINAPI *lpStartAddress)(void *), void *lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId) {
+  C4ThreadState *state = new C4ThreadState();
+  state->start_address = lpStartAddress;
+  state->parameter = lpParameter;
+  state->exit_code = 0;
+  state->is_active = false;
+  
+  if (pthread_create(&state->thread, NULL, C4ThreadWrapper, state) != 0) {
+    delete state;
+    return NULL;
+  }
+  
+  if (lpThreadId) {
+    *lpThreadId = (DWORD)(uintptr_t)state->thread;
+  }
+  
+  return (HANDLE)state;
+}
+

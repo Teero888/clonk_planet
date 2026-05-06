@@ -1,27 +1,22 @@
 #include <Compat.h>
-typedef int SOCKET;
-#include <Compat.h>
+
+#ifndef _WIN32
+  #include <sys/types.h>
+  #include <sys/socket.h>
+  #include <netinet/in.h>
+  #include <arpa/inet.h>
+  #include <netdb.h>
+  #include <unistd.h>
+  #include <sys/time.h>
+  typedef int SOCKET;
+  #define INVALID_SOCKET -1
+  #define SOCKET_ERROR -1
+#else
+  #include <winsock2.h>
+  #include <windows.h>
+#endif
 
 // Code modified for use by Clonk engine.
-
-// skstream.h
-// Copyright (C) 1995, 1996 by John C. Wang. All Rights Reserved.
-//
-// You may distribute this file with your product in either of two ways:
-// IN SOURCE CODE FORM: You must include this file in its entirety.
-// IN OBJECT CODE FORM: You must give proper acknowledgements to the author(s)
-//   of this program. This may take the form of credits on the start-up screen.
-//
-// IN ANYCASE, THIS SOFTWARE IS DISTRIBUTED WITHOUT ANY KIND OF EXPLICIT OR
-// IMPLICIT WARRANTIES AND THE AUTHORS ARE NOT RESPONSIBLE FOR ANY EVENTS THAT
-// OCCURS AS A RESULT OF USING THIS SOFTWARE.
-//
-// History:
-// [JCW 95-Dec-04] created
-// [JCW 95-Dec-20] comments added for distribution 95a
-// [JCW 96-Jan-01] removed UDP capabilities from skstream
-// [JCW 96-Mar-14] exceptions made optional
-// [JCW 96-Oct-20] protected skstream::init and ::shutdown changed
 
 #ifndef __SOCKET_STREAM__
 #define __SOCKET_STREAM__
@@ -29,10 +24,6 @@ typedef int SOCKET;
 #include <iostream>
 #include <streambuf>
 using namespace std;
-#include <streambuf>
-using namespace std;
-// #include <winsock.h>
-
 
 //
 // sockbuf
@@ -56,7 +47,6 @@ protected:
 	// sockbuf specific
 	SOCKET &_socket ;
 } ;
-
 
 //
 // skstream

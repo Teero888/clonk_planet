@@ -69,3 +69,5 @@ add_dependencies(clonk_midi planet_data_sync)
 # add_test(NAME HeadlessTest 
 #          COMMAND ${CMAKE_COMMAND} -E env CLONK_TEST_HEADLESS=1 $<TARGET_FILE:clonk> Twonky.c4p
 #          WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+add_executable(masterserver masterserver/masterserver.cpp)
+target_link_libraries(masterserver pthread)

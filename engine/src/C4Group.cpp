@@ -391,7 +391,7 @@ const char *C4Group::GetError() { return ErrorString; }
 void C4Group::SetStdOutput(BOOL fStatus) { StdOutput = fStatus; }
 
 BOOL C4Group::Open(const char *szGroupName, BOOL fCreate) {
-  printf("C4Group::Open: %s\n", szGroupName);
+  // printf("C4Group::Open: %s\n", szGroupName);
   if (!szGroupName)
     return Error("Open: Null filename");
   if (!szGroupName[0])
@@ -429,18 +429,18 @@ BOOL C4Group::Open(const char *szGroupName, BOOL fCreate) {
 
   // While not a real reference (child group), trace back to mother group or
   // folder. Open mother and child in exclusive mode.
-  printf("Tracing back to mother for: %s\n", szGroupName);
+  // printf("Tracing back to mother for: %s\n", szGroupName);
   char szRealGroup[_MAX_FNAME];
   SCopy(szGroupName, szRealGroup, _MAX_FNAME);
   do {
     if (!TruncatePath(szRealGroup)) {
-      printf("  TruncatePath failed, mother not found!\n");
+      // printf("  TruncatePath failed, mother not found!\n");
       return Error("Open: File not found");
     }
-    printf("  Checking mother: %s\n", szRealGroup);
+    // printf("  Checking mother: %s\n", szRealGroup);
   } while (!FileExists(szRealGroup));
 
-  printf("  Found mother group: %s\n", szRealGroup);
+  // printf("  Found mother group: %s\n", szRealGroup);
 
   // Open mother and child in exclusive mode
   C4Group *pMother;
@@ -448,16 +448,16 @@ BOOL C4Group::Open(const char *szGroupName, BOOL fCreate) {
     return Error("Open: mem");
   pMother->SetStdOutput(StdOutput);
   if (!pMother->Open(szRealGroup)) {
-    printf("  Failed to open mother group: %s\n", szRealGroup);
+    // printf("  Failed to open mother group: %s\n", szRealGroup);
     Clear();
     return Error("Open: Cannot open mother");
   }
   const char *szEntryName = szGroupName + SLen(szRealGroup);
   if (szEntryName[0] == '/' || szEntryName[0] == '\\')
     szEntryName++;
-  printf("  Opening as child: %s\n", szEntryName);
+  // printf("  Opening as child: %s\n", szEntryName);
   if (!OpenAsChild(pMother, szEntryName, TRUE)) {
-    printf("  Failed to open as child: %s\n", szEntryName);
+    // printf("  Failed to open as child: %s\n", szEntryName);
     Clear();
     return Error("Open:: Cannot open as child");
   }
@@ -467,7 +467,7 @@ BOOL C4Group::Open(const char *szGroupName, BOOL fCreate) {
 }
 
 BOOL C4Group::OpenReal(const char *szFilename) {
-  printf("C4Group::OpenReal: %s\n", szFilename);
+  // printf("C4Group::OpenReal: %s\n", szFilename);
   // Get original filename
   if (!szFilename)
     return FALSE;
@@ -508,8 +508,8 @@ BOOL C4Group::OpenReal(const char *szFilename) {
 }
 
 BOOL C4Group::OpenRealGrpFile() {
-  printf("sizeof(C4GroupHeader) = %zu\n", sizeof(C4GroupHeader));
-  printf("sizeof(C4GroupEntryCore) = %zu\n", sizeof(C4GroupEntryCore));
+  // printf("sizeof(C4GroupHeader) = %zu\n", sizeof(C4GroupHeader));
+  // printf("sizeof(C4GroupEntryCore) = %zu\n", sizeof(C4GroupEntryCore));
   int cnt, file_entries;
   C4GroupEntryCore corebuf;
 
@@ -520,10 +520,10 @@ BOOL C4Group::OpenRealGrpFile() {
   // Read header
   if (!StdFile.Read((BYTE *)&Head, sizeof(C4GroupHeader)))
     return Error("OpenRealGrpFile: Error reading header");
-  printf("Raw Header Hex: ");
-  for (int i = 0; i < 16; i++)
-    printf("%02x ", ((BYTE *)&Head)[i]);
-  printf("\n");
+  // printf("Raw Header Hex: ");
+  // for (int i = 0; i < 16; i++)
+  //   printf("%02x ", ((BYTE *)&Head)[i]);
+  // printf("\n");
   MemScramble((BYTE *)&Head, sizeof(C4GroupHeader));
   EntryOffset += sizeof(C4GroupHeader);
 
@@ -539,7 +539,7 @@ BOOL C4Group::OpenRealGrpFile() {
       return Error("OpenRealGrpFile: Error reading entries");
     if (!StdFile.IsCompressed())
       MemScramble((BYTE *)&corebuf, sizeof(C4GroupEntryCore));
-    printf("  Found entry: %s (%d bytes)%s\n", corebuf.FileName, corebuf.Size, corebuf.ChildGroup ? " [Group]" : "");
+    // printf("  Found entry: %s (%d bytes)%s\n", corebuf.FileName, corebuf.Size, corebuf.ChildGroup ? " [Group]" : "");
     EntryOffset += sizeof(C4GroupEntryCore);
     if (!AddEntry(C4GRES_InGroup, corebuf.ChildGroup, corebuf.FileName, corebuf.Size, corebuf.Time))
       return Error("OpenRealGrpFile: Cannot add entry");
