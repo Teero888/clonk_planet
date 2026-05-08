@@ -149,6 +149,7 @@ BOOL ValidFilenameCharacter(char cChar) {
 }
 
 int C4MasterServerClient::Run() {
+  printf("C4MasterServerClient::Run() thread started. Address: %s, Directory: %s\n", Address, Directory);
   int KeepTime = 0;
   int ReferenceTime = ReferencePeriod;
 
@@ -160,19 +161,27 @@ int C4MasterServerClient::Run() {
   CStdHttp StdHttp;
   if (!StdHttp.GetLocalAddress(Address, LocalAddress))
     SCopy("IP not available", LocalAddress);
+  printf("C4MasterServerClient: Local Address determined as %s\n", LocalAddress);
 
   while (!Terminate) {
 
     // Reference
-    ReferenceTime++;
     if (ReferenceTime >= ReferencePeriod) {
       ReferenceTime = 0;
+      // On non-Windows we directly generate the reference since message passing isn't there
+#ifndef _WIN32
+      Game.Network.CreateReference(LocalAddress);
+#else
       // Request reference file creation by main thread
       SendMessage(hWnd, WM_USER_CREATEREFERENCE, 0, (LPARAM)LocalAddress);
       // Wait for reference
-      while (!Reference)
+      while (!Reference) {
         if (Terminate)
           return FALSE;
+        Sleep(100);
+      }
+#endif
+      
       // Check valid reference filename
       char szValidName[_MAX_PATH + 1];
       SCopy(ReferenceFilename, szValidName);
@@ -189,13 +198,17 @@ int C4MasterServerClient::Run() {
       int iSize;
       if (!hFile.Load(ReferenceFilename, &bpData, &iSize)) {
         Message(IDS_NET_REFFILEERROR);
+        printf("C4MasterServerClient: Failed to load reference file %s\n", ReferenceFilename);
         return FALSE;
       }
+      printf("C4MasterServerClient: Uploading reference file %s (%d bytes)...\n", ReferenceFilename, iSize);
       if (!Send("upload", GetFilename(ReferenceFilename), bpData, iSize)) {
         Message(IDS_NET_NOSIGNUP);
+        printf("C4MasterServerClient: Upload failed.\n");
         delete[] bpData;
         return FALSE;
       }
+      printf("C4MasterServerClient: Upload succeeded.\n");
       delete[] bpData;
       EraseItem(ReferenceFilename);
       Reference = false;
@@ -208,7 +221,6 @@ int C4MasterServerClient::Run() {
     }
 
     // Keep
-    KeepTime++;
     if (KeepTime >= KeepPeriod) {
       KeepTime = 0;
       // Send keep
@@ -219,7 +231,9 @@ int C4MasterServerClient::Run() {
     }
 
     // Delay
-    Sleep(1000);
+    Sleep(500);
+    ReferenceTime++;
+    KeepTime++;
   }
 
   // Send delete

@@ -167,8 +167,11 @@ BOOL C4Network::Init(BOOL fHost, const char *szLocalName, const char *szLocalAdd
 
     // Init master server client
     C4ConfigNetwork *pCfg = &Config.Network;
-    if (pCfg->MasterServerSignUp)
-      MasterServerClient.Init(Application.hWindow, pCfg->MasterServerAddress, pCfg->MasterServerPath, pCfg->MasterKeepPeriod, pCfg->MasterReferencePeriod);
+    printf("Network.Init: As Host. MasterServerSignUp=%d, Addr=%s, Dir=%s\n", pCfg->MasterServerSignUp, pCfg->MasterServerAddress, pCfg->MasterServerPath);
+    if (pCfg->MasterServerSignUp) {
+      BOOL msInit = MasterServerClient.Init(Application.hWindow, pCfg->MasterServerAddress, pCfg->MasterServerPath, pCfg->MasterKeepPeriod, pCfg->MasterReferencePeriod);
+      printf("MasterServerClient.Init returned %d\n", msInit);
+    }
 
     // Create host thread
     if (!(hHostThread = CreateThread(NULL, 0, &HostThread, Application.hWindow, 0, &idHostThread))) {
@@ -454,25 +457,41 @@ BOOL C4Network::AdjustControlRate(int iChange) {
 BOOL C4Network::CreateReference(const char *szLocalAddress) {
   if (!Active)
     return FALSE;
+  printf("C4Network::CreateReference: Start\n");
   // Set reference filename (using temp path instead of NetworkPath to avoid
   // conflict with HandleReferenceRequest)
   char szReferenceFilename[_MAX_PATH + 1];
   SCopy(Config.AtTempPath(GetFilename(Game.ScenarioFilename)), szReferenceFilename);
+  printf("C4Network::CreateReference: File path %s\n", szReferenceFilename);
   // Overwrite any duplicate files
   EraseItem(szReferenceFilename);
   // Overwrite Network.LocalAddress with specified value for reference
   SCopy(szLocalAddress, LocalAddress, C4MaxTitle);
   // Create group and save info
   C4Group hGroup;
-  if (!hGroup.Open(szReferenceFilename, TRUE))
+  if (!hGroup.Open(szReferenceFilename, TRUE)) {
+    printf("C4Network::CreateReference: Failed to open C4Group\n");
     return FALSE;
-  if (!Game.SaveNetworkReference(hGroup))
+  }
+  if (!Game.SaveNetworkReference(hGroup)) {
+    printf("C4Network::CreateReference: SaveNetworkReference failed\n");
     return FALSE;
+  }
+  printf("C4Network::CreateReference: Sorting and closing\n");
   hGroup.Sort(C4FLS_Scenario);
-  hGroup.Close();
+  if (!hGroup.Close()) {
+    printf("C4Network::CreateReference: Failed to close group file\n");
+    return FALSE;
+  }
   // Hardcoded notify to MasterServerClient
   SCopy(szReferenceFilename, MasterServerClient.ReferenceFilename);
   MasterServerClient.Reference = true;
+  printf("C4Network::CreateReference: Done\n");
+
+  if(!FileExists(szReferenceFilename)) {
+    printf("C4Network::CreateReference: Reference file does not exist after creation: %s\n", szReferenceFilename);
+    return FALSE;
+  }
   // Done
   return TRUE;
 }
@@ -503,24 +522,21 @@ DWORD WINAPI C4Network::HostThread(void *lpPar) {
       switch (iResult) {
       case C4STRM_Ok:
         switch (Packet.Type) {
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        // - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         case C4PK_RequestJoin:
           // Pass connected stream to main thread by message
           SendMessage(hAppWnd, WM_NET_REQUESTJOIN, 0, (LPARAM)pStrm);
           iResult = C4STRM_Break;
           fKeepStream = TRUE;
           break;
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        // - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         case C4PK_RequestNetworkReference:
           // Pass connected stream to main thread by message
           SendMessage(hAppWnd, WM_NET_REQUESTREFERENCE, 0, (LPARAM)pStrm);
           iResult = C4STRM_Break;
           fKeepStream = TRUE;
           break;
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        // - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         case C4PK_Message:
           // Send message to main thread (log)
           char szMessage[1024 + 1];
@@ -529,19 +545,16 @@ DWORD WINAPI C4Network::HostThread(void *lpPar) {
           sprintf(szMessage, "%s (%s): %s", pStrm->GetPeerName(), pStrm->GetPeerAddress(), Packet.Data);
           SendMessage(hAppWnd, WM_USER_LOG, 0, (LPARAM)szMessage);
           break;
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        // - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         case C4PK_GoodBye:
           iResult = C4STRM_Break;
           break;
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        // - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         default:
           sprintf(ostr, "Host: Unhandled packet %i received", Packet.Type);
           NetStatus(ostr);
           break;
-          // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-          // - - - - - - - - - - - -
+          // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         }
         break;
       default:

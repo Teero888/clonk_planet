@@ -717,9 +717,9 @@ BOOL C4Group::Close() {
       cscore++;
     }
 
-  // Create target temp file (in working directory!)
+  // Create target temp file (in system temp directory!)
   SCopy(FileName, szGrpFileName);
-  SCopy(GetFilename(FileName), szTempFileName);
+  SCopy(Config.AtTempPath(GetFilename(FileName)), szTempFileName);
   MakeTempFilename(szTempFileName);
   // (Temp file must not have the same name as the group.)
   if (SEqual(szTempFileName, szGrpFileName)) {

@@ -31,6 +31,8 @@ void handle_client(int client_sock, sockaddr_in client_addr) {
     char ip_str[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(client_addr.sin_addr), ip_str, INET_ADDRSTRLEN);
     string client_ip = ip_str;
+    
+    cout << "New connection from " << client_ip << endl;
 
     vector<uint8_t> buffer;
     char chunk[4096];
@@ -40,13 +42,19 @@ void handle_client(int client_sock, sockaddr_in client_addr) {
     int content_length = 0;
     while (!headers_done) {
         int n = recv(client_sock, chunk, sizeof(chunk), 0);
-        if (n <= 0) break;
+        if (n <= 0) {
+            cout << "Connection closed while reading headers (read " << buffer.size() << " bytes)" << endl;
+            break;
+        }
         buffer.insert(buffer.end(), chunk, chunk + n);
         
         string req(buffer.begin(), buffer.end());
         auto pos = req.find("\r\n\r\n");
+        if (pos == string::npos) pos = req.find("\n\n"); // fallback for lazy clients
+        
         if (pos != string::npos) {
             headers_done = true;
+            cout << "Received headers: " << buffer.size() << " bytes" << endl;
             // parse Content-Length
             auto cl_pos = req.find("Content-Length: ");
             if (cl_pos == string::npos) {
@@ -55,8 +63,10 @@ void handle_client(int client_sock, sockaddr_in client_addr) {
             if (cl_pos != string::npos) {
                 cl_pos += 16;
                 auto cl_end = req.find("\r\n", cl_pos);
+                if (cl_end == string::npos) cl_end = req.find("\n", cl_pos);
                 if (cl_end != string::npos) {
                     content_length = stoi(req.substr(cl_pos, cl_end - cl_pos));
+                    cout << "Content-Length: " << content_length << endl;
                 }
             }
         }
