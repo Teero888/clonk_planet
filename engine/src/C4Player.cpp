@@ -157,7 +157,6 @@ BOOL C4Player::Init(int iNumber, int iAtClient, const char *szAtClientName, cons
   // Status init
   Status = TRUE;
   SCopy(szFilename, Filename);
-  printf("C4Player::Init: SCopy(szFilename, Filename): szFilename='%s', Filename='%s'\n", szFilename, Filename);
   Number = iNumber;
   if (Number < C4S_MaxPlayer)
     PlrStartIndex = Number;
@@ -167,10 +166,8 @@ BOOL C4Player::Init(int iNumber, int iAtClient, const char *szAtClientName, cons
   SCopy(szAtClientName, AtClientName, C4MaxTitle);
 
   // Load core & crew info list
-  printf("C4Player::Init: Before Load: Filename='%s'\n", Filename);
   if (!Load(szFilename))
     return FALSE;
-  printf("C4Player::Init: After Load: Filename='%s'\n", Filename);
 
   // Check double players names
   char szOriginalName[C4MaxName + 1];
@@ -187,15 +184,12 @@ BOOL C4Player::Init(int iNumber, int iAtClient, const char *szAtClientName, cons
   // Load runtime data
   else {
     // (compile using DefaultRuntimeData)
-    printf("C4Player::Init: Before LoadRuntimeData: Filename='%s'\n", Filename);
     if (!LoadRuntimeData(Game.ScenarioFile))
       return FALSE;
-    printf("C4Player::Init: After LoadRuntimeData: Filename='%s'\n", Filename);
     // Reset values default-overriden by old runtime data load (safety?)
     if (Number == C4P_Number_None)
       Number = iNumber;
     SCopy(szFilename, Filename);
-    printf("C4Player::Init: Restored Filename='%s'\n", Filename);
     // Reset at-client for local players from no-network savegames
     if (AtClient == C4NET_NoClient)
       if (SEqualNoCase(AtClientName, "Unknown") || SEqualNoCase(AtClientName, "Local")) {
@@ -229,7 +223,6 @@ BOOL C4Player::Init(int iNumber, int iAtClient, const char *szAtClientName, cons
   // Init control method
   InitControl();
 
-  printf("C4Player::Init: End: Filename='%s'\n", Filename);
   return TRUE;
 }
 
@@ -237,25 +230,21 @@ BOOL C4Player::Save() {
   C4Group hGroup;
   // Open group
   if (!hGroup.Open(Filename, TRUE)) {
-    printf("C4Player::Save failed: hGroup.Open(%s) failed: %s\n", Filename, hGroup.GetError());
     return FALSE;
   }
   // Save core
   if (!C4PlayerInfoCore::Save(hGroup)) {
-    printf("C4Player::Save failed: C4PlayerInfoCore::Save failed\n");
     hGroup.Close();
     return FALSE;
   }
   // Save crew
   if (!CrewInfoList.Save(hGroup)) {
-    printf("C4Player::Save failed: CrewInfoList.Save failed\n");
     hGroup.Close();
     return FALSE;
   }
   // Close group
   hGroup.Sort(C4FLS_Player);
   if (!hGroup.Close()) {
-    printf("C4Player::Save failed: hGroup.Close failed\n");
     return FALSE;
   }
   // Add to reload list
@@ -767,27 +756,21 @@ void C4Player::Default() {
 
 BOOL C4Player::Load(const char *szFilename) {
   C4Group hGroup;
-  printf("C4Player::Load: Start: Filename='%s'\n", Filename);
-  printf("  this=%p, &Filename=%p, end_of_core=%p\n", this, Filename, (char*)this + sizeof(C4PlayerInfoCore));
   // Open group
   if (!hGroup.Open(szFilename))
     return FALSE;
-  printf("C4Player::Load: After hGroup.Open: Filename='%s'\n", Filename);
   // Load core
   if (!C4PlayerInfoCore::Load(hGroup)) {
     hGroup.Close();
     return FALSE;
   }
-  printf("C4Player::Load: After C4PlayerInfoCore::Load: Filename='%s'\n", Filename);
   // Load portrait
   /*if (Portrait.Load(hGroup,C4CFN_Portrait))
           Portrait.SetPalette(GfxR->GamePalette,TRUE);*/
   // Load crew info list
   CrewInfoList.Load(hGroup);
-  printf("C4Player::Load: After CrewInfoList.Load: Filename='%s'\n", Filename);
   // Close group
   hGroup.Close();
-  printf("C4Player::Load: End: Filename='%s'\n", Filename);
   // Success
   return TRUE;
 }

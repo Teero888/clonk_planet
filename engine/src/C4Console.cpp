@@ -28,7 +28,7 @@ void C4Console::Default() { hDialog = NULL; }
 void C4Console::Clear() { hDialog = NULL; }
 
 HWND C4Console::Init(HINSTANCE hInst) {
-  Active = TRUE;
+  Active = FALSE;
   // Return success dummy, Engine.Init will create the real GLFW window
   return (HWND)1;
 }

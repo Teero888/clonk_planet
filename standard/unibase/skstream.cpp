@@ -6,6 +6,7 @@
 #ifndef _WIN32
   #include <sys/ioctl.h>
   #include <fcntl.h>
+  #include <errno.h>
   #define closesocket close
 #endif
 
@@ -84,7 +85,6 @@ void skstream::open( const char *addr, int port, const role side )
 {
     // Stream already open
     if (is_open()) close();
-
     // Create socket
     if( INVALID_SOCKET == ( _socket = ::socket( PF_INET, SOCK_STREAM, 0 ) ) )
             // Cannot create socket
@@ -196,6 +196,11 @@ void skstream::attach( SOCKET sock )
     _socket = sock ;
 }
 
+void skstream::set_nonblocking()
+{
+    // NO-OP for now, keeping code in blocking mode to match Clonk logic
+}
+
 SOCKET skstream::getsocket() const
 {
     return _socket ;
@@ -233,7 +238,7 @@ unsigned short skstream::getport( void ) const
 //
 //      sockbuf
 //
-sockbuf::sockbuf( SOCKET &sock ) : _socket( sock ), streambuf() // removed streambuf(NULL, 0) since modern C++ streambuf default ctor doesn't take args
+sockbuf::sockbuf( SOCKET &sock ) : _socket( sock ), streambuf() 
 {
     const int insize = 0x4000 ;             // allocate 16k buffer each for input and output
     const int outsize = 0x4000 ;
@@ -241,15 +246,8 @@ sockbuf::sockbuf( SOCKET &sock ) : _socket( sock ), streambuf() // removed strea
 
     _buffer = new char [ bufsize ] ;
 
-    if( this != setbuf( _buffer, bufsize ) ) {
-        delete[] _buffer;
-        _buffer = NULL ;
-    }
-    else
-    {
-        setp( _buffer, _buffer + insize ) ;
-        setg( _buffer + insize, _buffer + bufsize, _buffer + bufsize ) ;
-    }
+    setp( _buffer, _buffer + insize ) ;
+    setg( _buffer + insize, _buffer + bufsize, _buffer + bufsize ) ;
 }
 
 sockbuf::sockbuf( SOCKET &sock, char *buf, int length )
@@ -269,91 +267,59 @@ sockbuf::~sockbuf()
 
 int sockbuf::overflow( int nCh )
 {
-    // in case of error, user finds out by testing fail()
-    if( _socket == INVALID_SOCKET )
-            // Invalid socket
-            return EOF ;
+    if( _socket == INVALID_SOCKET ) return EOF ;
 
-    if( pptr() - pbase() <= 0 )
-            // nothing to send
-            return 0 ;
-
-    int size ;
-    if( SOCKET_ERROR == ( size = ::send( _socket, pbase(), pptr() - pbase(), 0 ) ) )
-            // (TCP) Cannot send
-            return EOF ;
-
-    if( size == 0 )
-            // remote site has closed this connection
-            return EOF ;
-
-    if( nCh != EOF )        // size >= 1 at this point
+    int nData = pptr() - pbase();
+    if( nData > 0 )
     {
-            size-- ;
-            *( pbase() + size ) = nCh ;
+        int nSent = ::send( _socket, pbase(), nData, 0 );
+        if( nSent == SOCKET_ERROR || nSent == 0 )
+        {
+            return EOF;
+        }
+        
+        // Move unsent data to the front
+        if (nSent < nData)
+            memmove(pbase(), pbase() + nSent, nData - nSent);
+        setp(pbase(), epptr());
+        pbump(nData - nSent);
     }
 
-    // move remaining pbase() + size .. pptr() - 1 => pbase() .. pptr() - size - 1
-    for( char *p = pbase() + size; p < pptr(); p++ )
-            *( p - size ) = *p ;
-    const int newlen = ( pptr() - pbase() ) - size ;
+    if( nCh != EOF )
+    {
+        if (pptr() < epptr()) {
+            *pptr() = (char)nCh;
+            pbump(1);
+        } else {
+            return EOF;
+        }
+    }
 
-    setp( pbase(), epptr() ) ;
-    pbump( newlen ) ;
-
-    return 0 ;
+    return (nCh == EOF) ? 0 : nCh;
 }
 
 int sockbuf::underflow()
 {
-    // if get area not empty, return first character
-    // else fill up get area and return 1st character
+    if( _socket == INVALID_SOCKET ) return EOF ;
 
-    // in case of error, user finds out by testing eof()
-
-    if( _socket == INVALID_SOCKET )
-            // Invalid socket!
-            return EOF ;
-
-    if( egptr() - gptr() > 0 )
-            return (int)(unsigned char)(*gptr()) ;
+    if( gptr() < egptr() )
+        return (int)(unsigned char)(*gptr());
 
     // fill up from eback to egptr
-    int size ;
-    if( SOCKET_ERROR == ( size = ::recv( _socket, eback(), egptr() - eback(), 0 ) ) )
-            // (TCP) Receive error
-            return EOF ;
-
-    if( size == 0 )
-            // remote site has closed this connection
-            return EOF ;
-
-    // move rcvd data from eback() .. eback() + size to egptr() - size .. egptr()
-    const int delta = egptr() - ( eback() + size ) ;
-    for( char *p = eback() + size - 1; p >= eback(); p-- )
+    int nRead = ::recv( _socket, eback(), egptr() - eback(), 0 );
+    if( nRead == SOCKET_ERROR || nRead == 0 )
     {
-            dassert( p + delta >= eback() ) ;
-            dassert( p + delta < egptr() ) ;
-            *( p + delta ) = *p ;
+        return EOF ;
     }
 
-    setg( eback(), egptr() - size, egptr() ) ;
+    setg(eback(), eback(), eback() + nRead);
 
-    return (int)(unsigned char)(*gptr()) ;
+    return (int)(unsigned char)(*gptr());
 }
 
 int sockbuf::sync()
 {
-    if( EOF == overflow() )
-            return EOF ;    // ios will set the fail bit
-    else
-    {
-            // empty put and get areas
-            setp( pbase(), epptr() ) ;
-            setg( eback(), egptr(), egptr() ) ;
-
-            return 0 ;
-    }
+    return (overflow(EOF) == EOF) ? -1 : 0;
 }
 
 int skstream::getlasterror()
@@ -394,17 +360,12 @@ void skstream::listen(skstream **ppnew)
 {
     *ppnew=NULL;
 
-    // Check if already listening
-    int is_listening = 0;
-    socklen_t len = sizeof(is_listening);
-    if (getsockopt(_socket, SOL_SOCKET, SO_ACCEPTCONN, &is_listening, &len) == 0 && !is_listening) {
-        // Listen
-        if (SOCKET_ERROR == ::listen( _socket, 5 ))     // max backlog
-                {
-                // Error listening
-                close(); lasterror=5; return;
-                }
-    }
+    // Listen
+    if (SOCKET_ERROR == ::listen( _socket, 5 ))     // max backlog
+            {
+            // Error listening
+            close(); lasterror=5; return;
+            }
 
     // Accept
     SOCKET skAcceptedSocket;

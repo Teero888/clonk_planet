@@ -46,6 +46,7 @@ public:
   int SendFile(const char *szFilename, int iType = C4PK_File, void (*fnPrcs)(int) = NULL);
   int ReceivePacket(int iType, C4Packet &rPacket);
   int Connect(const char *szName, int iRole, const char *szAddress = NULL, C4Stream **ppAccept = NULL, int iPort = C4PORT_Control);
+  void SetNonblocking();
   int PutPacket(C4Packet &rPacket, void (*fnPrcs)(int) = NULL);
   int GetPacket(C4Packet &rPacket);
   int GetPort();

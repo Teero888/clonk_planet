@@ -247,7 +247,6 @@ BOOL C4NetworkClient::HandleJoin(int iNumber, C4Stream *pStream, BOOL fRuntimeJo
       // Log network game request
       sprintf(OSTR, LoadResStr(IDS_NET_REQUESTGAME), pControlStream->GetPeerName());
       Log(OSTR);
-      printf("Host HandleJoin: RequestNetworkGame received for %s\n", Game.ScenarioFilename);
       Game.GraphicsSystem.MessageBoard.EnsureLastMessage();
       // Game data temp filename
       char szFilename[_MAX_PATH + 1];
@@ -255,27 +254,21 @@ BOOL C4NetworkClient::HandleJoin(int iNumber, C4Stream *pStream, BOOL fRuntimeJo
       // Overwrite any duplicate temp file
       EraseItem(szFilename);
       // Copy scenario file to temp file
-      printf("Host HandleJoin: Copying %s to %s\n", Game.ScenarioFilename, szFilename);
       if (!C4Group_CopyItem(Game.ScenarioFilename, szFilename)) {
-        printf("Host HandleJoin: C4Group_CopyItem failed!\n");
         return FALSE;
       }
       // Pack if necessary (unpacked files not eligible for network games
       // anyway)
       if (FileAttributes(szFilename) & _A_SUBDIR)
         if (!C4Group_PackDirectory(szFilename)) {
-          printf("Host HandleJoin: PackDirectory failed!\n");
           return FALSE;
         }
       // Save game to temp file (if running)
       if (fRuntimeJoin) {
-        printf("Host HandleJoin: fRuntimeJoin saving game\n");
         if (!hGroup.Open(szFilename)) {
-          printf("Host HandleJoin: Group Open failed!\n");
           return FALSE;
         }
         if (!Game.Save(hGroup, TRUE, TRUE)) {
-          printf("Host HandleJoin: Game.Save failed!\n");
           return FALSE;
         }
         hGroup.Sort(C4FLS_Scenario);
@@ -283,9 +276,7 @@ BOOL C4NetworkClient::HandleJoin(int iNumber, C4Stream *pStream, BOOL fRuntimeJo
       }
       // Send network game
       // NetLog("Sending network game...");
-      printf("Host HandleJoin: Sending %s via network...\n", szFilename);
       if (!StreamOk(pControlStream->SendFile(szFilename, C4PK_NetworkGame, &LogProcess))) {
-        printf("Host HandleJoin: SendFile failed!\n");
         return FALSE;
       }
       // NetLog("Ok");
@@ -326,7 +317,6 @@ BOOL C4NetworkClient::StreamOk(int iResult) {
 BOOL C4NetworkClient::Join(const char *szServerName, const char *szServerAddress, BOOL fRetrieveNetworkGame) {
   C4Packet Packet;
 
-  printf("C4NetworkClient::Join: Server=%s Address=%s\n", szServerName, szServerAddress);
 
   // Set local name and address
   SCopy(Game.Network.LocalName, Name, C4MaxTitle);
@@ -338,11 +328,9 @@ BOOL C4NetworkClient::Join(const char *szServerName, const char *szServerAddress
   // Connect to server
   sprintf(OSTR, LoadResStr(IDS_NET_CONNECTING), szServerName, szServerAddress);
   Log(OSTR);
-  printf("C4NetworkClient::Join: Connect to %s\n", szServerAddress);
   int connect_res = pControlStream->Connect(Name, C4STRM_Client, szServerAddress);
   if (!StreamOk(connect_res)) {
     Log(LoadResStr(IDS_NET_NOCONNECT));
-    printf("C4NetworkClient::Join: Connect failed with %d (%s)\n", connect_res, pControlStream->ResultText(connect_res));
     return FALSE;
   }
   sprintf(OSTR, "Connected to %s on port %i", pControlStream->GetPeerAddress(), pControlStream->GetPort());
@@ -352,14 +340,12 @@ BOOL C4NetworkClient::Join(const char *szServerName, const char *szServerAddress
   Log(LoadResStr(IDS_NET_REQUESTINGJOIN));
   Packet.Set(C4PK_RequestJoin);
   if (!StreamOk(pControlStream->PutPacket(Packet))) {
-    printf("C4NetworkClient::Join: PutPacket(C4PK_RequestJoin) failed\n");
     return FALSE;
   }
 
   // Receive accept, client number, control mode, control time, random seed
   if (!StreamOk(pControlStream->ReceivePacket(C4PK_AcceptJoin, Packet))) {
     Log(LoadResStr(IDS_NET_NOACCEPT));
-    printf("C4NetworkClient::Join: ReceivePacket(C4PK_AcceptJoin) failed\n");
     return FALSE;
   }
   Number = ((C4ControlJoin *)Packet.Data)->Number;
@@ -376,9 +362,7 @@ BOOL C4NetworkClient::Join(const char *szServerName, const char *szServerAddress
 
   // Retrieve network game (if desired)
   if (fRetrieveNetworkGame) {
-    printf("C4NetworkClient::Join: Retrieving network game\n");
     if (!RetrieveNetworkGame()) {
-      printf("C4NetworkClient::Join: RetrieveNetworkGame failed\n");
       return FALSE;
     }
   }
@@ -386,7 +370,6 @@ BOOL C4NetworkClient::Join(const char *szServerName, const char *szServerAddress
   // Request done
   Packet.Set(C4PK_RequestDone);
   if (!StreamOk(pControlStream->PutPacket(Packet))) {
-    printf("C4NetworkClient::Join: PutPacket(C4PK_RequestDone) failed\n");
     return FALSE;
   }
 
@@ -395,7 +378,6 @@ BOOL C4NetworkClient::Join(const char *szServerName, const char *szServerAddress
     pInputStream = new C4Stream;
     if (!StreamOk(pInputStream->Connect(Name, C4STRM_Client, szServerAddress, NULL, C4PORT_Input))) {
       Log(LoadResStr(IDS_NET_NOINPUTSTREAM));
-      printf("C4NetworkClient::Join: InputStream Connect failed\n");
       return FALSE;
     }
   }
@@ -403,7 +385,6 @@ BOOL C4NetworkClient::Join(const char *szServerName, const char *szServerAddress
   // Activate
   Activate();
 
-  printf("C4NetworkClient::Join: Success\n");
   // Success
   return TRUE;
 }
@@ -502,7 +483,9 @@ BOOL C4NetworkClient::SendNetReady(C4Packet &rControl) // Blocking
   return TRUE;
 }
 
-void C4NetworkClient::Activate() { Active = TRUE; }
+void C4NetworkClient::Activate() {
+  Active = TRUE;
+}
 
 void C4NetworkClient::Deactivate() {
   sprintf(OSTR, "Client %s (%i) deactivated", Name, Number);
@@ -590,14 +573,12 @@ BOOL C4NetworkClient::RetrieveNetworkGame() // Overwrites Game.ScenarioFilename
   Packet.Set(C4PK_RequestNetworkGame);
   int iRes;
   if ((iRes = pControlStream->PutPacket(Packet)) != C4STRM_Ok) {
-    printf("RetrieveNetworkGame: PutPacket failed with %d (%s)\n", iRes, pControlStream->ResultText(iRes));
     return FALSE;
   }
   // Receive network game
   NetLog("Receiving network game");
   SCopy(Config.Network.WorkPath, Game.ScenarioFilename);
   if ((iRes = pControlStream->ReceiveFile(Game.ScenarioFilename, C4PK_NetworkGame)) != C4STRM_Ok) {
-    printf("RetrieveNetworkGame: ReceiveFile failed with %d (%s)\n", iRes, pControlStream->ResultText(iRes));
     return FALSE;
   }
   // Success

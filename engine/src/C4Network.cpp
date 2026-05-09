@@ -509,11 +509,12 @@ DWORD WINAPI C4Network::HostThread(void *lpPar) {
   // Host thread loop
   while (!fTerminate) {
     // Await client & connect
+    printf("Host: Awaiting client connection...\n");
     iResult = pListener->Connect(Config.Network.LocalName, C4STRM_Listener, NULL, &pStrm);
     if (iResult == C4STRM_Ok)
-      sprintf(ostr, "Host: Client connected from %s on port %i", pStrm->GetPeerAddress(), pStrm->GetPort());
+      printf("Host: Client connected from %s on port %i\n", pStrm->GetPeerAddress(), pStrm->GetPort());
     else
-      sprintf(ostr, "Host: Client connection failure");
+      printf("Host: Client connection failure: %d (%s)\n", iResult, pListener->ResultText(iResult));
     NetStatus(ostr);
     fKeepStream = FALSE;
     // Handle stream
@@ -569,6 +570,7 @@ DWORD WINAPI C4Network::HostThread(void *lpPar) {
     }
   }
   // Host thread loop terminated
+  delete pListener;
   return 0;
 }
 

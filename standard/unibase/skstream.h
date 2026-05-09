@@ -36,10 +36,10 @@ public:
 
 	virtual ~sockbuf();
 
-	virtual int overflow(int =EOF) ;
-	virtual int underflow() ;
+	virtual int overflow(int =EOF) override;
+	virtual int underflow() override;
 
-    virtual int sync();
+    virtual int sync() override;
 
 protected:
 	char *_buffer ;
@@ -92,7 +92,8 @@ public:
 	void close( void ) ;
 	int is_open( void ) const ;
 	void attach( SOCKET = 0 );
-	SOCKET getsocket() const ;
+	void set_nonblocking();
+	SOCKET getsocket() const;
 
 	char *getpeername( char *, int ) const ;
 	unsigned short getport( void ) const ;

@@ -115,6 +115,7 @@ BOOL C4Game::OpenScenario() {
 
   // Scenario filename check & log
   if (!ScenarioFilename[0]) {
+    printf("OpenScenario failed: No ScenarioFilename\n");
     Log(LoadResStr(IDS_PRC_NOC4S));
     return FALSE;
   }
@@ -123,25 +124,28 @@ BOOL C4Game::OpenScenario() {
 
   // Open scenario file
   if (!ScenarioFile.Open(ScenarioFilename)) {
+    printf("OpenScenario failed: ScenarioFile.Open failed for %s (Error: %s)\n", ScenarioFilename, ScenarioFile.GetError());
     Log(LoadResStr(IDS_PRC_FILENOTFOUND));
     return FALSE;
   }
 
   // Read scenario core
   if (!C4S.Load(ScenarioFile)) {
-    printf("C4S.Load failed!\n");
+    printf("OpenScenario failed: C4S.Load failed!\n");
     Log(LoadResStr(IDS_PRC_FILEINVALID));
     return FALSE;
   }
 
   // Check registration
   if (!CheckScenarioAccess()) {
+    printf("OpenScenario failed: CheckScenarioAccess failed\n");
     Log(LoadResStr(IDS_PRC_NOSWSCENARIO));
     return FALSE;
   }
 
   // Check minimum engine version
   if (C4S.Head.C4XVer1 * 100 + C4S.Head.C4XVer2 * 10 + C4S.Head.C4XVer3 > C4XVer1 * 100 + C4XVer2 * 10 + C4XVer3) {
+    printf("OpenScenario failed: Engine version mismatch\n");
     sprintf(OSTR, LoadResStr(IDS_PRC_NOREQC4X), C4S.Head.C4XVer1, C4S.Head.C4XVer2, C4S.Head.C4XVer3);
     Log(OSTR);
     return FALSE;
@@ -150,6 +154,7 @@ BOOL C4Game::OpenScenario() {
   // Network reference: check exact engine version
   if (C4S.Head.NetworkReference)
     if (C4S.Head.C4XVer1 * 100 + C4S.Head.C4XVer2 * 10 + C4S.Head.C4XVer3 != C4XVer1 * 100 + C4XVer2 * 10 + C4XVer3) {
+      printf("OpenScenario failed: Network reference engine version mismatch\n");
       sprintf(OSTR, LoadResStr(IDS_PRC_NOEXACTC4X), C4S.Head.C4XVer1, C4S.Head.C4XVer2, C4S.Head.C4XVer3);
       Log(OSTR);
       return FALSE;
@@ -158,6 +163,7 @@ BOOL C4Game::OpenScenario() {
   // Network reference: check developer mode
   if (C4S.Head.NetworkReference)
     if (C4S.Head.NetworkDeveloperMode != Console.Active) {
+      printf("OpenScenario failed: Network developer mode mismatch (Expected %d, got %d)\n", C4S.Head.NetworkDeveloperMode, Console.Active);
       Log(LoadResStr(IDS_PRC_WRONGMODE));
       return FALSE;
     }
@@ -176,6 +182,7 @@ BOOL C4Game::OpenScenario() {
   // Check mission access
   if (C4S.Head.MissionAccess[0])
     if (!SIsModule(Config.General.MissionAccess, C4S.Head.MissionAccess)) {
+      printf("OpenScenario failed: Mission access denied\n");
       Log(LoadResStr(IDS_PRC_NOMISSIONACCESS));
       return FALSE;
     }
@@ -1220,45 +1227,33 @@ BOOL C4Game::Save(C4Group &hGroup, BOOL fSaveGame, BOOL fNetwork) {
     rC4S.SetExactLandscape();
 
   // Save scenario core
-  if (!rC4S.Save(hGroup)) { printf("Game.Save failed: rC4S.Save\n"); return FALSE; }
 
   // Landscape plus components (exact)
   if (rC4S.Landscape.ExactLandscape) {
     // Landscape
     Objects.RemoveSolidMasks(FALSE);
-    if (!Landscape.Save(hGroup)) { printf("Game.Save failed: Landscape.Save\n"); return FALSE; }
     Objects.PutSolidMasks();
     // PXS
-    if (!PXS.Save(hGroup)) { printf("Game.Save failed: PXS.Save\n"); return FALSE; }
     // MassMover (create copy, may not modify running data)
     C4MassMoverSet MassMoverSet;
     MassMoverSet.Copy(MassMover);
-    if (!MassMoverSet.Save(hGroup)) { printf("Game.Save failed: MassMover.Save\n"); return FALSE; }
     // Material enumeration
-    if (!Material.SaveEnumeration(hGroup)) { printf("Game.Save failed: Material.SaveEnumeration\n"); return FALSE; }
   }
   // Landscape map (static)
   else if (Landscape.Mode == C4LSC_Static)
-    if (!Landscape.SaveMap(hGroup)) { printf("Game.Save failed: Landscape.SaveMap\n"); return FALSE; }
 
   // Objects
-  if (!Objects.Save(hGroup, fSaveGame)) { printf("Game.Save failed: Objects.Save\n"); return FALSE; }
 
   // Script
-  if (!Script.Save(hGroup)) { printf("Game.Save failed: Script.Save\n"); return FALSE; }
 
   // Title
-  if (!Title.Save(hGroup)) { printf("Game.Save failed: Title.Save\n"); return FALSE; }
 
   // Info
-  if (!Info.Save(hGroup)) { printf("Game.Save failed: Info.Save\n"); return FALSE; }
 
   // Save game component updates
   if (fSaveGame) {
     // Save runtime data
-    if (!SaveRuntimeData(hGroup)) { printf("Game.Save failed: SaveRuntimeData\n"); return FALSE; }
     // Players
-    if (!Players.Save(hGroup, Network.Active)) { printf("Game.Save failed: Players.Save\n"); return FALSE; }
     // Components
     hGroup.Delete(C4CFN_ScenarioTitle);
     hGroup.Delete(C4CFN_ScenarioIcon);
@@ -1267,9 +1262,7 @@ BOOL C4Game::Save(C4Group &hGroup, BOOL fSaveGame, BOOL fNetwork) {
     hGroup.Delete(C4CFN_Title);
     hGroup.Delete(C4CFN_Info);
     // Desc
-    if (!SaveDesc(hGroup, TRUE)) { printf("Game.Save failed: SaveDesc\n"); return FALSE; }
     // Title bitmap
-    if (!SaveGameTitle(hGroup)) { printf("Game.Save failed: SaveGameTitle\n"); return FALSE; }
   }
 
   // Save scenario component updates
@@ -2288,13 +2281,11 @@ BOOL C4Game::InitPlayers() {
   char szPlayerFilename[_MAX_PATH + 1];
   for (int iPar = 0; SCopySegment(PlayerFilenames, iPar, szPlayerFilename, ';', _MAX_PATH); iPar++)
     if (szPlayerFilename[0]) {
-      printf("InitPlayers: Joining %s\n", szPlayerFilename);
       if (!Players.Join(szPlayerFilename, !C4S.Head.SaveGame, Network.GetClientNumber(), Network.LocalName))
         return FALSE;
     }
 
   for (C4Player *pPlr = Players.First; pPlr; pPlr = pPlr->Next) {
-      printf("InitPlayers: Player %s has filename: '%s'\n", pPlr->Name, pPlr->Filename);
   }
 
   // Join local players to network game (control queue)
@@ -2673,7 +2664,7 @@ void C4Game::InitSystem() {
   // Control time start (host)
   ControlTimeStart = time_msecs();
   // Control rate
-  ControlRate = 1;
+  ControlRate = 10;
 }
 
 BOOL C4Game::JoinPlayer(const char *szFilename, int iAtClient, const char *szAtClientName) {

@@ -69,19 +69,24 @@ int C4Stream::Connect(const char *szName, int iRole, const char *szAddress, C4St
   case C4STRM_Client:
     // Connect
     pStream->open(szAddress, iPort, skstream::client);
-    if (!pStream->is_open())
+    if (!pStream->is_open()) {
       return C4STRM_NoOpen;
+    }
     // Send name
     Packet.Set(C4PK_MyName, (BYTE *)LocalName, SLen(LocalName));
-    if (PutPacket(Packet) != C4STRM_Ok)
+    int iRes;
+    if ((iRes = PutPacket(Packet)) != C4STRM_Ok) {
       return C4STRM_SendError;
+    }
     // Tell host his own address
     Packet.Set(C4PK_YourAddress, (BYTE *)GetPeerAddress(), SLen(GetPeerAddress()));
-    if (PutPacket(Packet) != C4STRM_Ok)
+    if ((iRes = PutPacket(Packet)) != C4STRM_Ok) {
       return C4STRM_SendError;
+    }
     // Receive the host's name
-    if (ReceivePacket(C4PK_MyName, Packet) != C4STRM_Ok)
+    if ((iRes = ReceivePacket(C4PK_MyName, Packet)) != C4STRM_Ok) {
       return C4STRM_ReceiveError;
+    }
     SCopy((const char *)Packet.Data, PeerName, 256);
     break;
 
@@ -122,6 +127,8 @@ int C4Stream::Connect(const char *szName, int iRole, const char *szAddress, C4St
   return C4STRM_Ok;
 }
 
+void C4Stream::SetNonblocking() { pStream->set_nonblocking(); }
+
 const char *C4Stream::GetPeerAddress() { return pStream->getpeername(PeerAddress, 256); }
 
 const char *C4Stream::GetPeerName() { return PeerName; }
@@ -141,10 +148,14 @@ void C4Stream::Reset() {
 
 int C4Stream::GetPacket(C4Packet &rPacket) {
   rPacket.Reset();
+  if (!pStream->good()) {
+    return C4STRM_NoGood;
+  }
   // Get header
   for (int cnt = 0; cnt < sizeof(C4PacketHeader); cnt++) {
-    if (!pStream->good())
+    if (!pStream->good()) {
       return C4STRM_NoGood;
+    }
     char ch;
     pStream->get(ch);
     ((BYTE *)&rPacket)[cnt] = ch;
@@ -160,8 +171,9 @@ int C4Stream::GetPacket(C4Packet &rPacket) {
       return C4STRM_NoMemory;
     rPacket.OwnData = TRUE;
     for (int cnt = 0; cnt < rPacket.Size; cnt++) {
-      if (!pStream->good())
+      if (!pStream->good()) {
         return C4STRM_DataError;
+      }
       char ch;
       pStream->get(ch);
       rPacket.Data[cnt] = ch;
@@ -179,20 +191,25 @@ int C4Stream::GetPacket(C4Packet &rPacket) {
 int C4Stream::PutPacket(C4Packet &rPacket, void (*fnPrcs)(int)) {
   // Stamp packet
   rPacket.Number = PacketSend++;
+  if (!pStream->good()) {
+    return C4STRM_NoGood;
+  }
   // Put packet header
   for (int cnt = 0; cnt < sizeof(C4PacketHeader); cnt++) {
-    if (!pStream->good())
-      return C4STRM_NoGood;
     pStream->put(((BYTE *)&rPacket)[cnt]);
+    if (!pStream->good()) {
+      return C4STRM_NoGood;
+    }
   }
   // Put data
   int iPrcBlock = 0;
   for (int cnt = 0; cnt < rPacket.Size; cnt++) {
     if (!rPacket.Data)
       return C4STRM_NoData;
-    if (!pStream->good())
-      return C4STRM_NoGood;
     pStream->put(rPacket.Data[cnt]);
+    if (!pStream->good()) {
+      return C4STRM_NoGood;
+    }
     if (iPrcBlock == 0) {
       iPrcBlock = 100;
       if (fnPrcs)
@@ -202,6 +219,9 @@ int C4Stream::PutPacket(C4Packet &rPacket, void (*fnPrcs)(int)) {
   }
   // Success
   pStream->flush();
+  if (!pStream->good()) {
+    return C4STRM_NoGood;
+  }
   return C4STRM_Ok;
 }
 
