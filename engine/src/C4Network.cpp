@@ -137,11 +137,14 @@ BOOL C4Network::Execute() {
 
 BOOL C4Network::Init(BOOL fHost, const char *szLocalName, const char *szLocalAddress) {
 
+  printf("C4Network::Init: Active=%d, fHost=%d, Host=%d\n", Active, fHost, Host);
   // Already initialized
   if (Active) {
     // No side changes allowed
-    if (fHost != Host)
+    if (fHost != Host) {
+      printf("C4Network::Init: Failed because fHost != Host\n");
       return FALSE;
+    }
     // Keep earlier initialization
     return TRUE;
   }
@@ -153,8 +156,10 @@ BOOL C4Network::Init(BOOL fHost, const char *szLocalName, const char *szLocalAdd
   SCopy(szLocalAddress, LocalAddress,
         C4MaxTitle); // Subject to change by reference request
 
+  printf("C4Network::Init: Calling CreateWorkPath()\n");
   // Work path
   if (!Config.Network.CreateWorkPath()) {
+    printf("C4Network::Init: CreateWorkPath failed\n");
     Log(LoadResStr(IDS_NET_NOWORKPATH));
     return FALSE;
   }
@@ -168,13 +173,15 @@ BOOL C4Network::Init(BOOL fHost, const char *szLocalName, const char *szLocalAdd
     // Init master server client
     C4ConfigNetwork *pCfg = &Config.Network;
     printf("Network.Init: As Host. MasterServerSignUp=%d, Addr=%s, Dir=%s\n", pCfg->MasterServerSignUp, pCfg->MasterServerAddress, pCfg->MasterServerPath);
-    if (pCfg->MasterServerSignUp) {
+    if (pCfg->MasterServerSignUp && Game.fLobby) {
       BOOL msInit = MasterServerClient.Init(Application.hWindow, pCfg->MasterServerAddress, pCfg->MasterServerPath, pCfg->MasterKeepPeriod, pCfg->MasterReferencePeriod);
       printf("MasterServerClient.Init returned %d\n", msInit);
     }
 
+    printf("C4Network::Init: Calling CreateThread()\n");
     // Create host thread
     if (!(hHostThread = CreateThread(NULL, 0, &HostThread, Application.hWindow, 0, &idHostThread))) {
+      printf("C4Network::Init: CreateThread failed\n");
       Log(LoadResStr(IDS_NET_NOTHREAD));
       return FALSE;
     }
@@ -194,6 +201,7 @@ BOOL C4Network::Init(BOOL fHost, const char *szLocalName, const char *szLocalAdd
   // Update console
   Console.UpdateMenus();
 
+  printf("C4Network::Init: Success\n");
   return TRUE;
 }
 
@@ -334,26 +342,18 @@ BOOL C4Network::DoLobby() {
   Console.UpdateMenus();
 
   // Message Execution Loop
-  MSG msg;
-  BOOL MsgDone;
   while (Lobby) {
-    if (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
-      // Message Handling
-      if (!GetMessage(&msg, NULL, 0, 0))
-        return FALSE;
-      // Dialog message transfer
-      MsgDone = FALSE;
-      if (!MsgDone)
-        if (Console.hDialog && IsDialogMessage(Console.hDialog, &msg))
-          MsgDone = TRUE;
-      if (!MsgDone)
-        if (Console.PropertyDlg.hDialog && IsDialogMessage(Console.PropertyDlg.hDialog, &msg))
-          MsgDone = TRUE;
-      if (!MsgDone) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-      }
+    if (Application.HandleMessage() == 2)
+      return FALSE;
+    // Update and draw startup graphics
+    if (Application.Fullscreen) {
+      C4Facet cgo;
+      cgo.Set(Engine.DDraw.lpBack, 0, 0, Config.Graphics.ResX, Config.Graphics.ResY);
+      Game.GraphicsSystem.MessageBoard.Execute();
+      Game.GraphicsSystem.MessageBoard.Draw(cgo);
+      Engine.DDraw.PageFlip();
     }
+    Sleep(10);
   }
 
   // Success
@@ -615,6 +615,7 @@ BOOL C4Network::GetGameReference(const char *szAddress, char *sFilename) {
   C4Stream Strm;
   C4Packet Packet;
 
+  printf("C4Network::GetGameReference: Connecting to %s...\n", szAddress);
   // Get address
   char szHostAddress[C4MaxTitle + 1];
   if (!SCopyEnclosed(szAddress, '<', '>', szHostAddress, C4MaxTitle))
@@ -622,8 +623,11 @@ BOOL C4Network::GetGameReference(const char *szAddress, char *sFilename) {
       SCopy(szAddress, szHostAddress, C4MaxTitle);
 
   // Connect to remote server
-  if (!Strm.Connect(LocalName, C4STRM_Client, szHostAddress) == C4STRM_Ok)
+  if (Strm.Connect(LocalName, C4STRM_Client, szHostAddress) != C4STRM_Ok) {
+    printf("C4Network::GetGameReference: Connection failed\n");
     return FALSE;
+  }
+  printf("C4Network::GetGameReference: Connected!\n");
 
   // Get remote peer name
   char szPeerName[C4MaxTitle + 1];
@@ -631,10 +635,22 @@ BOOL C4Network::GetGameReference(const char *szAddress, char *sFilename) {
 
   // Request network reference
   Packet.Set(C4PK_RequestNetworkReference);
+  printf("C4Network::GetGameReference: Requesting reference...\n");
   StreamOk(Strm.PutPacket(Packet));
 
   // Receive network reference
-  BOOL fResult = StreamOk(Strm.ReceiveFile(sFilename, C4PK_NetworkReference));
+  char szReferenceFilename[_MAX_PATH + 1];
+  SCopy(sFilename, szReferenceFilename);
+  if (ItemAttributes(szReferenceFilename) & _A_SUBDIR)
+    SAppend("Reference.c4s", szReferenceFilename);
+  printf("C4Network::GetGameReference: Receiving file to %s...\n", szReferenceFilename);
+  BOOL fResult = StreamOk(Strm.ReceiveFile(szReferenceFilename, C4PK_NetworkReference));
+  if (fResult) {
+    printf("C4Network::GetGameReference: File received successfully\n");
+    SCopy(szReferenceFilename, sFilename);
+  } else {
+    printf("C4Network::GetGameReference: File reception failed\n");
+  }
 
   // GoodBye
   Packet.Set(C4PK_GoodBye);

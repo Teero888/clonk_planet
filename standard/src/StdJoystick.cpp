@@ -37,20 +37,20 @@ BOOL StdGetGamepad(int id, BOOL fExtended, DWORD &dwPos, DWORD &dwButtons) {
   if (!glfwJoystickPresent(jid))
     return FALSE;
 
-  int count;
-  const float *axes = glfwGetJoystickAxes(jid, &count);
-  const unsigned char *buttons = glfwGetJoystickButtons(jid, &count);
+  int axis_count, button_count;
+  const float *axes = glfwGetJoystickAxes(jid, &axis_count);
+  const unsigned char *buttons = glfwGetJoystickButtons(jid, &button_count);
 
   dwButtons = 0;
   if (buttons) {
-    for (int i = 0; i < count && i < 32; i++) {
+    for (int i = 0; i < button_count && i < 32; i++) {
       if (buttons[i] == GLFW_PRESS)
         dwButtons |= (1 << i);
     }
   }
 
   dwPos = PAD_None;
-  if (axes && count >= 2) {
+  if (axes && axis_count >= 2) {
     if (axes[0] < -0.3f)
       dwPos |= PAD_Left;
     if (axes[0] > 0.3f)
@@ -69,13 +69,13 @@ BOOL StdGetJoyPos(int id, BOOL fExtended, DWORD &dwXPos, DWORD &dwYPos, DWORD &d
   if (!glfwJoystickPresent(jid))
     return FALSE;
 
-  int count;
-  const float *axes = glfwGetJoystickAxes(jid, &count);
-  const unsigned char *buttons = glfwGetJoystickButtons(jid, &count);
+  int axis_count, button_count;
+  const float *axes = glfwGetJoystickAxes(jid, &axis_count);
+  const unsigned char *buttons = glfwGetJoystickButtons(jid, &button_count);
 
   dwButtons = 0;
   if (buttons) {
-    for (int i = 0; i < count && i < 32; i++) {
+    for (int i = 0; i < button_count && i < 32; i++) {
       if (buttons[i] == GLFW_PRESS)
         dwButtons |= (1 << i);
     }
@@ -83,7 +83,7 @@ BOOL StdGetJoyPos(int id, BOOL fExtended, DWORD &dwXPos, DWORD &dwYPos, DWORD &d
 
   dwXPos = 32768;
   dwYPos = 32768;
-  if (axes && count >= 2) {
+  if (axes && axis_count >= 2) {
     dwXPos = (DWORD)((axes[0] + 1.0f) * 32767.5f);
     dwYPos = (DWORD)((axes[1] + 1.0f) * 32767.5f);
   }

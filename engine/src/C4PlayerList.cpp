@@ -230,25 +230,30 @@ BOOL C4PlayerList::Save(C4Group &hGroup, BOOL fNetwork) {
   // Save to external player files and add to group
   for (C4Player *pPlr = First; pPlr; pPlr = pPlr->Next) {
     // Save to original file
-    if (!pPlr->Save())
+    if (!pPlr->Save()) {
+      printf("C4PlayerList::Save failed: pPlr->Save() failed for %s\n", pPlr->Filename);
       return FALSE;
+    }
     // Set add filename
     SCopy(GetFilename(pPlr->Filename), szAddFilename);
     // Network: client prefix to player filename
     if (fNetwork)
       SetClientPrefix(szAddFilename, pPlr->AtClientName);
     // Add to group
-    if (!hGroup.Add(pPlr->Filename, szAddFilename))
+    if (!hGroup.Add(pPlr->Filename, szAddFilename)) {
+      printf("C4PlayerList::Save failed: hGroup.Add() failed for %s\n", pPlr->Filename);
       return FALSE;
+    }
   }
   return TRUE;
 }
-
 BOOL C4PlayerList::Save() {
   // Save to external player files
   for (C4Player *pPlr = First; pPlr; pPlr = pPlr->Next)
-    if (!pPlr->Save())
+    if (!pPlr->Save()) {
+      printf("C4PlayerList::Save failed: pPlr->Save() failed for %s\n", pPlr->Filename);
       return FALSE;
+    }
   return TRUE;
 }
 

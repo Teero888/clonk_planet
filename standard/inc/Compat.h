@@ -176,11 +176,11 @@ typedef struct tagBITMAPINFO {
 } BITMAPINFO, *PBITMAPINFO, *LPBITMAPINFO;
 
 // Functions
-inline BOOL PeekMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg) { return FALSE; }
-inline BOOL GetMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax) { return TRUE; }
-inline BOOL TranslateMessage(const MSG *lpMsg) { return FALSE; }
-inline LRESULT DispatchMessage(const MSG *lpMsg) { return 0; }
-inline BOOL IsDialogMessage(HWND hWnd, LPMSG lpMsg) { return FALSE; }
+BOOL PeekMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg);
+BOOL GetMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax);
+BOOL TranslateMessage(const MSG *lpMsg);
+LRESULT DispatchMessage(const MSG *lpMsg);
+BOOL IsDialogMessage(HWND hWnd, LPMSG lpMsg);
 inline void PostQuitMessage(int nExitCode) { exit(nExitCode); }
 
 #include <unistd.h>
@@ -324,8 +324,8 @@ void Sleep(DWORD dwMilliseconds);
 BOOL TerminateThread(HANDLE hThread, DWORD dwExitCode);
 HANDLE CreateThread(void *lpThreadAttributes, DWORD dwStackSize, DWORD(WINAPI *lpStartAddress)(void *), void *lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId);
 
-inline BOOL PostMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) { return FALSE; }
-inline LRESULT SendMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) { return 0; }
+BOOL PostMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+LRESULT SendMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 struct StdBitmap {
   BITMAPINFOHEADER bmi;
@@ -403,8 +403,6 @@ typedef struct tagLOGFONT {
   char lfFaceName[32];
 } LOGFONT;
 inline HFONT CreateFontIndirect(const LOGFONT *lplf) { return 0; }
-
-inline BOOL CopyFile(const char *lpExistingFileName, const char *lpNewFileName, BOOL bFailIfExists) { return FALSE; }
 inline int LoadString(HINSTANCE hInstance, UINT uID, LPSTR lpBuffer, int nBufferMax) { return 0; }
 
 // Dummy function to match some windows calls

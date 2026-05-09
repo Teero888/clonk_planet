@@ -50,21 +50,26 @@ BOOL C4Compiler::CompileLine(C4CompilerValue *pRefs, const char *szSection, cons
     break;
 
   case C4CV_Id:
-    for (cnt = 0; (cnt < cRef->Size) && SCopySegment(szLine, cnt, szSegment, ',', C4MaxName); cnt++)
-      if (SEqual(szSegment, "NONE") || (SLen(szSegment) != 4))
-        ((C4ID *)pTarget)[cnt] = C4ID_None;
-      else
-        ((C4ID *)pTarget)[cnt] = C4Id(szSegment);
+    for (cnt = 0; (cnt < cRef->Size) && SCopySegment(szLine, cnt, szSegment, ',', C4MaxName); cnt++) {
+      C4ID id = (SEqual(szSegment, "NONE") || (SLen(szSegment) != 4)) ? C4ID_None : C4Id(szSegment);
+      memcpy(pTarget + cnt * sizeof(C4ID), &id, sizeof(C4ID));
+    }
     break;
 
   case C4CV_Integer:
-    for (cnt = 0; (cnt < cRef->Size) && SCopySegment(szLine, cnt, szSegment, ',', C4MaxName); cnt++)
-      sscanf(szSegment, "%i", ((int *)pTarget) + cnt);
+    for (cnt = 0; (cnt < cRef->Size) && SCopySegment(szLine, cnt, szSegment, ',', C4MaxName); cnt++) {
+      int val;
+      if (sscanf(szSegment, "%i", &val) == 1)
+        memcpy(pTarget + cnt * sizeof(int), &val, sizeof(int));
+    }
     break;
 
   case C4CV_Variable:
-    for (cnt = 0; (cnt < cRef->Size) && SCopySegment(szLine, cnt, szSegment, ',', C4MaxName); cnt++)
-      sscanf(szSegment, "%li", ((long *)pTarget) + cnt);
+    for (cnt = 0; (cnt < cRef->Size) && SCopySegment(szLine, cnt, szSegment, ',', C4MaxName); cnt++) {
+      long val;
+      if (sscanf(szSegment, "%li", &val) == 1)
+        memcpy(pTarget + cnt * sizeof(long), &val, sizeof(long));
+    }
     break;
 
   case C4CV_NameList:
@@ -189,15 +194,15 @@ BOOL C4Compiler::DecompileStructure(C4CompilerValue *pRefs, void *vpData, void *
       break;
 
     case C4CV_Id:
-      // Access data
-      C4ID *idpData, *idpDefault;
-      idpData = (C4ID *)(pData + cRef->Offset);
-      idpDefault = (C4ID *)(pDefault + cRef->Offset);
       // Compare to default
       fDiff = FALSE;
-      for (cnt = 0; cnt < cRef->Size; cnt++)
-        if (idpData[cnt] != idpDefault[cnt])
+      for (cnt = 0; cnt < cRef->Size; cnt++) {
+        C4ID idData, idDefault;
+        memcpy(&idData, pData + cRef->Offset + cnt * sizeof(C4ID), sizeof(C4ID));
+        memcpy(&idDefault, pDefault + cRef->Offset + cnt * sizeof(C4ID), sizeof(C4ID));
+        if (idData != idDefault)
           fDiff = TRUE;
+      }
       if (!fDiff)
         break;
       // Section name check
@@ -211,22 +216,24 @@ BOOL C4Compiler::DecompileStructure(C4CompilerValue *pRefs, void *vpData, void *
       for (cnt = 0; cnt < cRef->Size; cnt++) {
         if (cnt)
           SAppend(",", *ppOutput);
-        GetC4IdText(idpData[cnt], ostr);
+        C4ID idData;
+        memcpy(&idData, pData + cRef->Offset + cnt * sizeof(C4ID), sizeof(C4ID));
+        GetC4IdText(idData, ostr);
         SAppend(ostr, *ppOutput);
       }
       SAppend(LineFeed, *ppOutput);
       break;
 
     case C4CV_Integer:
-      // Access data
-      int *ipData, *ipDefault;
-      ipData = (int *)(pData + cRef->Offset);
-      ipDefault = (int *)(pDefault + cRef->Offset);
       // Compare to default
       iDiff = 0;
-      for (cnt = 0; cnt < cRef->Size; cnt++)
-        if (ipData[cnt] != ipDefault[cnt])
+      for (cnt = 0; cnt < cRef->Size; cnt++) {
+        int iData, iDefault;
+        memcpy(&iData, pData + cRef->Offset + cnt * sizeof(int), sizeof(int));
+        memcpy(&iDefault, pDefault + cRef->Offset + cnt * sizeof(int), sizeof(int));
+        if (iData != iDefault)
           iDiff = cnt + 1;
+      }
       if (!iDiff)
         break;
       // Section name check
@@ -240,22 +247,24 @@ BOOL C4Compiler::DecompileStructure(C4CompilerValue *pRefs, void *vpData, void *
       for (cnt = 0; cnt < iDiff; cnt++) {
         if (cnt)
           SAppend(",", *ppOutput);
-        sprintf(ostr, "%i", ipData[cnt]);
+        int iData;
+        memcpy(&iData, pData + cRef->Offset + cnt * sizeof(int), sizeof(int));
+        sprintf(ostr, "%i", iData);
         SAppend(ostr, *ppOutput);
       }
       SAppend(LineFeed, *ppOutput);
       break;
 
     case C4CV_Variable:
-      // Access data
-      long *lpData, *lpDefault;
-      lpData = (long *)(pData + cRef->Offset);
-      lpDefault = (long *)(pDefault + cRef->Offset);
       // Compare to default
       iDiff = 0;
-      for (cnt = 0; cnt < cRef->Size; cnt++)
-        if (lpData[cnt] != lpDefault[cnt])
+      for (cnt = 0; cnt < cRef->Size; cnt++) {
+        long lData, lDefault;
+        memcpy(&lData, pData + cRef->Offset + cnt * sizeof(long), sizeof(long));
+        memcpy(&lDefault, pDefault + cRef->Offset + cnt * sizeof(long), sizeof(long));
+        if (lData != lDefault)
           iDiff = cnt + 1;
+      }
       if (!iDiff)
         break;
       // Section name check
@@ -269,7 +278,9 @@ BOOL C4Compiler::DecompileStructure(C4CompilerValue *pRefs, void *vpData, void *
       for (cnt = 0; cnt < iDiff; cnt++) {
         if (cnt)
           SAppend(",", *ppOutput);
-        sprintf(ostr, "%li", lpData[cnt]);
+        long lData;
+        memcpy(&lData, pData + cRef->Offset + cnt * sizeof(long), sizeof(long));
+        sprintf(ostr, "%li", lData);
         SAppend(ostr, *ppOutput);
       }
       SAppend(LineFeed, *ppOutput);

@@ -394,12 +394,17 @@ void skstream::listen(skstream **ppnew)
 {
     *ppnew=NULL;
 
-    // Listen
-    if (SOCKET_ERROR == ::listen( _socket, 5 ))     // max backlog
-            {
-            // Error listening
-            close(); lasterror=5; return;
-            }
+    // Check if already listening
+    int is_listening = 0;
+    socklen_t len = sizeof(is_listening);
+    if (getsockopt(_socket, SOL_SOCKET, SO_ACCEPTCONN, &is_listening, &len) == 0 && !is_listening) {
+        // Listen
+        if (SOCKET_ERROR == ::listen( _socket, 5 ))     // max backlog
+                {
+                // Error listening
+                close(); lasterror=5; return;
+                }
+    }
 
     // Accept
     SOCKET skAcceptedSocket;
@@ -415,6 +420,7 @@ void skstream::listen(skstream **ppnew)
 
 BOOL skstream::is_readable()
 {
+    if (rdbuf()->in_avail() > 0) return TRUE;
     if (_socket == INVALID_SOCKET) return FALSE;
     struct timeval timeout = {0,0};
     fd_set fdset_readable;

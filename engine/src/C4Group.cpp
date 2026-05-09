@@ -83,8 +83,10 @@ BOOL C4Group_CopyItem(const char *szSource, const char *szTarget1) {
   // Parameter check
   char szTarget[_MAX_PATH + 1];
   SCopy(szTarget1, szTarget, _MAX_PATH);
-  if (!szSource || !szTarget || !szSource[0] || !szTarget[0])
+  if (!szSource || !szTarget || !szSource[0] || !szTarget[0]) {
+    printf("C4Group_CopyItem failed at line %d\n", __LINE__);
     return FALSE;
+  }
 
   // Backslash terminator indicates target is a path only (append filename)
   if (szTarget[SLen(szTarget) - 1] == '\\')
@@ -95,8 +97,13 @@ BOOL C4Group_CopyItem(const char *szSource, const char *szTarget1) {
     return TRUE;
 
   // Source and target are simple items
-  if (ItemExists(szSource) && CreateItem(szTarget))
-    return CopyItem(szSource, szTarget);
+  if (ItemExists(szSource) && CreateItem(szTarget)) {
+    if (!CopyItem(szSource, szTarget)) {
+        printf("C4Group_CopyItem failed at line %d\n", __LINE__);
+        return FALSE;
+    }
+    return TRUE;
+  }
 
   // Source & target
   C4Group hSourceParent, hTargetParent;
@@ -110,15 +117,17 @@ BOOL C4Group_CopyItem(const char *szSource, const char *szTarget1) {
   SAppend(GetFilename(szSource), szTempFilename);
   MakeTempFilename(szTempFilename);
 
+  printf("C4Group_CopyItem: SourceParent=%s TargetParent=%s Temp=%s Source=%s Target=%s\n", szSourceParentPath, szTargetParentPath, szTempFilename, szSource, szTarget);
+
   // Extract source to temp file
-  if (!hSourceParent.Open(szSourceParentPath) || !hSourceParent.Extract(GetFilename(szSource), szTempFilename) || !hSourceParent.Close())
-    return FALSE;
+  if (!hSourceParent.Open(szSourceParentPath)) { printf("C4Group_CopyItem failed: SourceParent.Open failed: %s\n", hSourceParent.GetError()); return FALSE; }
+  if (!hSourceParent.Extract(GetFilename(szSource), szTempFilename)) { printf("C4Group_CopyItem failed: SourceParent.Extract failed: %s\n", hSourceParent.GetError()); return FALSE; }
+  if (!hSourceParent.Close()) { printf("C4Group_CopyItem failed: SourceParent.Close failed: %s\n", hSourceParent.GetError()); return FALSE; }
 
   // Move temp file to target
-  if (!hTargetParent.Open(szTargetParentPath) || !hTargetParent.Move(szTempFilename, GetFilename(szTarget)) || !hTargetParent.Close()) {
-    EraseItem(szTempFilename);
-    return FALSE;
-  }
+  if (!hTargetParent.Open(szTargetParentPath)) { printf("C4Group_CopyItem failed: TargetParent.Open failed: %s\n", hTargetParent.GetError()); EraseItem(szTempFilename); return FALSE; }
+  if (!hTargetParent.Move(szTempFilename, GetFilename(szTarget))) { printf("C4Group_CopyItem failed: TargetParent.Move failed: %s\n", hTargetParent.GetError()); EraseItem(szTempFilename); return FALSE; }
+  if (!hTargetParent.Close()) { printf("C4Group_CopyItem failed: TargetParent.Close failed: %s\n", hTargetParent.GetError()); EraseItem(szTempFilename); return FALSE; }
 
   return TRUE;
 }
@@ -184,7 +193,7 @@ BOOL C4Group_PackDirectory(const char *szFilename) {
   // Turn subfolders to groups
   char szContents[_MAX_PATH + 1];
   SCopy(szFilename, szContents);
-  SAppend("\\*.*", szContents);
+  SAppend("/*", szContents);
   ForEachFile(szContents, _A_SUBDIR, C4Group_PackDirectory);
 
   // Process message
@@ -205,7 +214,7 @@ BOOL C4Group_PackDirectory(const char *szFilename) {
 
   // Add folder contents to group
   SCopy(szFilename, szContents);
-  SAppend("\\*.*", szContents);
+  SAppend("/*", szContents);
   if (!hGroup.Add(szContents)) {
     hGroup.Close();
     return FALSE;
@@ -290,7 +299,7 @@ BOOL C4Group_ExplodeDirectory(const char *szFilename) {
   // Explode all children
   char szContents[_MAX_PATH + 1];
   SCopy(szFilename, szContents);
-  SAppend("\\*.*", szContents);
+  SAppend("/*", szContents);
   ForEachFile(szContents, _A_ALL, C4Group_ExplodeDirectory);
 
   // Success
@@ -500,7 +509,7 @@ BOOL C4Group::OpenReal(const char *szFilename) {
     ResetSearch();
     return TRUE;
   } else {
-    printf("OpenReal: OpenRealGrpFile failed\n");
+    printf("OpenReal: OpenRealGrpFile failed: %s\n", GetError());
     return FALSE;
   }
 
@@ -520,16 +529,26 @@ BOOL C4Group::OpenRealGrpFile() {
   // Read header
   if (!StdFile.Read((BYTE *)&Head, sizeof(C4GroupHeader)))
     return Error("OpenRealGrpFile: Error reading header");
-  // printf("Raw Header Hex: ");
-  // for (int i = 0; i < 16; i++)
-  //   printf("%02x ", ((BYTE *)&Head)[i]);
-  // printf("\n");
+  printf("Raw Header Hex: ");
+  for (int i = 0; i < 32; i++)
+    printf("%02x ", ((BYTE *)&Head)[i]);
+  printf("\n");
   MemScramble((BYTE *)&Head, sizeof(C4GroupHeader));
+  
+  printf("Scrambled Header Hex: ");
+  for (int i = 0; i < 32; i++)
+    printf("%02x ", ((BYTE *)&Head)[i]);
+  printf("\n");
+
   EntryOffset += sizeof(C4GroupHeader);
 
   // Check Header
-  if (!SEqual(Head.id, C4GroupFileID) || (Head.Ver1 != C4GroupFileVer1) || (Head.Ver2 > C4GroupFileVer2))
+  if (!SEqual(Head.id, C4GroupFileID) || (Head.Ver1 != C4GroupFileVer1) || (Head.Ver2 > C4GroupFileVer2)) {
+    printf("Head.id = %s, expected %s\n", Head.id, C4GroupFileID);
+    printf("Head.Ver1 = %d, expected %d\n", Head.Ver1, C4GroupFileVer1);
+    printf("Head.Ver2 = %d, expected <= %d\n", Head.Ver2, C4GroupFileVer2);
     return Error("OpenRealGrpFile: Invalid header");
+  }
 
   // Read Entries
   file_entries = Head.Entries;
@@ -898,7 +917,7 @@ void C4Group::ResetSearch() {
     static char szSearchPath[_MAX_FNAME + 1];
     SCopy(FileName, szSearchPath);
     AppendBackslash(szSearchPath);
-    SAppend("*.*", szSearchPath);
+    SAppend("*", szSearchPath);
     SearchPtr = NULL;
     if ((hFdt = _findfirst(szSearchPath, &Fdt)) > -1) {
       FolderSearchEntry.Set(Fdt, FileName);
@@ -1745,7 +1764,7 @@ int C4Group::EntryCount(const char *szWildCard) {
   C4GroupEntry *tentry;
   // All files if no wildcard
   if (!szWildCard)
-    szWildCard = "*.*";
+    szWildCard = "*";
   // Match wildcard
   ResetSearch();
   fcount = 0;
@@ -1759,7 +1778,7 @@ int C4Group::EntrySize(const char *szWildCard) {
   C4GroupEntry *tentry;
   // All files if no wildcard
   if (!szWildCard)
-    szWildCard = "*.*";
+    szWildCard = "*";
   // Match wildcard
   ResetSearch();
   fsize = 0;

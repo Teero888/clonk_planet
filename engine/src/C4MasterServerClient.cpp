@@ -168,10 +168,6 @@ int C4MasterServerClient::Run() {
     // Reference
     if (ReferenceTime >= ReferencePeriod) {
       ReferenceTime = 0;
-      // On non-Windows we directly generate the reference since message passing isn't there
-#ifndef _WIN32
-      Game.Network.CreateReference(LocalAddress);
-#else
       // Request reference file creation by main thread
       SendMessage(hWnd, WM_USER_CREATEREFERENCE, 0, (LPARAM)LocalAddress);
       // Wait for reference
@@ -180,7 +176,6 @@ int C4MasterServerClient::Run() {
           return FALSE;
         Sleep(100);
       }
-#endif
       
       // Check valid reference filename
       char szValidName[_MAX_PATH + 1];

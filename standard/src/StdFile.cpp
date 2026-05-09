@@ -83,7 +83,7 @@ BOOL TruncatePath(char *szPath) {
 void AppendBackslash(char *szFilename) {
   int i = SLen(szFilename);
   if (i > 0)
-    if ((szFilename[i - 1] == Backslash))
+    if ((szFilename[i - 1] == '/') || (szFilename[i - 1] == '\\'))
       return;
   SAppendChar(Backslash, szFilename);
 }
@@ -93,7 +93,7 @@ void AppendBackslash(char *szFilename) {
 void TruncateBackslash(char *szFilename) {
   int i = SLen(szFilename);
   if (i > 0)
-    if ((szFilename[i - 1] == Backslash))
+    if ((szFilename[i - 1] == '/') || (szFilename[i - 1] == '\\'))
       szFilename[i - 1] = 0;
 }
 
@@ -193,15 +193,24 @@ int FileTime(const char *szFilename) {
 }
 
 BOOL EraseFile(const char *szFilename) {
-  chmod(szFilename, 200);
+  chmod(szFilename, 0700);
   return (remove(szFilename) == 0);
 }
 
 BOOL EraseFiles(const char *szFilePath) { return ForEachFile(szFilePath, _A_ALL_FILES, &EraseFile); }
 
+#include <errno.h>
+
 BOOL RenameFile(const char *szFilename, const char *szNewFileName) {
-  if (rename(szFilename, szNewFileName) < 0)
+  if (rename(szFilename, szNewFileName) < 0) {
+    if (errno == EXDEV) {
+      if (CopyItem(szFilename, szNewFileName)) {
+        EraseItem(szFilename);
+        return TRUE;
+      }
+    }
     return FALSE;
+  }
   return TRUE;
 }
 
@@ -231,7 +240,7 @@ BOOL CopyDirectory(const char *szSource, const char *szTarget) {
   char contents[_MAX_PATH + 1];
   SCopy(szSource, contents);
   AppendBackslash(contents);
-  SAppend("*.*", contents);
+  SAppend("*", contents);
   _finddata_t fdt;
   intptr_t hfdt;
   BOOL status = TRUE;
@@ -260,7 +269,8 @@ BOOL EraseDirectory(const char *szDirName) {
   // Get path to directory contents
   char szPath[_MAX_PATH + 1];
   SCopy(szDirName, szPath);
-  SAppend("\\*.*", szPath);
+  AppendBackslash(szPath);
+  SAppend("*", szPath);
   // Erase subdirectories
   ForEachFile(szPath, _A_SUBDIR, &EraseDirectory);
   // Erase file contents
@@ -276,7 +286,7 @@ BOOL EraseDirectory(const char *szDirName) {
     }
   }
   // Remove directory
-  chmod(szDirName, 200);
+  chmod(szDirName, 0700);
   return (rmdir(szDirName) == 0);
 }
 
@@ -307,6 +317,32 @@ BOOL CreateItem(const char *szItemname) {
 }
 
 BOOL EraseItems(const char *szItemPath) { return ForEachFile(szItemPath, _A_ALL, &EraseItem); }
+
+BOOL CopyFile(const char *szSource, const char *szTarget, BOOL bFailIfExists) {
+  if (bFailIfExists && FileExists(szTarget))
+    return FALSE;
+  FILE *fSrc = fopen(szSource, "rb");
+  if (!fSrc)
+    return FALSE;
+  FILE *fDst = fopen(szTarget, "wb");
+  if (!fDst) {
+    fclose(fSrc);
+    return FALSE;
+  }
+  char buffer[8192];
+  size_t bytes;
+  while ((bytes = fread(buffer, 1, sizeof(buffer), fSrc)) > 0) {
+    if (fwrite(buffer, 1, bytes, fDst) != bytes) {
+      fclose(fSrc);
+      fclose(fDst);
+      EraseItem(szTarget);
+      return FALSE;
+    }
+  }
+  fclose(fSrc);
+  fclose(fDst);
+  return TRUE;
+}
 
 BOOL CopyItem(const char *szSource, const char *szTarget) {
   // Check for identical source and target

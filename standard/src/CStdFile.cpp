@@ -58,7 +58,16 @@ BOOL CStdFile::Open(const char *szFilename, BOOL fCompressed) {
       return FALSE;
     BYTE magic[2];
     if (fread(magic, 1, 2, f) == 2) {
-      if (magic[0] == 0x1e && magic[1] == 0x8c) {
+      if (magic[0] == 0x1f && magic[1] == 0x8b) {
+        // Standard gzip!
+        fclose(f);
+        if (hgzFile = gzopen(Name, "rb")) {
+          ClearBuffer();
+          Status = TRUE;
+          return TRUE;
+        }
+        return FALSE; // If it's a gzip file but fails to open, fail the whole open
+      } else if (magic[0] == 0x1e && magic[1] == 0x8c) {
         // Scrambled gzip!
         fclose(f);
         // We need to XOR the first two bytes to 1f 8b

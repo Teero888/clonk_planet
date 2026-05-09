@@ -3,6 +3,7 @@
 /* Game configuration as stored in registry */
 
 #include <C4Include.h>
+#include <cerrno>
 
 char AtPathFilename[_MAX_PATH + 1];
 
@@ -187,6 +188,9 @@ void C4Config::Default() { ZeroMem(this, sizeof(C4Config)); }
 BOOL C4Config::Load() {
   if (!CStdConfig::Load(C4ConfigMap, this))
     return FALSE;
+#ifndef _WIN32
+  SReplaceChar(Network.WorkPath, '\\', '/');
+#endif
   General.DeterminePaths();
   Graphics.DetermineResolution();
   Network.CheckPath();
@@ -294,8 +298,11 @@ void C4ConfigNetwork::CheckPath() {
 BOOL C4ConfigNetwork::CreateWorkPath() {
   TruncateBackslash(WorkPath);
   EraseItem(WorkPath);
-  if (!CreateDirectory(WorkPath, NULL))
+  printf("C4ConfigNetwork::CreateWorkPath: WorkPath=%s\n", WorkPath);
+  if (!CreateDirectory(WorkPath, NULL)) {
+    printf("C4ConfigNetwork::CreateWorkPath: CreateDirectory failed (errno=%d)\n", errno);
     return FALSE;
+  }
   AppendBackslash(WorkPath);
   return TRUE;
 }

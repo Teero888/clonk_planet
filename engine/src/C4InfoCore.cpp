@@ -75,14 +75,14 @@ C4CompilerValue C4CR_PlayerInfoCore[] = {
     {NULL, C4CV_End, 0, 0}};
 
 C4PlayerInfoCore::C4PlayerInfoCore() {
-  ZeroMem(this, sizeof(C4PlayerInfoCore));
+  ZeroMem(this, offsetof(C4PlayerInfoCore, PrefPosition) + sizeof(PrefPosition));
   Ver1 = C4PVer1;
   Ver2 = C4PVer2;
   Default();
 }
 
 void C4PlayerInfoCore::Default(C4RankSystem *pRanks) {
-  ZeroMem(this, sizeof(C4PlayerInfoCore));
+  ZeroMem(this, offsetof(C4PlayerInfoCore, PrefPosition) + sizeof(PrefPosition));
   Ver1 = C4PVer1;
   Ver2 = C4PVer2;
   Rank = 0;
@@ -101,6 +101,7 @@ BOOL C4PlayerInfoCore::Load(C4Group &hGroup) {
   // New version
   BYTE *pSource;
   if (hGroup.LoadEntry(C4CFN_PlayerInfoCore, &pSource, NULL, 1)) {
+    printf("C4PlayerInfoCore::Load: Using new version (Player.txt)\n");
     if (!Compile((char *)pSource)) {
       delete[] pSource;
       return FALSE;
@@ -112,10 +113,24 @@ BOOL C4PlayerInfoCore::Load(C4Group &hGroup) {
   int size;
   if (!hGroup.AccessEntry("C4Player.c4b", &size))
     return FALSE;
-  if (size != sizeof(C4PlayerInfoCore))
+  printf("C4PlayerInfoCore::Load: Using old version (C4Player.c4b), size=%d, sizeof(this)=%zu\n", size, sizeof(C4PlayerInfoCore));
+  // Read into temporary buffer to avoid overwriting tail padding/Filename
+  BYTE *pBuf = new BYTE[size];
+  if (!hGroup.Read(pBuf, size)) {
+    delete[] pBuf;
     return FALSE;
-  if (!hGroup.Read(this, sizeof(C4PlayerInfoCore)))
-    return FALSE;
+  }
+  // If sizes match, we can try to copy, but it's still dangerous due to alignment
+  if (size == sizeof(C4PlayerInfoCore)) {
+     // Still only copy the part that doesn't include padding?
+     // For now, let's just copy the whole thing but ONLY up to the last member.
+     memcpy(this, pBuf, offsetof(C4PlayerInfoCore, PrefPosition) + sizeof(PrefPosition));
+  } else {
+     printf("C4PlayerInfoCore::Load: Size mismatch in old version!\n");
+     delete[] pBuf;
+     return FALSE;
+  }
+  delete[] pBuf;
   if (10 * Ver1 + Ver2 != 10 * C4PVer1 + C4PVer2)
     return FALSE;
   return TRUE;

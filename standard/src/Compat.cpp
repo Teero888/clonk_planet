@@ -30,8 +30,12 @@ intptr_t _findfirst(const char *pattern, struct _finddata_t *data) {
     int len = lastSlash - pattern;
     if (len > 259)
       len = 259;
-    strncpy(state->path, pattern, len);
-    state->path[len] = '\0';
+    if (len == 0) {
+      strcpy(state->path, "/");
+    } else {
+      strncpy(state->path, pattern, len);
+      state->path[len] = '\0';
+    }
     strcpy(state->pattern, lastSlash + 1);
   } else {
     strcpy(state->path, ".");
@@ -77,6 +81,8 @@ int _findnext(intptr_t handle, struct _finddata_t *data) {
         data->attrib = 0;
         if (S_ISDIR(st.st_mode))
           data->attrib |= 0x10; // _A_SUBDIR
+        else
+          data->attrib |= 0x20; // _A_ARCH
         data->time_write = st.st_mtime;
         data->time_access = st.st_atime;
         data->time_create = st.st_ctime;
@@ -101,6 +107,8 @@ void _findclose(intptr_t handle) {
 
 #include <pthread.h>
 #include <unistd.h>
+#include <deque>
+#include <mutex>
 
 struct C4ThreadState {
   pthread_t thread;
@@ -162,3 +170,70 @@ HANDLE CreateThread(void *lpThreadAttributes, DWORD dwStackSize, DWORD(WINAPI *l
   return (HANDLE)state;
 }
 
+static std::deque<MSG> g_msgQueue;
+static std::mutex g_msgMutex;
+
+BOOL PeekMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg) {
+  std::lock_guard<std::mutex> lock(g_msgMutex);
+  if (g_msgQueue.empty()) return FALSE;
+  if (lpMsg) *lpMsg = g_msgQueue.front();
+  if (wRemoveMsg & PM_REMOVE) g_msgQueue.pop_front();
+  return TRUE;
+}
+
+BOOL GetMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax) {
+  while (TRUE) {
+    {
+      std::lock_guard<std::mutex> lock(g_msgMutex);
+      if (!g_msgQueue.empty()) {
+        if (lpMsg) *lpMsg = g_msgQueue.front();
+        g_msgQueue.pop_front();
+        return TRUE;
+      }
+    }
+    usleep(1000);
+  }
+}
+
+BOOL TranslateMessage(const MSG *lpMsg) { return FALSE; }
+
+LRESULT DispatchMessage(const MSG *lpMsg) {
+  if (!lpMsg) return 0;
+  switch (lpMsg->message) {
+    case WM_NET_REQUESTJOIN:
+      Game.RequestJoin((C4Stream*)lpMsg->lParam);
+      break;
+    case WM_NET_REQUESTREFERENCE:
+      Game.RequestNetworkReference((C4Stream*)lpMsg->lParam);
+      break;
+    case WM_USER_CREATEREFERENCE:
+      Game.Network.CreateReference((const char*)lpMsg->lParam);
+      break;
+    case WM_USER_LOG:
+      Log((const char*)lpMsg->lParam);
+      break;
+    case WM_USER_NETLOG:
+      NetLog((const char*)lpMsg->lParam);
+      break;
+  }
+  return 0;
+}
+
+BOOL IsDialogMessage(HWND hWnd, LPMSG lpMsg) { return FALSE; }
+
+BOOL PostMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
+  std::lock_guard<std::mutex> lock(g_msgMutex);
+  MSG msg;
+  msg.hwnd = hWnd;
+  msg.message = Msg;
+  msg.wParam = wParam;
+  msg.lParam = lParam;
+  g_msgQueue.push_back(msg);
+  return TRUE;
+}
+
+LRESULT SendMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
+  // Simple synchronous-like SendMessage for now
+  PostMessage(hWnd, Msg, wParam, lParam);
+  return 0;
+}

@@ -289,8 +289,10 @@ static void glfw_cursor_pos_callback(GLFWwindow *window, double xpos, double ypo
 int C4Application::HandleMessage() {
   GLFWwindow *window = (GLFWwindow *)GetGLFWWindow();
   if (window) {
-    if (glfwWindowShouldClose(window))
+    if (glfwWindowShouldClose(window)) {
+      printf("HandleMessage: glfwWindowShouldClose is TRUE\n");
       return 2;
+    }
     static bool callbacksSet = false;
     if (!callbacksSet) {
       glfwSetKeyCallback(window, glfw_key_callback);
@@ -300,5 +302,13 @@ int C4Application::HandleMessage() {
     }
   }
   glfwPollEvents();
+
+  // Process our message queue
+  MSG msg;
+  while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
+  }
+
   return 0; // Drive Execute()
 }
