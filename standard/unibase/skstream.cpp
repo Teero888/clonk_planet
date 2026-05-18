@@ -306,13 +306,15 @@ int sockbuf::underflow()
         return (int)(unsigned char)(*gptr());
 
     // fill up from eback to egptr
-    int nRead = ::recv( _socket, eback(), egptr() - eback(), 0 );
+    int capacity = egptr() - eback();
+    int nRead = ::recv( _socket, eback(), capacity, 0 );
     if( nRead == SOCKET_ERROR || nRead == 0 )
     {
         return EOF ;
     }
 
-    setg(eback(), eback(), eback() + nRead);
+    memmove(egptr() - nRead, eback(), nRead);
+    setg(eback(), egptr() - nRead, egptr());
 
     return (int)(unsigned char)(*gptr());
 }

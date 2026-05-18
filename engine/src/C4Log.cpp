@@ -72,14 +72,13 @@ void SaveC4Log(const char *szFileName) {
 }
 
 void CloseLog(const char *szFileName) { ClearC4Log(); }
-
+// TODO: make this debug mode only again
 BOOL NetLog(const char *szMessage) {
-  if (!Config.General.DebugMode)
-    return TRUE;
   if (!szMessage)
     return FALSE;
   char buf[C4LogMsgLen + 10 + 1];
   sprintf(buf, " Net: %s", szMessage);
+  printf("%s\n", buf);
   return Log(buf);
 }
 

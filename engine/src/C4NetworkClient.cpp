@@ -42,7 +42,7 @@ BOOL C4NetworkClientList::Remove(int iNetworkClient) {
   C4NetworkClient *pClient = Get(iNetworkClient);
   if (!pClient)
     return FALSE;
-  C4NetworkClient *pPrev;
+  C4NetworkClient *pPrev = NULL;
   for (pPrev = First; pPrev; pPrev = pPrev->Next)
     if (pPrev->Next == pClient)
       break;
@@ -224,7 +224,7 @@ BOOL C4NetworkClient::HandleJoin(int iNumber, C4Stream *pStream, BOOL fRuntimeJo
   ControlJoin.Asynchronous = Game.AsynchronousControl;
   ControlJoin.ControlTime = Game.ControlTime();
   ControlJoin.RandomSeed = Game.RandomSeed;
-  Packet.Set(C4PK_AcceptJoin, &ControlJoin, sizeof(C4ControlJoin));
+  Packet.Set(C4PK_AcceptJoin, &ControlJoin, 3 * sizeof(C4ControlJoin));
   if (!StreamOk(pControlStream->PutPacket(Packet)))
     return FALSE;
 
@@ -236,13 +236,11 @@ BOOL C4NetworkClient::HandleJoin(int iNumber, C4Stream *pStream, BOOL fRuntimeJo
       return FALSE;
     // Handle packet
     switch (Packet.Type) {
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // - - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     case C4PK_RequestDone:
       fRequestDone = TRUE;
       break;
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // - - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     case C4PK_RequestNetworkGame:
       // Log network game request
       sprintf(OSTR, LoadResStr(IDS_NET_REQUESTGAME), pControlStream->GetPeerName());
@@ -254,44 +252,36 @@ BOOL C4NetworkClient::HandleJoin(int iNumber, C4Stream *pStream, BOOL fRuntimeJo
       // Overwrite any duplicate temp file
       EraseItem(szFilename);
       // Copy scenario file to temp file
-      if (!C4Group_CopyItem(Game.ScenarioFilename, szFilename)) {
+      if (!C4Group_CopyItem(Game.ScenarioFilename, szFilename))
         return FALSE;
-      }
-      // Pack if necessary (unpacked files not eligible for network games
-      // anyway)
+      // Pack if necessary (unpacked files not eligible for network games anyway)
       if (FileAttributes(szFilename) & _A_SUBDIR)
-        if (!C4Group_PackDirectory(szFilename)) {
+        if (!C4Group_PackDirectory(szFilename))
           return FALSE;
-        }
       // Save game to temp file (if running)
       if (fRuntimeJoin) {
-        if (!hGroup.Open(szFilename)) {
+        if (!hGroup.Open(szFilename))
           return FALSE;
-        }
-        if (!Game.Save(hGroup, TRUE, TRUE)) {
+        if (!Game.Save(hGroup, TRUE, TRUE))
           return FALSE;
-        }
         hGroup.Sort(C4FLS_Scenario);
         hGroup.Close();
       }
       // Send network game
       // NetLog("Sending network game...");
-      if (!StreamOk(pControlStream->SendFile(szFilename, C4PK_NetworkGame, &LogProcess))) {
+      if (!StreamOk(pControlStream->SendFile(szFilename, C4PK_NetworkGame, &LogProcess)))
         return FALSE;
-      }
       // NetLog("Ok");
       Log(LoadResStr(IDS_NET_TRANSFEROK));
       EraseItem(szFilename);
       break;
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // - - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     default:
       sprintf(OSTR, "Unhandled packet %i received", Packet.Type);
       NetLog(OSTR);
       fRequestDone = TRUE;
       break;
-      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-      // - - - - - - - - - - - -
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     }
   }
 
@@ -317,7 +307,6 @@ BOOL C4NetworkClient::StreamOk(int iResult) {
 BOOL C4NetworkClient::Join(const char *szServerName, const char *szServerAddress, BOOL fRetrieveNetworkGame) {
   C4Packet Packet;
 
-
   // Set local name and address
   SCopy(Game.Network.LocalName, Name, C4MaxTitle);
   SCopy(Game.Network.LocalAddress, Address, C4MaxTitle);
@@ -328,8 +317,7 @@ BOOL C4NetworkClient::Join(const char *szServerName, const char *szServerAddress
   // Connect to server
   sprintf(OSTR, LoadResStr(IDS_NET_CONNECTING), szServerName, szServerAddress);
   Log(OSTR);
-  int connect_res = pControlStream->Connect(Name, C4STRM_Client, szServerAddress);
-  if (!StreamOk(connect_res)) {
+  if (!StreamOk(pControlStream->Connect(Name, C4STRM_Client, szServerAddress))) {
     Log(LoadResStr(IDS_NET_NOCONNECT));
     return FALSE;
   }
@@ -339,9 +327,8 @@ BOOL C4NetworkClient::Join(const char *szServerName, const char *szServerAddress
   // Request join
   Log(LoadResStr(IDS_NET_REQUESTINGJOIN));
   Packet.Set(C4PK_RequestJoin);
-  if (!StreamOk(pControlStream->PutPacket(Packet))) {
+  if (!StreamOk(pControlStream->PutPacket(Packet)))
     return FALSE;
-  }
 
   // Receive accept, client number, control mode, control time, random seed
   if (!StreamOk(pControlStream->ReceivePacket(C4PK_AcceptJoin, Packet))) {
@@ -361,17 +348,14 @@ BOOL C4NetworkClient::Join(const char *szServerName, const char *szServerAddress
   NetLog(OSTR);
 
   // Retrieve network game (if desired)
-  if (fRetrieveNetworkGame) {
-    if (!RetrieveNetworkGame()) {
+  if (fRetrieveNetworkGame)
+    if (!RetrieveNetworkGame())
       return FALSE;
-    }
-  }
 
   // Request done
   Packet.Set(C4PK_RequestDone);
-  if (!StreamOk(pControlStream->PutPacket(Packet))) {
+  if (!StreamOk(pControlStream->PutPacket(Packet)))
     return FALSE;
-  }
 
   // Connect secondary (input) stream
   if (Game.AsynchronousControl) {
@@ -483,9 +467,7 @@ BOOL C4NetworkClient::SendNetReady(C4Packet &rControl) // Blocking
   return TRUE;
 }
 
-void C4NetworkClient::Activate() {
-  Active = TRUE;
-}
+void C4NetworkClient::Activate() { Active = TRUE; }
 
 void C4NetworkClient::Deactivate() {
   sprintf(OSTR, "Client %s (%i) deactivated", Name, Number);
@@ -510,7 +492,6 @@ BOOL C4NetworkClient::SendJoinReady() // and GetJoinGo
   while (pControlStream && !pControlStream->Readable()) {
     if (Application.HandleMessage() == 2)
       return FALSE;
-    // Update and draw startup graphics
     if (Application.Fullscreen) {
       C4Facet cgo;
       cgo.Set(Engine.DDraw.lpBack, 0, 0, Config.Graphics.ResX, Config.Graphics.ResY);
@@ -540,7 +521,6 @@ BOOL C4NetworkClient::GetJoinReady() // and SendJoinGo and Activate
   while (pControlStream && !pControlStream->Readable()) {
     if (Application.HandleMessage() == 2)
       return FALSE;
-    // Update and draw startup graphics
     if (Application.Fullscreen) {
       C4Facet cgo;
       cgo.Set(Engine.DDraw.lpBack, 0, 0, Config.Graphics.ResX, Config.Graphics.ResY);
@@ -571,16 +551,13 @@ BOOL C4NetworkClient::RetrieveNetworkGame() // Overwrites Game.ScenarioFilename
   Log(LoadResStr(IDS_NET_RETRIEVING));
   NetLog("Requesting network game");
   Packet.Set(C4PK_RequestNetworkGame);
-  int iRes;
-  if ((iRes = pControlStream->PutPacket(Packet)) != C4STRM_Ok) {
+  if (!StreamOk(pControlStream->PutPacket(Packet)))
     return FALSE;
-  }
   // Receive network game
   NetLog("Receiving network game");
   SCopy(Config.Network.WorkPath, Game.ScenarioFilename);
-  if ((iRes = pControlStream->ReceiveFile(Game.ScenarioFilename, C4PK_NetworkGame)) != C4STRM_Ok) {
+  if (!StreamOk(pControlStream->ReceiveFile(Game.ScenarioFilename, C4PK_NetworkGame)))
     return FALSE;
-  }
   // Success
   return TRUE;
 }
