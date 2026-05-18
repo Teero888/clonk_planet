@@ -69,8 +69,7 @@ void C4ControlPacket::Execute() {
     memcpy(&pk, Data, sizeof(C4ControlJoinClient));
     Game.ControlJoinClient = pk;
   } break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - - - - - - - -
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   case C4PK_Message:
     // Quoted player message: reroute as cursor object message
     if (pPlr = Game.GraphicsSystem.MessageBoard.GetMessagePlayer((const char *)Data))

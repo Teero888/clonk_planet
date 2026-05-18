@@ -176,13 +176,10 @@ void C4Object::DoMovement() {
       }
     }
 
-  if (!Action.t_attach) // Unattached movement  = = = = = = = = = = = = = = = =
-                        // = = = = = = = = = = = = = = = =
-
+  if (!Action.t_attach) // Unattached movement  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
   {
 
-    // Horizontal movement - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // - - - - - - - - - - - - -
+    // Horizontal movement - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     // Movement target
     fix_x += xdir;
@@ -209,8 +206,7 @@ void C4Object::DoMovement() {
         DoMotion(ctx - x, 0);
     }
 
-    // Vertical movement  - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // - - - - - - - - - - - - -
+    // Vertical movement  - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - -
 
     // Movement target
     fix_y += ydir;
@@ -249,8 +245,7 @@ void C4Object::DoMovement() {
         DoMotion(0, cty - y);
     }
 
-    // Rotation  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // - - - - - - - - - - - - -
+    // Rotation  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     if (OCF & OCF_Rotate) {
       if (rdir) {
         // Set target
@@ -305,8 +300,7 @@ void C4Object::DoMovement() {
     }
   }
 
-  if (Action.t_attach) // Attached movement = = = = = = = = = = = = = = = = = =
-                       // = = = = = = = = = = = = = = =
+  if (Action.t_attach) // Attached movement = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
   {
 
     BYTE at_xovr, at_yovr;

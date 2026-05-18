@@ -2664,7 +2664,7 @@ void C4Game::InitSystem() {
   // Control time start (host)
   ControlTimeStart = time_msecs();
   // Control rate
-  ControlRate = 10;
+  ControlRate = 1;
 }
 
 BOOL C4Game::JoinPlayer(const char *szFilename, int iAtClient, const char *szAtClientName) {
