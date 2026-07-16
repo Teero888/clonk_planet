@@ -105,10 +105,6 @@ private:
     ClonkButton *btn_start = nullptr;
     ClonkButton *btn_quit = nullptr;
 
-    QLabel *view_label = nullptr;
-    QRadioButton *radio_player = nullptr;
-    QRadioButton *radio_dev = nullptr;
-    QButtonGroup *view_group = nullptr;
     QLabel *author_label = nullptr;
 
     ClonkArea *status_frame = nullptr;

@@ -485,36 +485,7 @@ void ClonkLauncher::setup_main_ui() {
     btn_quit = create_btn("Quit", 482, 335);
     connect(btn_quit, &QPushButton::clicked, this, &QWidget::close);
 
-    view_label = new QLabel("View:", ui_container);
-    view_label->setGeometry(482, 161, 72, 15);
-    view_label->setStyleSheet("background: transparent;");
 
-    radio_player = new QRadioButton("Player", ui_container);
-    radio_player->setGeometry(482, 180, 90, 15);
-
-    radio_dev = new QRadioButton("Developer", ui_container);
-    radio_dev->setGeometry(482, 195, 90, 15);
-    radio_dev->setChecked(true);
-
-    view_group = new QButtonGroup(this);
-    view_group->addButton(radio_player);
-    view_group->addButton(radio_dev);
-
-    // Toggles disabled to have no effect matching the Python launcher
-    /*
-    connect(radio_player, &QRadioButton::toggled, this, [this](bool c) {
-        if (c) {
-            set_background("Planet_fixed.bin_2_1010_1031.bmp");
-            refresh_resources();
-        }
-    });
-    connect(radio_dev, &QRadioButton::toggled, this, [this](bool c) {
-        if (c) {
-            set_background("Planet_fixed.bin_2_1019_1031.bmp");
-            refresh_resources();
-        }
-    });
-    */
 
     author_label = new QLabel("Author: RedWolf Design", ui_container);
     author_label->setGeometry(261, 341, 212, 15);
