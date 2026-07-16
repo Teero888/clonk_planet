@@ -146,8 +146,8 @@ BOOL TerminateThread(HANDLE hThread, DWORD dwExitCode) {
   if (!hThread) return FALSE;
   C4ThreadState *state = (C4ThreadState *)hThread;
   pthread_cancel(state->thread);
-  state->is_active = false;
-  state->exit_code = dwExitCode;
+  pthread_join(state->thread, NULL);
+  delete state;
   return TRUE;
 }
 

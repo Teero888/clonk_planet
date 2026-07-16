@@ -207,7 +207,7 @@ BOOL C4Game::Init(const char *szCmdLine) {
   InitSystem();
 
   // Minimal init for menu if no scenario
-  if (!ScenarioFilename[0]) {
+  if (!ScenarioFilename[0] && !DirectJoinAddress[0]) {
     printf("Minimal init for menu...\n");
     // Graphics
     if (!GraphicsResource.Init())
@@ -2605,18 +2605,18 @@ void C4Game::ParseCommandLine(const char *szCmdLine) {
       continue;
     }
     // Lobby
-    if (SSearchNoCase(szParameter, "/Lobby"))
-      if (Config.Network.Active) {
-        fLobby = TRUE;
-        continue;
-      }
+    if (SSearchNoCase(szParameter, "/Lobby")) {
+      Config.Network.Active = TRUE;
+      fLobby = TRUE;
+      continue;
+    }
     // Direct join
     const char *szAddress;
-    if (szAddress = SSearchNoCase(szParameter, "/Join:"))
-      if (Config.Network.Active) {
-        SCopy(szAddress, DirectJoinAddress, _MAX_PATH);
-        continue;
-      }
+    if (szAddress = SSearchNoCase(szParameter, "/Join:")) {
+      Config.Network.Active = TRUE;
+      SCopy(szAddress, DirectJoinAddress, _MAX_PATH);
+      continue;
+    }
     // Direct join by URL
     if (szAddress = SSearchNoCase(szParameter, "clonk:")) {
       // Store address

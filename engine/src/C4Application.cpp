@@ -291,6 +291,7 @@ int C4Application::HandleMessage() {
   if (window) {
     if (glfwWindowShouldClose(window)) {
       printf("HandleMessage: glfwWindowShouldClose is TRUE\n");
+      FullScreen.Clear();
       return 2;
     }
     static bool callbacksSet = false;

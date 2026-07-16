@@ -224,7 +224,7 @@ BOOL C4NetworkClient::HandleJoin(int iNumber, C4Stream *pStream, BOOL fRuntimeJo
   ControlJoin.Asynchronous = Game.AsynchronousControl;
   ControlJoin.ControlTime = Game.ControlTime();
   ControlJoin.RandomSeed = Game.RandomSeed;
-  Packet.Set(C4PK_AcceptJoin, &ControlJoin, 3 * sizeof(C4ControlJoin));
+  Packet.Set(C4PK_AcceptJoin, &ControlJoin, sizeof(C4ControlJoin));
   if (!StreamOk(pControlStream->PutPacket(Packet)))
     return FALSE;
 

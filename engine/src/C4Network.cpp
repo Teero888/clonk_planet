@@ -496,6 +496,13 @@ BOOL C4Network::CreateReference(const char *szLocalAddress) {
   return TRUE;
 }
 
+#ifndef _WIN32
+#include <pthread.h>
+static void HostThreadCleanup(void *arg) {
+  delete static_cast<C4Stream *>(arg);
+}
+#endif
+
 DWORD WINAPI C4Network::HostThread(void *lpPar) {
   char ostr[500];
   C4Stream *pListener, *pStrm = NULL;
@@ -506,6 +513,11 @@ DWORD WINAPI C4Network::HostThread(void *lpPar) {
   HWND hAppWnd = (HWND)lpPar;
   // Create listener stream
   pListener = new C4Stream;
+
+#ifndef _WIN32
+  pthread_cleanup_push(HostThreadCleanup, pListener);
+#endif
+
   // Host thread loop
   while (!fTerminate) {
     // Await client & connect
@@ -570,7 +582,11 @@ DWORD WINAPI C4Network::HostThread(void *lpPar) {
     }
   }
   // Host thread loop terminated
+#ifndef _WIN32
+  pthread_cleanup_pop(1);
+#else
   delete pListener;
+#endif
   return 0;
 }
 
