@@ -652,15 +652,7 @@ SURFACE CStdDDraw::CreateSurface(int iWdt, int iHgt) {
 }
 
 void CStdDDraw::SurfaceShiftColor(SURFACE sfcSfc, int iShift) {
-  if (!sfcSfc)
-    return;
-  CGLSurface *s = (CGLSurface *)sfcSfc;
-  SyncSurfaceCPU(s);
-  for (int i = 0; i < s->pitch * s->h; i++) {
-    if (s->bits[i])
-      s->bits[i] = (BYTE)BoundBy((int)s->bits[i] + iShift, 0, 255);
-  }
-  s->dirty_cpu = true;
+  SurfaceShiftColorRange(sfcSfc, 0, 255, iShift);
 }
 
 void CStdDDraw::SurfaceShiftColorRange(SURFACE sfcSfc, int iRngLo, int iRngHi, int iShift) {
