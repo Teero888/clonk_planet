@@ -31,7 +31,7 @@ apt-get install cmake build-essential libgl1-mesa-dev libglew-dev libglfw3-dev l
 On Arch Linux:
 
 ```sh
-pacman -S base-devel cmake glew glfw-x11 freetype2 qt6-base qt6-multimedia
+pacman -S --needed base-devel cmake glew glfw-x11 freetype2 qt6-base qt6-multimedia
 ```
 
 ## How to Build
