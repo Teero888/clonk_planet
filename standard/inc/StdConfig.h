@@ -8,14 +8,18 @@ const int CFG_String = 1, CFG_Integer = 2,
 
           CFG_Company = 10, CFG_Product = 11, CFG_Section = 12, CFG_End = 0;
 
+#ifndef offsetof
 #define offsetof(s, m) (size_t)&(((s *)0)->m)
+#endif
+
+#include <stdint.h>
 
 class CStdConfigValue {
 public:
   int Type;
   const char *Name;
   int Offset;
-  long Default;
+  intptr_t Default;
 };
 
 class CStdConfig {

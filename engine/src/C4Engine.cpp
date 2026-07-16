@@ -15,7 +15,10 @@ BOOL C4Engine::Init(HINSTANCE hinst, HWND hwnd, BOOL fFullscreen) {
   // Init log, engine header message
   EraseItem(Config.AtLogPath(C4CFN_Log));
   Log(C4EngineInfo);
-  sprintf(OSTR, C4XVer4 ? "Version: %d.%d%d.%d" : "Version: %d.%d%d", C4XVer1, C4XVer2, C4XVer3, C4XVer4);
+  if (C4XVer4)
+    sprintf(OSTR, "Version: %d.%d%d.%d", C4XVer1, C4XVer2, C4XVer3, C4XVer4);
+  else
+    sprintf(OSTR, "Version: %d.%d%d", C4XVer1, C4XVer2, C4XVer3);
   Log(OSTR);
 
   // Initialize DirectDraw

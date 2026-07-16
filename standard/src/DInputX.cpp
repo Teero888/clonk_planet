@@ -5,8 +5,11 @@
 #include <Compat.h>
 // #include <windowsx.h>
 #include <stdarg.h>
-// #include <dinput.h>
-// #include <mmsystem.h>
+#ifdef _WIN32
+#define DIRECTINPUT_VERSION 0x0700
+#include <dinput.h>
+#include <mmsystem.h>
+#endif
 #include <stdio.h>
 
 #include <DInputX.h>

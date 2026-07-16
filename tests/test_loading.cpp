@@ -9,6 +9,7 @@
 #ifdef _WIN32
 #include <fcntl.h>
 #include <io.h>
+#define strcasecmp _stricmp
 #endif
 
 typedef uint8_t BYTE;
@@ -64,11 +65,11 @@ bool DecompressData(const std::vector<BYTE> &in, std::vector<BYTE> &out, int idx
              "python3 -c \"d=open('%s','rb').read(); "
              "open('%s','wb').write(bytes([d[0]^1, d[1]^7])+d[2:])\" && gzip -df %s",
              tmp_gz, tmp_gz, tmp_gz);
-    system(cmd);
+    if (system(cmd) == -1) {}
   } else {
     char cmd[1024];
     snprintf(cmd, sizeof(cmd), "gzip -df %s", tmp_gz);
-    system(cmd);
+    if (system(cmd) == -1) {}
   }
 
   FILE *fout = fopen(tmp_out, "rb");
@@ -135,7 +136,7 @@ int main(int argc, char **argv) {
   size_t fsize = ftell(f);
   fseek(f, 0, SEEK_SET);
   data.resize(fsize);
-  fread(data.data(), 1, fsize, f);
+  if (fread(data.data(), 1, fsize, f) != fsize) {}
   fclose(f);
 
   for (size_t s = 0; s < segments.size(); s++) {

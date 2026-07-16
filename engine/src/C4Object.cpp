@@ -4,7 +4,7 @@
 
 #include <C4Include.h>
 
-#define offsC4O(x) offsetof(C4Object, x)
+#define offsC4O(x) (int)offsetof(C4Object, x)
 
 C4CompilerValue C4CR_Object[] = {
 
@@ -4198,8 +4198,7 @@ void C4Object::ExecAction() {
     Mobile = 1;
 
     break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - - - -
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   case DFA_CHOP:
     // Valid check
     if (!Action.Target) {
@@ -4229,8 +4228,7 @@ void C4Object::ExecAction() {
     Action.t_attach |= CNAT_Bottom;
     Mobile = 1;
     break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - -
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   case DFA_FIGHT:
     // Valid check
     if (!Action.Target || (Action.Target->GetProcedure() != DFA_FIGHT)) {
@@ -4274,8 +4272,7 @@ void C4Object::ExecAction() {
     if (!Tick35)
       DoExperience(+2);
     break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - -
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   case DFA_LIFT:
     // Valid check
     if (!Action.Target) {
@@ -4310,8 +4307,7 @@ void C4Object::ExecAction() {
     // General
     DoGravity(this);
     break;
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // - - -
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   case DFA_FLOAT:
     // Float speed
     lLimit = ftofix((float)pPhysical->Float / 100.0);
@@ -4386,8 +4382,7 @@ void C4Object::ExecAction() {
     xdir = ydir = 0;
 
     break;
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   case DFA_CONNECT:
 
     BOOL fBroke;

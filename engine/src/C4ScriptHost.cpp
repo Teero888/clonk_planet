@@ -203,7 +203,7 @@ void C4ScriptHost::Close() {
 int C4ScriptHost::GetControlFlag(const char *szFunctionFormat) {
   int iResult = 0;
 
-  if (!Script)
+  if (!Script || !szFunctionFormat)
     return 0;
 
   // Scan for com defined control functions

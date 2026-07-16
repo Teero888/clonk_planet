@@ -8,7 +8,7 @@ extern char *C4LogBuf;
 
 char OSTR[500];
 
-#define offsC4G(x) offsetof(C4Game, x)
+#define offsC4G(x) (int)offsetof(C4Game, x)
 
 C4CompilerValue C4CR_Game[] = {
 
@@ -2301,7 +2301,7 @@ BOOL C4Game::InitPlayers() {
     // No players in fullscreen
     if (Players.GetCount() == 0)
       if (Application.Fullscreen) {
-        sprintf(OSTR, LoadResStr(IDS_CNS_NOFULLSCREENPLRS));
+        sprintf(OSTR, "%s", LoadResStr(IDS_CNS_NOFULLSCREENPLRS));
         Log(OSTR);
         return FALSE;
       }

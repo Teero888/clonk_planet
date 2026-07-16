@@ -11,6 +11,7 @@
 #include <QHostInfo>
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 
 // KeyBindInput
 KeyBindInput::KeyBindInput(const QString &action_name_in, int key_code_in, QWidget *parent)

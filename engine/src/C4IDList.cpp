@@ -390,7 +390,7 @@ BOOL C4IDList::DeleteItem(int iIndex) {
   id[iIndex] = C4ID_None;
   Count[iIndex] = 0;
   // Shift down all entries above
-  for (int cnt = iIndex; iIndex + 1 < Size; iIndex++) {
+  for (; iIndex + 1 < Size; iIndex++) {
     id[iIndex] = id[iIndex + 1];
     Count[iIndex] = Count[iIndex + 1];
   }

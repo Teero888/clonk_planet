@@ -12,6 +12,15 @@ const int MaxFnStringParLen = 500;
 char FnStringParBuf[MaxFnStringParLen + 1];
 char FnStringFormatBuf[MaxFnStringParLen + 1];
 
+#ifdef _WIN32
+static bool IsPointerValid(const void *ptr) {
+  if (!ptr)
+    return false;
+  if ((uintptr_t)ptr < 65536)
+    return false;
+  return !IsBadReadPtr(ptr, 1);
+}
+#else
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -22,12 +31,19 @@ static bool IsPointerValid(const void *ptr) {
     return false;
   if ((uintptr_t)ptr < 65536)
     return false;
-  if (g_null_fd == -1)
+  if (g_null_fd == -1) {
     g_null_fd = open("/dev/null", O_WRONLY);
-  if (g_null_fd == -1)
-    return true;
-  return write(g_null_fd, ptr, 1) != -1 || errno != EFAULT;
+  }
+  if (g_null_fd != -1) {
+    if (write(g_null_fd, ptr, 1) == -1) {
+      if (errno == EFAULT) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
+#endif
 
 static bool IsObjectValid(C4Object *pObj) {
   if (!IsPointerValid(pObj))
@@ -451,7 +467,7 @@ long FnGetMagicEnergy(C4Thread *cthr, C4Object *pObj) {
   return pObj->MagicEnergy / MagicPhysicalFactor;
 }
 
-#define offsC4PH(x) offsetof(C4PhysicalInfo, x)
+#define offsC4PH(x) (int)offsetof(C4PhysicalInfo, x)
 
 int PhysicalOffset(const char *szPhysical) {
 
@@ -1212,10 +1228,10 @@ long FnAddMenuItem(C4Thread *cthr, const char *szCaption, const char *szCommand,
 
   // Native script command
   if (SCharCount('(', FnStringPar(szCommand)))
-    sprintf(command, FnStringPar(szCommand));
+    sprintf(command, "%s", FnStringPar(szCommand));
   // Compose command with id and parameter (old style)
   else
-    sprintf(command, "%s(%s,%i)", FnStringPar(szCommand), C4IdText(idItem), iParameter);
+    sprintf(command, "%s(%s,%i)", FnStringPar(szCommand), C4IdText(idItem), (int)iParameter);
 
   // Info caption
   SCopy(FnStringPar(szInfoCaption), infocaption, C4MaxTitle);

@@ -28,7 +28,7 @@ void C4MassMoverSet::Execute() {
   // Init counts
   Count = 0;
   // Execute & count
-  for (speed; speed > 0; speed--)
+  for (; speed > 0; speed--)
     for (cnt = 0, cmm = &(Set[C4MassMoverChunk - 1]); cnt < C4MassMoverChunk; cnt++, cmm--)
       if (cmm->Mat != MNone) {
         Count++;
@@ -201,7 +201,7 @@ void C4MassMoverSet::Consolidate() {
       Set[iPtr].Mat = MNone;
       iConsolidated++;
       // Advance empty spot (as far as ptr)
-      for (iSpot; iSpot < iPtr; iSpot++)
+      for (; iSpot < iPtr; iSpot++)
         if (Set[iSpot].Mat == MNone)
           break;
       // No empty spot below ptr

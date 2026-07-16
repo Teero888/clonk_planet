@@ -44,7 +44,6 @@ void ApplyFriction(FIXED &tval, int percent) {
 // Returns true if CNAT match has been found.
 
 BOOL ContactVtxCNAT(C4Object *cobj, BYTE cnat_dir) {
-  C4Def *dfc = cobj->Def;
   int cnt;
   BOOL fcontact = FALSE;
   for (cnt = 0; cnt < cobj->Shape.VtxNum; cnt++)

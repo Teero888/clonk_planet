@@ -6,8 +6,8 @@
 
 //----------------------------- C4Def Compilation ----------------------------------------
 
-#define offsC4D(x) offsetof(C4DefCore, x)
-#define offsC4A(x) offsetof(C4ActionDef, x)
+#define offsC4D(x) (int)offsetof(C4DefCore, x)
+#define offsC4A(x) (int)offsetof(C4ActionDef, x)
 
 C4CompilerValue C4CR_DefCore[] = {
 

@@ -410,6 +410,29 @@ inline int LoadString(HINSTANCE hInstance, UINT uID, LPSTR lpBuffer, int nBuffer
 #define PRIMARYLANGID(l) (l & 0x3ff)
 #define LANG_GERMAN 0x07
 
+#else
+
+#include <cstdint>
+#include <io.h>
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <windows.h>
+#include <winsock2.h>
+#include <stdlib.h>
+
+inline int setenv(const char *name, const char *value, int overwrite) {
+    return _putenv_s(name, value);
+}
+
+typedef int socklen_t;
+
+namespace stdext {
+    template<typename T>
+    inline T* make_checked_array_iterator(T* ptr, size_t size, size_t index = 0) {
+        return ptr + index;
+    }
+}
+
 #endif // _WIN32
 
 #endif // INC_Compat

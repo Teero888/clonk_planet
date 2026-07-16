@@ -40,7 +40,7 @@ const char *GetAName(const char *szNameFile) {
 
 //------------------------------- Player Info ----------------------------------------
 
-#define offsC4P(x) offsetof(C4PlayerInfoCore, x)
+#define offsC4P(x) (int)offsetof(C4PlayerInfoCore, x)
 
 C4CompilerValue C4CR_PlayerInfoCore[] = {
 
@@ -198,7 +198,7 @@ void C4PhysicalInfo::Default() { ZeroMem(this, sizeof(C4PhysicalInfo)); }
 
 //------------------------------- Object Info ----------------------------------------
 
-#define offsC4I(x) offsetof(C4ObjectInfoCore, x)
+#define offsC4I(x) (int)offsetof(C4ObjectInfoCore, x)
 
 C4CompilerValue C4CR_ObjectInfoCore[] = {
 

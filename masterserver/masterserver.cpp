@@ -8,11 +8,19 @@
 #include <sstream>
 #include <fstream>
 #include <cstring>
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <io.h>
+#define close closesocket
+typedef int socklen_t;
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <fcntl.h>
+#endif
 #include <algorithm>
 
 using namespace std;
@@ -132,7 +140,7 @@ void handle_client(int client_sock, sockaddr_in client_addr) {
                     vector<uint8_t>& data = g_servers[key].data;
                     string response = "HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: " + to_string(data.size()) + "\r\nContent-Disposition: attachment; filename=\"" + filename + "\"\r\n\r\n";
                     send(client_sock, response.c_str(), response.length(), 0);
-                    send(client_sock, data.data(), data.size(), 0);
+                    send(client_sock, (const char *)data.data(), data.size(), 0);
                 } else {
                     string response = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
                     send(client_sock, response.c_str(), response.length(), 0);
@@ -201,9 +209,13 @@ int main(int argc, char** argv) {
         port = stoi(argv[1]);
     }
     
+#ifdef _WIN32
+    WSADATA wsaData;
+    WSAStartup(MAKEWORD(2,2), &wsaData);
+#endif
     int server_sock = socket(AF_INET, SOCK_STREAM, 0);
     int opt = 1;
-    setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, (const char *)&opt, sizeof(opt));
     
     sockaddr_in server_addr{};
     server_addr.sin_family = AF_INET;

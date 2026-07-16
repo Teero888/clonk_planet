@@ -57,10 +57,8 @@ void C4Shape::Clear() { ZeroMem(this, sizeof(C4Shape)); }
 void C4Shape::Rotate(int iAngle) {
 
   const double pi = 3.1415926535;
-  int cnt, nvtx, nvty, rdia;
+  int nvtx, nvty, rdia;
 
-  int *vtx = VtxX;
-  int *vty = VtxY;
   double mtx[4], dang;
   dang = pi * (double)iAngle / 180.0;
 
@@ -103,7 +101,7 @@ void C4Shape::Rotate(int iAngle) {
 }
 
 void C4Shape::Stretch(int iPercent) {
-  int cnt;
+
   x = x * iPercent / 100;
   y = y * iPercent / 100;
   Wdt = Wdt * iPercent / 100;
@@ -116,7 +114,7 @@ void C4Shape::Stretch(int iPercent) {
 }
 
 void C4Shape::Jolt(int iPercent) {
-  int cnt;
+
   y = y * iPercent / 100;
   Hgt = Hgt * iPercent / 100;
   FireTop = FireTop * iPercent / 100;
@@ -125,7 +123,7 @@ void C4Shape::Jolt(int iPercent) {
 }
 
 void C4Shape::GetVertexOutline(C4Rect &rRect) {
-  int cnt;
+
   rRect.x = rRect.y = rRect.Wdt = rRect.Hgt = 0;
   for (int cnt = 0; cnt < VtxNum; cnt++) {
     // Extend left

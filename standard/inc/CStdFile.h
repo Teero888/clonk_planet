@@ -7,12 +7,7 @@
 
 #include <Standard.h>
 
-#if defined(_ZLIB_H) || defined(ZLIB_H)
-#ifndef GZFILE_DEFINED
-typedef struct gzFile_s *gzFile;
-#define GZFILE_DEFINED
-#endif
-#else
+#if !defined(_ZLIB_H) && !defined(ZLIB_H)
 #ifndef GZFILE_DEFINED
 typedef void *gzFile;
 #define GZFILE_DEFINED

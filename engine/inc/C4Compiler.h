@@ -8,7 +8,9 @@ const int C4CV_String = 1, C4CV_Id = 2, C4CV_Integer = 3, C4CV_NameList = 4, C4C
 
 const int C4EnumPointer1 = 1000000000, C4EnumPointer2 = 1001000000;
 
+#ifndef offsetof
 #define offsetof(s, m) (size_t)&(((s *)0)->m)
+#endif
 
 class C4CompilerValue {
 public:

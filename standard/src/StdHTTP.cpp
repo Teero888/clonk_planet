@@ -1,11 +1,13 @@
 
 #include <C4Include.h>
 #include <StdHTTP.h>
+#ifndef _WIN32
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <unistd.h>
+#endif
 #include <string.h>
 
 CStdHttpMessage::CStdHttpMessage() { Default(); }
@@ -165,7 +167,7 @@ bool CStdHttp::Post(const char *szText, BYTE *bpBinary, int iBinarySize) {
   if (send(Socket, szText, SLen(szText), 0) == -1) return false;
   if (bpBinary && iBinarySize > 0) {
     printf("CStdHttp::Post: Sending binary (%d bytes)\n", iBinarySize);
-    if (send(Socket, bpBinary, iBinarySize, 0) == -1) return false;
+    if (send(Socket, (const char *)bpBinary, iBinarySize, 0) == -1) return false;
   }
   return true;
 }

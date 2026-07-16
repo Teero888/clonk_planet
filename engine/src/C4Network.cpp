@@ -210,7 +210,7 @@ BOOL C4Network::StreamOk(int iResult) {
     return TRUE;
   C4Stream bla;
   char szMessage[256 + 1];
-  sprintf(szMessage, bla.ResultText(iResult));
+  sprintf(szMessage, "%s", bla.ResultText(iResult));
   NetLog(szMessage);
   return FALSE;
 }

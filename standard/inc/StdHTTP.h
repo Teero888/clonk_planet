@@ -1,6 +1,4 @@
-/* Copyright (C) 1998-2000  Matthes Bender  RedWolf Design */
-
-/* Basic http access */
+#include <Compat.h>
 
 #define httpVersion "HTTP/1.0"
 

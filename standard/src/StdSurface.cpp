@@ -7,7 +7,9 @@
 // #include <ShellAPI.h>
 #include <math.h>
 #include <stdio.h>
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 #include <stdlib.h>
 #include <time.h>
 // #include <DDraw.h>

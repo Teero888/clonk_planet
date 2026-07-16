@@ -7,7 +7,7 @@
 
 char AtPathFilename[_MAX_PATH + 1];
 
-#define ofC4Cfg(x) offsetof(C4Config, x)
+#define ofC4Cfg(x) (int)offsetof(C4Config, x)
 
 CStdConfigValue C4ConfigMap[] =
 
@@ -24,9 +24,9 @@ CStdConfigValue C4ConfigMap[] =
         {CFG_String, "Language", ofC4Cfg(General.Language), 0},
         {CFG_String, "Definitions", ofC4Cfg(General.Definitions), 0},
         {CFG_Integer, "DebugMode", ofC4Cfg(General.DebugMode), 0},
-        {CFG_String, "RXFontName", ofC4Cfg(General.RXFontName), (long)"Comic Sans MS"},
+        {CFG_String, "RXFontName", ofC4Cfg(General.RXFontName), (intptr_t)"Comic Sans MS"},
         {CFG_Integer, "RXFontSize", ofC4Cfg(General.RXFontSize), 10},
-        {CFG_String, "FEFontName", ofC4Cfg(General.FEFontName), (long)"Comic Sans MS"},
+        {CFG_String, "FEFontName", ofC4Cfg(General.FEFontName), (intptr_t)"Comic Sans MS"},
         {CFG_Integer, "FEFontSize", ofC4Cfg(General.FEFontSize), 9},
         {CFG_String, "TempPath", ofC4Cfg(General.TempPath), 0},
         {CFG_String, "LogPath", ofC4Cfg(General.LogPath), 0},
@@ -64,11 +64,11 @@ CStdConfigValue C4ConfigMap[] =
 
         {CFG_Section, "Network", 0, 0},
         {CFG_Integer, "Active", ofC4Cfg(Network.Active), 0},
-        {CFG_String, "LocalName", ofC4Cfg(Network.LocalName), (long)"Unknown"},
-        {CFG_String, "LocalAddress", ofC4Cfg(Network.LocalAddress), (long)"Unknown"},
+        {CFG_String, "LocalName", ofC4Cfg(Network.LocalName), (intptr_t)"Unknown"},
+        {CFG_String, "LocalAddress", ofC4Cfg(Network.LocalAddress), (intptr_t)"Unknown"},
         {CFG_String, "HostList", ofC4Cfg(Network.HostList), 0},
         {CFG_Integer, "ControlRate", ofC4Cfg(Network.ControlRate), 1},
-        {CFG_String, "WorkPath", ofC4Cfg(Network.WorkPath), (long)"Network"},
+        {CFG_String, "WorkPath", ofC4Cfg(Network.WorkPath), (intptr_t)"Network"},
         {CFG_Integer, "Lobby", ofC4Cfg(Network.Lobby), 0},
         {CFG_Integer, "NoRuntimeJoin", ofC4Cfg(Network.NoRuntimeJoin), 0},
         {CFG_Integer, "NoReferenceRequest", ofC4Cfg(Network.NoReferenceRequest), 0},
@@ -77,8 +77,8 @@ CStdConfigValue C4ConfigMap[] =
 
         {CFG_Integer, "MasterServerSignUp", ofC4Cfg(Network.MasterServerSignUp), 0},
         {CFG_Integer, "MasterServerActive", ofC4Cfg(Network.MasterServerActive), 0},
-        {CFG_String, "MasterServerAddress", ofC4Cfg(Network.MasterServerAddress), (long)"www.clonk.de"},
-        {CFG_String, "MasterServerDirectory", ofC4Cfg(Network.MasterServerPath), (long)"/cgi-bin/cpmaster.pl"},
+        {CFG_String, "MasterServerAddress", ofC4Cfg(Network.MasterServerAddress), (intptr_t)"www.clonk.de"},
+        {CFG_String, "MasterServerDirectory", ofC4Cfg(Network.MasterServerPath), (intptr_t)"/cgi-bin/cpmaster.pl"},
         {CFG_Integer, "MasterKeepPeriod", ofC4Cfg(Network.MasterKeepPeriod), 60},
         {CFG_Integer, "MasterReferencePeriod", ofC4Cfg(Network.MasterReferencePeriod), 120},
 
@@ -90,15 +90,15 @@ CStdConfigValue C4ConfigMap[] =
         {CFG_Integer, "ShowQuickStart", ofC4Cfg(Explorer.ShowQuickStart), 1},
         {CFG_String, "Participants", ofC4Cfg(Explorer.Participants), 0},
         {CFG_String, "Definitions", ofC4Cfg(Explorer.Definitions), 0},
-        {CFG_String, "EditorBitmap", ofC4Cfg(Explorer.EditorBitmap), (long)"MSPaint.exe"},
-        {CFG_String, "EditorMusic", ofC4Cfg(Explorer.EditorMusic), (long)"MPlayer.exe"},
-        {CFG_String, "EditorRichText", ofC4Cfg(Explorer.EditorRichText), (long)"Wordpad.exe"},
-        {CFG_String, "EditorScript", ofC4Cfg(Explorer.EditorScript), (long)"Notepad.exe"},
-        {CFG_String, "EditorText", ofC4Cfg(Explorer.EditorText), (long)"Notepad.exe"},
-        {CFG_String, "EditorSound", ofC4Cfg(Explorer.EditorSound), (long)"MPlayer.exe"},
-        {CFG_String, "EditorZip", ofC4Cfg(Explorer.EditorZip), (long)"WinZip32.exe"},
+        {CFG_String, "EditorBitmap", ofC4Cfg(Explorer.EditorBitmap), (intptr_t)"MSPaint.exe"},
+        {CFG_String, "EditorMusic", ofC4Cfg(Explorer.EditorMusic), (intptr_t)"MPlayer.exe"},
+        {CFG_String, "EditorRichText", ofC4Cfg(Explorer.EditorRichText), (intptr_t)"Wordpad.exe"},
+        {CFG_String, "EditorScript", ofC4Cfg(Explorer.EditorScript), (intptr_t)"Notepad.exe"},
+        {CFG_String, "EditorText", ofC4Cfg(Explorer.EditorText), (intptr_t)"Notepad.exe"},
+        {CFG_String, "EditorSound", ofC4Cfg(Explorer.EditorSound), (intptr_t)"MPlayer.exe"},
+        {CFG_String, "EditorZip", ofC4Cfg(Explorer.EditorZip), (intptr_t)"WinZip32.exe"},
         {CFG_String, "EditorDefinition", ofC4Cfg(Explorer.EditorDefinition), 0},
-        {CFG_String, "EditorHtml", ofC4Cfg(Explorer.EditorHtml), (long)"iexplore.exe"},
+        {CFG_String, "EditorHtml", ofC4Cfg(Explorer.EditorHtml), (intptr_t)"iexplore.exe"},
         {CFG_String, "Reload", ofC4Cfg(Explorer.Reload), 0},
 
         {CFG_Section, "Controls", 0, 0},

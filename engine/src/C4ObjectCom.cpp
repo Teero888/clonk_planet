@@ -395,7 +395,7 @@ BOOL ObjectComLineConstruction(C4Object *cObj) {
     if (!tstruct || !(ocf & OCF_LineConstruct)) {
       // No connect
       SoundEffect("Error", 0, 100, cObj);
-      sprintf(OSTR, LoadResStr(IDS_OBJ_NOCONNECT));
+      sprintf(OSTR, "%s", LoadResStr(IDS_OBJ_NOCONNECT));
       GameMsgObject(OSTR, cObj);
       return FALSE;
     }
@@ -459,7 +459,7 @@ BOOL ObjectComLineConstruction(C4Object *cObj) {
   tstruct = Game.AtObject(cObj->x, cObj->y, ocf);
   if (!tstruct || !(ocf & OCF_LineConstruct)) {
     SoundEffect("Error", 0, 100, cObj);
-    sprintf(OSTR, LoadResStr(IDS_OBJ_NONEWLINE));
+    sprintf(OSTR, "%s", LoadResStr(IDS_OBJ_NONEWLINE));
     GameMsgObject(OSTR, cObj);
     return FALSE;
   }
@@ -483,7 +483,7 @@ BOOL ObjectComLineConstruction(C4Object *cObj) {
   // No good
   if (linetype == C4ID_None) {
     SoundEffect("Error", 0, 100, cObj);
-    sprintf(OSTR, LoadResStr(IDS_OBJ_NONEWLINE));
+    sprintf(OSTR, "%s", LoadResStr(IDS_OBJ_NONEWLINE));
     GameMsgObject(OSTR, cObj);
     return FALSE;
   }

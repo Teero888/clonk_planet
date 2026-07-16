@@ -1165,7 +1165,7 @@ void C4Command::Get() {
         ObjectComDrop(cObj);
       }
       // Check RejectCollect
-      if (cObj->Call(PSF_RejectCollection, (int)(long)Target->Def->id, (int)(long)Target)) {
+      if (cObj->Call(PSF_RejectCollection, (long)Target->Def->id, (long)(intptr_t)Target)) {
         // Can't get due to RejectCollect: fail
         Finish();
         cObj->Action.ComDir = COMD_Stop;
@@ -2197,7 +2197,7 @@ void C4Command::Call() {
 }
 
 BOOL C4Command::Write(char *sTarget, int iIndex) {
-  sprintf(sTarget, "Command%d=%s,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%s", iIndex, CommandName(Command), Tx, Ty, Target, Target2, Data, UpdateInterval, Evaluated, PathChecked, Finished, Failures,
+  sprintf(sTarget, "Command%d=%s,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%s", iIndex, CommandName(Command), Tx, Ty, (int)(intptr_t)Target, (int)(intptr_t)Target2, Data, UpdateInterval, Evaluated, PathChecked, Finished, Failures,
           Retries, Permit, Text ? Text : "0");
   // Success
   return TRUE;
@@ -2212,9 +2212,12 @@ BOOL C4Command::Read(const char *szSource) {
   cPos = SAdvancePast(cPos, ',');
   sscanf(cPos, "%i", &Ty);
   cPos = SAdvancePast(cPos, ',');
-  sscanf(cPos, "%i", &Target);
+  int iTarget = 0, iTarget2 = 0;
+  sscanf(cPos, "%i", &iTarget);
+  Target = (C4Object *)(intptr_t)iTarget;
   cPos = SAdvancePast(cPos, ','); // (enumerated pointer)
-  sscanf(cPos, "%i", &Target2);
+  sscanf(cPos, "%i", &iTarget2);
+  Target2 = (C4Object *)(intptr_t)iTarget2;
   cPos = SAdvancePast(cPos, ','); // (enumerated pointer)
   sscanf(cPos, "%i", &Data);
   cPos = SAdvancePast(cPos, ',');
@@ -2260,7 +2263,7 @@ int C4Command::CallFailed() {
   char szFunctionFailed[1024 + 1];
   sprintf(szFunctionFailed, "%sFailed", Text);
   // Call failed-function
-  return (int)Target->Call(szFunctionFailed, (long)cObj, Tx, Ty, (long)Target2);
+  return (int)Target->Call(szFunctionFailed, (long)(intptr_t)cObj, Tx, Ty, (long)(intptr_t)Target2);
   // Extreme caution notice: the script call might do just about anything
   // including clearing all commands (including this) i.e. through a call
   // to SetCommand. Thus, we must not do anything in this command anymore

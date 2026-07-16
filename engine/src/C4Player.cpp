@@ -4,7 +4,7 @@
 
 #include <C4Include.h>
 
-#define offsC4PL(x) offsetof(C4Player, x)
+#define offsC4PL(x) (int)offsetof(C4Player, x)
 
 C4CompilerValue C4CR_Player[] = {
 
@@ -642,7 +642,9 @@ void C4Player::Evaluate() {
 
   // Set last round
   SCopy(Game.ScenarioTitle, LastRound.Title);
-  time(&LastRound.Date);
+  time_t t;
+  time(&t);
+  LastRound.Date = (long)t;
   LastRound.Duration = Game.Time;
   LastRound.Won = !Eliminated;
   // Melee: personal value gain score ...check Game.Objects(C4D_Goal)

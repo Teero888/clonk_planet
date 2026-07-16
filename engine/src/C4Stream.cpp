@@ -362,6 +362,8 @@ BOOL C4Stream::CrapRecovery(C4Packet &rPacket) {
 }
 
 BOOL C4Stream::GetRecovery(char *sData) {
+  if (!sData)
+    return FALSE;
   // Write recovery data to string
   sData[0] = 0;
   for (int cnt = 0; cnt < iRecovery; cnt++)

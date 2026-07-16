@@ -394,14 +394,14 @@ void ClonkLauncher::init_menu() {
     QMenu *m_opt = menu->addMenu("Options");
     QAction *act_opt = m_opt->addAction("Options...");
     connect(act_opt, &QAction::triggered, this, &ClonkLauncher::showOptions);
-    QAction *act_reg = m_opt->addAction("Registration...");
+    m_opt->addAction("Registration...");
     // Registration stubbed for now
 
     QMenu *m_help = menu->addMenu("Help");
-    QAction *act_contents = m_help->addAction("Contents...");
+    m_help->addAction("Contents...");
     QAction *act_credits = m_help->addAction("Credits...");
     connect(act_credits, &QAction::triggered, this, &ClonkLauncher::showCredits);
-    QAction *act_web = m_help->addAction("Clonk on the web");
+    m_help->addAction("Clonk on the web");
     QAction *act_about = m_help->addAction("About Clonk Planet...");
     connect(act_about, &QAction::triggered, this, &ClonkLauncher::showAbout);
 }

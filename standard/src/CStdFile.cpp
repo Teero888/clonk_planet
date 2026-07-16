@@ -81,7 +81,7 @@ BOOL CStdFile::Open(const char *szFilename, BOOL fCompressed) {
         // Real Clonk might have unscrambled on the fly.
         // Let's try to XOR and save to a temp file, then gzopen that.
         static int iTmpCount = 0;
-        char szTemp[260];
+        char szTemp[512];
         sprintf(szTemp, "%s.%d.tmp", Name, iTmpCount++);
         FILE *f2 = fopen(szTemp, "wb");
         if (f2) {
@@ -166,7 +166,7 @@ BOOL CStdFile::Read(void *pBuffer, int iSize, BOOL fPacked, int *ipFSize) {
 
 int CStdFile::LoadBuffer() {
   if (hFile && hgzFile)
-    printf("CRITICAL: Both hFile and hgzFile set in LoadBuffer! %p %p\n", hFile, hgzFile);
+    printf("CRITICAL: Both hFile and hgzFile set in LoadBuffer! %p %p\n", (void*)hFile, (void*)hgzFile);
   if (hFile)
     BufferLoad = fread(Buffer, 1, CStdFileBufSize, hFile);
   else if (hgzFile)
@@ -176,7 +176,7 @@ int CStdFile::LoadBuffer() {
 }
 
 BOOL CStdFile::SaveBuffer() {
-  int saved;
+  int saved = 0;
   if (hFile)
     saved = fwrite(Buffer, 1, BufferLoad, hFile);
   else if (hgzFile)

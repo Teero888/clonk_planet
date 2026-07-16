@@ -4,7 +4,11 @@
 
 #include <C4Include.h>
 
+#ifdef _WIN32
+#include <sys/utime.h>
+#else
 #include <utime.h>
+#endif
 
 //------------------------------ File Sort Lists -------------------------------------------
 
@@ -81,11 +85,11 @@ BOOL C4Group_SetOriginal(const char *szFilename, BOOL fOriginal) {
 
 BOOL C4Group_CopyItem(const char *szSource, const char *szTarget1) {
   // Parameter check
-  char szTarget[_MAX_PATH + 1];
-  SCopy(szTarget1, szTarget, _MAX_PATH);
-  if (!szSource || !szTarget || !szSource[0] || !szTarget[0]) {
+  if (!szSource || !szTarget1 || !szSource[0] || !szTarget1[0]) {
     return FALSE;
   }
+  char szTarget[_MAX_PATH + 1];
+  SCopy(szTarget1, szTarget, _MAX_PATH);
 
   // Backslash terminator indicates target is a path only (append filename)
   if (szTarget[SLen(szTarget) - 1] == '\\')
@@ -130,10 +134,10 @@ BOOL C4Group_CopyItem(const char *szSource, const char *szTarget1) {
 
 BOOL C4Group_MoveItem(const char *szSource, const char *szTarget1) {
   // Parameter check
+  if (!szSource || !szTarget1 || !szSource[0] || !szTarget1[0])
+    return FALSE;
   char szTarget[_MAX_PATH + 1];
   SCopy(szTarget1, szTarget, _MAX_PATH);
-  if (!szSource || !szTarget || !szSource[0] || !szTarget[0])
-    return FALSE;
 
   // Backslash terminator indicates target is a path only (append filename)
   if (szTarget[SLen(szTarget) - 1] == '\\')
@@ -1047,7 +1051,7 @@ BOOL C4Group::View(const char *szFiles) {
     tm coretm = *localtime(&entryTime);
     printf(oformat, centry->FileName, centry->Size, coretm.tm_mday, coretm.tm_mon + 1, coretm.tm_year % 100, coretm.tm_hour, coretm.tm_min, coretm.tm_sec, centry->ChildGroup ? " (Group)" : "");
   }
-  printf("%d Entries, %ld Bytes\n", fcount, bcount);
+  printf("%d Entries, %d Bytes\n", fcount, bcount);
 
   return TRUE;
 }
@@ -1564,32 +1568,32 @@ HBITMAP C4Group::SubReadDDB(HDC hdc, int sx, int sy, int swdt, int shgt, int twd
 
   // Read and check file header
   if (!Read(&fhead, sizeof(fhead))) {
-    delete pbmi;
+    delete[] (BYTE*)pbmi;
     return NULL;
   }
   if (fhead.bfType != *((WORD *)"BM")) {
-    delete pbmi;
+    delete[] (BYTE*)pbmi;
     return NULL;
   }
 
   // Read and check bitmap info header
   if (!Read(&(pbmi->bmiHeader), sizeof(BITMAPINFOHEADER))) {
-    delete pbmi;
+    delete[] (BYTE*)pbmi;
     return NULL;
   }
   if (f256Only)
     if ((pbmi->bmiHeader.biBitCount != 8) || (pbmi->bmiHeader.biCompression != 0)) {
-      delete pbmi;
+      delete[] (BYTE*)pbmi;
       return NULL;
     }
   if (!pbmi->bmiHeader.biSizeImage) {
-    delete pbmi;
+    delete[] (BYTE*)pbmi;
     return NULL;
   }
 
   // Read colors
   if (!Read(pbmi->bmiColors, 256 * sizeof(RGBQUAD))) {
-    delete pbmi;
+    delete[] (BYTE*)pbmi;
     return NULL;
   }
 
@@ -1602,19 +1606,19 @@ HBITMAP C4Group::SubReadDDB(HDC hdc, int sx, int sy, int swdt, int shgt, int twd
   // Read offset to pixels
   for (bfoffs = fhead.bfOffBits - sizeof(BITMAPFILEHEADER) - sizeof(BITMAPINFOHEADER) - 256 * sizeof(RGBQUAD); bfoffs > 0; bfoffs--)
     if (!Read(&fbuf, 1)) {
-      delete pbmi;
+      delete[] (BYTE*)pbmi;
       return NULL;
     }
 
   // Read the pixels
   int iBufferSize = pbmi->bmiHeader.biHeight * DWordAligned(pbmi->bmiHeader.biWidth);
   if (!(bmpbits = new BYTE[iBufferSize])) {
-    delete pbmi;
+    delete[] (BYTE*)pbmi;
     return NULL;
   }
   if (!Read(bmpbits, iBufferSize)) {
     delete[] bmpbits;
-    delete pbmi;
+    delete[] (BYTE*)pbmi;
     return NULL;
   }
 
@@ -1626,11 +1630,11 @@ HBITMAP C4Group::SubReadDDB(HDC hdc, int sx, int sy, int swdt, int shgt, int twd
       thgt = shgt;
 
     if (sx + swdt > pbmi->bmiHeader.biWidth) {
-      delete pbmi;
+      delete[] (BYTE*)pbmi;
       return NULL;
     }
     if (sy + shgt > pbmi->bmiHeader.biHeight) {
-      delete pbmi;
+      delete[] (BYTE*)pbmi;
       return NULL;
     }
 
@@ -1656,7 +1660,7 @@ HBITMAP C4Group::SubReadDDB(HDC hdc, int sx, int sy, int swdt, int shgt, int twd
   hbmp = (HBITMAP)CreateDIBitmap(hdc, (BITMAPINFOHEADER *)&(pbmi->bmiHeader), CBM_INIT, bmpbits, (BITMAPINFO *)pbmi, DIB_RGB_COLORS);
 
   delete[] bmpbits;
-  delete pbmi;
+  delete[] (BYTE*)pbmi;
 
   return hbmp;
 }

@@ -26,7 +26,7 @@ BOOL CStdConfig::Load(CStdConfigValue *pCfgMap, void *vpData) {
   DWORD dwValue;
   char szValue[CFG_MaxString + 1];
 
-  for (pCfgMap; pCfgMap && (pCfgMap->Type != CFG_End); pCfgMap++)
+  for (; pCfgMap && (pCfgMap->Type != CFG_End); pCfgMap++)
     switch (pCfgMap->Type) {
     case CFG_Company:
       SCopy(pCfgMap->Name, szCompany, 100);
@@ -65,7 +65,7 @@ BOOL CStdConfig::Save(CStdConfigValue *pCfgMap, void *vpData) {
 
   char szSubkey[1024 + 1];
 
-  for (pCfgMap; pCfgMap && (pCfgMap->Type != CFG_End); pCfgMap++)
+  for (; pCfgMap && (pCfgMap->Type != CFG_End); pCfgMap++)
     switch (pCfgMap->Type) {
     case CFG_Company:
       SCopy(pCfgMap->Name, szCompany, 100);
@@ -107,7 +107,7 @@ void CStdConfig::LoadDefault(CStdConfigValue *pCfgMap, void *vpData, const char 
   char szProduct[100 + 1] = "Product";
   char szSection[100 + 1] = "Section";
 
-  for (pCfgMap; pCfgMap && (pCfgMap->Type != CFG_End); pCfgMap++)
+  for (; pCfgMap && (pCfgMap->Type != CFG_End); pCfgMap++)
     switch (pCfgMap->Type) {
     case CFG_Company:
       SCopy(pCfgMap->Name, szCompany, 100);

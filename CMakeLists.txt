@@ -8,15 +8,26 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(Freetype REQUIRED)
+find_package(ZLIB REQUIRED)
 
-add_definitions(-DLINUX -DC4ENGINE)
+if(UNIX)
+    add_definitions(-DLINUX)
+endif()
+add_definitions(-DC4ENGINE)
+
+if(MSVC)
+    add_compile_options(/W4 /wd4996 /wd4100 /wd4244 /wd4305 /wd4505 /wd4189)
+else()
+    add_compile_options(-Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-sign-compare -Wno-unused-but-set-variable -Wno-cast-function-type -Wno-parentheses -Wno-format-overflow -Wno-dangling-else -Wno-maybe-uninitialized)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined -g")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address,undefined")
+endif()
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/engine/inc
     ${CMAKE_SOURCE_DIR}/standard/inc
     ${CMAKE_SOURCE_DIR}/standard/inc/external
     ${CMAKE_SOURCE_DIR}/standard/unibase
-    ${CMAKE_SOURCE_DIR}/standard/zlib
     ${FREETYPE_INCLUDE_DIRS}
 )
 
@@ -25,11 +36,15 @@ file(GLOB_RECURSE SRC_FILES
     "standard/src/*.cpp"
     "standard/unibase/*.c"
     "standard/unibase/*.cpp"
-    "standard/src/Compat.cpp"
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined -g")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address,undefined")
+if(WIN32)
+    list(REMOVE_ITEM SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/standard/src/Compat.cpp")
+    add_compile_definitions(NOMINMAX)
+    if(MSVC)
+        add_compile_options(/FI"${CMAKE_CURRENT_SOURCE_DIR}/standard/inc/Compat.h")
+    endif()
+endif()
 
 # Resource Management: Symlink data files to build directory
 set(PLANET_DATA_DIR "${CMAKE_SOURCE_DIR}/planet_data")
@@ -50,27 +65,40 @@ endforeach()
 
 add_custom_target(planet_data_sync ALL DEPENDS ${DATA_SYMLINKS})
 
+set(EXTRA_LIBS "")
+if(UNIX)
+    list(APPEND EXTRA_LIBS m)
+endif()
+
 add_executable(clonk ${SRC_FILES})
-target_link_libraries(clonk PRIVATE OpenGL::GL GLEW::GLEW glfw z m ${FREETYPE_LIBRARIES})
+target_link_libraries(clonk PRIVATE OpenGL::GL GLEW::GLEW glfw ZLIB::ZLIB ${FREETYPE_LIBRARIES} ${EXTRA_LIBS})
 add_dependencies(clonk planet_data_sync)
 
 add_executable(test_loading tests/test_loading.cpp)
-target_link_libraries(test_loading PRIVATE z)
+target_link_libraries(test_loading PRIVATE ZLIB::ZLIB)
 add_dependencies(test_loading planet_data_sync)
 
 add_executable(test_zlib tests/test_zlib.cpp)
-target_link_libraries(test_zlib PRIVATE z)
+target_link_libraries(test_zlib PRIVATE ZLIB::ZLIB)
+
+set(MIDI_LIBS "")
+if(UNIX)
+    list(APPEND MIDI_LIBS m dl pthread)
+endif()
 
 add_executable(clonk_midi launcher/clonk_midi.cpp)
-target_link_libraries(clonk_midi PRIVATE m dl pthread)
+target_link_libraries(clonk_midi PRIVATE ${MIDI_LIBS})
 add_dependencies(clonk_midi planet_data_sync)
 
-# enable_testing()
-# add_test(NAME HeadlessTest 
-#          COMMAND ${CMAKE_COMMAND} -E env CLONK_TEST_HEADLESS=1 $<TARGET_FILE:clonk> Twonky.c4p
-#          WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+set(MS_LIBS "")
+if(UNIX)
+    list(APPEND MS_LIBS pthread)
+elseif(WIN32)
+    list(APPEND MS_LIBS ws2_32)
+endif()
+
 add_executable(masterserver masterserver/masterserver.cpp)
-target_link_libraries(masterserver pthread)
+target_link_libraries(masterserver PRIVATE ${MS_LIBS})
 
 # Qt6 Launcher target
 set(CMAKE_AUTOMOC ON)
@@ -92,7 +120,7 @@ set(LAUNCHER_SRC_FILES
 )
 
 add_executable(clonk_launcher ${LAUNCHER_SRC_FILES})
-target_link_libraries(clonk_launcher PRIVATE Qt6::Widgets Qt6::Multimedia z)
+target_link_libraries(clonk_launcher PRIVATE Qt6::Widgets Qt6::Multimedia ZLIB::ZLIB)
 add_dependencies(clonk_launcher planet_data_sync)
 
 # Copy launcher resource folders to build directory

@@ -18,7 +18,7 @@ extern "C" {
 
 intptr_t _findfirst(const char *pattern, struct _finddata_t *data) {
   char cwd[1024];
-  getcwd(cwd, sizeof(cwd));
+  if (getcwd(cwd, sizeof(cwd))) {}
   // printf("_findfirst: %s (cwd: %s)\n", pattern, cwd);
   _findstate_t *state = new _findstate_t();
 

@@ -7,7 +7,9 @@ std::thread::id g_mainThreadId;
 #include <memory.h>
 #include <string.h>
 #include <math.h>
+#ifndef _WIN32
 #include <sys/time.h>
+#endif
 #include <sys/timeb.h>
 
 #include <Standard.h>
@@ -936,9 +938,13 @@ void StdBlit(BYTE *bypSource, int iSourcePitch, int iSrcBufHgt, int iSrcX, int i
 //---------------------------------- Global Milliseconds -------------------------------------
 
 DWORD time_msecs() {
+#ifdef _WIN32
+  return GetTickCount();
+#else
   struct timeval tv;
   gettimeofday(&tv, NULL);
   return (DWORD)(tv.tv_sec * 1000 + tv.tv_usec / 1000);
+#endif
 }
 
 

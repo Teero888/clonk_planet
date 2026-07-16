@@ -251,7 +251,7 @@ BOOL CStdFont::StringOut(const char *szText, SURFACE sfcDest, int iTx, int iTy, 
 		case ARight:  iTx-=GetTextWidth(szText);	 break;
 		}
 	// Draw string
-	for (szText; *szText; szText++)
+	for (; *szText; szText++)
 		{
 		CharOut(*((BYTE*)szText),sfcDest,iTx+1,iTy+1,iBCol);
 		CharOut(*((BYTE*)szText),sfcDest,iTx,iTy,iFCol);
@@ -264,7 +264,7 @@ int CStdFont::GetTextWidth(const char *szText)
 	{
 	if (!szText) return FALSE;
 	int iLineWidth=0,iMaxLineWidth=0;
-	for (const char *cPos=szText; *cPos; *cPos++)
+	for (const char *cPos=szText; *cPos; cPos++)
 		{
 		// Line break
 		if (*cPos == '|') iLineWidth=0;

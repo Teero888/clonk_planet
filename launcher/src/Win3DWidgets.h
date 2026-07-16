@@ -1,5 +1,6 @@
 #pragma once
 
+#include "LauncherCompat.h"
 #include <QWidget>
 #include <QPushButton>
 #include <QFrame>

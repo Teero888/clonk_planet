@@ -167,7 +167,7 @@ long C4Thread::ExecuteStatement() {
 
 long C4Thread::Execute() {
 
-  long rval_exec;
+  long rval_exec = 0;
 
   const char *cpStatement = cScr;
   bool fStatementDone = true;

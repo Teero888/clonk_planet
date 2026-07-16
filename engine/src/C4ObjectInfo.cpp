@@ -68,8 +68,7 @@ BOOL C4ObjectInfo::Save(C4Group &hGroup) {
   SCopy(Filename, szTempGroup);
   MakeTempFilename(szTempGroup);
   // If object info group exists, copy to temp group file
-  BOOL fextract = hGroup.Extract(Filename, szTempGroup);
-  const char *ferr = hGroup.GetError();
+  hGroup.Extract(Filename, szTempGroup);
   // Open temp group
   C4Group hTemp;
   if (!hTemp.Open(szTempGroup, TRUE))

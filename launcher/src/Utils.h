@@ -1,5 +1,6 @@
 #pragma once
 
+#include "LauncherCompat.h"
 #include <string>
 #include <vector>
 #include <map>

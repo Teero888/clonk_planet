@@ -2,8 +2,11 @@
 #include <C4Include.h>
 #include <StdVideo.h>
 #include <stdio.h>
-#include <sys/stat.h>
 #include <sys/types.h>
+#ifdef _WIN32
+#include <direct.h>
+#define mkdir(path, mode) _mkdir(path)
+#endif
 
 struct StdVideoInfo {
   char szBaseName[256];

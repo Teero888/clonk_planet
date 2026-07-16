@@ -63,7 +63,7 @@ struct MidiPlayer {
     bool initialized;
 };
 
-static MidiPlayer g_MidiPlayer = {0};
+static MidiPlayer g_MidiPlayer = {};
 
 void midi_audio_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount) {
     MidiPlayer* player = (MidiPlayer*)pDevice->pUserData;

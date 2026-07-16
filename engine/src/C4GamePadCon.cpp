@@ -57,7 +57,7 @@ void C4GamePadControl::Execute() {
 
 BOOL C4GamePadControl::AnyButtonDown() {
   if (!Status)
-    FALSE;
+    return FALSE;
 
   if (StdGetGamepad(GamePad, Extended, Pos, Buttons))
     if (Buttons)

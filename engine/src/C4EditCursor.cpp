@@ -633,12 +633,11 @@ void C4EditCursor::GrabContents() {
 }
 
 void C4EditCursor::UpdateDropTarget(WORD wKeyFlags) {
-  C4Object *cobj;
-  C4ObjectLink *clnk;
-
   DropTarget = NULL;
 
 #ifdef _WIN32
+  C4Object *cobj;
+  C4ObjectLink *clnk;
   if (wKeyFlags & MK_CONTROL)
     if (Selection.GetObject())
       for (clnk = Game.Objects.First; clnk && (cobj = clnk->Obj); clnk = clnk->Next)

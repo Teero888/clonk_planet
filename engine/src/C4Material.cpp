@@ -4,7 +4,7 @@
 
 #include <C4Include.h>
 
-#define offsC4M(x) offsetof(C4MaterialCore, x)
+#define offsC4M(x) (int)offsetof(C4MaterialCore, x)
 
 C4CompilerValue C4CR_Material[] = {
 

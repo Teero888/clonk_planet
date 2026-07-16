@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  MidiPlayer player = {0};
+  MidiPlayer player = {};
 
   player.tiny_sf = tsf_load_filename(argv[2]);
   if (!player.tiny_sf) {

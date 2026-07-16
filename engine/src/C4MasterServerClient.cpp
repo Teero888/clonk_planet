@@ -4,6 +4,7 @@
 
 #include <C4Include.h>
 
+#ifndef _WIN32
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -13,6 +14,7 @@
 #define INVALID_SOCKET -1
 #define SOCKET_ERROR -1
 #define closesocket close
+#endif
 #include <StdHTTP.h>
 
 C4MasterServerClient::C4MasterServerClient() { Default(); }
@@ -87,7 +89,7 @@ void C4MasterServerClient::Message(WORD idMsg, const char *szMsgPar) { PostMessa
 
 BOOL C4MasterServerClient::Send(const char *szAction, const char *szFilename, BYTE *bpData, int iSize) {
   // Safety
-  if (!Address || !Address[0])
+  if (!Address[0])
     return FALSE;
   // Get address
   char szAddress[C4MaxTitle + 1];

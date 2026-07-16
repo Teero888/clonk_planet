@@ -1011,6 +1011,7 @@ BOOL C4Menu::RefillInternal() {
       Add(OSTR, fctSymbol, szCommand, C4MN_Item_NoCount, NULL, 0, szInfoCaption);
       fctSymbol.Default();
     }
+    break;
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // - - - - - -
   default:

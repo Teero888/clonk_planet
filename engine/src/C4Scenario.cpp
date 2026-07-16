@@ -21,7 +21,7 @@ void C4SVal::Default() { Set(); }
 
 //=============================== C4Scenario Compilation ================================================
 
-#define offsC4S(x) offsetof(C4Scenario, x)
+#define offsC4S(x) (int)offsetof(C4Scenario, x)
 
 C4CompilerValue C4CR_Scenario[] = {
 

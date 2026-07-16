@@ -48,14 +48,14 @@ inline int skstream::shutdown( void )
 #endif
 }
 
-skstream::skstream( void ) : _sockbuf( _socket ), iostream( &_sockbuf )
+skstream::skstream( void ) : iostream( &_sockbuf ), _socket( INVALID_SOCKET ), _sockbuf( _socket )
 {
     if( init() )
             attach( INVALID_SOCKET ) ;
 }
 
 skstream::skstream( const char *addr, const service port, const role side )
- : _sockbuf( _socket ), iostream( &_sockbuf )
+ : iostream( &_sockbuf ), _socket( INVALID_SOCKET ), _sockbuf( _socket )
 {
     if( init() )
     {
@@ -64,7 +64,7 @@ skstream::skstream( const char *addr, const service port, const role side )
     }
 }
 
-skstream::skstream( SOCKET sock ) : _sockbuf( _socket ), iostream( &_sockbuf )
+skstream::skstream( SOCKET sock ) : iostream( &_sockbuf ), _socket( INVALID_SOCKET ), _sockbuf( _socket )
 {
     if( init() )
             attach( sock ) ;
@@ -238,7 +238,7 @@ unsigned short skstream::getport( void ) const
 //
 //      sockbuf
 //
-sockbuf::sockbuf( SOCKET &sock ) : _socket( sock ), streambuf() 
+sockbuf::sockbuf( SOCKET &sock ) : streambuf(), _socket( sock ) 
 {
     const int insize = 0x4000 ;             // allocate 16k buffer each for input and output
     const int outsize = 0x4000 ;
@@ -251,7 +251,7 @@ sockbuf::sockbuf( SOCKET &sock ) : _socket( sock ), streambuf()
 }
 
 sockbuf::sockbuf( SOCKET &sock, char *buf, int length )
- : _socket( sock ), streambuf() 
+ : streambuf(), _socket( sock ) 
 {
     _buffer = NULL ;
 
