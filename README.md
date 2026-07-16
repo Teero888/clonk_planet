@@ -1,6 +1,6 @@
 # Clonk Planet Linux Port (incomplete)
 
-This is a port of Clonk Planet (originally released in 1999-2000 by RedWolf Design) to Linux (and any modern OS really). It includes the C4Engine and a Qt6-based launcher (thank you RedWolf that you published **ONLY** the engine source and not the launcher, so i had to create it from 0). All gameplay features work as far as I have tested, so playing normally should work fine. Don't expect a smooth experience though... things might be broken - if you find any crashes or other issues please open an issue :)
+This is a port of Clonk Planet (originally released in 1999-2000 by RedWolf Design) to Linux (and any modern OS really). It includes the C4Engine and a Qt6-based launcher (thank you RedWolf that you published **ONLY** the engine source and not the launcher, so i had to create it from 0). All gameplay features work as far as I have tested, so playing normally should work fine. Don't expect a smooth experience though... things might be broken - if you find any crashes or other issues please open an issue.
 
 ## Screenshots
 <p align="center">
