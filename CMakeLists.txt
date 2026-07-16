@@ -71,3 +71,36 @@ add_dependencies(clonk_midi planet_data_sync)
 #          WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 add_executable(masterserver masterserver/masterserver.cpp)
 target_link_libraries(masterserver pthread)
+
+# Qt6 Launcher target
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+
+find_package(Qt6 COMPONENTS Widgets Multimedia REQUIRED)
+
+set(LAUNCHER_SRC_FILES
+    launcher/src/main.cpp
+    launcher/src/C4Group.cpp
+    launcher/src/ConfigManager.cpp
+    launcher/src/Utils.cpp
+    launcher/src/Win3DWidgets.cpp
+    launcher/src/ClonkDialogs.cpp
+    launcher/src/OptionsDialog.cpp
+    launcher/src/ClonkLauncher.cpp
+    launcher/src/SplashWindow.h
+)
+
+add_executable(clonk_launcher ${LAUNCHER_SRC_FILES})
+target_link_libraries(clonk_launcher PRIVATE Qt6::Widgets Qt6::Multimedia z)
+add_dependencies(clonk_launcher planet_data_sync)
+
+# Copy launcher resource folders to build directory
+add_custom_target(launcher_resources_sync ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/launcher/res" "${CMAKE_BINARY_DIR}/res"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/launcher/res_wav" "${CMAKE_BINARY_DIR}/res_wav"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/launcher/res_splash" "${CMAKE_BINARY_DIR}/res_splash"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/launcher/res_dump" "${CMAKE_BINARY_DIR}/res_dump"
+    COMMENT "Syncing launcher resources"
+)
+add_dependencies(clonk_launcher launcher_resources_sync)
