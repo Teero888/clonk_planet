@@ -5,8 +5,6 @@
 #include <fstream>
 #include <sstream>
 
-#ifndef _WIN32
-
 static std::map<std::string, std::string> *g_registry = nullptr;
 static bool g_registryLoaded = false;
 
@@ -18,6 +16,19 @@ static std::map<std::string, std::string> &GetRegistryMap() {
 }
 
 static std::string GetConfigPath() {
+#ifdef _WIN32
+  char buf[1024];
+  DWORD len = GetModuleFileNameA(NULL, buf, sizeof(buf));
+  if (len > 0) {
+    char *lastSlash = strrchr(buf, '\\');
+    if (!lastSlash) lastSlash = strrchr(buf, '/');
+    if (lastSlash) {
+      strcpy(lastSlash + 1, "clonk.ini");
+      return std::string(buf);
+    }
+  }
+  return "clonk.ini";
+#else
   char buf[1024];
   ssize_t len = readlink("/proc/self/exe", buf, sizeof(buf) - 1);
   if (len != -1) {
@@ -29,6 +40,14 @@ static std::string GetConfigPath() {
     }
   }
   return "clonk.ini";
+#endif
+}
+
+static std::string Trim(const std::string &s) {
+  size_t first = s.find_first_not_of(" \t\r\n");
+  if (first == std::string::npos) return "";
+  size_t last = s.find_last_not_of(" \t\r\n");
+  return s.substr(first, (last - first + 1));
 }
 
 static void LoadRegistry() {
@@ -47,16 +66,18 @@ static void LoadRegistry() {
   }
   std::string line, section;
   while (std::getline(f, line)) {
+    line = Trim(line);
     if (line.empty() || line[0] == ';')
       continue;
     if (line[0] == '[' && line.back() == ']') {
-      section = line.substr(1, line.size() - 2);
+      section = Trim(line.substr(1, line.size() - 2));
       continue;
     }
     size_t pos = line.find('=');
     if (pos != std::string::npos) {
-      std::string key = section + "\\" + line.substr(0, pos);
-      std::string val = line.substr(pos + 1);
+      std::string keyName = Trim(line.substr(0, pos));
+      std::string val = Trim(line.substr(pos + 1));
+      std::string key = section + "\\" + keyName;
       reg[key] = val;
     }
   }
@@ -137,4 +158,3 @@ BOOL SetRegClassesRootString(const char *szSubKey, const char *szValueName, cons
 BOOL StoreWindowPosition(HWND hwnd, const char *szWindowName, const char *szSubKey, BOOL fStoreSize) { return FALSE; }
 BOOL RestoreWindowPosition(HWND hwnd, const char *szWindowName, const char *szSubKey) { return FALSE; }
 BOOL SetRegFileClass(const char *szClassRoot, const char *szExtension, const char *szClassName, const char *szIconPath, int iIconIndex, const char *szContentType) { return FALSE; }
-#endif

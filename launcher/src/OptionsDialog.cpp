@@ -101,12 +101,18 @@ OptionsDialog::OptionsDialog(ClonkLauncher *parent)
     setWindowTitle("Properties");
     setFixedSize(380, 411);
 
+    QString font_style = QString("'%1', 'Chilanka', 'cursive'").arg(launcher->getComicFontFamily());
     setStyleSheet(
-        "QDialog, .QWidget {"
-        "    background-color: #f5f5f5;"
-        "    font-size: 11px;"
-        "    color: black;"
-        "}"
+        QString(
+            "* {"
+            "    font-family: %1;"
+            "    font-size: 11px;"
+            "    color: black;"
+            "}"
+            "QDialog, .QWidget {"
+            "    background-color: #f5f5f5;"
+            "}"
+        ).arg(font_style)
     );
 
     QVBoxLayout *layout = new QVBoxLayout(this);

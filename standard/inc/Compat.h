@@ -426,12 +426,15 @@ inline int setenv(const char *name, const char *value, int overwrite) {
 
 typedef int socklen_t;
 
+#ifndef STDEXT_MAKE_CHECKED_ARRAY_ITERATOR_DEFINED
+#define STDEXT_MAKE_CHECKED_ARRAY_ITERATOR_DEFINED
 namespace stdext {
     template<typename T>
     inline T* make_checked_array_iterator(T* ptr, size_t size, size_t index = 0) {
         return ptr + index;
     }
 }
+#endif
 
 #endif // _WIN32
 
