@@ -36,63 +36,33 @@ jobs:
         run: |
           vcpkg install glew glfw3 freetype --triplet x64-windows
 
-      # Added RUNTIME_OUTPUT_DIRECTORY overrides to flatten the build structures across platforms
-      - name: Configure CMake
+      - name: Configure CMake (Linux)
+        if: matrix.os == 'ubuntu-latest'
         run: |
-          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            cmake -B build -S . \
-              -DCMAKE_BUILD_TYPE=Release \
-              -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=build/dist
-          else
-            cmake -B build -S . \
-              -DCMAKE_BUILD_TYPE=Release \
-              -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" \
-              -DVCPKG_TARGET_TRIPLET=x64-windows \
-              -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE=build/dist
-          fi
-        shell: bash
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: Configure CMake (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows
 
       - name: Build Project
         run: |
           cmake --build build --config Release
-
-      # Syncing resource directories cleanly into our flat staging layout before packaging
-      - name: Stage Assets (Windows Multi-Config Patch)
-        if: matrix.os == 'windows-latest'
-        run: |
-          xcopy "build\res" "build\dist\res" /E /I /Y
-          xcopy "build\res_wav" "build\dist\res_wav" /E /I /Y
-          xcopy "build\res_splash" "build\dist\res_splash" /E /I /Y
-          xcopy "build\res_dump" "build\dist\res_dump" /E /I /Y
-          foreach ($file in Get-ChildItem "build\*") {
-            if (-not $file.PSIsContainer) {
-              Copy-Item $file.FullName -Destination "build\dist\" -Force
-            }
-          }
-        shell: powershell
-
-      - name: Stage Assets (Linux Layout Matching)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          cp -r build/res build/dist/ 2>/dev/null || true
-          cp -r build/res_wav build/dist/ 2>/dev/null || true
-          cp -r build/res_splash build/dist/ 2>/dev/null || true
-          cp -r build/res_dump build/dist/ 2>/dev/null || true
-          find build/ -maxdepth 1 -type f -exec cp {} build/dist/ \; 2>/dev/null || true
-        shell: bash
 
       - name: Upload Build Artifacts (Linux)
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
           name: clonk-planet-linux
-          path: build/dist/
-          if-no-files-found: error
+          path: |
+            build/*
+
 
       - name: Upload Build Artifacts (Windows)
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
           name: clonk-planet-windows
-          path: build/dist/
-          if-no-files-found: error
+          path: |
+            build/Release/*
