@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 find_package(OpenGL REQUIRED)
+set(GLEW_USE_STATIC_LIBS ON)
 find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(Freetype REQUIRED)
