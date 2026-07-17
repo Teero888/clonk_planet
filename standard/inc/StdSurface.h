@@ -42,6 +42,7 @@ public:
   BOOL Attach(SURFACE sfcSurface);
   void Clear();
   void Default();
+  void MoveFrom(CSurface &rhs);
   void Clip(int iX, int iY, int iX2, int iY2);
   void NoClip();
   HDC GetDC();

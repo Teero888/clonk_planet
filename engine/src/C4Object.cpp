@@ -2493,6 +2493,7 @@ void C4Object::Clear() {
   if (MaterialContents)
     delete MaterialContents;
   MaterialContents = NULL;
+  ClearCommands();
 }
 
 BOOL C4Object::ContainedControl(BYTE byCom) {

@@ -34,6 +34,10 @@ int main(int argc, char **argv) {
   // Execute application
   Application.Run();
 
+  // Clean up resources before exiting (prevents AddressSanitizer/LeakSanitizer leak reports)
+  FullScreen.Clear();
+  Application.Clear();
+
   // Return exit code
   if (!Game.GameOver)
     return C4XRV_Aborted;

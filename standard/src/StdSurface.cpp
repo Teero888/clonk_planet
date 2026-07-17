@@ -55,6 +55,19 @@ void CSurface::Clear() {
   Surface = NULL;
 }
 
+void CSurface::MoveFrom(CSurface &rhs) {
+  Clear();
+  Wdt = rhs.Wdt;
+  Hgt = rhs.Hgt;
+  Pitch = rhs.Pitch;
+  Bits = rhs.Bits;
+  Surface = rhs.Surface;
+  Attached = rhs.Attached;
+  Locked = rhs.Locked;
+  memcpy(Palette, rhs.Palette, 768);
+  rhs.Default();
+}
+
 BOOL CSurface::Lock() {
   if (!Locked)
     if (!(Bits = lpDDraw->LockSurface(Surface, Pitch)))

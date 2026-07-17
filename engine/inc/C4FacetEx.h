@@ -10,7 +10,12 @@ public:
   C4FacetEx();
   C4FacetEx(const C4FacetEx &rhs) {
     Default();
-    Set(rhs.Surface, rhs.X, rhs.Y, rhs.Wdt, rhs.Hgt, rhs.TargetX, rhs.TargetY);
+    if (rhs.Surface == rhs.Face.Surface) {
+      Face.MoveFrom(const_cast<C4Surface&>(rhs.Face));
+      Set(Face.Surface, rhs.X, rhs.Y, rhs.Wdt, rhs.Hgt, rhs.TargetX, rhs.TargetY);
+    } else {
+      Set(rhs.Surface, rhs.X, rhs.Y, rhs.Wdt, rhs.Hgt, rhs.TargetX, rhs.TargetY);
+    }
   }
 
 public:
@@ -45,7 +50,12 @@ public:
   C4FacetEx operator=(const C4FacetEx &rhs) {
     Clear();
     Default();
-    Set(rhs.Surface, rhs.X, rhs.Y, rhs.Wdt, rhs.Hgt, rhs.TargetX, rhs.TargetY);
+    if (rhs.Surface == rhs.Face.Surface) {
+      Face.MoveFrom(const_cast<C4Surface&>(rhs.Face));
+      Set(Face.Surface, rhs.X, rhs.Y, rhs.Wdt, rhs.Hgt, rhs.TargetX, rhs.TargetY);
+    } else {
+      Set(rhs.Surface, rhs.X, rhs.Y, rhs.Wdt, rhs.Hgt, rhs.TargetX, rhs.TargetY);
+    }
     return *this;
   }
 };
