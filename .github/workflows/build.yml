@@ -49,3 +49,23 @@ jobs:
       - name: Build Project
         run: |
           cmake --build build --config Release
+
+      - name: Upload Build Artifacts (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: clonk-planet-linux
+          path: |
+            build/clonk
+            build/clonk_launcher
+            build/clonk_midi
+
+      - name: Upload Build Artifacts (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: clonk-planet-windows
+          path: |
+            build/Release/clonk.exe
+            build/Release/clonk_launcher.exe
+            build/Release/clonk_midi.exe
