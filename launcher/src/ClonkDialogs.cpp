@@ -3,7 +3,7 @@
 #include <QDir>
 #include <QFile>
 
-static QString GetComicFontFamily(QWidget *parent) {
+QString CD::GetComicFontFamily(QWidget *parent) {
     QWidget *p = parent;
     while (p) {
         if (auto launcher = qobject_cast<ClonkLauncher*>(p)) {
@@ -38,7 +38,7 @@ ClonkPopupDialog::ClonkPopupDialog(QWidget *parent, const QString &text, const Q
     label->setWordWrap(true);
     label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
-    QString comic_family = GetComicFontFamily(parent);
+    QString comic_family = CD::GetComicFontFamily(parent);
     QString font_family = QString("'%1', 'Chilanka', 'cursive'").arg(comic_family);
     label->setStyleSheet(QString("background: transparent; color: black; font-family: %1; font-size: 12px;").arg(font_family));
 }
@@ -109,7 +109,7 @@ ClonkPlayerPropertiesDialog::ClonkPlayerPropertiesDialog(QWidget *parent, const 
     connect(btn_mouse_toggle, &QPushButton::clicked, this, &ClonkPlayerPropertiesDialog::onMouseToggle);
     connect(mouse_atlas, &ClonkAtlasWidget::clicked, this, &ClonkPlayerPropertiesDialog::onMouseToggle);
 
-    QString comic_family = GetComicFontFamily(parent);
+    QString comic_family = CD::GetComicFontFamily(parent);
     QString font_family = QString("'%1', 'Chilanka', 'cursive'").arg(comic_family);
     QString label_style = QString("background: transparent; color: black; font-family: %1; font-size: 12px;").arg(font_family);
 

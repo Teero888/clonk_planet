@@ -7,6 +7,11 @@
 #include <string>
 #include "Win3DWidgets.h"
 
+class CD {
+public:
+    static QString GetComicFontFamily(QWidget *parent);
+};
+
 class ClonkPopupDialog : public QDialog {
     Q_OBJECT
 public:

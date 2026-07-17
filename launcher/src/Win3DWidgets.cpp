@@ -60,7 +60,7 @@ Win3DButton::Win3DButton(const QString &text, QWidget *parent)
     sunken_colors = {"#6a6a6a", "#a6a6a6", "#e3e3e3", "#ffffff"};
     setFocusPolicy(Qt::NoFocus);
     setFont(QFont(font_family, 9));
-    connect(this, &QPushButton::clicked, this, &Win3DButton::playClick);
+    // connect(this, &QPushButton::clicked, this, &Win3DButton::playClick); // these dont have sounds
 }
 
 void Win3DButton::playClick() {
@@ -466,7 +466,7 @@ ClonkButton::ClonkButton(const QString &text, QWidget *parent, const QString &bg
     setFixedSize(size);
     setFocusPolicy(Qt::NoFocus);
     setFont(QFont(font_family, 9));
-    connect(this, &QPushButton::clicked, this, &ClonkButton::playClick);
+    connect(this, &QPushButton::pressed, this, &ClonkButton::playClick);
 }
 
 void ClonkButton::playClick() {

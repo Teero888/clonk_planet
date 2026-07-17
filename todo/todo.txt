@@ -1,0 +1,26 @@
+the images are of the UI that i still need to make
+
+launcher:
+    quick start:
+        nested scenarios and open scenarios
+        find the textures and text for those scenarios
+        put the ? and X button
+        use the correct translation
+    allow element renaming
+    allow element deletion
+    make the activate/deactive button work
+    grey out not allowed buttons on certain elements
+    Create the scenario properties window
+    create the Network dir that gets info from the masterserver
+    create the network user interface that comes before the game starts if host is enabled
+        control rate range 1-10
+        masterserver address is grayed out if masterserver if Sign up at master server is not enabled
+    Right click menu
+    Bottom bar Logging system
+        every action you do gets said in the bottom bar for example "Deleting New Folder" or something
+    Fix author saying unknown instead of RedWolf Design
+
+The entire help page from the Planet.hlp file
+
+also retake all the screenshots but actually on windows 2000/XP or 95 whatever
+

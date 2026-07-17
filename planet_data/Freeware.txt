@@ -10,3 +10,5 @@ Name and code have to be entered exactly as displayed above.
 
 Notice: use of a freeware code does not entitle you to any upgrades, support,
 or use of additional web offers.
+
+Developer password: Siedlerclonk

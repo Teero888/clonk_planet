@@ -109,6 +109,7 @@ set(LAUNCHER_SRC_FILES
     launcher/src/OptionsDialog.cpp
     launcher/src/ClonkLauncher.cpp
     launcher/src/SplashWindow.h
+    launcher/src/TutorialWindow.h
 )
 
 add_executable(clonk_launcher ${LAUNCHER_SRC_FILES})

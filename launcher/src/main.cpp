@@ -2,13 +2,17 @@
 #include <QApplication>
 #include "ClonkLauncher.h"
 #include "SplashWindow.h"
+#include "TutorialWindow.h"
 #include <QDir>
 #include <QUrl>
+#include <QLoggingCategory>
+#include <QTimer>
 #include <vector>
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     QApplication::setStyle("Fusion");
+    QLoggingCategory::setFilterRules("qt.multimedia.*=false\nqt.multimedia.audio*=false");
 
     ClonkLauncher *launcher = new ClonkLauncher();
 
@@ -29,6 +33,18 @@ int main(int argc, char *argv[]) {
     QObject::connect(splash, &SplashWindow::finished, launcher, [launcher]() {
         launcher->show();
         launcher->start_music();
+
+        // Launch the tutorial window
+        TutorialWindow *tut = new TutorialWindow(launcher->getDumpPath(), launcher);
+        tut->show();
+
+        // Position it directly on top of the main launcher window
+        QTimer::singleShot(100, [launcher, tut]() {
+            if (launcher && tut) {
+                QPoint center = launcher->geometry().center();
+                tut->move(center - tut->rect().center());
+            }
+        });
     });
 
     splash->start();

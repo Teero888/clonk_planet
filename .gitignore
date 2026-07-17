@@ -4,5 +4,6 @@ build
 compile_commands.json
 clonk_output.txt
 original_source
+scripts/__pycache__
 launcher/old/__pycache__
 launcher/res_music/render
