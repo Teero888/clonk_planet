@@ -1,0 +1,112 @@
+This is a binary data file. Keep out !
+C:\ClonkPlanet\clonk.c4x
+C:\ClonkPlanet\Easy.c4f
+C:\ClonkPlanet\Freeware.txt
+C:\ClonkPlanet\Graphics.c4g
+C:\ClonkPlanet\Hazard.c4d
+C:\ClonkPlanet\Hazard.c4f
+C:\ClonkPlanet\Joki.c4p
+C:\ClonkPlanet\Knights.c4d
+C:\ClonkPlanet\Knights.c4f
+C:\ClonkPlanet\Maps.c4f
+C:\ClonkPlanet\Material.c4g
+C:\ClonkPlanet\Missions.c4f
+C:\ClonkPlanet\Music.c4g
+C:\ClonkPlanet\Names.txt
+C:\ClonkPlanet\Objects.c4d
+C:\ClonkPlanet\Planet.cnt
+C:\ClonkPlanet\Planet.exe
+C:\ClonkPlanet\Planet.hlp
+C:\ClonkPlanet\Sound.c4g
+C:\ClonkPlanet\Splash.c4v
+C:\ClonkPlanet\Tutorial.c4f
+C:\ClonkPlanet\Twonky.c4p
+C:\ClonkPlanet\Worlds.c4f
+C:\ClonkPlanet\Worlds2.c4f
+C:\windows\system32\GkSui18.EXE
+C:\users\teero\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Clonk Planet\Clonk Planet.pif
+C:\users\teero\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Clonk Planet\Clonk Planet.lnk
+C:\users\teero\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Clonk Planet\Clonk Planet Help.pif
+C:\users\teero\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Clonk Planet\Clonk Planet Help.lnk
+C:\users\teero\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Clonk Planet
+C:\users\teero\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Clonk Planet\Uninstall.lnk
+Software\RedWolf Design\Clonk Planet\4.65
+InstPath
+(!^zf
+C:\ClonkPlanet\
+<d{ 
+W_{4
+Software\RedWolf Design\Clonk Planet\4.65
+SourcePath
+(!^zf
+Z:\home\teero\
+<d{ 
+W_{4
+Software\RedWolf Design\Clonk Planet\4.65
+InstallDate
+(!^zf
+1777233943
+<d{ 
+W_{4
+Clonk Planet
+C:\ClonkPlanet\
+SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Clonk Planet
+DisplayName
+talled Version
+(!^zf
+Clonk Planet
+lanet\
+<d{ 
+W_{4
+SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Clonk Planet
+DisplayVersion
+led Version
+(!^zf
+4.65
+ Planet
+lanet\
+<d{ 
+W_{4
+SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Clonk Planet
+Publisher
+sion
+led Version
+(!^zf
+RedWolf Design
+net\
+<d{ 
+W_{4
+SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Clonk Planet
+URLInfoAbout
+led Version
+(!^zf
+http://www.clonk.de
+<d{ 
+W_{4
+SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Clonk Planet
+UninstallString
+ed Version
+(!^zf
+C:\windows\system32\GKSUI18.EXE C:\ClonkPlanet\Uninstall700C.DAT
+<d{ 
+W_{4
+Software\RedWolf Design\Clonk Planet\4.65
+Uninstall\Clonk Planet
+UninstEXE
+tring
+ed Version
+(!^zf
+C:\windows\system32\GKSUI18.EXE
+C:\ClonkPlanet\Uninstall700C.DAT
+<d{ 
+W_{4
+Software\RedWolf Design\Clonk Planet\4.65
+Uninstall\Clonk Planet
+UninstFile
+ring
+ed Version
+(!^zf
+C:\ClonkPlanet\Uninstall700C.DAT
+:\ClonkPlanet\Uninstall700C.DAT
+<d{ 
+W_{4

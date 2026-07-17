@@ -5,7 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 find_package(OpenGL REQUIRED)
-set(GLEW_USE_STATIC_LIBS ON)
 find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(Freetype REQUIRED)
@@ -47,24 +46,14 @@ if(WIN32)
     endif()
 endif()
 
-# Resource Management: Symlink data files to build directory
-set(PLANET_DATA_DIR "${CMAKE_SOURCE_DIR}/planet_data")
-file(GLOB DATA_FILES "${PLANET_DATA_DIR}/*")
-set(DATA_SYMLINKS "")
+# copy resources to build directory
 
-foreach(DATA_FILE ${DATA_FILES})
-    get_filename_component(DATA_FILENAME ${DATA_FILE} NAME)
-    set(COPY_PATH "${CMAKE_BINARY_DIR}/${DATA_FILENAME}")
-    add_custom_command(
-        OUTPUT "${COPY_PATH}"
-        COMMAND ${CMAKE_COMMAND} -E copy "${DATA_FILE}" "${COPY_PATH}"
-        DEPENDS "${DATA_FILE}"
-        COMMENT "Copying ${DATA_FILENAME}"
-    )
-    list(APPEND DATA_SYMLINKS "${COPY_PATH}")
-endforeach()
+add_custom_target(planet_data_sync ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/planet_data" "${CMAKE_BINARY_DIR}/"
+    COMMENT "Syncing game resources"
+)
 
-add_custom_target(planet_data_sync ALL DEPENDS ${DATA_SYMLINKS})
+#add_custom_target(planet_data_sync ALL DEPENDS ${DATA_SYMLINKS})
 
 set(EXTRA_LIBS "")
 if(UNIX)

@@ -1,0 +1,131 @@
+English
+English
+1.93q+
+9.Jan.2002
+GkWare e.K.
+support@gkware.com
+About...
+This setup package has been created using
+For more information about this setup toolkit, please visit:
+Setup
+Setup is preparing the %s Wizard which will guide you through the application setup process.  Please wait !
+Exit Setup
+Setup is not complete. If you quit the Setup program now, the program will not be installed.
+You may run the Setup program at a later time to complete the installation.
+To continue, click Back. If you really want to quit click Exit Setup.
+Choose Destination Directory
+Setup will install %s in the following directory.
+To install to this directory, click Next.
+To install to a different directory, click Browse and select another directory.
+To abort the installation process click Cancel.
+Destination Directory
+Choose Setup Type
+Click the type of Setup you prefer, then click Next.
+Setup Types
+Custom
+The specified directory does not exist. Do you want to create it ?
+Choose Destination Directory
+Please enter the directory you want to install %s to.
+Copying
+Preparing
+Creating Destination Directory
+Computing total copy size
+Unpacking
+Required Setup Files
+Updating
+Start Menu Items
+Registry Entrys
+INI Files
+Setup Complete
+Setup has finished installing %s on your computer.
+Some files could not be updated because they are currently in use or locked for other reasons. Windows has to be restarted to complete the installation and update these files.
+&Run the installed application now
+&View Readme
+&Restart windows now
+License Agreement
+Please read the following License Agreement. Press the PAGE DOWN key to see the rest of the agreement.
+Do you accept all the terms of the preceding License Agreement ? If you choose No, Setup will close. To proceed with the installation, you have to accept this agreement.
+Please scroll down and read the complete license agreement.
+Readme Information
+Readme Information:
+Destination Profile Selection
+This application can be installed only for you or for all users.
+Install this application for:
+All users (common user profile)
+Only for me (this user profile)
+Select Program Folder
+Setup will add program icons to the Program Folder listed below. You may type a new folder name, or select one from the Existing Folders list. Click Next to continue.
+&Program Folders
+E&xisting Folders
+Start Copying Files
+Setup has enough information to start copying the program files. If you want to review or change any settings, click Back. If you are satisfied with the settings, click Next to begin copying files.
+Current Settings
+Target directory:
+The application will be installed
+for all users.
+only for this user.
+Start Menu Folder:
+User Information:
+Name:
+Company:
+Serial #:
+User Information
+Please enter your personal information in the field(s) below.
+N&ame
+C&ompany
+&Serial
+Welcome
+Welcome to the %s Setup Program. This Program will install %s on your computer.
+To avoid problems, please close all running Windows programs before proceeding.
+Please click Next to continue or Cancel to abort the setup program.
+Unable to create Mainwindow
+Setup failed !
+Unable to create Dialog
+Broken or corrupt setup option file.
+Setup failed !
+Broken or corrupt data file.
+Setup failed !
+Unable to create directory.
+Setup failed !
+Unable to create or write to temporary file. Disk full ?
+Setup failed !
+Setup could not be completed.
+%s is not correctly installed.
+Setup will terminate now.
+Unable to set tempfile date/time
+The entered serial number is invalid.
+This application has not been designed for this operating system.
+File damaged or not found.
+FATAL ERROR: The operating system files RICHED32.DLL and/or RICHED20.DLL are missing on your system. Please reinstall these files and try again.
+You have to be a member of the Administrators group to install this application. The Setup will terminate now.
+The file %s already exists. Do you want to overwrite it ?
+The specified directory does not exist. Do you want to create it ?
+An old application version is still installed on this computer. Do you wish to uinstall the old version before proceeding with this setup ?!
+An old application version is still installed on this computer and has to be uninstalled before this version can be installed. Do you wish to proceed and uinstall the old version now ?
+Uninstall %s
+Do you really want to remove the selected application from your computer ?
+Uninstall has been aborted. Only parts of the application could be removed.
+Custom uninstall run failed. GkSetup will stop application removal.
+Uninstall has successfully removed the selected application.
+Restart
+These files could not be removed because currently they are in use:
+Your system has to be restarted to remove these locked files.
+Do you want to restart now ?
+Removing application
+Removing File:
+System File:
+Removing INI Entries
+Removing System Registry Entries
+Removing Directory:
+Deleting Uninstall Key
+Some directories are not empty and could not be removed.
+Setup
+%s %s Setup
+&About	
+E&xit Setup
+< &Back
+&Next >
+Bro&wse
+&Yes
+&Cancel
+&Finish

@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 
     std::vector<QString> splash_frames;
     for (int i = 1; i <= 51; ++i) {
-        QString frame_path = QDir(splash_dir).filePath(QString("splash_%1.bmp").arg(i, 3, 10, QChar('0')));
+        QString frame_path = QDir(splash_dir).filePath(QString("splash_%1.png").arg(i, 3, 10, QChar('0')));
         splash_frames.push_back(frame_path);
     }
 

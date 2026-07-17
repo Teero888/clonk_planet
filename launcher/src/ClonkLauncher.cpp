@@ -216,8 +216,8 @@ private:
 
 // ClonkLauncher Class
 ClonkLauncher::ClonkLauncher() {
-    base_path = QDir(QCoreApplication::applicationDirPath()).filePath("..");
-    planet_data_path = QDir(base_path).filePath("planet_data");
+    base_path = QDir(QCoreApplication::applicationDirPath()).filePath(".");
+    planet_data_path = base_path; // QDir(base_path).filePath("planet_data");
     res_path = QDir(QCoreApplication::applicationDirPath()).filePath("res");
     res_music_path = QDir(QCoreApplication::applicationDirPath()).filePath("res_music");
     wav_path = QDir(QCoreApplication::applicationDirPath()).filePath("res_wav");
