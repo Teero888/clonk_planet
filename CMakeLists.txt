@@ -19,8 +19,8 @@ if(MSVC)
     add_compile_options(/W4 /wd4996 /wd4100 /wd4244 /wd4305 /wd4505 /wd4189)
 else()
     add_compile_options(-Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-sign-compare -Wno-unused-but-set-variable -Wno-cast-function-type -Wno-parentheses -Wno-format-overflow -Wno-dangling-else -Wno-maybe-uninitialized)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined -g")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address,undefined")
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined -g")
+    # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address,undefined")
 endif()
 
 include_directories(
