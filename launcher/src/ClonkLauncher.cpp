@@ -1012,7 +1012,7 @@ void ClonkLauncher::showProps() {
     auto sections = parseC4Text(content);
     auto pref = sections["Preferences"];
 
-    int pref_color = 0, pref_control = 0, pref_mouse = 0;
+    int pref_color = 0, pref_control = 1, pref_mouse = 1;
     try { pref_color = std::stoi(pref["Color"]); } catch(...) {}
     try { pref_control = std::stoi(pref["Control"]); } catch(...) {}
     try { pref_mouse = std::stoi(pref["Mouse"]); } catch(...) {}

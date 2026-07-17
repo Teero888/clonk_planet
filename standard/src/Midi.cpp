@@ -121,13 +121,7 @@ BOOL StopMidi() {
 BOOL PlayMidi(const char *sFileName, HWND appWnd) {
     StopMidi();
 
-    // 1. Load SoundFont (Try current dir and relative to exe)
-    const char* sf_path = "FluidR3_GM_GS.sf2";
-    g_MidiPlayer.tiny_sf = tsf_load_filename(sf_path);
-    if (!g_MidiPlayer.tiny_sf) {
-        // Try in planet_data
-        g_MidiPlayer.tiny_sf = tsf_load_filename("planet_data/FluidR3_GM_GS.sf2");
-    }
+    g_MidiPlayer.tiny_sf = tsf_load_filename("FluidR3_GM_GS.sf2");
     
     if (!g_MidiPlayer.tiny_sf) {
         fprintf(stderr, "Midi: Could not load SoundFont FluidR3_GM_GS.sf2\n");
@@ -135,7 +129,7 @@ BOOL PlayMidi(const char *sFileName, HWND appWnd) {
     }
     tsf_set_output(g_MidiPlayer.tiny_sf, TSF_STEREO_INTERLEAVED, 44100, 0);
 
-    // 2. Load MIDI
+    // Load MIDI
     g_MidiPlayer.tiny_midi = tml_load_filename(sFileName);
     if (!g_MidiPlayer.tiny_midi) {
         fprintf(stderr, "Midi: Could not load MIDI %s\n", sFileName);
@@ -145,7 +139,7 @@ BOOL PlayMidi(const char *sFileName, HWND appWnd) {
     g_MidiPlayer.current_msg = g_MidiPlayer.tiny_midi;
     g_MidiPlayer.time_msec = 0;
 
-    // 3. Initialize Audio Device
+    // Initialize Audio Device
     ma_device_config deviceConfig = ma_device_config_init(ma_device_type_playback);
     deviceConfig.playback.format   = ma_format_f32;
     deviceConfig.playback.channels = 2;

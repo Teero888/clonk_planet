@@ -109,10 +109,9 @@ BOOL CStdFont::Init(HDC hdc, const char *szFontname, int iSize)
     FT_Face face;
     bool found = false;
 
-    // If Comic Sans is requested, try local bundled font first
+    // If Comic Sans is requested, try local bundled font
     if (SEqualNoCase(szFontname, "Comic Sans MS")) {
-        if (!FT_New_Face(ft, "planet_data/Comic.ttf", 0, &face)) found = true;
-        else if (!FT_New_Face(ft, "Comic.ttf", 0, &face)) found = true;
+        if (!FT_New_Face(ft, "./Comic.ttf", 0, &face)) found = true;
     }
 
     if (!found) {
