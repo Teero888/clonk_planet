@@ -1139,6 +1139,8 @@ BOOL C4Group::Move(const char *szFiles) {
 }
 
 BOOL C4Group::AddEntryOnDisk(const char *szFilename, const char *szAddAs, BOOL fMove) {
+  // Temp filename
+  char szTempFilename[_MAX_PATH + 1];
 
   // Do not process yourself
   if (ItemIdentical(szFilename, FileName))
@@ -1150,7 +1152,6 @@ BOOL C4Group::AddEntryOnDisk(const char *szFilename, const char *szAddAs, BOOL f
     if (SIsModule(C4Group_Ignore, GetFilename(szFilename)))
       return TRUE;
     // Temp filename
-    char szTempFilename[_MAX_PATH + 1];
     if (C4Group_TempPath[0]) {
       SCopy(C4Group_TempPath, szTempFilename);
       SAppend(GetFilename(szFilename), szTempFilename);
