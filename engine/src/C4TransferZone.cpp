@@ -79,7 +79,8 @@ BOOL C4TransferZones::Add(int iX, int iY, int iWdt, int iHgt, C4Object *pObj) {
 
 void C4TransferZones::Synchronize() {
   Clear();
-  Game.Objects.UpdateTransferZones();
+  if (Game.FrameCounter > 0)
+    Game.Objects.UpdateTransferZones();
 }
 
 C4TransferZone *C4TransferZones::Find(int iX, int iY) {

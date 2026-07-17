@@ -1415,16 +1415,38 @@ BOOL C4Group::OpenAsChild(C4Group *pMother, const char *szEntryName, BOOL fExclu
   // a nested group, open the first mother, then open the child
   // in exclusive mode
 
-  if (SCharCount('\\', szEntryName)) {
+  int iBSPos = SCharPos('\\', szEntryName);
+  int iSPos = SCharPos('/', szEntryName);
+  int iSlashPos = -1;
+  char cSlash = 0;
+  if (iBSPos >= 0 && iSPos >= 0) {
+    if (iBSPos < iSPos) {
+      iSlashPos = iBSPos;
+      cSlash = '\\';
+    } else {
+      iSlashPos = iSPos;
+      cSlash = '/';
+    }
+  } else if (iBSPos >= 0) {
+    iSlashPos = iBSPos;
+    cSlash = '\\';
+  } else if (iSPos >= 0) {
+    iSlashPos = iSPos;
+    cSlash = '/';
+  }
+
+  if (iSlashPos >= 0) {
     char mothername[_MAX_FNAME + 1];
-    SCopyUntil(szEntryName, mothername, '\\', _MAX_FNAME);
+    SCopyUntil(szEntryName, mothername, cSlash, _MAX_FNAME);
 
     C4Group *pMother2;
     if (!(pMother2 = new C4Group))
       return Error("OpenAsChild: mem");
     pMother2->SetStdOutput(StdOutput);
-    if (!pMother2->OpenAsChild(pMother, mothername, TRUE))
+    if (!pMother2->OpenAsChild(pMother, mothername, TRUE)) {
+      delete pMother2;
       return Error("OpenAsChild: Cannot open mother");
+    }
     return OpenAsChild(pMother2, szEntryName + SLen(mothername) + 1, TRUE);
   }
 

@@ -357,11 +357,6 @@ BOOL CSurface::Save(const char *szFilename) {
 }
 
 BOOL CSurface::AttachPalette() {
-  // Overrides primary palette
-  if (!lpDDraw->SetPrimaryPalette(Palette))
-    return FALSE;
-  if (!lpDDraw->AttachPrimaryPalette(Surface))
-    return FALSE;
   return TRUE;
 }
 
@@ -430,6 +425,13 @@ BOOL CSurface::SetPalette(int iColor, int iRed, int iGreen, int iBlue) {
 double ColorDistance(BYTE *bpRGB1, BYTE *bpRGB2) { return (double)(Abs(bpRGB1[0] - bpRGB2[0]) + Abs(bpRGB1[1] - bpRGB2[1]) + Abs(bpRGB1[2] - bpRGB2[2])) / 6.0; }
 
 void CSurface::SetPalette(BYTE *bpPalette, BOOL fAdapt) {
+  printf("DEBUG SetPalette: this=%p, bpPalette=%p\n", this, bpPalette);
+  printf("DEBUG SetPalette BEFORE: bpPalette color 104=(%d,%d,%d), 120=(%d,%d,%d)\n",
+         bpPalette[104*3+0], bpPalette[104*3+1], bpPalette[104*3+2],
+         bpPalette[120*3+0], bpPalette[120*3+1], bpPalette[120*3+2]);
+  printf("DEBUG SetPalette BEFORE: Palette color 104=(%d,%d,%d), 120=(%d,%d,%d)\n",
+         Palette[104*3+0], Palette[104*3+1], Palette[104*3+2],
+         Palette[120*3+0], Palette[120*3+1], Palette[120*3+2]);
 
   // Adapt bitmap
   if (fAdapt) {
@@ -450,6 +452,12 @@ void CSurface::SetPalette(BYTE *bpPalette, BOOL fAdapt) {
 
   // Set palette
   MemCopy(bpPalette, Palette, 256 * 3);
+  printf("DEBUG SetPalette AFTER: bpPalette color 104=(%d,%d,%d), 120=(%d,%d,%d)\n",
+         bpPalette[104*3+0], bpPalette[104*3+1], bpPalette[104*3+2],
+         bpPalette[120*3+0], bpPalette[120*3+1], bpPalette[120*3+2]);
+  printf("DEBUG SetPalette AFTER: Palette color 104=(%d,%d,%d), 120=(%d,%d,%d)\n",
+         Palette[104*3+0], Palette[104*3+1], Palette[104*3+2],
+         Palette[120*3+0], Palette[120*3+1], Palette[120*3+2]);
 }
 
 void CSurface::MapBytes(BYTE *bpMap) {

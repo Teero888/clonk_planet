@@ -263,17 +263,48 @@ static void glfw_mouse_button_callback(GLFWwindow *window, int button, int actio
   if (mods & GLFW_MOD_SHIFT)
     flags |= MK_SHIFT;
 
+  static double last_click_time = 0.0;
+  static int last_button = -1;
+  static double last_x = -1.0;
+  static double last_y = -1.0;
+
   int c4button = C4MC_Button_None;
   if (button == GLFW_MOUSE_BUTTON_LEFT) {
-    if (action == GLFW_PRESS)
-      c4button = C4MC_Button_LeftDown;
-    else if (action == GLFW_RELEASE)
+    if (action == GLFW_PRESS) {
+      double current_time = glfwGetTime();
+      double dx = xpos - last_x;
+      double dy = ypos - last_y;
+      if (last_button == button && (current_time - last_click_time < 0.3) &&
+          (dx < 5.0 && dx > -5.0) && (dy < 5.0 && dy > -5.0)) {
+        c4button = C4MC_Button_LeftDouble;
+      } else {
+        c4button = C4MC_Button_LeftDown;
+      }
+      last_click_time = current_time;
+      last_button = button;
+      last_x = xpos;
+      last_y = ypos;
+    } else if (action == GLFW_RELEASE) {
       c4button = C4MC_Button_LeftUp;
+    }
   } else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
-    if (action == GLFW_PRESS)
-      c4button = C4MC_Button_RightDown;
-    else if (action == GLFW_RELEASE)
+    if (action == GLFW_PRESS) {
+      double current_time = glfwGetTime();
+      double dx = xpos - last_x;
+      double dy = ypos - last_y;
+      if (last_button == button && (current_time - last_click_time < 0.3) &&
+          (dx < 5.0 && dx > -5.0) && (dy < 5.0 && dy > -5.0)) {
+        c4button = C4MC_Button_RightDouble;
+      } else {
+        c4button = C4MC_Button_RightDown;
+      }
+      last_click_time = current_time;
+      last_button = button;
+      last_x = xpos;
+      last_y = ypos;
+    } else if (action == GLFW_RELEASE) {
       c4button = C4MC_Button_RightUp;
+    }
   }
 
   if (c4button != C4MC_Button_None) {
