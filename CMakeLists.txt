@@ -69,7 +69,7 @@ set(EXTRA_LIBS "")
 if(UNIX)
     list(APPEND EXTRA_LIBS m)
 elseif(WIN32)
-    list(APPEND EXTRA_LIBS ws2_32 dinput dxguid winmm)
+    list(APPEND EXTRA_LIBS ws2_32 dxguid winmm)
 endif()
 
 add_executable(clonk ${SRC_FILES})

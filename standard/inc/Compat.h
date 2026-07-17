@@ -403,7 +403,10 @@ typedef struct tagLOGFONT {
   char lfFaceName[32];
 } LOGFONT;
 inline HFONT CreateFontIndirect(const LOGFONT *lplf) { return 0; }
-inline int LoadString(HINSTANCE hInstance, UINT uID, LPSTR lpBuffer, int nBufferMax) { return 0; }
+int LoadStringFallback(HINSTANCE hInstance, UINT uID, LPSTR lpBuffer, int nBufferMax);
+inline int LoadString(HINSTANCE hInstance, UINT uID, LPSTR lpBuffer, int nBufferMax) {
+  return LoadStringFallback(hInstance, uID, lpBuffer, nBufferMax);
+}
 
 // Dummy function to match some windows calls
 #define GetUserDefaultLangID() 0x0409

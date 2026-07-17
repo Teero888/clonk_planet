@@ -32,14 +32,34 @@ int g_iSensitivity = 0;
 LPDIRECTINPUT g_pdi = NULL;
 LPDIRECTINPUTDEVICE g_pMouse = NULL;
 HANDLE g_hevtMouse = NULL;
+static HMODULE g_hDInput = NULL;
 
 void DirectInputSyncAcquire(BOOL fActive);
 
+typedef HRESULT (WINAPI *LPDITECTINPUTCREATE)(HINSTANCE, DWORD, LPDIRECTINPUT*, IUnknown*);
+
 BOOL InitDirectInput(HINSTANCE g_hinst, HWND hwnd, int resx, int resy) {
   HRESULT hr;
-  hr = DirectInputCreate(g_hinst, DIRECTINPUT_VERSION, &g_pdi, NULL);
+
+  g_hDInput = LoadLibraryA("dinput.dll");
+  if (!g_hDInput) {
+    Log("LoadLibrary(dinput.dll) failure");
+    return FALSE;
+  }
+
+  LPDITECTINPUTCREATE pDirectInputCreate = (LPDITECTINPUTCREATE)GetProcAddress(g_hDInput, "DirectInputCreateA");
+  if (!pDirectInputCreate) {
+    Log("GetProcAddress(DirectInputCreateA) failure");
+    FreeLibrary(g_hDInput);
+    g_hDInput = NULL;
+    return FALSE;
+  }
+
+  hr = pDirectInputCreate(g_hinst, DIRECTINPUT_VERSION, &g_pdi, NULL);
   if (FAILED(hr)) {
     Log("DirectInputCreate failure");
+    FreeLibrary(g_hDInput);
+    g_hDInput = NULL;
     return FALSE;
   }
 
@@ -105,6 +125,8 @@ void DeInitDirectInput() {
     g_pMouse->Release(), g_pMouse = NULL;
   if (g_hevtMouse)
     CloseHandle(g_hevtMouse), g_hevtMouse = NULL;
+  if (g_hDInput)
+    FreeLibrary(g_hDInput), g_hDInput = NULL;
 }
 
 void ClipMouse2Range() {
