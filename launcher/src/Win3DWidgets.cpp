@@ -413,7 +413,7 @@ void Win3DTabWidget::paintEvent(QPaintEvent *event) {
 // ClonkArea
 ClonkArea::ClonkArea(QWidget *parent, const std::string &bg, const std::vector<std::string> &borders)
     : QFrame(parent), bg_color(bg) {
-    border_colors = borders.empty() ? std::vector<std::string>{"#a6a6a6", "#6a6a6a", "#e3e3e3", "#ffffff"} : borders;
+    border_colors = borders.empty() ? std::vector<std::string>{"#aca899", "#716f64", "#f1efe2", "#ffffff"} : borders;
 }
 
 void ClonkArea::paintEvent(QPaintEvent *event) {
@@ -453,22 +453,28 @@ void ClonkTextArea::paintEvent(QPaintEvent *event) {
         painter.fillRect(2, 2, w-4, h-4, QColor(bg_color.c_str()));
     }
 
-    // Sunken frame: dark Top/Left, white Bottom/Right
-    painter.setPen(QColor("#a6a6a6"));
+    painter.setPen(QColor("#aca899"));
     painter.drawLine(0, 0, w-1, 0);
     painter.drawLine(0, 0, 0, h-1);
-
-    painter.setPen(QColor("#ffffff"));
     painter.drawLine(1, 1, w-2, 1);
     painter.drawLine(1, 1, 1, h-2);
-
-    painter.setPen(QColor("#a6a6a6"));
     painter.drawLine(1, h-2, w-2, h-2);
     painter.drawLine(w-2, 1, w-2, h-2);
 
     painter.setPen(QColor("#ffffff"));
     painter.drawLine(0, h-1, w-1, h-1);
     painter.drawLine(w-1, 0, w-1, h-1);
+
+/*     if (!text_content.isEmpty()) {
+        painter.setPen(Qt::black);
+        
+        int offsetX = 3;
+        int offsetY = 4;
+
+        QRect textRect(offsetX, offsetY, w - offsetX - 2, h - offsetY - 2);
+        
+        painter.drawText(textRect, Qt::AlignLeft | Qt::AlignTop, text_content);
+    } */
 }
 
 // ClonkButton
@@ -510,18 +516,24 @@ void ClonkButton::paintEvent(QPaintEvent *event) {
 
     if (isDown()) {
         // Sunken
-        painter.setPen(QColor("#6a6a6a"));
+        painter.setPen(QColor("#aca899"));
         painter.drawLine(0, 0, w-1, 0);
         painter.drawLine(0, 0, 0, h-1);
-        painter.setPen(QColor("#a6a6a6"));
+
+        painter.setPen(QColor("#716f64"));
         painter.drawLine(1, 1, w-2, 1);
         painter.drawLine(1, 1, 1, h-2);
+
+        painter.setPen(QColor("#f1efe2"));
+        painter.drawLine(1, h-2, w-2, h-2);
+        painter.drawLine(w-2, 1, w-2, h-2);
+
         painter.setPen(QColor("#ffffff"));
         painter.drawLine(0, h-1, w-1, h-1);
         painter.drawLine(w-1, 0, w-1, h-1);
     } else {
         // Raised
-        painter.setPen(QColor("#ffffff"));
+        painter.setPen(QColor("#f1efe2"));
         painter.drawLine(0, 0, w-1, 0);
         painter.drawLine(0, 0, 0, h-1);
 
@@ -529,11 +541,11 @@ void ClonkButton::paintEvent(QPaintEvent *event) {
         painter.drawLine(1, 1, w-2, 1);
         painter.drawLine(1, 1, 1, h-2);
 
-        painter.setPen(QColor("#a6a6a6"));
+        painter.setPen(QColor("#aca899"));
         painter.drawLine(1, h-2, w-2, h-2);
         painter.drawLine(w-2, 1, w-2, h-2);
 
-        painter.setPen(QColor("#6a6a6a"));
+        painter.setPen(QColor("#716f64"));
         painter.drawLine(0, h-1, w-1, h-1);
         painter.drawLine(w-1, 0, w-1, h-1);
     }

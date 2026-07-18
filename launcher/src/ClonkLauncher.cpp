@@ -499,6 +499,8 @@ void ClonkLauncher::setup_main_ui() {
     desc->setGeometry(2, 2, 208, 167);
     desc->setReadOnly(true);
     desc->setFrameShape(QFrame::NoFrame);
+    desc->document()->setDocumentMargin(1); 
+    desc->setStyleSheet("QTextEdit { padding-top: 1px; background: transparent; }");
     QFont desc_font = desc->font();
     desc_font.setStyleStrategy(QFont::NoAntialias);
     desc_font.setHintingPreference(QFont::PreferFullHinting);
@@ -514,14 +516,14 @@ void ClonkLauncher::setup_main_ui() {
         return btn;
     };
 
-    btn_new = create_btn("New", 483, 10);
-    btn_activate = create_btn("Activate", 483, 34);
+    btn_new = create_btn("New", 482, 10);
+    btn_activate = create_btn("Activate", 482, 34);
     btn_activate->setEnabled(false);
-    btn_rename = create_btn("Rename", 483, 59);
+    btn_rename = create_btn("Rename", 482, 59);
     btn_rename->setEnabled(false);
-    btn_delete = create_btn("Delete", 483, 83);
+    btn_delete = create_btn("Delete", 482, 83);
     btn_delete->setEnabled(false);
-    btn_props = create_btn("Properties", 483, 107);
+    btn_props = create_btn("Properties", 482, 107);
     btn_props->setEnabled(false);
     connect(btn_props, &QPushButton::clicked, this, &ClonkLauncher::showProps);
     connect(btn_activate, &QPushButton::clicked, this, [this]() {
@@ -536,13 +538,11 @@ void ClonkLauncher::setup_main_ui() {
         }
     });
 
-    btn_start = create_btn("Start", 483, 310);
+    btn_start = create_btn("Start", 482, 310);
     connect(btn_start, &QPushButton::clicked, this, &ClonkLauncher::launchGame);
 
-    btn_quit = create_btn("Quit", 483, 334);
+    btn_quit = create_btn("Quit", 482, 335);
     connect(btn_quit, &QPushButton::clicked, this, &QWidget::close);
-
-
 
     author_label = new QLabel("Author: RedWolf Design", ui_container);
     author_label->setGeometry(261, 341, 212, 15);
@@ -718,7 +718,7 @@ void ClonkLauncher::refresh_resources() {
                     }
                 }
             }
-            item->setIcon(get_atlas_icon(99 + color));
+            item->setIcon(get_atlas_icon(98 + color));
         }
 
         item->setData(data_map, Qt::UserRole + 1);

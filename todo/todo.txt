@@ -23,3 +23,11 @@ launcher:
 The entire help page from the Planet.hlp file
 
 take developer screenshots of the options window
+
+
+UI issues
+    Portrait/Picture/Graphic scaling is off by 4 pixels
+    In the original screenshots the image starts inside the border and goes all the way inside the bottom right border too, thats 4 pixels more
+    In our version the image gets put inside the borders so its a bit squished
+
+

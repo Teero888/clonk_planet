@@ -93,16 +93,20 @@ class ClonkTextArea : public QFrame {
     Q_OBJECT
 public:
     explicit ClonkTextArea(QWidget *parent = nullptr, const std::string &bg_color = "");
+    void setText(const QString &text) { text_content = text; update(); }
+
 protected:
     void paintEvent(QPaintEvent *event) override;
+
 private:
     std::string bg_color;
+    QString text_content;
 };
 
 class ClonkButton : public QPushButton {
     Q_OBJECT
 public:
-    explicit ClonkButton(const QString &text, QWidget *parent = nullptr, const QString &bg_path = "", const QPoint &bg_offset = QPoint(0, 0), const QSize &size = QSize(85, 19));
+    explicit ClonkButton(const QString &text, QWidget *parent = nullptr, const QString &bg_path = "", const QPoint &bg_offset = QPoint(0, 0), const QSize &size = QSize(86, 20));
     static QSoundEffect *click_sound;
     static QString font_family;
 protected:
