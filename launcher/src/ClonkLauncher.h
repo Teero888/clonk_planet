@@ -25,12 +25,15 @@ public:
     ClonkLauncher();
     ~ClonkLauncher() override;
 
+    void selectFirstItemAndExpand();
+
     std::string get_cfg(const std::string &sub_key, const std::string &defaultValue) const;
     void set_cfg(const std::string &sub_key, const std::string &value);
 
     QString getDumpPath() const { return dump_path; }
     QString getResPath() const { return res_path; }
     QString getComicFontFamily() const { return comic_font_family; }
+    QString getSerifFontFamily() const { return serif_font_family; }
     std::string getLanguage() const { return language; }
     void setLanguage(const std::string &lang) { language = lang; }
     void saveConfig();
@@ -67,6 +70,7 @@ private:
 
     std::string language = "US";
     QString comic_font_family = "Comic Sans MS";
+    QString serif_font_family = "wewa";
 
     ConfigManager config;
 

@@ -194,8 +194,11 @@ public:
 
       check_quick = new QCheckBox("Don't display this screen in the future.", this);
       check_quick->setGeometry(144, 372, 240, 15);
+      check_quick->setStyleSheet("color: black;");
       QString comic_family = CD::GetComicFontFamily(parent);
-      check_quick->setStyleSheet(QString("color: black; font-family: %1; font-size: 12px;").arg(comic_family));
+      QFont check_font(comic_family, 12);
+      check_font.setStyleStrategy(QFont::NoAntialias);
+      check_quick->setFont(check_font);
       // set_cfg("Explorer\\ShowQuickStart", 1 if self.check_quick.isChecked() else 0)
 
       connect(check_quick, &QCheckBox::clicked, this, [cb_player0, cb_player1](bool checked) {

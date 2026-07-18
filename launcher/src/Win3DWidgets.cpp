@@ -50,16 +50,20 @@ Win3DButton::Win3DButton(QWidget *parent, const std::vector<std::string> &raised
     raised_colors = raised.empty() ? std::vector<std::string>{"#ffffff", "#e3e3e3", "#a6a6a6", "#6a6a6a"} : raised;
     sunken_colors = sunken.empty() ? std::vector<std::string>{"#6a6a6a", "#a6a6a6", "#e3e3e3", "#ffffff"} : sunken;
     setFocusPolicy(Qt::NoFocus);
-    setFont(QFont(font_family, 9));
+    QFont btn_font = QApplication::font();
+    btn_font.setStyleStrategy(QFont::NoAntialias);
+    setFont(btn_font);
     connect(this, &QPushButton::clicked, this, &Win3DButton::playClick);
 }
 
 Win3DButton::Win3DButton(const QString &text, QWidget *parent)
-    : QPushButton(text, parent), bg_color("#f5f5f5") {
+    : QPushButton(text, parent), bg_color("#ece9d8") {
     raised_colors = {"#ffffff", "#e3e3e3", "#a6a6a6", "#6a6a6a"};
     sunken_colors = {"#6a6a6a", "#a6a6a6", "#e3e3e3", "#ffffff"};
     setFocusPolicy(Qt::NoFocus);
-    setFont(QFont(font_family, 9));
+    QFont btn_font = QApplication::font();
+    btn_font.setStyleStrategy(QFont::NoAntialias);
+    setFont(btn_font);
     // connect(this, &QPushButton::clicked, this, &Win3DButton::playClick); // these dont have sounds
 }
 
@@ -134,6 +138,11 @@ Win3DGroupBox::Win3DGroupBox(const QString &title, QWidget *parent, const std::v
 
 void Win3DGroupBox::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
+    painter.setRenderHint(QPainter::TextAntialiasing, false);
+    QFont font = painter.font();
+    font.setStyleStrategy(QFont::NoAntialias);
+    font.setHintingPreference(QFont::PreferFullHinting);
+    painter.setFont(font);
     QFontMetrics fm = painter.fontMetrics();
 #if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
     int text_w = fm.horizontalAdvance(m_title);
@@ -260,7 +269,12 @@ void Win3DTabWidget::mousePressEvent(QMouseEvent *event) {
 
 void Win3DTabWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
-    painter.fillRect(rect(), QColor("#f5f5f5"));
+    painter.setRenderHint(QPainter::TextAntialiasing, false);
+    QFont font = painter.font();
+    font.setStyleStrategy(QFont::NoAntialias);
+    font.setHintingPreference(QFont::PreferFullHinting);
+    painter.setFont(font);
+    painter.fillRect(rect(), QColor("#ece9d8"));
 
     if (tabs.empty()) return;
 
@@ -301,7 +315,7 @@ void Win3DTabWidget::paintEvent(QPaintEvent *event) {
         int draw_w = is_active ? (current_w + 4) : current_w;
         int draw_h = is_active ? ((frame_y + 2) - draw_y) : tab_h;
 
-        painter.fillRect(draw_x, draw_y, draw_w, draw_h, QColor("#f5f5f5"));
+        painter.fillRect(draw_x, draw_y, draw_w, draw_h, QColor("#ece9d8"));
 
         // White Top/Left
         painter.setPen(QColor(colors[0].c_str()));
@@ -324,7 +338,7 @@ void Win3DTabWidget::paintEvent(QPaintEvent *event) {
         painter.drawPoint(draw_x + draw_w - 2, draw_y + 1);
 
         if (is_active) {
-            painter.setPen(QColor("#f5f5f5"));
+            painter.setPen(QColor("#ece9d8"));
             if (col == 0) {
                 painter.drawLine(draw_x + draw_w - 1, draw_y + draw_h - 1, draw_x + draw_w - 2, draw_y + draw_h - 1);
             } else if (col == 1) {
@@ -465,7 +479,9 @@ ClonkButton::ClonkButton(const QString &text, QWidget *parent, const QString &bg
     }
     setFixedSize(size);
     setFocusPolicy(Qt::NoFocus);
-    setFont(QFont(font_family, 9));
+    QFont btn_font(font_family, 9);
+    btn_font.setStyleStrategy(QFont::NoAntialias);
+    setFont(btn_font);
     connect(this, &QPushButton::pressed, this, &ClonkButton::playClick);
 }
 
@@ -475,6 +491,7 @@ void ClonkButton::playClick() {
 
 void ClonkButton::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
+    painter.setRenderHint(QPainter::TextAntialiasing, false);
     QRect rect = this->rect();
     int w = rect.width(), h = rect.height();
 
@@ -484,8 +501,12 @@ void ClonkButton::paintEvent(QPaintEvent *event) {
         painter.fillRect(rect, QColor("#c0c0c0"));
     }
 
-    painter.setFont(this->font());
+    QFont btn_font = this->font();
+    btn_font.setStyleStrategy(QFont::NoAntialias);
+    btn_font.setHintingPreference(QFont::PreferFullHinting);
+    painter.setFont(btn_font);
     QRect t_rect = isDown() ? rect.adjusted(1, 1, 1, 1) : rect;
+    t_rect.translate(0, -1);
 
     if (isDown()) {
         // Sunken
@@ -500,7 +521,7 @@ void ClonkButton::paintEvent(QPaintEvent *event) {
         painter.drawLine(w-1, 0, w-1, h-1);
     } else {
         // Raised
-        painter.setPen(QColor("#e3e3e3"));
+        painter.setPen(QColor("#ffffff"));
         painter.drawLine(0, 0, w-1, 0);
         painter.drawLine(0, 0, 0, h-1);
 
@@ -518,10 +539,17 @@ void ClonkButton::paintEvent(QPaintEvent *event) {
     }
 
     // Shadowed text
-    painter.setPen(Qt::white);
-    painter.drawText(t_rect.adjusted(1, 1, 1, 1), Qt::AlignCenter, text());
-    painter.setPen(Qt::black);
-    painter.drawText(t_rect, Qt::AlignCenter, text());
+    if (!isEnabled()) {
+        painter.setPen(Qt::white);
+        painter.drawText(t_rect.adjusted(1, 1, 1, 1), Qt::AlignCenter, text());
+        painter.setPen(QColor("#a6a6a6"));
+        painter.drawText(t_rect, Qt::AlignCenter, text());
+    } else {
+        painter.setPen(Qt::white);
+        painter.drawText(t_rect.adjusted(1, 1, 1, 1), Qt::AlignCenter, text());
+        painter.setPen(Qt::black);
+        painter.drawText(t_rect, Qt::AlignCenter, text());
+    }
 }
 
 // ClonkAtlasWidget

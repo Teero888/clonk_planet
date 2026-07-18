@@ -18,7 +18,7 @@
 class Win3DFrame : public QFrame {
     Q_OBJECT
 public:
-    explicit Win3DFrame(QWidget *parent = nullptr, const std::vector<std::string> &colors = {}, const std::string &bg_color = "#f5f5f5");
+    explicit Win3DFrame(QWidget *parent = nullptr, const std::vector<std::string> &colors = {}, const std::string &bg_color = "#ece9d8");
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:
@@ -29,7 +29,7 @@ private:
 class Win3DButton : public QPushButton {
     Q_OBJECT
 public:
-    explicit Win3DButton(QWidget *parent = nullptr, const std::vector<std::string> &raised = {}, const std::vector<std::string> &sunken = {}, const std::string &bg = "#f5f5f5", const std::string &arrow = "");
+    explicit Win3DButton(QWidget *parent = nullptr, const std::vector<std::string> &raised = {}, const std::vector<std::string> &sunken = {}, const std::string &bg = "#ece9d8", const std::string &arrow = "");
     Win3DButton(const QString &text, QWidget *parent = nullptr);
     static QSoundEffect *click_sound;
     static QString font_family;
@@ -102,7 +102,7 @@ private:
 class ClonkButton : public QPushButton {
     Q_OBJECT
 public:
-    explicit ClonkButton(const QString &text, QWidget *parent = nullptr, const QString &bg_path = "", const QPoint &bg_offset = QPoint(0, 0), const QSize &size = QSize(86, 20));
+    explicit ClonkButton(const QString &text, QWidget *parent = nullptr, const QString &bg_path = "", const QPoint &bg_offset = QPoint(0, 0), const QSize &size = QSize(85, 19));
     static QSoundEffect *click_sound;
     static QString font_family;
 protected:

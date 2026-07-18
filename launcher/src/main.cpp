@@ -3,18 +3,85 @@
 #include "ClonkLauncher.h"
 #include "SplashWindow.h"
 #include "TutorialWindow.h"
+#include "OptionsDialog.h"
 #include <QDir>
 #include <QUrl>
 #include <QLoggingCategory>
 #include <QTimer>
-#include <vector>
+#include <QFont>
+#include <QFontDatabase>
+#include <QFile>
+#include <QCoreApplication>
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     QApplication::setStyle("Fusion");
+
+    // Load custom Comic Sans MS fonts first so they are available in the font database
+    QString app_dir = QCoreApplication::applicationDirPath();
+    QString font_path = QDir(app_dir).filePath("Comic.ttf");
+    QString bold_font_path = QDir(app_dir).filePath("Comicbd.ttf");
+    
+    QString font_family = "Comic Sans MS";
+    if (QFile::exists(font_path)) {
+        int font_id = QFontDatabase::addApplicationFont(font_path);
+        if (font_id != -1) {
+            font_family = QFontDatabase::applicationFontFamilies(font_id).at(0);
+        }
+    }
+    if (QFile::exists(bold_font_path)) {
+        QFontDatabase::addApplicationFont(bold_font_path);
+    }
+
+    QFont app_font(font_family);
+    app_font.setStyleStrategy(QFont::NoAntialias);
+    app_font.setHintingPreference(QFont::PreferFullHinting);
+    app_font.setPixelSize(11);
+    QApplication::setFont(app_font);
+
     QLoggingCategory::setFilterRules("qt.multimedia.*=false\nqt.multimedia.audio*=false");
 
     ClonkLauncher *launcher = new ClonkLauncher();
+
+    // Check for screenshot arguments
+    bool take_screenshot_main = false;
+    QString screenshot_main_path;
+    bool take_screenshot_options = false;
+    QString screenshot_options_path;
+
+    for (int i = 1; i < argc; ++i) {
+        if (QString(argv[i]) == "--screenshot-main" && i + 1 < argc) {
+            take_screenshot_main = true;
+            screenshot_main_path = argv[i+1];
+        } else if (QString(argv[i]) == "--screenshot-options" && i + 1 < argc) {
+            take_screenshot_options = true;
+            screenshot_options_path = argv[i+1];
+        }
+    }
+
+    if (take_screenshot_main) {
+        launcher->show();
+        QTimer::singleShot(200, [launcher]() {
+            launcher->selectFirstItemAndExpand();
+        });
+        QTimer::singleShot(1000, [launcher, screenshot_main_path]() {
+            QPixmap pix = launcher->centralWidget()->grab();
+            pix.save(screenshot_main_path);
+            QCoreApplication::quit();
+        });
+        return app.exec();
+    }
+
+    if (take_screenshot_options) {
+        OptionsDialog *dlg = new OptionsDialog(launcher);
+        dlg->show();
+        QTimer::singleShot(1000, [dlg, screenshot_options_path]() {
+            QPixmap pix = dlg->grab();
+            pix.save(screenshot_options_path);
+            QCoreApplication::quit();
+        });
+        return app.exec();
+    }
 
     // Setup Splash Window
     QString base_path = QDir(QCoreApplication::applicationDirPath()).filePath("..");

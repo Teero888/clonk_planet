@@ -38,9 +38,12 @@ ClonkPopupDialog::ClonkPopupDialog(QWidget *parent, const QString &text, const Q
     label->setWordWrap(true);
     label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
+    label->setStyleSheet("background: transparent; color: black;");
+
     QString comic_family = CD::GetComicFontFamily(parent);
-    QString font_family = QString("'%1', 'Chilanka', 'cursive'").arg(comic_family);
-    label->setStyleSheet(QString("background: transparent; color: black; font-family: %1; font-size: 12px;").arg(font_family));
+    QFont label_font(comic_family, 12);
+    label_font.setStyleStrategy(QFont::NoAntialias);
+    label->setFont(label_font);
 }
 
 // ClonkPlayerPropertiesDialog
@@ -88,40 +91,42 @@ ClonkPlayerPropertiesDialog::ClonkPlayerPropertiesDialog(QWidget *parent, const 
     std::vector<std::string> raised_colors = {"#e3e3e3", "#ffffff", "#a6a6a6", "#6a6a6a"};
     std::vector<std::string> sunken_colors = {"#6a6a6a", "#a6a6a6", "#e3e3e3", "#ffffff"};
 
-    btn_color_left = new Win3DButton(bg, raised_colors, sunken_colors, "#f5f5f5", "left");
+    btn_color_left = new Win3DButton(bg, raised_colors, sunken_colors, "#ece9d8", "left");
     btn_color_left->setGeometry(27, 109, 49, 15);
     connect(btn_color_left, &QPushButton::clicked, this, &ClonkPlayerPropertiesDialog::onColorLeft);
 
-    btn_color_right = new Win3DButton(bg, raised_colors, sunken_colors, "#f5f5f5", "right");
+    btn_color_right = new Win3DButton(bg, raised_colors, sunken_colors, "#ece9d8", "right");
     btn_color_right->setGeometry(77, 109, 49, 15);
     connect(btn_color_right, &QPushButton::clicked, this, &ClonkPlayerPropertiesDialog::onColorRight);
 
-    btn_keyboard_left = new Win3DButton(bg, raised_colors, sunken_colors, "#f5f5f5", "left");
+    btn_keyboard_left = new Win3DButton(bg, raised_colors, sunken_colors, "#ece9d8", "left");
     btn_keyboard_left->setGeometry(165, 109, 49, 15);
     connect(btn_keyboard_left, &QPushButton::clicked, this, &ClonkPlayerPropertiesDialog::onControlLeft);
 
-    btn_keyboard_right = new Win3DButton(bg, raised_colors, sunken_colors, "#f5f5f5", "right");
+    btn_keyboard_right = new Win3DButton(bg, raised_colors, sunken_colors, "#ece9d8", "right");
     btn_keyboard_right->setGeometry(215, 109, 49, 15);
     connect(btn_keyboard_right, &QPushButton::clicked, this, &ClonkPlayerPropertiesDialog::onControlRight);
 
-    btn_mouse_toggle = new Win3DButton(bg, {}, {}, "#f5f5f5", "");
+    btn_mouse_toggle = new Win3DButton(bg, {}, {}, "#ece9d8", "");
     btn_mouse_toggle->setGeometry(266, 109, 45, 15);
     connect(btn_mouse_toggle, &QPushButton::clicked, this, &ClonkPlayerPropertiesDialog::onMouseToggle);
     connect(mouse_atlas, &ClonkAtlasWidget::clicked, this, &ClonkPlayerPropertiesDialog::onMouseToggle);
 
     QString comic_family = CD::GetComicFontFamily(parent);
-    QString font_family = QString("'%1', 'Chilanka', 'cursive'").arg(comic_family);
-    QString label_style = QString("background: transparent; color: black; font-family: %1; font-size: 12px;").arg(font_family);
+    QFont label_font(comic_family, 12);
+    label_font.setStyleStrategy(QFont::NoAntialias);
 
     lbl_color = new QLabel("Color", bg);
     lbl_color->setGeometry(27, 7, 99, 18);
     lbl_color->setAlignment(Qt::AlignCenter);
-    lbl_color->setStyleSheet(label_style);
+    lbl_color->setStyleSheet("background: transparent; color: black;");
+    lbl_color->setFont(label_font);
 
     lbl_controls = new QLabel("Control", bg);
     lbl_controls->setGeometry(143, 7, 188, 18);
     lbl_controls->setAlignment(Qt::AlignCenter);
-    lbl_controls->setStyleSheet(label_style);
+    lbl_controls->setStyleSheet("background: transparent; color: black;");
+    lbl_controls->setFont(label_font);
 }
 
 void ClonkPlayerPropertiesDialog::loadSettings(int color, int control, int mouse) {

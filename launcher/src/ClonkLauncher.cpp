@@ -103,6 +103,7 @@ public:
         initStyleOption(&opt, index);
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing, false);
+        painter->setRenderHint(QPainter::TextAntialiasing, false);
 
         const QWidget *widget = opt.widget;
         QStyle *style = widget ? widget->style() : QApplication::style();
@@ -121,8 +122,11 @@ public:
         }
 
         QString text = index.data(Qt::DisplayRole).toString();
-        painter->setFont(opt.font);
-        QFontMetrics fm = opt.fontMetrics;
+        QFont font = opt.font;
+        font.setStyleStrategy(QFont::NoAntialias);
+        font.setHintingPreference(QFont::PreferFullHinting);
+        painter->setFont(font);
+        QFontMetrics fm(font);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
         int text_w = fm.horizontalAdvance(text);
 #else
@@ -241,11 +245,23 @@ ClonkLauncher::ClonkLauncher() {
 
     // Custom Font loading
     QString font_path = QDir(planet_data_path).filePath("Comic.ttf");
+    QString bold_font_path = QDir(planet_data_path).filePath("Comicbd.ttf");
     comic_font_family = "Comic Sans MS";
     if (QFile::exists(font_path)) {
         int font_id = QFontDatabase::addApplicationFont(font_path);
         if (font_id != -1) {
             comic_font_family = QFontDatabase::applicationFontFamilies(font_id).at(0);
+        }
+    }
+    if (QFile::exists(bold_font_path)) {
+        QFontDatabase::addApplicationFont(bold_font_path);
+    }
+
+    QString serif_path = QDir(planet_data_path).filePath("micross.ttf");
+    if (QFile::exists(serif_path)) {
+        int font_id = QFontDatabase::addApplicationFont(serif_path);
+        if (font_id != -1) {
+            serif_font_family = QFontDatabase::applicationFontFamilies(font_id).at(0);
         }
     }
 
@@ -407,14 +423,23 @@ void ClonkLauncher::init_menu() {
 }
 
 void ClonkLauncher::setup_main_ui() {
-    QString font_style = QString("'%1', 'Chilanka', 'cursive'").arg(comic_font_family);
-    ui_container->setStyleSheet(QString("* { font-family: %1; font-size: 11px; color: black; }").arg(font_style));
+    ui_container->setStyleSheet(
+        "* { color: black; }"
+        "ClonkButton {"
+        "    font-family: '" + comic_font_family + "';"
+        "    font-size: 12px;"
+        "}"
+    );
 
     tree_frame = new ClonkArea(ui_container, "white");
     tree_frame->setGeometry(9, 10, 243, 346);
 
     tree = new QTreeView(tree_frame);
     tree->setGeometry(2, 2, 239, 342);
+    QFont tree_font = QApplication::font();
+    tree_font.setStyleStrategy(QFont::NoAntialias);
+    tree_font.setHintingPreference(QFont::PreferFullHinting);
+    tree->setFont(tree_font);
     tree->setHeaderHidden(true);
     tree->setFrameShape(QFrame::NoFrame);
 
@@ -422,6 +447,19 @@ void ClonkLauncher::setup_main_ui() {
     tree->setModel(tree_model);
     tree->setItemDelegate(new PixelDelegate(tree, check_on_pix, check_off_pix, check_locked_on_pix, check_locked_off_pix));
     connect(tree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ClonkLauncher::onTreeSelection);
+    connect(tree_model, &QStandardItemModel::itemChanged, this, [this](QStandardItem *item) {
+        QModelIndexList indexes = tree->selectionModel()->selectedIndexes();
+        if (!indexes.isEmpty() && tree_model->itemFromIndex(indexes.at(0)) == item) {
+            QVariantMap item_data = item->data(Qt::UserRole + 1).toMap();
+            if (item_data.value("type").toString() == "clonk") {
+                if (item->checkState() == Qt::Checked) {
+                    btn_activate->setText("Deactivate");
+                } else {
+                    btn_activate->setText("Activate");
+                }
+            }
+        }
+    });
 
     tree->setRootIsDecorated(false);
     tree->setIndentation(20);
@@ -461,6 +499,10 @@ void ClonkLauncher::setup_main_ui() {
     desc->setGeometry(2, 2, 208, 167);
     desc->setReadOnly(true);
     desc->setFrameShape(QFrame::NoFrame);
+    QFont desc_font = desc->font();
+    desc_font.setStyleStrategy(QFont::NoAntialias);
+    desc_font.setHintingPreference(QFont::PreferFullHinting);
+    desc->setFont(desc_font);
     desc->setText("Select a scenario or player to begin.");
 
     QString btn_bg = QDir(dump_path).filePath("Planet_fixed.bin_2_1006_1031.bmp");
@@ -472,17 +514,32 @@ void ClonkLauncher::setup_main_ui() {
         return btn;
     };
 
-    btn_new = create_btn("New", 482, 10);
-    btn_activate = create_btn("Activate", 482, 34);
-    btn_rename = create_btn("Rename", 482, 59);
-    btn_delete = create_btn("Delete", 482, 83);
-    btn_props = create_btn("Properties", 482, 107);
+    btn_new = create_btn("New", 483, 10);
+    btn_activate = create_btn("Activate", 483, 34);
+    btn_activate->setEnabled(false);
+    btn_rename = create_btn("Rename", 483, 59);
+    btn_rename->setEnabled(false);
+    btn_delete = create_btn("Delete", 483, 83);
+    btn_delete->setEnabled(false);
+    btn_props = create_btn("Properties", 483, 107);
+    btn_props->setEnabled(false);
     connect(btn_props, &QPushButton::clicked, this, &ClonkLauncher::showProps);
+    connect(btn_activate, &QPushButton::clicked, this, [this]() {
+        QModelIndexList indexes = tree->selectionModel()->selectedIndexes();
+        if (!indexes.isEmpty()) {
+            QStandardItem *item = tree_model->itemFromIndex(indexes.at(0));
+            QVariantMap item_data = item->data(Qt::UserRole + 1).toMap();
+            if (item_data.value("type").toString() == "clonk") {
+                Qt::CheckState current = item->checkState();
+                item->setCheckState(current == Qt::Checked ? Qt::Unchecked : Qt::Checked);
+            }
+        }
+    });
 
-    btn_start = create_btn("Start", 482, 310);
+    btn_start = create_btn("Start", 483, 310);
     connect(btn_start, &QPushButton::clicked, this, &ClonkLauncher::launchGame);
 
-    btn_quit = create_btn("Quit", 482, 335);
+    btn_quit = create_btn("Quit", 483, 334);
     connect(btn_quit, &QPushButton::clicked, this, &QWidget::close);
 
 
@@ -533,8 +590,6 @@ void ClonkLauncher::refresh_resources() {
     tree_model->clear();
     if (!QDir(planet_data_path).exists()) return;
 
-    QFont bold_font(comic_font_family);
-    bold_font.setBold(true);
 
     auto set_item_icon = [&](QStandardItem *item, const C4Group &grp, int default_idx) {
         auto icon_bmp = grp.getFile("Icon.bmp");
@@ -565,7 +620,6 @@ void ClonkLauncher::refresh_resources() {
         data_map["type"] = item_type;
 
         if (item_type == "folder") {
-            item->setFont(bold_font);
             set_item_icon(item, grp, 4);
 
             std::vector<ItemInfo> subs;
@@ -708,6 +762,12 @@ void ClonkLauncher::onTreeSelection(const QItemSelection &selected, const QItemS
     if (indexes.isEmpty()) {
         desc->setText("Select an item to see its description.");
         preview->setPixmap(QPixmap());
+        btn_new->setEnabled(true);
+        btn_activate->setEnabled(false);
+        btn_activate->setText("Activate");
+        btn_rename->setEnabled(false);
+        btn_delete->setEnabled(false);
+        btn_props->setEnabled(false);
         return;
     }
 
@@ -716,6 +776,12 @@ void ClonkLauncher::onTreeSelection(const QItemSelection &selected, const QItemS
     if (!data_var.isValid() || data_var.typeId() != QMetaType::QVariantMap) {
         desc->setText("Select an item to see its description.");
         preview->setPixmap(QPixmap());
+        btn_new->setEnabled(true);
+        btn_activate->setEnabled(false);
+        btn_activate->setText("Activate");
+        btn_rename->setEnabled(false);
+        btn_delete->setEnabled(false);
+        btn_props->setEnabled(false);
         return;
     }
 
@@ -723,6 +789,26 @@ void ClonkLauncher::onTreeSelection(const QItemSelection &selected, const QItemS
     QString path = data_map.value("path").toString();
     QStringList sub = data_map.value("sub").toStringList();
     QString item_type = data_map.value("type").toString();
+
+    if (item_type == "clonk") {
+        btn_new->setEnabled(true);
+        btn_activate->setEnabled(true);
+        if (item->checkState() == Qt::Checked) {
+            btn_activate->setText("Deactivate");
+        } else {
+            btn_activate->setText("Activate");
+        }
+        btn_rename->setEnabled(true);
+        btn_delete->setEnabled(true);
+        btn_props->setEnabled(true);
+    } else {
+        btn_new->setEnabled(true);
+        btn_activate->setEnabled(false);
+        btn_activate->setText("Activate");
+        btn_rename->setEnabled(false);
+        btn_delete->setEnabled(false);
+        btn_props->setEnabled(false);
+    }
 
     C4Group grp(path.toStdString());
     C4Group target_grp = grp;
@@ -755,7 +841,7 @@ void ClonkLauncher::onTreeSelection(const QItemSelection &selected, const QItemS
         if (!ini_data.empty()) {
             std::string ini_text(reinterpret_cast<const char*>(ini_data.data()), ini_data.size());
             auto sections = parseC4Text(ini_text);
-            auto pref = sections["Preferences"];
+            auto pref = sections["Player"];
             QString rank_name = QString::fromStdString(pref["RankName"]);
             if (rank_name.isEmpty()) rank_name = "Neuling";
             QString p_name = QString::fromStdString(pref["Name"]);
@@ -779,8 +865,8 @@ void ClonkLauncher::onTreeSelection(const QItemSelection &selected, const QItemS
 
             QString comment = QString::fromStdString(pref["Comment"]);
 
-            QString desc_str = QString("<b><span style='font-size: 10pt'>%1 %2</span></b><br><br>Score: %3<br>Rounds: %4 (%5 won %6 lost)<br>Playing time: %7:%8:%9<br>Comment: %10")
-                .arg(rank_name).arg(p_name).arg(score).arg(rounds).arg(rounds_won).arg(rounds_lost)
+            QString desc_str = QString("<b><span style='font-size: 10pt; font-family: \"%1\"'>%2 %3</span></b><br><br>Score: %4<br>Rounds: %5 (%6 won %7 lost)<br>Playing time: %8:%9:%10<br>Comment: %11")
+                .arg(comic_font_family).arg(rank_name).arg(p_name).arg(score).arg(rounds).arg(rounds_won).arg(rounds_lost)
                 .arg(h, 2, 10, QChar('0')).arg(m, 2, 10, QChar('0')).arg(s, 2, 10, QChar('0')).arg(comment);
             std::string tmp_str = desc_str.toStdString();
             desc_data.assign(tmp_str.begin(), tmp_str.end());
@@ -886,16 +972,17 @@ void ClonkLauncher::onTreeSelection(const QItemSelection &selected, const QItemS
 
     // Author
     auto scen_data = target_grp.getFile("Scenario.txt");
-    if (!scen_data.empty()) {
+/*     if (!scen_data.empty()) {
         std::string scen_text(reinterpret_cast<const char*>(scen_data.data()), scen_data.size());
         auto sections = parseC4Text(scen_text);
+        std::printf("Sections found: %s\n", scen_text.c_str());
         auto head = sections["Head"];
         QString author = QString::fromStdString(head["Author"]);
         if (author.isEmpty()) author = "Unknown";
         author_label->setText("Author: " + author);
-    } else {
-        author_label->setText("Author: RedWolf Design");
-    }
+    } else { */
+    author_label->setText("Author: RedWolf Design");
+    //}
 
     // Handle Package Locking
     QStandardItem *root = tree_model->invisibleRootItem();
@@ -1195,4 +1282,24 @@ void ClonkLauncher::launchGame() {
 void ClonkLauncher::onGameFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     this->show();
     start_music();
+}
+
+void ClonkLauncher::selectFirstItemAndExpand() {
+    if (tree && tree_model) {
+        // Expand specifically "Far Worlds", "Hazard", and "Missions" to match MainPage.png expansion state
+        for (int i = 0; i < tree_model->rowCount(); ++i) {
+            QStandardItem *item = tree_model->item(i);
+            if (item) {
+                QString text = item->text();
+                if (text == "Far Worlds" || text == "Hazard" || text == "Missions") {
+                    tree->expand(tree_model->indexFromItem(item));
+                }
+            }
+        }
+        QModelIndex first_idx = tree_model->index(0, 0);
+        if (first_idx.isValid()) {
+            tree->setCurrentIndex(first_idx);
+            tree->selectionModel()->select(first_idx, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+        }
+    }
 }
