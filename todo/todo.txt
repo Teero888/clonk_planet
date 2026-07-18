@@ -22,5 +22,4 @@ launcher:
 
 The entire help page from the Planet.hlp file
 
-also retake all the screenshots but actually on windows 2000/XP or 95 whatever
-
+take developer screenshots of the options window
