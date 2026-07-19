@@ -29,6 +29,7 @@ void C4FullScreen::Clear() {
   if (hWindow)
     DestroyWindow(hWindow);
   hWindow = NULL;
+  Application.Quit();
 }
 
 void C4FullScreen::Default() {

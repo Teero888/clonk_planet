@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <zlib.h>
 #include <string>
+#include <sys/stat.h>
 
 #ifdef _WIN32
 #include <fcntl.h>
@@ -125,6 +126,12 @@ int main(int argc, char **argv) {
     start = end + 1;
   }
   segments.push_back(full_path.substr(start));
+
+  struct stat st;
+  if (stat(segments[0].c_str(), &st) == 0 && S_ISDIR(st.st_mode)) {
+    fprintf(stderr, "Path '%s' is a directory, not a packed binary C4Group file.\n", segments[0].c_str());
+    return 0;
+  }
 
   std::vector<BYTE> data;
   FILE *f = fopen(segments[0].c_str(), "rb");

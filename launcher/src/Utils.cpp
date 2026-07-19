@@ -379,7 +379,6 @@ QImage applyClonkTransparency(const QImage &img) {
         }
     }
 
-    bool modified = false;
     for (int y = 0; y < out.height(); ++y) {
         for (int x = 0; x < out.width(); ++x) {
             uint32_t rgb = out.pixel(x, y) & 0xffffff;
@@ -392,7 +391,6 @@ QImage applyClonkTransparency(const QImage &img) {
             }
             if (should_mask) {
                 out.setPixel(x, y, 0);
-                modified = true;
             }
         }
     }

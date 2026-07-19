@@ -308,13 +308,20 @@ static void glfw_mouse_button_callback(GLFWwindow *window, int button, int actio
   }
 
   if (c4button != C4MC_Button_None) {
-    Game.MouseControl.Move(c4button, (int)xpos, (int)ypos, flags);
+    Game.GraphicsSystem.MouseMove(c4button, (int)xpos, (int)ypos, flags);
   }
 }
 
 static void glfw_cursor_pos_callback(GLFWwindow *window, double xpos, double ypos) {
   ScaleMouseCoordinate(window, xpos, ypos);
-  Game.MouseControl.Move(C4MC_Button_None, (int)xpos, (int)ypos, 0);
+
+  WORD flags = 0;
+  if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
+    flags |= MK_CONTROL;
+  if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
+    flags |= MK_SHIFT;
+
+  Game.GraphicsSystem.MouseMove(C4MC_Button_None, (int)xpos, (int)ypos, flags);
 }
 
 int C4Application::HandleMessage() {

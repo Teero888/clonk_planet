@@ -91,8 +91,8 @@ BOOL C4Group_CopyItem(const char *szSource, const char *szTarget1) {
   char szTarget[_MAX_PATH + 1];
   SCopy(szTarget1, szTarget, _MAX_PATH);
 
-  // Backslash terminator indicates target is a path only (append filename)
-  if (szTarget[SLen(szTarget) - 1] == '\\')
+  // Backslash/slash terminator indicates target is a path only (append filename)
+  if (szTarget[SLen(szTarget) - 1] == '\\' || szTarget[SLen(szTarget) - 1] == '/')
     SAppend(GetFilename(szSource), szTarget);
 
   // Check for identical source and target

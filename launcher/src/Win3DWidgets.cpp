@@ -68,7 +68,10 @@ Win3DButton::Win3DButton(const QString &text, QWidget *parent)
 }
 
 void Win3DButton::playClick() {
-    if (click_sound) click_sound->play();
+    if (click_sound) {
+        click_sound->stop();
+        click_sound->play();
+    }
 }
 
 void Win3DButton::paintEvent(QPaintEvent *event) {
@@ -525,7 +528,10 @@ ClonkButton::ClonkButton(const QString &text, QWidget *parent, const QString &bg
 }
 
 void ClonkButton::playClick() {
-    if (click_sound) click_sound->play();
+    if (click_sound) {
+        click_sound->stop();
+        click_sound->play();
+    }
 }
 
 void ClonkButton::paintEvent(QPaintEvent *event) {

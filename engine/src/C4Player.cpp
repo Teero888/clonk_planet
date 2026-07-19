@@ -1264,6 +1264,8 @@ BOOL C4Player::ActivateMenuMain() {
     SCopy(LoadResStr(IDS_MENU_CPSAVESCENARIOINFO), OSTR);
     Menu.Add(LoadResStr(IDS_MENU_CPSAVESCENARIO), GfxR->fctMenu.GetPhase(1), "Save:Scenario", C4MN_Item_NoCount, NULL, 0, OSTR);
   }
+  // Quit
+  Menu.Add(LoadResStr(IDS_MENU_CPQUIT), GfxR->fctMenu.GetPhase(4), "ActivateMenu:Quit", C4MN_Item_NoCount, NULL, 0, LoadResStr(IDS_MENU_CPQUIT));
 
   // No empty menus
   if (Menu.GetItemCount() == 0)
@@ -1285,6 +1287,10 @@ BOOL C4Player::MenuCommand(const char *szCommand) {
       return ActivateMenuGoals();
     if (SEqual(szCommand + 13, "Rules"))
       return ActivateMenuRules();
+    if (SEqual(szCommand + 13, "Quit")) {
+      FullScreen.Clear();
+      return TRUE;
+    }
   }
   // JoinPlayer
   if (SEqual2(szCommand, "JoinPlayer:")) {

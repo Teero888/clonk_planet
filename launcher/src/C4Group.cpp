@@ -13,6 +13,8 @@
 #endif
 #endif
 
+#include <dirent.h>
+
 C4Group::C4Group() {}
 
 C4Group::C4Group(const std::string &path) {
@@ -27,11 +29,46 @@ C4Group::C4Group(const uint8_t *data, size_t size) {
     loadFromMemory(data, size);
 }
 
+bool C4Group::loadFromDirectory(const std::string &dir_path) {
+    C4GroupWriter writer;
+    DIR *dir = opendir(dir_path.c_str());
+    if (!dir) return false;
+
+    struct dirent *ent;
+    while ((ent = readdir(dir)) != nullptr) {
+        std::string ename = ent->d_name;
+        if (ename == "." || ename == "..") continue;
+
+        std::string full_path = dir_path + "/" + ename;
+        struct stat st;
+        if (stat(full_path.c_str(), &st) == 0) {
+            if (S_ISDIR(st.st_mode)) {
+                C4Group sub;
+                if (sub.loadFromDirectory(full_path)) {
+                    writer.addFile(ename, sub.getRawData());
+                }
+            } else {
+                std::ifstream f(full_path, std::ios::binary);
+                if (f.is_open()) {
+                    std::vector<uint8_t> f_data(st.st_size);
+                    f.read(reinterpret_cast<char*>(f_data.data()), st.st_size);
+                    f.close();
+                    writer.addFile(ename, f_data);
+                }
+            }
+        }
+    }
+    closedir(dir);
+
+    std::vector<uint8_t> mem_blob = writer.makeMemoryBlob();
+    return loadFromMemory(mem_blob);
+}
+
 bool C4Group::loadFromFile(const std::string &path) {
     struct stat st;
     if (stat(path.c_str(), &st) == 0) {
         if (S_ISDIR(st.st_mode)) {
-            return false;
+            return loadFromDirectory(path);
         }
     }
 
@@ -290,9 +327,8 @@ std::vector<uint8_t> C4GroupWriter::makeEntryCore(const WriteEntry &entry, uint3
     return core;
 }
 
-bool C4GroupWriter::writeToFile(const std::string &path, bool compress) {
+std::vector<uint8_t> C4GroupWriter::makeMemoryBlob() {
     std::vector<uint8_t> output;
-    
     std::vector<std::vector<uint8_t>> entry_cores;
     uint32_t current_offset = 0;
 
@@ -312,6 +348,11 @@ bool C4GroupWriter::writeToFile(const std::string &path, bool compress) {
     for (const auto &entry : entries) {
         output.insert(output.end(), entry.data.begin(), entry.data.end());
     }
+    return output;
+}
+
+bool C4GroupWriter::writeToFile(const std::string &path, bool compress) {
+    std::vector<uint8_t> output = makeMemoryBlob();
 
     if (compress) {
         std::vector<uint8_t> compressed;

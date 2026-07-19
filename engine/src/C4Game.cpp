@@ -3,6 +3,8 @@
 /* Main class to run the game */
 
 #include <C4Include.h>
+#include <vector>
+#include <string>
 
 extern char *C4LogBuf;
 
@@ -1227,33 +1229,58 @@ BOOL C4Game::Save(C4Group &hGroup, BOOL fSaveGame, BOOL fNetwork) {
     rC4S.SetExactLandscape();
 
   // Save scenario core
+  if (!rC4S.Save(hGroup))
+    return FALSE;
 
   // Landscape plus components (exact)
   if (rC4S.Landscape.ExactLandscape) {
     // Landscape
     Objects.RemoveSolidMasks(FALSE);
+    if (!Landscape.Save(hGroup))
+      return FALSE;
     Objects.PutSolidMasks();
     // PXS
+    if (!PXS.Save(hGroup))
+      return FALSE;
     // MassMover (create copy, may not modify running data)
     C4MassMoverSet MassMoverSet;
     MassMoverSet.Copy(MassMover);
+    if (!MassMoverSet.Save(hGroup))
+      return FALSE;
     // Material enumeration
+    if (!Material.SaveEnumeration(hGroup))
+      return FALSE;
   }
   // Landscape map (static)
-  else if (Landscape.Mode == C4LSC_Static)
+  else if (Landscape.Mode == C4LSC_Static) {
+    if (!Landscape.SaveMap(hGroup))
+      return FALSE;
+  }
 
   // Objects
+  if (!Objects.Save(hGroup, fSaveGame))
+    return FALSE;
 
   // Script
+  if (!Script.Save(hGroup))
+    return FALSE;
 
   // Title
+  if (!Title.Save(hGroup))
+    return FALSE;
 
   // Info
+  if (!Info.Save(hGroup))
+    return FALSE;
 
   // Save game component updates
   if (fSaveGame) {
     // Save runtime data
+    if (!SaveRuntimeData(hGroup))
+      return FALSE;
     // Players
+    if (!Players.Save(hGroup, Network.Active))
+      return FALSE;
     // Components
     hGroup.Delete(C4CFN_ScenarioTitle);
     hGroup.Delete(C4CFN_ScenarioIcon);
@@ -1262,7 +1289,11 @@ BOOL C4Game::Save(C4Group &hGroup, BOOL fSaveGame, BOOL fNetwork) {
     hGroup.Delete(C4CFN_Title);
     hGroup.Delete(C4CFN_Info);
     // Desc
+    if (!SaveDesc(hGroup, TRUE))
+      return FALSE;
     // Title bitmap
+    if (!SaveGameTitle(hGroup))
+      return FALSE;
   }
 
   // Save scenario component updates
@@ -1844,6 +1875,38 @@ void C4Game::KeyboardInput(WORD vk_code, BOOL fAlt) {
   if (vk_code == VK_RETURN && Network.Lobby) {
     Network.Lobby = FALSE;
     return;
+  }
+
+  // HoldGameOver: exit game on key press
+  if (FullScreen.HoldGameOver) {
+    if (vk_code == VK_RETURN || vk_code == VK_SPACE || vk_code == VK_ESCAPE) {
+      FullScreen.Clear();
+      return;
+    }
+  }
+
+  // HoldAbort (Quit Prompt): confirm abort or resume game
+  if (FullScreen.HoldAbort) {
+    WORD cYes = 'J';
+    if (SEqual(Config.General.Language, "US")) cYes = 'Y';
+    if (vk_code == cYes || vk_code == 'Y' || vk_code == 'J') {
+      FullScreen.Clear();
+    } else {
+      FullScreen.HoldAbort = FALSE;
+      Game.Halt = FALSE;
+      Game.GraphicsSystem.RedrawBackground = TRUE;
+    }
+    return;
+  }
+
+  // VK_ESCAPE during gameplay: trigger HoldAbort quit prompt
+  if (vk_code == VK_ESCAPE) {
+    if (Game.ScenarioFilename[0]) {
+      Game.Halt = TRUE;
+      FullScreen.HoldAbort = TRUE;
+      GraphicsSystem.Execute();
+      return;
+    }
   }
 
   // Alt (syskey)
@@ -2577,12 +2640,31 @@ void C4Game::ParseCommandLine(const char *szCmdLine) {
   // Definition filenames by registry config
   SCopy(Config.General.Definitions, DefinitionFilenames);
 
-  char cSeparator;
-  char szParameter[_MAX_PATH + 1];
-  cSeparator = ' ';
-  if (SCharCount('"', szCmdLine))
-    cSeparator = '"';
-  for (int iPar = 0; SCopySegment(szCmdLine, iPar, szParameter, cSeparator, _MAX_PATH); iPar++) {
+  if (!szCmdLine || !*szCmdLine)
+    return;
+
+  std::vector<std::string> args;
+  std::string current;
+  bool in_quotes = false;
+  for (const char *p = szCmdLine; *p; ++p) {
+    if (*p == '"') {
+      in_quotes = !in_quotes;
+    } else if (*p == ' ' && !in_quotes) {
+      if (!current.empty()) {
+        args.push_back(current);
+        current.clear();
+      }
+    } else {
+      current.push_back(*p);
+    }
+  }
+  if (!current.empty()) {
+    args.push_back(current);
+  }
+
+  for (const auto &arg : args) {
+    char szParameter[_MAX_PATH + 1];
+    SCopy(arg.c_str(), szParameter, _MAX_PATH);
     // Scenario file / folder
     if (SEqualNoCase(GetExtension(szParameter), "c4s") || SEqualNoCase(GetExtension(szParameter), "c4f")) {
       SCopy(szParameter, ScenarioFilename, _MAX_PATH);

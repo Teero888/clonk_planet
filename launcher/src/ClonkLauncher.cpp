@@ -406,14 +406,32 @@ void ClonkLauncher::init_ui() {
 
 void ClonkLauncher::init_menu() {
     QMenuBar *menu = menuBar();
+    QFont menu_font(getSerifFontFamily());
+    menu_font.setStyleStrategy(QFont::NoAntialias);
+    menu_font.setHintingPreference(QFont::PreferFullHinting);
+    menu_font.setPixelSize(11);
+    menu->setFont(menu_font);
+
     menu->setStyleSheet(
+        "QMenuBar, QMenu {"
+        "    font-family: '" + serif_font_family + "';"
+        "    font-size: 11px;"
+        "    color: black;"
+        "}"
         "QMenuBar {"
         "    background-color: #c0c0c0;"
         "    border-bottom: 2px solid #808080;"
-        "    color: black;"
         "}"
         "QMenuBar::item:selected {"
         "    background-color: #3096fa;"
+        "    color: white;"
+        "}"
+        "QMenu {"
+        "    background-color: #ece9d8;"
+        "    border: 1px solid #716f64;"
+        "}"
+        "QMenu::item:selected {"
+        "    background-color: #316ac5;"
         "    color: white;"
         "}"
     );

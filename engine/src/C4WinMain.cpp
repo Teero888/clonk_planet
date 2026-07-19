@@ -24,7 +24,12 @@ int main(int argc, char **argv) {
   for (int i = 1; i < argc; i++) {
     if (i > 1)
       cmdLine += " ";
-    cmdLine += argv[i];
+    std::string arg = argv[i];
+    if (arg.find(' ') != std::string::npos && arg.find('"') == std::string::npos) {
+      cmdLine += "\"" + arg + "\"";
+    } else {
+      cmdLine += arg;
+    }
   }
 
   // Init application

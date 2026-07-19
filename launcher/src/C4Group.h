@@ -22,6 +22,7 @@ public:
     C4Group(const uint8_t *data, size_t size);
 
     bool loadFromFile(const std::string &path);
+    bool loadFromDirectory(const std::string &dir_path);
     bool loadFromMemory(const std::vector<uint8_t> &raw_data);
     bool loadFromMemory(const uint8_t *data, size_t size);
 
@@ -56,6 +57,7 @@ public:
     void addFile(const std::string &name, const std::vector<uint8_t> &data, bool packed = false);
     void addFromGroup(const C4Group &source_grp, const std::vector<std::string> &exclude = {});
     bool writeToFile(const std::string &path, bool compress = false);
+    std::vector<uint8_t> makeMemoryBlob();
 
 private:
     std::vector<WriteEntry> entries;
