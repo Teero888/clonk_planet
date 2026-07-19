@@ -97,7 +97,7 @@ private:
     QStandardItemModel *tree_model = nullptr;
 
     ClonkArea *preview_frame = nullptr;
-    QLabel *preview = nullptr;
+    ClonkPreviewLabel *preview = nullptr;
 
     ClonkArea *desc_frame = nullptr;
     QTextEdit *desc = nullptr;

@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QFrame>
+#include <QLabel>
 #include <QGroupBox>
 #include <QTabWidget>
 #include <QStackedWidget>
@@ -87,6 +88,14 @@ protected:
 private:
     std::string bg_color;
     std::vector<std::string> border_colors;
+};
+
+class ClonkPreviewLabel : public QLabel {
+    Q_OBJECT
+public:
+    explicit ClonkPreviewLabel(QWidget *parent = nullptr);
+protected:
+    void paintEvent(QPaintEvent *event) override;
 };
 
 class ClonkTextArea : public QFrame {

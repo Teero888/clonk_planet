@@ -231,12 +231,12 @@ class KeyBindInput(QLineEdit):
 class ClonkLauncher(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        self.base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
         self.planet_data_path = os.path.join(self.base_path, 'planet_data')
-        self.res_path = os.path.join(os.path.dirname(__file__), 'res')
-        self.res_music_path = os.path.join(os.path.dirname(__file__), 'res_music')
-        self.wav_path = os.path.join(os.path.dirname(__file__), 'res_wav')
-        self.dump_path = os.path.join(os.path.dirname(__file__), 'res_dump')
+        self.res_path = os.path.join(self.base_path, 'launcher/res')
+        self.res_music_path = os.path.join(self.base_path, 'launcher/res_music')
+        self.wav_path = os.path.join(self.base_path, 'launcher/res_wav')
+        self.dump_path = os.path.join(self.base_path, 'launcher/res_dump')
         self.comic_font_family = "Comic Sans MS"
         
         # Load Atlases

@@ -14,6 +14,11 @@
 #include <QFileInfo>
 #include <QGraphicsDropShadowEffect>
 #include <QStyledItemDelegate>
+#include <QTextDocument>
+#include <QTextBlock>
+#include <QTextFragment>
+#include <QTextCursor>
+#include <QTextCharFormat>
 #include <fstream>
 #include <iostream>
 
@@ -116,15 +121,21 @@ public:
         // Calculate text geometry first to know where selection ends
         QRect display_rect = style->subElementRect(QStyle::SE_ItemViewItemText, &opt, widget);
         if (opt.features & QStyleOptionViewItem::HasCheckIndicator) {
-            display_rect.translate(-7, 0);
+            display_rect.translate(-5, -1);
         } else {
-            display_rect.translate(-3, 0);
+            display_rect.translate(-1, -1);
         }
 
         QString text = index.data(Qt::DisplayRole).toString();
         QFont font = opt.font;
-        font.setStyleStrategy(QFont::NoAntialias);
-        font.setHintingPreference(QFont::PreferFullHinting);
+        if (font.bold() || font.weight() >= QFont::Bold) {
+            font.setStyleStrategy(QFont::PreferAntialias);
+            painter->setRenderHint(QPainter::TextAntialiasing, true);
+        } else {
+            font.setStyleStrategy(QFont::NoAntialias);
+            font.setHintingPreference(QFont::PreferFullHinting);
+            painter->setRenderHint(QPainter::TextAntialiasing, false);
+        }
         painter->setFont(font);
         QFontMetrics fm(font);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
@@ -143,7 +154,7 @@ public:
         // 3. Draw Checkbox
         if (opt.features & QStyleOptionViewItem::HasCheckIndicator) {
             QRect check_rect = style->subElementRect(QStyle::SE_ItemViewItemCheckIndicator, &opt, widget);
-            check_rect.translate(-1, 0);
+            check_rect.translate(-2, 2);
 
             QVariant data = index.data(Qt::UserRole + 1);
             bool is_locked = false;
@@ -169,7 +180,7 @@ public:
         if (opt.features & QStyleOptionViewItem::HasDecoration) {
             QRect decor_rect = style->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, widget);
             if (opt.features & QStyleOptionViewItem::HasCheckIndicator) {
-                decor_rect.translate(-6, 0);
+                decor_rect.translate(-7, 0);
             } else {
                 decor_rect.translate(-3, 0);
             }
@@ -437,6 +448,7 @@ void ClonkLauncher::setup_main_ui() {
     tree = new QTreeView(tree_frame);
     tree->setGeometry(2, 2, 239, 342);
     QFont tree_font = QApplication::font();
+    tree_font.setPointSize(9);
     tree_font.setStyleStrategy(QFont::NoAntialias);
     tree_font.setHintingPreference(QFont::PreferFullHinting);
     tree->setFont(tree_font);
@@ -461,8 +473,26 @@ void ClonkLauncher::setup_main_ui() {
         }
     });
 
+    connect(tree, &QTreeView::expanded, this, [this](const QModelIndex &index) {
+        QStandardItem *item = tree_model->itemFromIndex(index);
+        if (!item) return;
+        QVariantMap data = item->data(Qt::UserRole + 1).toMap();
+        if (data.value("type").toString() == "folder") {
+            item->setIcon(get_atlas_icon(22));
+        }
+    });
+
+    connect(tree, &QTreeView::collapsed, this, [this](const QModelIndex &index) {
+        QStandardItem *item = tree_model->itemFromIndex(index);
+        if (!item) return;
+        QVariantMap data = item->data(Qt::UserRole + 1).toMap();
+        if (data.value("type").toString() == "folder") {
+            item->setIcon(get_atlas_icon(4));
+        }
+    });
+
     tree->setRootIsDecorated(false);
-    tree->setIndentation(20);
+    tree->setIndentation(19);
     tree->setExpandsOnDoubleClick(true);
     tree->setEditTriggers(QTreeView::NoEditTriggers);
     tree->setIconSize(QSize(16, 16));
@@ -474,6 +504,10 @@ void ClonkLauncher::setup_main_ui() {
         "    background-color: white;"
         "    border: none;"
         "    selection-background-color: transparent;"
+        "}"
+        "QTreeView::item {"
+        "    padding-top: 1px;"    // Adjust vertical top padding per row
+        "    padding-bottom: 1px;" // Adjust vertical bottom padding per row
         "}"
         "QTreeView::branch {"
         "    image: none;"
@@ -488,8 +522,8 @@ void ClonkLauncher::setup_main_ui() {
     preview_frame = new ClonkArea(ui_container);
     preview_frame->setGeometry(261, 10, 212, 151);
 
-    preview = new QLabel(preview_frame);
-    preview->setGeometry(2, 2, 208, 147);
+    preview = new ClonkPreviewLabel(preview_frame);
+    preview->setGeometry(0, 0, 212, 151);
     preview->setAlignment(Qt::AlignCenter);
 
     desc_frame = new ClonkArea(ui_container, "white");
@@ -501,10 +535,42 @@ void ClonkLauncher::setup_main_ui() {
     desc->setFrameShape(QFrame::NoFrame);
     desc->document()->setDocumentMargin(1); 
     desc->setStyleSheet("QTextEdit { padding-top: 1px; background: transparent; }");
+    //QFont desc_font(comic_font_family, 9);
     QFont desc_font = desc->font();
     desc_font.setStyleStrategy(QFont::NoAntialias);
     desc_font.setHintingPreference(QFont::PreferFullHinting);
     desc->setFont(desc_font);
+
+    connect(desc->document(), &QTextDocument::contentsChanged, this, [this]() {
+        static bool in_update = false;
+        if (in_update) return;
+        in_update = true;
+        
+        QTextDocument *doc = desc->document();
+        QTextCursor cursor(doc);
+        cursor.beginEditBlock();
+        for (QTextBlock block = doc->begin(); block.isValid(); block = block.next()) {
+            for (QTextBlock::iterator it = block.begin(); !it.atEnd(); ++it) {
+                QTextFragment fragment = it.fragment();
+                if (fragment.isValid()) {
+                    QTextCharFormat fmt = fragment.charFormat();
+                    if (fmt.fontWeight() >= QFont::Bold || fmt.font().bold()) {
+                        fmt.setFontStyleStrategy(QFont::PreferAntialias);
+                    } else {
+                        fmt.setFontStyleStrategy(QFont::NoAntialias);
+                    }
+                    QTextCursor fragCursor(doc);
+                    fragCursor.setPosition(fragment.position());
+                    fragCursor.setPosition(fragment.position() + fragment.length(), QTextCursor::KeepAnchor);
+                    fragCursor.mergeCharFormat(fmt);
+                }
+            }
+        }
+        cursor.endEditBlock();
+        
+        in_update = false;
+    });
+
     desc->setText("Select a scenario or player to begin.");
 
     QString btn_bg = QDir(dump_path).filePath("Planet_fixed.bin_2_1006_1031.bmp");
@@ -582,8 +648,14 @@ void ClonkLauncher::set_background(const QString &name) {
 
 QIcon ClonkLauncher::get_atlas_icon(int index) {
     if (icons_atlas.isNull()) return QIcon();
+    QIcon icon;
     QRect rect(index * 16, 0, 16, 16);
-    return QIcon(icons_atlas.copy(rect));
+    icon.addPixmap(icons_atlas.copy(rect), QIcon::Normal, QIcon::Off);
+    if (index == 4) {
+        QRect open_rect(22 * 16, 0, 16, 16);
+        icon.addPixmap(icons_atlas.copy(open_rect), QIcon::Normal, QIcon::On);
+    }
+    return icon;
 }
 
 void ClonkLauncher::refresh_resources() {
@@ -620,6 +692,9 @@ void ClonkLauncher::refresh_resources() {
         data_map["type"] = item_type;
 
         if (item_type == "folder") {
+            QFont bold_font = item->font();
+            bold_font.setBold(true);
+            item->setFont(bold_font);
             set_item_icon(item, grp, 4);
 
             std::vector<ItemInfo> subs;

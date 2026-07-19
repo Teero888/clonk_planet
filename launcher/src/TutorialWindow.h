@@ -196,7 +196,7 @@ public:
       check_quick->setGeometry(144, 372, 240, 15);
       check_quick->setStyleSheet("color: black;");
       QString comic_family = CD::GetComicFontFamily(parent);
-      QFont check_font(comic_family, 12);
+      QFont check_font(comic_family, 9);
       check_font.setStyleStrategy(QFont::NoAntialias);
       check_quick->setFont(check_font);
       // set_cfg("Explorer\\ShowQuickStart", 1 if self.check_quick.isChecked() else 0)

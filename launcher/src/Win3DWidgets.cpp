@@ -140,8 +140,14 @@ void Win3DGroupBox::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::TextAntialiasing, false);
     QFont font = painter.font();
-    font.setStyleStrategy(QFont::NoAntialias);
-    font.setHintingPreference(QFont::PreferFullHinting);
+    if (font.bold() || font.weight() >= QFont::Bold) {
+        font.setStyleStrategy(QFont::PreferAntialias);
+        painter.setRenderHint(QPainter::TextAntialiasing, true);
+    } else {
+        font.setStyleStrategy(QFont::NoAntialias);
+        font.setHintingPreference(QFont::PreferFullHinting);
+        painter.setRenderHint(QPainter::TextAntialiasing, false);
+    }
     painter.setFont(font);
     QFontMetrics fm = painter.fontMetrics();
 #if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
@@ -441,6 +447,33 @@ void ClonkArea::paintEvent(QPaintEvent *event) {
     painter.drawLine(w-1, 0, w-1, h-1);
 }
 
+// ClonkPreviewLabel
+ClonkPreviewLabel::ClonkPreviewLabel(QWidget *parent)
+    : QLabel(parent) {}
+
+void ClonkPreviewLabel::paintEvent(QPaintEvent *event) {
+    QLabel::paintEvent(event);
+
+    QPainter painter(this);
+    int w = width(), h = height();
+
+    painter.setPen(QColor("#aca899"));
+    painter.drawLine(0, 0, w-1, 0);
+    painter.drawLine(0, 0, 0, h-1);
+
+    painter.setPen(QColor("#716f64"));
+    painter.drawLine(1, 1, w-2, 1);
+    painter.drawLine(1, 1, 1, h-2);
+
+    painter.setPen(QColor("#f1efe2"));
+    painter.drawLine(1, h-2, w-2, h-2);
+    painter.drawLine(w-2, 1, w-2, h-2);
+
+    painter.setPen(QColor("#ffffff"));
+    painter.drawLine(0, h-1, w-1, h-1);
+    painter.drawLine(w-1, 0, w-1, h-1);
+}
+
 // ClonkTextArea
 ClonkTextArea::ClonkTextArea(QWidget *parent, const std::string &bg)
     : QFrame(parent), bg_color(bg) {}
@@ -508,8 +541,14 @@ void ClonkButton::paintEvent(QPaintEvent *event) {
     }
 
     QFont btn_font = this->font();
-    btn_font.setStyleStrategy(QFont::NoAntialias);
-    btn_font.setHintingPreference(QFont::PreferFullHinting);
+    if (btn_font.bold() || btn_font.weight() >= QFont::Bold) {
+        btn_font.setStyleStrategy(QFont::PreferAntialias);
+        painter.setRenderHint(QPainter::TextAntialiasing, true);
+    } else {
+        btn_font.setStyleStrategy(QFont::NoAntialias);
+        btn_font.setHintingPreference(QFont::PreferFullHinting);
+        painter.setRenderHint(QPainter::TextAntialiasing, false);
+    }
     painter.setFont(btn_font);
     QRect t_rect = isDown() ? rect.adjusted(1, 1, 1, 1) : rect;
     t_rect.translate(0, -1);
