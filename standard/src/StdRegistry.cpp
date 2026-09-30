@@ -1,21 +1,17 @@
 #include <Standard.h>
 #include <StdRegistry.h>
-#include <map>
+#include <StdIniRegistry.h>
+#include <algorithm>
+#include <cstdlib>
+#include <cstring>
 #include <string>
-#include <fstream>
-#include <sstream>
 
-static std::map<std::string, std::string> *g_registry = nullptr;
-static bool g_registryLoaded = false;
+// The registry is emulated by the user's clonk.ini (see StdIniRegistry.h), created from the
+// defaults next to the executable.
+static CStdIniRegistry *g_registry = nullptr;
+static std::string g_registryPath;
 
-static std::map<std::string, std::string> &GetRegistryMap() {
-  if (!g_registry) {
-    g_registry = new std::map<std::string, std::string>();
-  }
-  return *g_registry;
-}
-
-static std::string GetConfigPath() {
+static std::string GetDefaultsPath() {
 #ifdef _WIN32
   char buf[1024];
   DWORD len = GetModuleFileNameA(NULL, buf, sizeof(buf));
@@ -43,113 +39,66 @@ static std::string GetConfigPath() {
 #endif
 }
 
-static std::string Trim(const std::string &s) {
-  size_t first = s.find_first_not_of(" \t\r\n");
-  if (first == std::string::npos) return "";
-  size_t last = s.find_last_not_of(" \t\r\n");
-  return s.substr(first, (last - first + 1));
-}
-
-static void LoadRegistry() {
-  if (g_registryLoaded)
-    return;
-  auto &reg = GetRegistryMap();
-  std::string path = "clonk.ini";
-  std::ifstream f(path);
-  if (!f.is_open()) {
-    path = GetConfigPath();
-    f.open(path);
+static CStdIniRegistry &Registry() {
+  if (!g_registry) {
+    g_registry = new CStdIniRegistry();
+    g_registryPath = CStdIniRegistry::PrepareUserConfig(GetDefaultsPath());
+    g_registry->Load(g_registryPath);
+    // a file of the old flat [Software] format is written in the new format right away
+    if (g_registry->WasLegacy()) g_registry->Save(g_registryPath);
   }
-  if (!f.is_open()) {
-    g_registryLoaded = true;
-    return;
-  }
-  std::string line, section;
-  while (std::getline(f, line)) {
-    line = Trim(line);
-    if (line.empty() || line[0] == ';')
-      continue;
-    if (line[0] == '[' && line.back() == ']') {
-      section = Trim(line.substr(1, line.size() - 2));
-      continue;
-    }
-    size_t pos = line.find('=');
-    if (pos != std::string::npos) {
-      std::string keyName = Trim(line.substr(0, pos));
-      std::string val = Trim(line.substr(pos + 1));
-      std::string key = section + "\\" + keyName;
-      reg[key] = val;
-    }
-  }
-  g_registryLoaded = true;
+  return *g_registry;
 }
 
 static void SaveRegistry() {
-  if (!g_registry)
-    return;
-  auto &reg = *g_registry;
-  std::string path = "clonk.ini";
-  std::ifstream check(path);
-  if (!check.is_open()) {
-    path = GetConfigPath();
-  }
-  std::ofstream f(path);
-  std::string currentSection;
-  for (auto const &[key, val] : reg) {
-    size_t pos = key.find('\\');
-    if (pos != std::string::npos) {
-      std::string section = key.substr(0, pos);
-      if (section != currentSection) {
-        f << "[" << section << "]\n";
-        currentSection = section;
-      }
-      f << key.substr(pos + 1) << "=" << val << "\n";
-    } else {
-      f << key << "=" << val << "\n";
-    }
-  }
+  Registry().Save(g_registryPath);
 }
 
+// Only HKEY_CURRENT_USER is emulated (other keys like HKLM\Software\Microsoft\DirectDraw have no
+// meaning outside of Windows)
+static bool IsUserKey(HKEY hKey) { return hKey == HKEY_CURRENT_USER; }
+
 BOOL DeleteRegistryValue(const char *szSubKey, const char *szValueName) {
-  LoadRegistry();
-  GetRegistryMap().erase(std::string(szSubKey) + "\\" + szValueName);
+  if (!Registry().Delete(CStdIniRegistry::SectionOfSubKey(szSubKey), szValueName)) return FALSE;
   SaveRegistry();
   return TRUE;
 }
-BOOL DeleteRegistryValue(HKEY hKey, const char *szSubKey, const char *szValueName) { return DeleteRegistryValue(szSubKey, szValueName); }
+BOOL DeleteRegistryValue(HKEY hKey, const char *szSubKey, const char *szValueName) {
+  return IsUserKey(hKey) && DeleteRegistryValue(szSubKey, szValueName);
+}
 
 BOOL SetRegistryDWord(const char *szSubKey, const char *szValueName, DWORD dwValue) {
-  LoadRegistry();
-  GetRegistryMap()[std::string(szSubKey) + "\\" + szValueName] = std::to_string(dwValue);
+  Registry().Set(CStdIniRegistry::SectionOfSubKey(szSubKey), szValueName, std::to_string(dwValue));
   SaveRegistry();
   return TRUE;
 }
 BOOL GetRegistryDWord(const char *szSubKey, const char *szValueName, DWORD *lpdwValue) {
-  LoadRegistry();
-  std::string key = std::string(szSubKey) + "\\" + szValueName;
-  auto &reg = GetRegistryMap();
-  if (reg.count(key)) {
-    *lpdwValue = std::stoul(reg[key]);
-    return TRUE;
-  }
-  return FALSE;
+  std::string value;
+  if (!Registry().Get(CStdIniRegistry::SectionOfSubKey(szSubKey), szValueName, value)) return FALSE;
+  // DWORDs are written unsigned (-1 = 4294967295); accept signed numbers written by hand too
+  char *end = nullptr;
+  long long number = strtoll(value.c_str(), &end, 10);
+  if (end == value.c_str()) return FALSE;
+  *lpdwValue = (DWORD)number;
+  return TRUE;
 }
-BOOL GetRegistryDWord(HKEY hKey, const char *szSubKey, const char *szValueName, DWORD *lpdwValue) { return GetRegistryDWord(szSubKey, szValueName, lpdwValue); }
-BOOL SetRegistryDWord(HKEY hKey, const char *szSubKey, const char *szValueName, DWORD dwValue) { return SetRegistryDWord(szSubKey, szValueName, dwValue); }
+BOOL GetRegistryDWord(HKEY hKey, const char *szSubKey, const char *szValueName, DWORD *lpdwValue) {
+  return IsUserKey(hKey) && GetRegistryDWord(szSubKey, szValueName, lpdwValue);
+}
+BOOL SetRegistryDWord(HKEY hKey, const char *szSubKey, const char *szValueName, DWORD dwValue) {
+  return IsUserKey(hKey) && SetRegistryDWord(szSubKey, szValueName, dwValue);
+}
 
 BOOL GetRegistryString(const char *szSubKey, const char *szValueName, char *szValue, DWORD dwValSize) {
-  LoadRegistry();
-  std::string key = std::string(szSubKey) + "\\" + szValueName;
-  auto &reg = GetRegistryMap();
-  if (reg.count(key)) {
-    strncpy(szValue, reg[key].c_str(), dwValSize);
-    return TRUE;
-  }
-  return FALSE;
+  std::string value;
+  if (!dwValSize || !Registry().Get(CStdIniRegistry::SectionOfSubKey(szSubKey), szValueName, value)) return FALSE;
+  size_t len = std::min<size_t>(value.size(), dwValSize - 1);
+  memcpy(szValue, value.c_str(), len);
+  szValue[len] = '\0';
+  return TRUE;
 }
 BOOL SetRegistryString(const char *szSubKey, const char *szValueName, const char *szValue) {
-  LoadRegistry();
-  GetRegistryMap()[std::string(szSubKey) + "\\" + szValueName] = szValue;
+  Registry().Set(CStdIniRegistry::SectionOfSubKey(szSubKey), szValueName, szValue);
   SaveRegistry();
   return TRUE;
 }

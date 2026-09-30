@@ -1,0 +1,8035 @@
+{
+ "3000": {
+  "style": 2147483712,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 248,
+  "h": 165,
+  "title": "",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x467038",
+   "ctors": [
+    "0x40f490"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x425390"
+   },
+   {
+    "msg": 15,
+    "msg_name": "WM_PAINT",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x40f5a0"
+   },
+   {
+    "msg": 513,
+    "msg_name": "WM_LBUTTONDOWN",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 49,
+    "handler": "0x40f990"
+   }
+  ],
+  "ddx": {}
+ },
+ "3001": {
+  "style": 2147483712,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 267,
+  "h": 196,
+  "title": "",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x467158",
+   "ctors": [
+    "0x40f860"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x425390"
+   },
+   {
+    "msg": 513,
+    "msg_name": "WM_LBUTTONDOWN",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 49,
+    "handler": "0x40f990"
+   }
+  ],
+  "ddx": {}
+ },
+ "3002": {
+  "style": 281682112,
+  "exstyle": 262144,
+  "x": 0,
+  "y": 0,
+  "w": 385,
+  "h": 242,
+  "title": "EXPLORER",
+  "cls": "",
+  "menu": 4004,
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2381,
+    "cls": "SysTreeView32",
+    "key": "Tree1",
+    "x": 6,
+    "y": 6,
+    "w": 162,
+    "h": 213,
+    "style": 1350631471,
+    "exstyle": 528
+   },
+   {
+    "id": 2221,
+    "cls": "RICHEDIT",
+    "key": "",
+    "x": 174,
+    "y": 102,
+    "w": 141,
+    "h": 105,
+    "style": 1352730692,
+    "exstyle": 0
+   },
+   {
+    "id": 2055,
+    "cls": "Button",
+    "key": "NEW",
+    "x": 321,
+    "y": 6,
+    "w": 57,
+    "h": 12,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50023
+   },
+   {
+    "id": 2025,
+    "cls": "Button",
+    "key": "ACTIVATE",
+    "x": 321,
+    "y": 21,
+    "w": 57,
+    "h": 12,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50001
+   },
+   {
+    "id": 2058,
+    "cls": "Button",
+    "key": "RENAME",
+    "x": 321,
+    "y": 36,
+    "w": 57,
+    "h": 12,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50030
+   },
+   {
+    "id": 2039,
+    "cls": "Button",
+    "key": "DELETE",
+    "x": 321,
+    "y": 51,
+    "w": 57,
+    "h": 12,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50012
+   },
+   {
+    "id": 2057,
+    "cls": "Button",
+    "key": "PROPERTIES",
+    "x": 321,
+    "y": 66,
+    "w": 57,
+    "h": 12,
+    "style": 1476460555,
+    "exstyle": 0,
+    "text_id": 50029
+   },
+   {
+    "id": 2368,
+    "cls": "Static",
+    "key": "MODE",
+    "x": 321,
+    "y": 99,
+    "w": 48,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50361
+   },
+   {
+    "id": 2219,
+    "cls": "Button",
+    "key": "PLAYER",
+    "x": 321,
+    "y": 111,
+    "w": 60,
+    "h": 9,
+    "style": 1342177289,
+    "exstyle": 0,
+    "text_id": 50263
+   },
+   {
+    "id": 2220,
+    "cls": "Button",
+    "key": "DEVELOPER",
+    "x": 321,
+    "y": 120,
+    "w": 60,
+    "h": 9,
+    "style": 1342177284,
+    "exstyle": 0
+   },
+   {
+    "id": 2070,
+    "cls": "Button",
+    "key": "START",
+    "x": 321,
+    "y": 191,
+    "w": 57,
+    "h": 12,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50033
+   },
+   {
+    "id": 2049,
+    "cls": "Button",
+    "key": "QUIT",
+    "x": 321,
+    "y": 206,
+    "w": 57,
+    "h": 12,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50016
+   },
+   {
+    "id": 2290,
+    "cls": "Static",
+    "key": "",
+    "x": 0,
+    "y": 0,
+    "w": 385,
+    "h": 1,
+    "style": 1342177296,
+    "exstyle": 0
+   },
+   {
+    "id": 2016,
+    "cls": "Static",
+    "key": "",
+    "x": 174,
+    "y": 6,
+    "w": 141,
+    "h": 93,
+    "style": 1342177288,
+    "exstyle": 131072
+   },
+   {
+    "id": 2186,
+    "cls": "Static",
+    "key": "",
+    "x": 174,
+    "y": 96,
+    "w": 141,
+    "h": 9,
+    "style": 1073741831,
+    "exstyle": 0
+   },
+   {
+    "id": 2267,
+    "cls": "Static",
+    "key": "",
+    "x": 174,
+    "y": 210,
+    "w": 141,
+    "h": 9,
+    "style": 1342308864,
+    "exstyle": 0
+   },
+   {
+    "id": 2000,
+    "cls": "SysAnimate32",
+    "key": "Animate1",
+    "x": 6,
+    "y": 224,
+    "w": 22,
+    "h": 15,
+    "style": 1342242821,
+    "exstyle": 512
+   },
+   {
+    "id": 2357,
+    "cls": "Static",
+    "key": "",
+    "x": 31,
+    "y": 224,
+    "w": 347,
+    "h": 15,
+    "style": 1342308864,
+    "exstyle": 512
+   },
+   {
+    "id": 2189,
+    "cls": "Static",
+    "key": "",
+    "x": 174,
+    "y": 6,
+    "w": 141,
+    "h": 201,
+    "style": 1073741831,
+    "exstyle": 0
+   },
+   {
+    "id": 2191,
+    "cls": "Static",
+    "key": "",
+    "x": 174,
+    "y": 102,
+    "w": 141,
+    "h": 105,
+    "style": 1073741831,
+    "exstyle": 0
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x4678f8",
+   "ctors": [
+    "0x412a20"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 1030,
+    "msg_name": "0x406",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 10,
+    "handler": "0x415520"
+   },
+   {
+    "msg": 1025,
+    "msg_name": "0x401",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 10,
+    "handler": "0x4147f0"
+   },
+   {
+    "msg": 1043,
+    "msg_name": "0x413",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 10,
+    "handler": "0x414870"
+   },
+   {
+    "msg": 1044,
+    "msg_name": "0x414",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 10,
+    "handler": "0x4148e0"
+   },
+   {
+    "msg": 1026,
+    "msg_name": "0x402",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 10,
+    "handler": "0x414950"
+   },
+   {
+    "msg": 1045,
+    "msg_name": "0x415",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 10,
+    "handler": "0x415fe0"
+   },
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x420f90"
+   },
+   {
+    "msg": 274,
+    "msg_name": "WM_SYSCOMMAND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 18,
+    "handler": "0x412fd0"
+   },
+   {
+    "msg": 2,
+    "msg_name": "WM_DESTROY",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x412fe0"
+   },
+   {
+    "msg": 15,
+    "msg_name": "WM_PAINT",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x413000"
+   },
+   {
+    "msg": 55,
+    "msg_name": "0x37",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 35,
+    "handler": "0x4131c0"
+   },
+   {
+    "msg": 1041,
+    "msg_name": "0x411",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 10,
+    "handler": "0x4156e0"
+   },
+   {
+    "msg": 1040,
+    "msg_name": "0x410",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 10,
+    "handler": "0x4155a0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2070,
+    "last_id": 2070,
+    "sig": 12,
+    "handler": "0x413720"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2219,
+    "last_id": 2219,
+    "sig": 12,
+    "handler": "0x413670"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2220,
+    "last_id": 2220,
+    "sig": 12,
+    "handler": "0x413680"
+   },
+   {
+    "msg": 1031,
+    "msg_name": "0x407",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 10,
+    "handler": "0x415540"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2039,
+    "last_id": 2039,
+    "sig": 12,
+    "handler": "0x413690"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2058,
+    "last_id": 2058,
+    "sig": 12,
+    "handler": "0x4136a0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2025,
+    "last_id": 2025,
+    "sig": 12,
+    "handler": "0x413710"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2049,
+    "last_id": 2049,
+    "sig": 12,
+    "handler": "0x413dd0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2055,
+    "last_id": 2055,
+    "sig": 12,
+    "handler": "0x413de0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2057,
+    "last_id": 2057,
+    "sig": 12,
+    "handler": "0x414150"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 4000,
+    "last_id": 4000,
+    "sig": 12,
+    "handler": "0x414160"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 4001,
+    "last_id": 4001,
+    "sig": 12,
+    "handler": "0x414200"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 4002,
+    "last_id": 4002,
+    "sig": 12,
+    "handler": "0x414210"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 4003,
+    "last_id": 4003,
+    "sig": 12,
+    "handler": "0x414290"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 4005,
+    "last_id": 4005,
+    "sig": 12,
+    "handler": "0x4142c0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 4006,
+    "last_id": 4006,
+    "sig": 12,
+    "handler": "0x4144d0"
+   },
+   {
+    "msg": 275,
+    "msg_name": "WM_TIMER",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 13,
+    "handler": "0x414790"
+   },
+   {
+    "msg": 28,
+    "msg_name": "0x1c",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 14,
+    "handler": "0x414ef0"
+   },
+   {
+    "msg": 6,
+    "msg_name": "0x6",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 28,
+    "handler": "0x414f90"
+   },
+   {
+    "msg": 16,
+    "msg_name": "WM_CLOSE",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x414fa0"
+   },
+   {
+    "msg": 512,
+    "msg_name": "WM_MOUSEMOVE",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 49,
+    "handler": "0x42f0e0"
+   },
+   {
+    "msg": 953,
+    "msg_name": "0x3b9",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 10,
+    "handler": "0x4151d0"
+   },
+   {
+    "msg": 83,
+    "msg_name": "WM_HELP",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 42,
+    "handler": "0x415570"
+   },
+   {
+    "msg": 514,
+    "msg_name": "WM_LBUTTONUP",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 49,
+    "handler": "0x415a40"
+   },
+   {
+    "msg": 517,
+    "msg_name": "WM_RBUTTONUP",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 49,
+    "handler": "0x415ac0"
+   },
+   {
+    "msg": 5,
+    "msg_name": "0x5",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 17,
+    "handler": "0x415c60"
+   },
+   {
+    "msg": 36,
+    "msg_name": "0x24",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 31,
+    "handler": "0x415fa0"
+   }
+  ],
+  "ddx": {
+   "2290": "Control",
+   "2191": "Control",
+   "2000": "Control",
+   "2357": "Control",
+   "2368": "Control",
+   "2267": "Control",
+   "2049": "Control",
+   "2057": "Control",
+   "2070": "Control",
+   "2058": "Control",
+   "2055": "Control",
+   "2039": "Control",
+   "2025": "Control",
+   "2189": "Control",
+   "2186": "Control",
+   "2016": "Control",
+   "2381": "Control",
+   "2221": "Control",
+   "2219": "Control",
+   "2220": "Control"
+  }
+ },
+ "3003": {
+  "style": 2160591040,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 359,
+  "h": 235,
+  "title": "ID SELECT",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2194,
+    "cls": "SysListView32",
+    "key": "List1",
+    "x": 5,
+    "y": 5,
+    "w": 290,
+    "h": 225,
+    "style": 1350631512,
+    "exstyle": 0
+   },
+   {
+    "id": 1,
+    "cls": "Button",
+    "key": "&OK",
+    "x": 302,
+    "y": 5,
+    "w": 50,
+    "h": 13,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50026
+   },
+   {
+    "id": 2,
+    "cls": "Button",
+    "key": "CANCEL",
+    "x": 302,
+    "y": 22,
+    "w": 50,
+    "h": 13,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50006
+   },
+   {
+    "id": 2347,
+    "cls": "Static",
+    "key": "VIEW",
+    "x": 304,
+    "y": 198,
+    "w": 50,
+    "h": 8,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50361
+   },
+   {
+    "id": 2218,
+    "cls": "Button",
+    "key": "SYMBOLS",
+    "x": 304,
+    "y": 208,
+    "w": 50,
+    "h": 10,
+    "style": 1342390281,
+    "exstyle": 0,
+    "text_id": 50338
+   },
+   {
+    "id": 2206,
+    "cls": "Button",
+    "key": "DETAILS",
+    "x": 304,
+    "y": 218,
+    "w": 50,
+    "h": 10,
+    "style": 1342193673,
+    "exstyle": 0,
+    "text_id": 50158
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x468178",
+   "ctors": [
+    "0x41a680"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x41ac30"
+   },
+   {
+    "msg": 78,
+    "msg_name": "WM_NOTIFY",
+    "code": 65533,
+    "code_name": "0xfffd",
+    "id": 2194,
+    "last_id": 2194,
+    "sig": 38,
+    "handler": "0x41aca0"
+   },
+   {
+    "msg": 78,
+    "msg_name": "WM_NOTIFY",
+    "code": 65428,
+    "code_name": "0xff94",
+    "id": 2194,
+    "last_id": 2194,
+    "sig": 38,
+    "handler": "0x41adf0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2206,
+    "last_id": 2206,
+    "sig": 12,
+    "handler": "0x41af30"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2218,
+    "last_id": 2218,
+    "sig": 12,
+    "handler": "0x41af40"
+   }
+  ],
+  "title_id": 50511,
+  "ddx": {
+   "2218": "DDX_0x459586",
+   "2206": "Control",
+   "2347": "Control",
+   "2194": "Control",
+   "1": "Control",
+   "2": "Control"
+  }
+ },
+ "3004": {
+  "style": 2147483840,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 211,
+  "h": 46,
+  "title": "",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2332,
+    "cls": "Static",
+    "key": "PROMPT",
+    "x": 2,
+    "y": 2,
+    "w": 207,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0
+   },
+   {
+    "id": 2143,
+    "cls": "Edit",
+    "key": "",
+    "x": 2,
+    "y": 13,
+    "w": 207,
+    "h": 13,
+    "style": 1350631552,
+    "exstyle": 0
+   },
+   {
+    "id": 1,
+    "cls": "Button",
+    "key": "OK",
+    "x": 104,
+    "y": 30,
+    "w": 50,
+    "h": 14,
+    "style": 1342242817,
+    "exstyle": 0,
+    "text_id": 50026
+   },
+   {
+    "id": 2,
+    "cls": "Button",
+    "key": "CANCEL",
+    "x": 159,
+    "y": 30,
+    "w": 50,
+    "h": 14,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50006
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x4667e8",
+   "ctors": [
+    "0x4024b0"
+   ]
+  },
+  "handlers": [],
+  "ddx": {
+   "2143": "DDX_0x4594e2",
+   "1": "Control",
+   "2": "Control",
+   "2332": "DDX_0x4594e2"
+  }
+ },
+ "3005": {
+  "style": 2155872320,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 194,
+  "h": 98,
+  "title": "",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x469da0",
+   "ctors": [
+    "0x429d20"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x403a10"
+   },
+   {
+    "msg": 15,
+    "msg_name": "WM_PAINT",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x429f30"
+   }
+  ],
+  "title_id": 50527,
+  "ddx": {}
+ },
+ "3006": {
+  "style": 2160591040,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 285,
+  "h": 145,
+  "title": "LICENSE",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 1,
+    "cls": "Button",
+    "key": "ACCEPT",
+    "x": 126,
+    "y": 124,
+    "w": 74,
+    "h": 14,
+    "style": 1342242817,
+    "exstyle": 0,
+    "text_id": 50000
+   },
+   {
+    "id": 2157,
+    "cls": "Edit",
+    "key": "",
+    "x": 7,
+    "y": 7,
+    "w": 273,
+    "h": 114,
+    "style": 1352730628,
+    "exstyle": 0
+   },
+   {
+    "id": 2,
+    "cls": "Button",
+    "key": "CANCEL",
+    "x": 204,
+    "y": 124,
+    "w": 74,
+    "h": 14,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50006
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x4684e0",
+   "ctors": [
+    "0x41d470"
+   ]
+  },
+  "handlers": [],
+  "title_id": 50514,
+  "ddx": {
+   "1": "Control",
+   "2": "Control",
+   "2157": "Control"
+  }
+ },
+ "3007": {
+  "style": 2160591040,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 285,
+  "h": 151,
+  "title": "LOG",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 1,
+    "cls": "Button",
+    "key": "OK",
+    "x": 117,
+    "y": 132,
+    "w": 50,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50026
+   },
+   {
+    "id": 2145,
+    "cls": "Edit",
+    "key": "",
+    "x": 6,
+    "y": 15,
+    "w": 273,
+    "h": 114,
+    "style": 1352730628,
+    "exstyle": 0
+   },
+   {
+    "id": 2296,
+    "cls": "Static",
+    "key": "ERRORLOG",
+    "x": 6,
+    "y": 3,
+    "w": 273,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50175
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x4685e8",
+   "ctors": [
+    "0x41d6a0"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x420f90"
+   }
+  ],
+  "title_id": 50515,
+  "ddx": {
+   "1": "Control",
+   "2296": "Control",
+   "2145": "DDX_0x4594e2"
+  }
+ },
+ "3008": {
+  "style": 2160591040,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 225,
+  "h": 96,
+  "title": "MESSAGE",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 65535,
+    "cls": "Button",
+    "key": "",
+    "x": 3,
+    "y": 0,
+    "w": 219,
+    "h": 75,
+    "style": 1342177287,
+    "exstyle": 0
+   },
+   {
+    "id": 2358,
+    "cls": "Static",
+    "key": "TEXT",
+    "x": 8,
+    "y": 9,
+    "w": 210,
+    "h": 63,
+    "style": 1342308352,
+    "exstyle": 0
+   },
+   {
+    "id": 1,
+    "cls": "Button",
+    "key": "OK",
+    "x": 3,
+    "y": 78,
+    "w": 50,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0
+   },
+   {
+    "id": 2,
+    "cls": "Button",
+    "key": "CANCEL",
+    "x": 57,
+    "y": 78,
+    "w": 50,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x4686f0",
+   "ctors": [
+    "0x41d810"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x420f90"
+   }
+  ],
+  "title_id": 50516,
+  "ddx": {
+   "1": "Control",
+   "2": "Control",
+   "2358": "DDX_0x4594e2"
+  }
+ },
+ "3009": {
+  "style": 2160591040,
+  "exstyle": 1024,
+  "x": 0,
+  "y": 0,
+  "w": 190,
+  "h": 143,
+  "title": "NETSTART",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 1,
+    "cls": "Button",
+    "key": "OK",
+    "x": 42,
+    "y": 122,
+    "w": 50,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50033
+   },
+   {
+    "id": 2,
+    "cls": "Button",
+    "key": "CANCEL",
+    "x": 96,
+    "y": 122,
+    "w": 50,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50006
+   },
+   {
+    "id": 2087,
+    "cls": "Button",
+    "key": "WAIT FOR PARTICIPANTS",
+    "x": 6,
+    "y": 7,
+    "w": 124,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50216
+   },
+   {
+    "id": 2090,
+    "cls": "Button",
+    "key": "NORUNTIMEJOIN",
+    "x": 6,
+    "y": 18,
+    "w": 124,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50254
+   },
+   {
+    "id": 2089,
+    "cls": "Button",
+    "key": "NOREFREQUEST",
+    "x": 6,
+    "y": 28,
+    "w": 168,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50251
+   },
+   {
+    "id": 2100,
+    "cls": "Button",
+    "key": "SIGN UP AT SERVER",
+    "x": 6,
+    "y": 39,
+    "w": 124,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50322
+   },
+   {
+    "id": 2276,
+    "cls": "Static",
+    "key": "RATE",
+    "x": 135,
+    "y": 5,
+    "w": 47,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50148
+   },
+   {
+    "id": 2111,
+    "cls": "Edit",
+    "key": "",
+    "x": 135,
+    "y": 16,
+    "w": 27,
+    "h": 12,
+    "style": 1350639744,
+    "exstyle": 0
+   },
+   {
+    "id": 2260,
+    "cls": "msctls_updown32",
+    "key": "Spin1",
+    "x": 162,
+    "y": 16,
+    "w": 10,
+    "h": 12,
+    "style": 1342177334,
+    "exstyle": 0
+   },
+   {
+    "id": 2350,
+    "cls": "Static",
+    "key": "SIGN UP ADDRESS",
+    "x": 6,
+    "y": 54,
+    "w": 177,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50321
+   },
+   {
+    "id": 2154,
+    "cls": "Edit",
+    "key": "",
+    "x": 6,
+    "y": 65,
+    "w": 177,
+    "h": 12,
+    "style": 1350631552,
+    "exstyle": 0
+   },
+   {
+    "id": 2274,
+    "cls": "Static",
+    "key": "COMMENT",
+    "x": 6,
+    "y": 81,
+    "w": 177,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50140
+   },
+   {
+    "id": 2110,
+    "cls": "Edit",
+    "key": "",
+    "x": 6,
+    "y": 92,
+    "w": 177,
+    "h": 26,
+    "style": 1350631556,
+    "exstyle": 0
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x468840",
+   "ctors": [
+    "0x41dbc0"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x420f90"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2100,
+    "last_id": 2100,
+    "sig": 12,
+    "handler": "0x41e120"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2087,
+    "last_id": 2087,
+    "sig": 12,
+    "handler": "0x421000"
+   },
+   {
+    "msg": 83,
+    "msg_name": "WM_HELP",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 42,
+    "handler": "0x423dd0"
+   }
+  ],
+  "title_id": 50517,
+  "ddx": {
+   "2089": "DDX_0x459534",
+   "2090": "DDX_0x459534",
+   "2154": "DDX_0x4594e2",
+   "2100": "DDX_0x459534",
+   "2260": "Control",
+   "2276": "Control",
+   "1": "Control",
+   "2": "Control",
+   "2350": "Control",
+   "2274": "Control",
+   "2087": "DDX_0x459534",
+   "2110": "DDX_0x4594e2",
+   "2111": "DDX_0x4594b3"
+  }
+ },
+ "3010": {
+  "style": 1086324800,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 214,
+  "h": 175,
+  "title": "DEVELOPER",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2298,
+    "cls": "Button",
+    "key": "FRONTEND",
+    "x": 6,
+    "y": 6,
+    "w": 189,
+    "h": 48,
+    "style": 1342177287,
+    "exstyle": 0,
+    "text_id": 50182
+   },
+   {
+    "id": 2076,
+    "cls": "Button",
+    "key": "AUTOEDITSCAN",
+    "x": 12,
+    "y": 18,
+    "w": 177,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50110
+   },
+   {
+    "id": 2096,
+    "cls": "Button",
+    "key": "SENDDEFRELOAD",
+    "x": 12,
+    "y": 27,
+    "w": 180,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50314
+   },
+   {
+    "id": 2294,
+    "cls": "Button",
+    "key": "ENGINE",
+    "x": 6,
+    "y": 59,
+    "w": 189,
+    "h": 48,
+    "style": 1342177287,
+    "exstyle": 0,
+    "text_id": 50172
+   },
+   {
+    "id": 2079,
+    "cls": "Button",
+    "key": "DEBUGMODE",
+    "x": 12,
+    "y": 71,
+    "w": 177,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50155
+   },
+   {
+    "id": 2103,
+    "cls": "Button",
+    "key": "VERBOSEOBJECTS",
+    "x": 12,
+    "y": 80,
+    "w": 180,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50359
+   }
+  ],
+  "class": {
+   "base": "CPropertyPage",
+   "vtable": "0x468c00",
+   "ctors": [
+    "0x4201b0"
+   ]
+  },
+  "handlers": [],
+  "ddx": {
+   "2298": "Control",
+   "2294": "Control",
+   "2076": "DDX_0x459534",
+   "2096": "DDX_0x459534",
+   "2103": "DDX_0x459534",
+   "2079": "DDX_0x459534"
+  }
+ },
+ "3011": {
+  "style": 2160066752,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 226,
+  "h": 212,
+  "title": "EDITOR",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2129,
+    "cls": "Edit",
+    "key": "",
+    "x": 6,
+    "y": 30,
+    "w": 132,
+    "h": 12,
+    "style": 1350631552,
+    "exstyle": 0
+   },
+   {
+    "id": 2047,
+    "cls": "Button",
+    "key": "BROWSE",
+    "x": 141,
+    "y": 30,
+    "w": 63,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50004
+   },
+   {
+    "id": 2358,
+    "cls": "Static",
+    "key": "TEXT",
+    "x": 6,
+    "y": 19,
+    "w": 135,
+    "h": 11,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50339
+   },
+   {
+    "id": 2126,
+    "cls": "Edit",
+    "key": "",
+    "x": 6,
+    "y": 57,
+    "w": 132,
+    "h": 12,
+    "style": 1350631552,
+    "exstyle": 0
+   },
+   {
+    "id": 2044,
+    "cls": "Button",
+    "key": "BROWSE",
+    "x": 141,
+    "y": 57,
+    "w": 63,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50004
+   },
+   {
+    "id": 2340,
+    "cls": "Static",
+    "key": "RICHTEXT",
+    "x": 6,
+    "y": 46,
+    "w": 135,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50292
+   },
+   {
+    "id": 2127,
+    "cls": "Edit",
+    "key": "",
+    "x": 6,
+    "y": 84,
+    "w": 132,
+    "h": 12,
+    "style": 1350631552,
+    "exstyle": 0
+   },
+   {
+    "id": 2045,
+    "cls": "Button",
+    "key": "BROWSE",
+    "x": 141,
+    "y": 84,
+    "w": 63,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50004
+   },
+   {
+    "id": 2343,
+    "cls": "Static",
+    "key": "SCRIPT",
+    "x": 6,
+    "y": 73,
+    "w": 135,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50297
+   },
+   {
+    "id": 2124,
+    "cls": "Edit",
+    "key": "",
+    "x": 6,
+    "y": 110,
+    "w": 132,
+    "h": 12,
+    "style": 1350631552,
+    "exstyle": 0
+   },
+   {
+    "id": 2042,
+    "cls": "Button",
+    "key": "BROWSE",
+    "x": 141,
+    "y": 110,
+    "w": 63,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50004
+   },
+   {
+    "id": 2268,
+    "cls": "Static",
+    "key": "BITMAP",
+    "x": 6,
+    "y": 100,
+    "w": 135,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50113
+   },
+   {
+    "id": 2128,
+    "cls": "Edit",
+    "key": "",
+    "x": 6,
+    "y": 136,
+    "w": 132,
+    "h": 12,
+    "style": 1350631552,
+    "exstyle": 0
+   },
+   {
+    "id": 2046,
+    "cls": "Button",
+    "key": "BROWSE",
+    "x": 141,
+    "y": 136,
+    "w": 63,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50004
+   },
+   {
+    "id": 2354,
+    "cls": "Static",
+    "key": "SOUND",
+    "x": 6,
+    "y": 126,
+    "w": 135,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50327
+   },
+   {
+    "id": 2125,
+    "cls": "Edit",
+    "key": "",
+    "x": 6,
+    "y": 162,
+    "w": 132,
+    "h": 12,
+    "style": 1350631552,
+    "exstyle": 0
+   },
+   {
+    "id": 2043,
+    "cls": "Button",
+    "key": "BROWSE",
+    "x": 141,
+    "y": 162,
+    "w": 63,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50004
+   },
+   {
+    "id": 2325,
+    "cls": "Static",
+    "key": "MUSIC",
+    "x": 6,
+    "y": 152,
+    "w": 135,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50240
+   },
+   {
+    "id": 2130,
+    "cls": "Edit",
+    "key": "",
+    "x": 6,
+    "y": 189,
+    "w": 132,
+    "h": 12,
+    "style": 1350631552,
+    "exstyle": 0
+   },
+   {
+    "id": 2048,
+    "cls": "Button",
+    "key": "BROWSE",
+    "x": 141,
+    "y": 189,
+    "w": 63,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50004
+   },
+   {
+    "id": 2378,
+    "cls": "Static",
+    "key": "ZIP",
+    "x": 6,
+    "y": 179,
+    "w": 135,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50374
+   },
+   {
+    "id": 2102,
+    "cls": "Button",
+    "key": "USESHELL",
+    "x": 6,
+    "y": 6,
+    "w": 198,
+    "h": 10,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50351
+   }
+  ],
+  "class": {
+   "base": "CPropertyPage",
+   "vtable": "0x467320",
+   "ctors": [
+    "0x40fbe0"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2042,
+    "last_id": 2042,
+    "sig": 12,
+    "handler": "0x4106e0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2043,
+    "last_id": 2043,
+    "sig": 12,
+    "handler": "0x410780"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2044,
+    "last_id": 2044,
+    "sig": 12,
+    "handler": "0x410820"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2045,
+    "last_id": 2045,
+    "sig": 12,
+    "handler": "0x4108c0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2046,
+    "last_id": 2046,
+    "sig": 12,
+    "handler": "0x410960"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2047,
+    "last_id": 2047,
+    "sig": 12,
+    "handler": "0x410a00"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2048,
+    "last_id": 2048,
+    "sig": 12,
+    "handler": "0x410aa0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2102,
+    "last_id": 2102,
+    "sig": 12,
+    "handler": "0x410c50"
+   }
+  ],
+  "ddx": {
+   "2130": "DDX_0x4594e2",
+   "2129": "DDX_0x4594e2",
+   "2128": "DDX_0x4594e2",
+   "2127": "DDX_0x4594e2",
+   "2126": "DDX_0x4594e2",
+   "2125": "DDX_0x4594e2",
+   "2124": "DDX_0x4594e2",
+   "2102": "DDX_0x459534",
+   "2378": "Control",
+   "2048": "Control",
+   "2358": "Control",
+   "2354": "Control",
+   "2343": "Control",
+   "2340": "Control",
+   "2325": "Control",
+   "2268": "Control",
+   "2047": "Control",
+   "2046": "Control",
+   "2045": "Control",
+   "2044": "Control",
+   "2043": "Control",
+   "2042": "Control"
+  }
+ },
+ "3012": {
+  "style": 1073741888,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 396,
+  "h": 204,
+  "title": "",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2266,
+    "cls": "Static",
+    "key": "ANIMALS",
+    "x": 5,
+    "y": 5,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50105
+   },
+   {
+    "id": 2192,
+    "cls": "ListBox",
+    "key": "",
+    "x": 5,
+    "y": 15,
+    "w": 170,
+    "h": 30,
+    "style": 1350635281,
+    "exstyle": 0,
+    "text_id": 51700
+   },
+   {
+    "id": 2062,
+    "cls": "Static",
+    "key": "",
+    "x": 175,
+    "y": 15,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2367,
+    "cls": "Static",
+    "key": "VEGETATION TYPES",
+    "x": 5,
+    "y": 55,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50356
+   },
+   {
+    "id": 2204,
+    "cls": "ListBox",
+    "key": "",
+    "x": 5,
+    "y": 65,
+    "w": 170,
+    "h": 30,
+    "style": 1350635281,
+    "exstyle": 0,
+    "text_id": 51714
+   },
+   {
+    "id": 2071,
+    "cls": "Static",
+    "key": "",
+    "x": 175,
+    "y": 65,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2366,
+    "cls": "Static",
+    "key": "VEGETATION AMOUNTS",
+    "x": 5,
+    "y": 110,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50355
+   },
+   {
+    "id": 2251,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 120,
+    "w": 170,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   },
+   {
+    "id": 2326,
+    "cls": "Static",
+    "key": "NESTS",
+    "x": 205,
+    "y": 5,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50243
+   },
+   {
+    "id": 2200,
+    "cls": "ListBox",
+    "key": "",
+    "x": 205,
+    "y": 15,
+    "w": 170,
+    "h": 30,
+    "style": 1350635281,
+    "exstyle": 0,
+    "text_id": 51710
+   },
+   {
+    "id": 2068,
+    "cls": "Static",
+    "key": "",
+    "x": 375,
+    "y": 15,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2309,
+    "cls": "Static",
+    "key": "INEARTH TYPES",
+    "x": 205,
+    "y": 55,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50207
+   },
+   {
+    "id": 2198,
+    "cls": "ListBox",
+    "key": "",
+    "x": 205,
+    "y": 65,
+    "w": 170,
+    "h": 30,
+    "style": 1350635281,
+    "exstyle": 0,
+    "text_id": 51706
+   },
+   {
+    "id": 2066,
+    "cls": "Static",
+    "key": "",
+    "x": 375,
+    "y": 65,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2235,
+    "cls": "Static",
+    "key": "",
+    "x": 205,
+    "y": 120,
+    "w": 170,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   },
+   {
+    "id": 2308,
+    "cls": "Static",
+    "key": "INEARTH AMOUNTS",
+    "x": 205,
+    "y": 110,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50206
+   },
+   {
+    "id": 2250,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 97,
+    "w": 170,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   },
+   {
+    "id": 2234,
+    "cls": "Static",
+    "key": "",
+    "x": 205,
+    "y": 97,
+    "w": 170,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   },
+   {
+    "id": 2223,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 46,
+    "w": 170,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   },
+   {
+    "id": 2240,
+    "cls": "Static",
+    "key": "",
+    "x": 205,
+    "y": 46,
+    "w": 170,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   },
+   {
+    "id": 2295,
+    "cls": "Static",
+    "key": "ENVIRONMENT",
+    "x": 6,
+    "y": 133,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50174
+   },
+   {
+    "id": 2195,
+    "cls": "ListBox",
+    "key": "",
+    "x": 6,
+    "y": 143,
+    "w": 369,
+    "h": 30,
+    "style": 1350635281,
+    "exstyle": 0
+   },
+   {
+    "id": 2064,
+    "cls": "Static",
+    "key": "",
+    "x": 375,
+    "y": 142,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2228,
+    "cls": "Static",
+    "key": "",
+    "x": 6,
+    "y": 175,
+    "w": 369,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x468d58",
+   "ctors": [
+    "0x4205d0"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 15,
+    "msg_name": "WM_PAINT",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x420f70"
+   },
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x420f90"
+   },
+   {
+    "msg": 123,
+    "msg_name": "WM_CONTEXTMENU",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 25,
+    "handler": "0x420fb0"
+   }
+  ],
+  "title_id": 51703,
+  "ddx": {
+   "2295": "Control",
+   "2228": "Control",
+   "2195": "Control",
+   "2064": "Control",
+   "2240": "Control",
+   "2223": "Control",
+   "2250": "Control",
+   "2234": "Control",
+   "2367": "Control",
+   "2366": "Control",
+   "2326": "Control",
+   "2309": "Control",
+   "2308": "Control",
+   "2266": "Control",
+   "2251": "Control",
+   "2235": "Control",
+   "2204": "Control",
+   "2200": "Control",
+   "2198": "Control",
+   "2192": "Control",
+   "2071": "Control",
+   "2068": "Control",
+   "2066": "Control",
+   "2062": "Control"
+  }
+ },
+ "3013": {
+  "style": 1073741888,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 396,
+  "h": 204,
+  "title": "",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2109,
+    "cls": "Static",
+    "key": "",
+    "x": 9,
+    "y": 73,
+    "w": 15,
+    "h": 15,
+    "style": 1342308878,
+    "exstyle": 0
+   },
+   {
+    "id": 2264,
+    "cls": "Static",
+    "key": "ACCESS",
+    "x": 25,
+    "y": 69,
+    "w": 120,
+    "h": 10,
+    "style": 1342177280,
+    "exstyle": 0,
+    "text_id": 50100
+   },
+   {
+    "id": 2074,
+    "cls": "Button",
+    "key": "ACCESS",
+    "x": 25,
+    "y": 79,
+    "w": 139,
+    "h": 10,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50171
+   },
+   {
+    "id": 2319,
+    "cls": "Static",
+    "key": "MAX PLAYERS",
+    "x": 43,
+    "y": 96,
+    "w": 50,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50228
+   },
+   {
+    "id": 2146,
+    "cls": "Edit",
+    "key": "",
+    "x": 43,
+    "y": 106,
+    "w": 25,
+    "h": 12,
+    "style": 1350639616,
+    "exstyle": 0
+   },
+   {
+    "id": 2261,
+    "cls": "msctls_updown32",
+    "key": "Spin1",
+    "x": 67,
+    "y": 106,
+    "w": 11,
+    "h": 14,
+    "style": 1342177462,
+    "exstyle": 0
+   },
+   {
+    "id": 2307,
+    "cls": "Static",
+    "key": "ICON",
+    "x": 9,
+    "y": 96,
+    "w": 25,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50203
+   },
+   {
+    "id": 2106,
+    "cls": "ComboBox",
+    "key": "",
+    "x": 9,
+    "y": 106,
+    "w": 25,
+    "h": 100,
+    "style": 1344342035,
+    "exstyle": 0
+   },
+   {
+    "id": 2300,
+    "cls": "Static",
+    "key": "GOALS",
+    "x": 6,
+    "y": 9,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50187
+   },
+   {
+    "id": 2196,
+    "cls": "ListBox",
+    "key": "",
+    "x": 6,
+    "y": 19,
+    "w": 171,
+    "h": 30,
+    "style": 1350635281,
+    "exstyle": 0,
+    "text_id": 51704
+   },
+   {
+    "id": 2065,
+    "cls": "Static",
+    "key": "",
+    "x": 177,
+    "y": 19,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2229,
+    "cls": "Static",
+    "key": "",
+    "x": 6,
+    "y": 51,
+    "w": 171,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   },
+   {
+    "id": 2341,
+    "cls": "Static",
+    "key": "RULES",
+    "x": 199,
+    "y": 9,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50295
+   },
+   {
+    "id": 2201,
+    "cls": "ListBox",
+    "key": "",
+    "x": 199,
+    "y": 19,
+    "w": 171,
+    "h": 30,
+    "style": 1350635281,
+    "exstyle": 0
+   },
+   {
+    "id": 2069,
+    "cls": "Static",
+    "key": "",
+    "x": 370,
+    "y": 19,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2245,
+    "cls": "Static",
+    "key": "",
+    "x": 199,
+    "y": 51,
+    "w": 171,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x467c70",
+   "ctors": [
+    "0x418000"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 15,
+    "msg_name": "WM_PAINT",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x418480"
+   },
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x420f90"
+   },
+   {
+    "msg": 123,
+    "msg_name": "WM_CONTEXTMENU",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 25,
+    "handler": "0x418770"
+   }
+  ],
+  "title_id": 51712,
+  "ddx": {
+   "2341": "Control",
+   "2300": "Control",
+   "2245": "Control",
+   "2229": "Control",
+   "2201": "Control",
+   "2196": "Control",
+   "2069": "Control",
+   "2065": "Control",
+   "2109": "Control",
+   "2319": "Control",
+   "2307": "Control",
+   "2264": "Control",
+   "2261": "Control",
+   "2146": "DDX_0x4594b3",
+   "2074": "DDX_0x459534",
+   "2106": "DDX_0x459696"
+  }
+ },
+ "3014": {
+  "style": 2160066752,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 240,
+  "h": 180,
+  "title": "GAMEPAD",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2002,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 21,
+    "w": 22,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2278,
+    "cls": "Static",
+    "key": "SEL LEFT",
+    "x": 30,
+    "y": 11,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50307
+   },
+   {
+    "id": 2026,
+    "cls": "Button",
+    "key": "ASSIGN",
+    "x": 30,
+    "y": 21,
+    "w": 45,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50003
+   },
+   {
+    "id": 2008,
+    "cls": "Static",
+    "key": "",
+    "x": 85,
+    "y": 21,
+    "w": 20,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2282,
+    "cls": "Static",
+    "key": "SEL TOGGLE",
+    "x": 110,
+    "y": 11,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50311
+   },
+   {
+    "id": 2030,
+    "cls": "Button",
+    "key": "ASSIGN",
+    "x": 111,
+    "y": 21,
+    "w": 45,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50003
+   },
+   {
+    "id": 2009,
+    "cls": "Static",
+    "key": "",
+    "x": 165,
+    "y": 21,
+    "w": 21,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2283,
+    "cls": "Static",
+    "key": "SEL RIGHT",
+    "x": 189,
+    "y": 11,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50310
+   },
+   {
+    "id": 2031,
+    "cls": "Button",
+    "key": "ASSIGN",
+    "x": 189,
+    "y": 21,
+    "w": 45,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50003
+   },
+   {
+    "id": 2010,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 51,
+    "w": 22,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2284,
+    "cls": "Static",
+    "key": "THROW",
+    "x": 30,
+    "y": 41,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50340
+   },
+   {
+    "id": 2032,
+    "cls": "Button",
+    "key": "ASSIGN",
+    "x": 30,
+    "y": 51,
+    "w": 45,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50003
+   },
+   {
+    "id": 2011,
+    "cls": "Static",
+    "key": "",
+    "x": 85,
+    "y": 51,
+    "w": 20,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2285,
+    "cls": "Static",
+    "key": "UP JUMP",
+    "x": 110,
+    "y": 41,
+    "w": 55,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50350
+   },
+   {
+    "id": 2147,
+    "cls": "Edit",
+    "key": "",
+    "x": 111,
+    "y": 51,
+    "w": 45,
+    "h": 12,
+    "style": 1350633601,
+    "exstyle": 0,
+    "text_id": 50260
+   },
+   {
+    "id": 2012,
+    "cls": "Static",
+    "key": "",
+    "x": 165,
+    "y": 51,
+    "w": 21,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2286,
+    "cls": "Static",
+    "key": "DIG",
+    "x": 190,
+    "y": 41,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50161
+   },
+   {
+    "id": 2033,
+    "cls": "Button",
+    "key": "ASSIGN",
+    "x": 189,
+    "y": 51,
+    "w": 45,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50003
+   },
+   {
+    "id": 2013,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 81,
+    "w": 22,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2287,
+    "cls": "Static",
+    "key": "LEFT",
+    "x": 30,
+    "y": 71,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50214
+   },
+   {
+    "id": 2148,
+    "cls": "Edit",
+    "key": "",
+    "x": 30,
+    "y": 81,
+    "w": 45,
+    "h": 12,
+    "style": 1350633601,
+    "exstyle": 0,
+    "text_id": 50260
+   },
+   {
+    "id": 2014,
+    "cls": "Static",
+    "key": "",
+    "x": 85,
+    "y": 81,
+    "w": 20,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2288,
+    "cls": "Static",
+    "key": "DOWN STOP",
+    "x": 110,
+    "y": 71,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50162
+   },
+   {
+    "id": 2149,
+    "cls": "Edit",
+    "key": "",
+    "x": 111,
+    "y": 81,
+    "w": 45,
+    "h": 12,
+    "style": 1350633601,
+    "exstyle": 0,
+    "text_id": 50260
+   },
+   {
+    "id": 2015,
+    "cls": "Static",
+    "key": "",
+    "x": 165,
+    "y": 81,
+    "w": 21,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2289,
+    "cls": "Static",
+    "key": "RIGHT",
+    "x": 190,
+    "y": 71,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50293
+   },
+   {
+    "id": 2150,
+    "cls": "Edit",
+    "key": "",
+    "x": 189,
+    "y": 81,
+    "w": 45,
+    "h": 12,
+    "style": 1350633601,
+    "exstyle": 0,
+    "text_id": 50260
+   },
+   {
+    "id": 2003,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 111,
+    "w": 22,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2279,
+    "cls": "Static",
+    "key": "MENU",
+    "x": 30,
+    "y": 101,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50269
+   },
+   {
+    "id": 2027,
+    "cls": "Button",
+    "key": "ASSIGN",
+    "x": 30,
+    "y": 111,
+    "w": 45,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50003
+   },
+   {
+    "id": 2333,
+    "cls": "Static",
+    "key": "PROMPTPAD",
+    "x": 3,
+    "y": 135,
+    "w": 231,
+    "h": 18,
+    "style": 1342308353,
+    "exstyle": 0,
+    "text_id": 50127
+   },
+   {
+    "id": 2006,
+    "cls": "Static",
+    "key": "",
+    "x": 84,
+    "y": 112,
+    "w": 21,
+    "h": 20,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2280,
+    "cls": "Static",
+    "key": "SPECIAL1",
+    "x": 109,
+    "y": 102,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50330
+   },
+   {
+    "id": 2028,
+    "cls": "Button",
+    "key": "ASSIGN",
+    "x": 109,
+    "y": 112,
+    "w": 45,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50003
+   },
+   {
+    "id": 2007,
+    "cls": "Static",
+    "key": "",
+    "x": 165,
+    "y": 112,
+    "w": 21,
+    "h": 20,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2281,
+    "cls": "Static",
+    "key": "SPECIAL2",
+    "x": 190,
+    "y": 102,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50331
+   },
+   {
+    "id": 2029,
+    "cls": "Button",
+    "key": "ASSIGN",
+    "x": 190,
+    "y": 112,
+    "w": 45,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50003
+   },
+   {
+    "id": 2059,
+    "cls": "Button",
+    "key": "RESETCALIBRATION",
+    "x": 70,
+    "y": 159,
+    "w": 100,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50005
+   }
+  ],
+  "class": {
+   "base": "CPropertyPage",
+   "vtable": "0x467b18",
+   "ctors": [
+    "0x416930"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 1027,
+    "msg_name": "0x403",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 10,
+    "handler": "0x417900"
+   },
+   {
+    "msg": 15,
+    "msg_name": "WM_PAINT",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x417690"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2026,
+    "last_id": 2026,
+    "sig": 12,
+    "handler": "0x417c50"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2027,
+    "last_id": 2027,
+    "sig": 12,
+    "handler": "0x417cc0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2030,
+    "last_id": 2030,
+    "sig": 12,
+    "handler": "0x417d30"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2031,
+    "last_id": 2031,
+    "sig": 12,
+    "handler": "0x417da0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2032,
+    "last_id": 2032,
+    "sig": 12,
+    "handler": "0x417e10"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2033,
+    "last_id": 2033,
+    "sig": 12,
+    "handler": "0x417e80"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2028,
+    "last_id": 2028,
+    "sig": 12,
+    "handler": "0x417ef0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2029,
+    "last_id": 2029,
+    "sig": 12,
+    "handler": "0x417f60"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2059,
+    "last_id": 2059,
+    "sig": 12,
+    "handler": "0x417fd0"
+   }
+  ],
+  "title_id": 50279,
+  "ddx": {
+   "2059": "Control",
+   "2281": "Control",
+   "2280": "Control",
+   "2029": "Control",
+   "2028": "Control",
+   "2006": "Control",
+   "2333": "Control",
+   "2150": "Control",
+   "2149": "Control",
+   "2148": "Control",
+   "2147": "Control",
+   "2027": "Control",
+   "2033": "Control",
+   "2032": "Control",
+   "2031": "Control",
+   "2030": "Control",
+   "2026": "Control",
+   "2015": "Control",
+   "2014": "Control",
+   "2013": "Control",
+   "2012": "Control",
+   "2011": "Control",
+   "2010": "Control",
+   "2009": "Control",
+   "2008": "Control",
+   "2003": "Control",
+   "2002": "Control",
+   "2289": "Control",
+   "2288": "Control",
+   "2287": "Control",
+   "2286": "Control",
+   "2285": "Control",
+   "2284": "Control",
+   "2283": "Control",
+   "2282": "Control",
+   "2279": "Control",
+   "2278": "Control",
+   "2007": "Control"
+  }
+ },
+ "3015": {
+  "style": 1086324800,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 186,
+  "h": 175,
+  "title": "GRAPHICS",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2339,
+    "cls": "Button",
+    "key": "RESOLUTION",
+    "x": 4,
+    "y": 6,
+    "w": 68,
+    "h": 48,
+    "style": 1342177287,
+    "exstyle": 0,
+    "text_id": 50291
+   },
+   {
+    "id": 2215,
+    "cls": "Button",
+    "key": "640x480",
+    "x": 11,
+    "y": 18,
+    "w": 50,
+    "h": 10,
+    "style": 1342308361,
+    "exstyle": 0
+   },
+   {
+    "id": 2216,
+    "cls": "Button",
+    "key": "800x600",
+    "x": 11,
+    "y": 28,
+    "w": 50,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0
+   },
+   {
+    "id": 2217,
+    "cls": "Button",
+    "key": "1024x768",
+    "x": 11,
+    "y": 38,
+    "w": 50,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0
+   },
+   {
+    "id": 2351,
+    "cls": "Button",
+    "key": "SMOKE",
+    "x": 78,
+    "y": 6,
+    "w": 102,
+    "h": 48,
+    "style": 1342308359,
+    "exstyle": 0,
+    "text_id": 50324
+   },
+   {
+    "id": 2247,
+    "cls": "msctls_trackbar32",
+    "key": "Slider1",
+    "x": 83,
+    "y": 23,
+    "w": 91,
+    "h": 9,
+    "style": 1342242840,
+    "exstyle": 0
+   },
+   {
+    "id": 2353,
+    "cls": "Static",
+    "key": "LOW",
+    "x": 86,
+    "y": 33,
+    "w": 30,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50326
+   },
+   {
+    "id": 2352,
+    "cls": "Static",
+    "key": "HIGH",
+    "x": 144,
+    "y": 34,
+    "w": 27,
+    "h": 9,
+    "style": 1342308354,
+    "exstyle": 0,
+    "text_id": 50325
+   },
+   {
+    "id": 2349,
+    "cls": "Button",
+    "key": "SHOW",
+    "x": 4,
+    "y": 56,
+    "w": 177,
+    "h": 76,
+    "style": 1342308359,
+    "exstyle": 0,
+    "text_id": 50317
+   },
+   {
+    "id": 2104,
+    "cls": "Button",
+    "key": "VIEWPORTBORDER",
+    "x": 11,
+    "y": 68,
+    "w": 155,
+    "h": 10,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50362
+   },
+   {
+    "id": 2094,
+    "cls": "Button",
+    "key": "PLAYERINFO",
+    "x": 11,
+    "y": 78,
+    "w": 155,
+    "h": 10,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50268
+   },
+   {
+    "id": 2077,
+    "cls": "Button",
+    "key": "COLORANIMATION",
+    "x": 11,
+    "y": 88,
+    "w": 155,
+    "h": 10,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50138
+   },
+   {
+    "id": 2101,
+    "cls": "Button",
+    "key": "STARTUPMESSAGES",
+    "x": 11,
+    "y": 98,
+    "w": 155,
+    "h": 10,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50333
+   },
+   {
+    "id": 2091,
+    "cls": "Button",
+    "key": "OBJECTCOMMANDS",
+    "x": 11,
+    "y": 107,
+    "w": 155,
+    "h": 10,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50255
+   },
+   {
+    "id": 2095,
+    "cls": "Button",
+    "key": "PORTRAITS",
+    "x": 11,
+    "y": 117,
+    "w": 155,
+    "h": 10,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50275
+   },
+   {
+    "id": 2365,
+    "cls": "Button",
+    "key": "TROUBLE",
+    "x": 5,
+    "y": 135,
+    "w": 176,
+    "h": 27,
+    "style": 1342308359,
+    "exstyle": 0,
+    "text_id": 50348
+   },
+   {
+    "id": 2078,
+    "cls": "Button",
+    "key": "DDRAWSOFT",
+    "x": 11,
+    "y": 147,
+    "w": 155,
+    "h": 10,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50154
+   }
+  ],
+  "class": {
+   "base": "CPropertyPage",
+   "vtable": "0x467d78",
+   "ctors": [
+    "0x418830"
+   ]
+  },
+  "handlers": [],
+  "ddx": {
+   "2365": "Control",
+   "2101": "DDX_0x459534",
+   "2078": "DDX_0x459534",
+   "2353": "Control",
+   "2352": "Control",
+   "2351": "Control",
+   "2247": "Control",
+   "2339": "Control",
+   "2349": "Control",
+   "2104": "DDX_0x459534",
+   "2095": "DDX_0x459534",
+   "2094": "DDX_0x459534",
+   "2091": "DDX_0x459534",
+   "2077": "DDX_0x459534",
+   "2215": "DDX_0x459586"
+  }
+ },
+ "3016": {
+  "style": 2160066752,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 240,
+  "h": 180,
+  "title": "KEYBOARD",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2269,
+    "cls": "Static",
+    "key": "BLOCK",
+    "x": 5,
+    "y": 5,
+    "w": 50,
+    "h": 8,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50210
+   },
+   {
+    "id": 2035,
+    "cls": "Button",
+    "key": "BLOCK1",
+    "x": 60,
+    "y": 5,
+    "w": 41,
+    "h": 10,
+    "style": 1342308361,
+    "exstyle": 0,
+    "text_id": 50115
+   },
+   {
+    "id": 2036,
+    "cls": "Button",
+    "key": "BLOCK2",
+    "x": 105,
+    "y": 5,
+    "w": 41,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0,
+    "text_id": 50116
+   },
+   {
+    "id": 2037,
+    "cls": "Button",
+    "key": "BLOCK3",
+    "x": 150,
+    "y": 5,
+    "w": 41,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0,
+    "text_id": 50117
+   },
+   {
+    "id": 2038,
+    "cls": "Button",
+    "key": "BLOCK4",
+    "x": 192,
+    "y": 5,
+    "w": 41,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0,
+    "text_id": 50118
+   },
+   {
+    "id": 65535,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 20,
+    "w": 230,
+    "h": 1,
+    "style": 1342308368,
+    "exstyle": 0
+   },
+   {
+    "id": 2002,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 45,
+    "w": 15,
+    "h": 15,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2278,
+    "cls": "Static",
+    "key": "SEL LEFT",
+    "x": 30,
+    "y": 35,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50307
+   },
+   {
+    "id": 2112,
+    "cls": "msctls_hotkey32",
+    "key": "HotKey1",
+    "x": 30,
+    "y": 45,
+    "w": 45,
+    "h": 12,
+    "style": 1350631424,
+    "exstyle": 0
+   },
+   {
+    "id": 2008,
+    "cls": "Static",
+    "key": "",
+    "x": 85,
+    "y": 45,
+    "w": 15,
+    "h": 15,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2282,
+    "cls": "Static",
+    "key": "SEL TOGGLE",
+    "x": 110,
+    "y": 35,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50311
+   },
+   {
+    "id": 2116,
+    "cls": "msctls_hotkey32",
+    "key": "HotKey1",
+    "x": 110,
+    "y": 45,
+    "w": 45,
+    "h": 12,
+    "style": 1350631424,
+    "exstyle": 0
+   },
+   {
+    "id": 2009,
+    "cls": "Static",
+    "key": "",
+    "x": 165,
+    "y": 45,
+    "w": 15,
+    "h": 15,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2283,
+    "cls": "Static",
+    "key": "SEL RIGHT",
+    "x": 190,
+    "y": 35,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50310
+   },
+   {
+    "id": 2117,
+    "cls": "msctls_hotkey32",
+    "key": "HotKey1",
+    "x": 190,
+    "y": 45,
+    "w": 45,
+    "h": 12,
+    "style": 1350631424,
+    "exstyle": 0
+   },
+   {
+    "id": 2010,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 75,
+    "w": 15,
+    "h": 15,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2284,
+    "cls": "Static",
+    "key": "THROW",
+    "x": 30,
+    "y": 65,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50340
+   },
+   {
+    "id": 2118,
+    "cls": "msctls_hotkey32",
+    "key": "HotKey1",
+    "x": 30,
+    "y": 75,
+    "w": 45,
+    "h": 12,
+    "style": 1350631424,
+    "exstyle": 0
+   },
+   {
+    "id": 2011,
+    "cls": "Static",
+    "key": "",
+    "x": 85,
+    "y": 75,
+    "w": 15,
+    "h": 15,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2285,
+    "cls": "Static",
+    "key": "UP JUMP",
+    "x": 110,
+    "y": 65,
+    "w": 55,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50350
+   },
+   {
+    "id": 2119,
+    "cls": "msctls_hotkey32",
+    "key": "HotKey1",
+    "x": 110,
+    "y": 75,
+    "w": 45,
+    "h": 12,
+    "style": 1350631424,
+    "exstyle": 0
+   },
+   {
+    "id": 2012,
+    "cls": "Static",
+    "key": "",
+    "x": 165,
+    "y": 75,
+    "w": 15,
+    "h": 15,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2286,
+    "cls": "Static",
+    "key": "DIG",
+    "x": 190,
+    "y": 65,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50161
+   },
+   {
+    "id": 2120,
+    "cls": "msctls_hotkey32",
+    "key": "HotKey1",
+    "x": 190,
+    "y": 75,
+    "w": 45,
+    "h": 12,
+    "style": 1350631424,
+    "exstyle": 0
+   },
+   {
+    "id": 2013,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 105,
+    "w": 15,
+    "h": 15,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2287,
+    "cls": "Static",
+    "key": "LEFT",
+    "x": 30,
+    "y": 95,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50214
+   },
+   {
+    "id": 2121,
+    "cls": "msctls_hotkey32",
+    "key": "HotKey1",
+    "x": 30,
+    "y": 105,
+    "w": 45,
+    "h": 12,
+    "style": 1350631424,
+    "exstyle": 0
+   },
+   {
+    "id": 2014,
+    "cls": "Static",
+    "key": "",
+    "x": 85,
+    "y": 105,
+    "w": 15,
+    "h": 15,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2288,
+    "cls": "Static",
+    "key": "DOWN STOP",
+    "x": 110,
+    "y": 95,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50162
+   },
+   {
+    "id": 2122,
+    "cls": "msctls_hotkey32",
+    "key": "HotKey1",
+    "x": 110,
+    "y": 105,
+    "w": 45,
+    "h": 12,
+    "style": 1350631424,
+    "exstyle": 0
+   },
+   {
+    "id": 2015,
+    "cls": "Static",
+    "key": "",
+    "x": 165,
+    "y": 105,
+    "w": 15,
+    "h": 15,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2289,
+    "cls": "Static",
+    "key": "RIGHT",
+    "x": 190,
+    "y": 95,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50293
+   },
+   {
+    "id": 2123,
+    "cls": "msctls_hotkey32",
+    "key": "HotKey1",
+    "x": 190,
+    "y": 105,
+    "w": 45,
+    "h": 12,
+    "style": 1350631424,
+    "exstyle": 0
+   },
+   {
+    "id": 2003,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 135,
+    "w": 15,
+    "h": 15,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2279,
+    "cls": "Static",
+    "key": "MENU",
+    "x": 30,
+    "y": 125,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50269
+   },
+   {
+    "id": 2113,
+    "cls": "msctls_hotkey32",
+    "key": "HotKey1",
+    "x": 30,
+    "y": 135,
+    "w": 45,
+    "h": 12,
+    "style": 1350631424,
+    "exstyle": 0
+   },
+   {
+    "id": 2004,
+    "cls": "Static",
+    "key": "",
+    "x": 84,
+    "y": 136,
+    "w": 15,
+    "h": 15,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2280,
+    "cls": "Static",
+    "key": "SPECIAL1",
+    "x": 109,
+    "y": 126,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50330
+   },
+   {
+    "id": 2114,
+    "cls": "msctls_hotkey32",
+    "key": "HotKey1",
+    "x": 110,
+    "y": 135,
+    "w": 45,
+    "h": 12,
+    "style": 1350631424,
+    "exstyle": 0
+   },
+   {
+    "id": 2005,
+    "cls": "Static",
+    "key": "",
+    "x": 165,
+    "y": 136,
+    "w": 15,
+    "h": 15,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2281,
+    "cls": "Static",
+    "key": "SPECIAL2",
+    "x": 190,
+    "y": 126,
+    "w": 45,
+    "h": 8,
+    "style": 1342308364,
+    "exstyle": 0,
+    "text_id": 50331
+   },
+   {
+    "id": 2115,
+    "cls": "msctls_hotkey32",
+    "key": "HotKey1",
+    "x": 190,
+    "y": 135,
+    "w": 45,
+    "h": 12,
+    "style": 1350631424,
+    "exstyle": 0
+   },
+   {
+    "id": 2131,
+    "cls": "Edit",
+    "key": "",
+    "x": 30,
+    "y": 45,
+    "w": 45,
+    "h": 12,
+    "style": 1350633600,
+    "exstyle": 0
+   },
+   {
+    "id": 2135,
+    "cls": "Edit",
+    "key": "",
+    "x": 110,
+    "y": 45,
+    "w": 45,
+    "h": 12,
+    "style": 1350633600,
+    "exstyle": 0
+   },
+   {
+    "id": 2136,
+    "cls": "Edit",
+    "key": "",
+    "x": 190,
+    "y": 45,
+    "w": 45,
+    "h": 12,
+    "style": 1350633600,
+    "exstyle": 0
+   },
+   {
+    "id": 2137,
+    "cls": "Edit",
+    "key": "",
+    "x": 30,
+    "y": 75,
+    "w": 45,
+    "h": 12,
+    "style": 1350633600,
+    "exstyle": 0
+   },
+   {
+    "id": 2138,
+    "cls": "Edit",
+    "key": "",
+    "x": 110,
+    "y": 75,
+    "w": 45,
+    "h": 12,
+    "style": 1350633600,
+    "exstyle": 0
+   },
+   {
+    "id": 2139,
+    "cls": "Edit",
+    "key": "",
+    "x": 190,
+    "y": 75,
+    "w": 45,
+    "h": 12,
+    "style": 1350633600,
+    "exstyle": 0
+   },
+   {
+    "id": 2140,
+    "cls": "Edit",
+    "key": "",
+    "x": 30,
+    "y": 105,
+    "w": 45,
+    "h": 12,
+    "style": 1350633600,
+    "exstyle": 0
+   },
+   {
+    "id": 2141,
+    "cls": "Edit",
+    "key": "",
+    "x": 110,
+    "y": 105,
+    "w": 45,
+    "h": 12,
+    "style": 1350633600,
+    "exstyle": 0
+   },
+   {
+    "id": 2142,
+    "cls": "Edit",
+    "key": "",
+    "x": 190,
+    "y": 105,
+    "w": 45,
+    "h": 12,
+    "style": 1350633600,
+    "exstyle": 0
+   },
+   {
+    "id": 2132,
+    "cls": "Edit",
+    "key": "",
+    "x": 30,
+    "y": 135,
+    "w": 45,
+    "h": 12,
+    "style": 1350633600,
+    "exstyle": 0
+   },
+   {
+    "id": 2133,
+    "cls": "Edit",
+    "key": "",
+    "x": 110,
+    "y": 135,
+    "w": 45,
+    "h": 12,
+    "style": 1350633600,
+    "exstyle": 0
+   },
+   {
+    "id": 2134,
+    "cls": "Edit",
+    "key": "",
+    "x": 190,
+    "y": 135,
+    "w": 45,
+    "h": 12,
+    "style": 1350633600,
+    "exstyle": 0
+   },
+   {
+    "id": 2060,
+    "cls": "Button",
+    "key": "RESET",
+    "x": 85,
+    "y": 161,
+    "w": 69,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50031
+   }
+  ],
+  "class": {
+   "base": "CPropertyPage",
+   "vtable": "0x4682c8",
+   "ctors": [
+    "0x41b100"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 15,
+    "msg_name": "WM_PAINT",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x41c480"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2060,
+    "last_id": 2060,
+    "sig": 12,
+    "handler": "0x41c630"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2035,
+    "last_id": 2038,
+    "sig": 13,
+    "handler": "0x41c690"
+   }
+  ],
+  "ddx": {
+   "2142": "Control",
+   "2141": "Control",
+   "2140": "Control",
+   "2139": "Control",
+   "2138": "Control",
+   "2137": "Control",
+   "2136": "Control",
+   "2135": "Control",
+   "2134": "Control",
+   "2132": "Control",
+   "2133": "Control",
+   "2131": "Control",
+   "2281": "Control",
+   "2280": "Control",
+   "2115": "Control",
+   "2114": "Control",
+   "2005": "Control",
+   "2004": "Control",
+   "2035": "DDX_0x459586",
+   "2036": "Control",
+   "2037": "Control",
+   "2038": "Control",
+   "2015": "Control",
+   "2014": "Control",
+   "2013": "Control",
+   "2012": "Control",
+   "2011": "Control",
+   "2010": "Control",
+   "2009": "Control",
+   "2008": "Control",
+   "2003": "Control",
+   "2002": "Control",
+   "2289": "Control",
+   "2288": "Control",
+   "2287": "Control",
+   "2286": "Control",
+   "2285": "Control",
+   "2284": "Control",
+   "2283": "Control",
+   "2282": "Control",
+   "2279": "Control",
+   "2278": "Control",
+   "2269": "Control",
+   "2123": "Control",
+   "2122": "Control",
+   "2121": "Control",
+   "2120": "Control",
+   "2119": "Control",
+   "2118": "Control",
+   "2117": "Control",
+   "2116": "Control",
+   "2113": "Control",
+   "2112": "Control",
+   "2060": "Control"
+  }
+ },
+ "3017": {
+  "style": 1073741888,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 396,
+  "h": 204,
+  "title": "",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2374,
+    "cls": "Static",
+    "key": "WIDTH",
+    "x": 5,
+    "y": 5,
+    "w": 120,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50370
+   },
+   {
+    "id": 2255,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 15,
+    "w": 120,
+    "h": 5,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2304,
+    "cls": "Static",
+    "key": "HEIGHT",
+    "x": 5,
+    "y": 25,
+    "w": 120,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50198
+   },
+   {
+    "id": 2231,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 35,
+    "w": 120,
+    "h": 5,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2379,
+    "cls": "Static",
+    "key": "ZOOM",
+    "x": 5,
+    "y": 45,
+    "w": 95,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50375
+   },
+   {
+    "id": 2257,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 55,
+    "w": 95,
+    "h": 5,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2158,
+    "cls": "Edit",
+    "key": "",
+    "x": 105,
+    "y": 50,
+    "w": 20,
+    "h": 12,
+    "style": 1350633601,
+    "exstyle": 0
+   },
+   {
+    "id": 2265,
+    "cls": "Static",
+    "key": "AMPLITUDE",
+    "x": 5,
+    "y": 65,
+    "w": 120,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50104
+   },
+   {
+    "id": 2222,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 75,
+    "w": 120,
+    "h": 5,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2328,
+    "cls": "Static",
+    "key": "PHASE",
+    "x": 5,
+    "y": 85,
+    "w": 120,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50262
+   },
+   {
+    "id": 2242,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 95,
+    "w": 118,
+    "h": 5,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2327,
+    "cls": "Static",
+    "key": "PERIOD",
+    "x": 5,
+    "y": 105,
+    "w": 120,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50261
+   },
+   {
+    "id": 2241,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 115,
+    "w": 120,
+    "h": 5,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2337,
+    "cls": "Static",
+    "key": "RANDOM",
+    "x": 5,
+    "y": 125,
+    "w": 120,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50284
+   },
+   {
+    "id": 2244,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 135,
+    "w": 120,
+    "h": 5,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2373,
+    "cls": "Static",
+    "key": "WATER LEVEL",
+    "x": 5,
+    "y": 145,
+    "w": 120,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50367
+   },
+   {
+    "id": 2254,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 155,
+    "w": 120,
+    "h": 5,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2093,
+    "cls": "Button",
+    "key": "OPEN TOP",
+    "x": 5,
+    "y": 170,
+    "w": 120,
+    "h": 10,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50258
+   },
+   {
+    "id": 2092,
+    "cls": "Button",
+    "key": "OPEN BOTTOM",
+    "x": 5,
+    "y": 179,
+    "w": 120,
+    "h": 10,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50256
+   },
+   {
+    "id": 2088,
+    "cls": "Button",
+    "key": "MAP PLAYER EXTEND",
+    "x": 5,
+    "y": 189,
+    "w": 128,
+    "h": 10,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50225
+   },
+   {
+    "id": 2318,
+    "cls": "Static",
+    "key": "MAP TYPE",
+    "x": 135,
+    "y": 5,
+    "w": 182,
+    "h": 10,
+    "style": 1342308364,
+    "exstyle": 0
+   },
+   {
+    "id": 2107,
+    "cls": "Static",
+    "key": "",
+    "x": 135,
+    "y": 15,
+    "w": 180,
+    "h": 185,
+    "style": 1350566406,
+    "exstyle": 0
+   },
+   {
+    "id": 2349,
+    "cls": "Static",
+    "key": "SHOW",
+    "x": 325,
+    "y": 5,
+    "w": 70,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50317
+   },
+   {
+    "id": 2099,
+    "cls": "Button",
+    "key": "SHOW SCREEN",
+    "x": 325,
+    "y": 15,
+    "w": 70,
+    "h": 10,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50320
+   },
+   {
+    "id": 2097,
+    "cls": "Button",
+    "key": "SHOW LAYERS",
+    "x": 325,
+    "y": 25,
+    "w": 70,
+    "h": 10,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50318
+   },
+   {
+    "id": 2330,
+    "cls": "Static",
+    "key": "PREVIEW FOR",
+    "x": 325,
+    "y": 45,
+    "w": 50,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50276
+   },
+   {
+    "id": 2210,
+    "cls": "Button",
+    "key": "PLAYERS 1",
+    "x": 325,
+    "y": 55,
+    "w": 52,
+    "h": 10,
+    "style": 1342308361,
+    "exstyle": 0,
+    "text_id": 50271
+   },
+   {
+    "id": 2211,
+    "cls": "Button",
+    "key": "PLAYERS 2",
+    "x": 325,
+    "y": 65,
+    "w": 52,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0,
+    "text_id": 50272
+   },
+   {
+    "id": 2212,
+    "cls": "Button",
+    "key": "PLAYERS 3",
+    "x": 325,
+    "y": 75,
+    "w": 52,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0,
+    "text_id": 50273
+   },
+   {
+    "id": 2213,
+    "cls": "Button",
+    "key": "PLAYERS 4",
+    "x": 325,
+    "y": 85,
+    "w": 52,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0,
+    "text_id": 50274
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x469010",
+   "ctors": [
+    "0x421020"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 15,
+    "msg_name": "WM_PAINT",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x420f70"
+   },
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x420f90"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2088,
+    "last_id": 2088,
+    "sig": 12,
+    "handler": "0x421d90"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2092,
+    "last_id": 2092,
+    "sig": 12,
+    "handler": "0x421db0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2093,
+    "last_id": 2093,
+    "sig": 12,
+    "handler": "0x421db0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2097,
+    "last_id": 2097,
+    "sig": 12,
+    "handler": "0x421db0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2099,
+    "last_id": 2099,
+    "sig": 12,
+    "handler": "0x421db0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2210,
+    "last_id": 2210,
+    "sig": 12,
+    "handler": "0x421db0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2211,
+    "last_id": 2211,
+    "sig": 12,
+    "handler": "0x421db0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2212,
+    "last_id": 2212,
+    "sig": 12,
+    "handler": "0x421db0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2213,
+    "last_id": 2213,
+    "sig": 12,
+    "handler": "0x421db0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 7,
+    "code_name": "0x7",
+    "id": 2255,
+    "last_id": 2255,
+    "sig": 12,
+    "handler": "0x421f60"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 7,
+    "code_name": "0x7",
+    "id": 2231,
+    "last_id": 2231,
+    "sig": 12,
+    "handler": "0x421f60"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 7,
+    "code_name": "0x7",
+    "id": 2257,
+    "last_id": 2257,
+    "sig": 12,
+    "handler": "0x421f60"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 7,
+    "code_name": "0x7",
+    "id": 2222,
+    "last_id": 2222,
+    "sig": 12,
+    "handler": "0x421f60"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 7,
+    "code_name": "0x7",
+    "id": 2241,
+    "last_id": 2241,
+    "sig": 12,
+    "handler": "0x421f60"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 7,
+    "code_name": "0x7",
+    "id": 2242,
+    "last_id": 2242,
+    "sig": 12,
+    "handler": "0x421f60"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 7,
+    "code_name": "0x7",
+    "id": 2244,
+    "last_id": 2244,
+    "sig": 12,
+    "handler": "0x421f60"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 7,
+    "code_name": "0x7",
+    "id": 2254,
+    "last_id": 2254,
+    "sig": 12,
+    "handler": "0x421f60"
+   }
+  ],
+  "ddx": {
+   "2107": "Control",
+   "2379": "Control",
+   "2374": "Control",
+   "2373": "Control",
+   "2349": "Control",
+   "2337": "Control",
+   "2330": "Control",
+   "2328": "Control",
+   "2327": "Control",
+   "2318": "Control",
+   "2304": "Control",
+   "2265": "Control",
+   "2231": "Control",
+   "2257": "Control",
+   "2255": "Control",
+   "2254": "Control",
+   "2244": "Control",
+   "2242": "Control",
+   "2241": "Control",
+   "2222": "Control",
+   "2210": "DDX_0x459586",
+   "2211": "Control",
+   "2212": "Control",
+   "2213": "Control",
+   "2158": "DDX_0x4594b3",
+   "2099": "DDX_0x459534",
+   "2097": "DDX_0x459534",
+   "2093": "DDX_0x459534",
+   "2092": "DDX_0x459534",
+   "2088": "DDX_0x459534"
+  }
+ },
+ "3018": {
+  "style": 1086324800,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 228,
+  "h": 198,
+  "title": "NETWORK",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2075,
+    "cls": "Button",
+    "key": "ACTIVE",
+    "x": 4,
+    "y": 6,
+    "w": 47,
+    "h": 12,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50101
+   },
+   {
+    "id": 2314,
+    "cls": "Button",
+    "key": "LOCAL",
+    "x": 4,
+    "y": 20,
+    "w": 177,
+    "h": 48,
+    "style": 1342177287,
+    "exstyle": 0,
+    "text_id": 50217
+   },
+   {
+    "id": 2315,
+    "cls": "Static",
+    "key": "NAME",
+    "x": 10,
+    "y": 30,
+    "w": 78,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50241
+   },
+   {
+    "id": 2144,
+    "cls": "Edit",
+    "key": "",
+    "x": 10,
+    "y": 41,
+    "w": 116,
+    "h": 12,
+    "style": 1350631552,
+    "exstyle": 0
+   },
+   {
+    "id": 2305,
+    "cls": "Button",
+    "key": "HOST",
+    "x": 4,
+    "y": 73,
+    "w": 177,
+    "h": 78,
+    "style": 1342177287,
+    "exstyle": 0,
+    "text_id": 50201
+   },
+   {
+    "id": 2306,
+    "cls": "Static",
+    "key": "HOSTNAME",
+    "x": 10,
+    "y": 56,
+    "w": 162,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0
+   },
+   {
+    "id": 2197,
+    "cls": "ListBox",
+    "key": "",
+    "x": 10,
+    "y": 86,
+    "w": 116,
+    "h": 59,
+    "style": 1352728833,
+    "exstyle": 0
+   },
+   {
+    "id": 2056,
+    "cls": "Button",
+    "key": "NEW",
+    "x": 131,
+    "y": 86,
+    "w": 44,
+    "h": 13,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50023
+   },
+   {
+    "id": 2040,
+    "cls": "Button",
+    "key": "DELETE",
+    "x": 131,
+    "y": 101,
+    "w": 44,
+    "h": 13,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50012
+   },
+   {
+    "id": 2041,
+    "cls": "Button",
+    "key": "EDIT",
+    "x": 131,
+    "y": 115,
+    "w": 44,
+    "h": 13,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50015
+   },
+   {
+    "id": 2052,
+    "cls": "Button",
+    "key": "IP CONFIG",
+    "x": 99,
+    "y": 6,
+    "w": 81,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50020
+   },
+   {
+    "id": 2348,
+    "cls": "Button",
+    "key": "SERVER",
+    "x": 4,
+    "y": 156,
+    "w": 177,
+    "h": 29,
+    "style": 1342177287,
+    "exstyle": 0,
+    "text_id": 50208
+   },
+   {
+    "id": 2153,
+    "cls": "Edit",
+    "key": "",
+    "x": 10,
+    "y": 167,
+    "w": 164,
+    "h": 12,
+    "style": 1350631552,
+    "exstyle": 0
+   }
+  ],
+  "class": {
+   "base": "CPropertyPage",
+   "vtable": "0x4689d8",
+   "ctors": [
+    "0x41f290"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2075,
+    "last_id": 2075,
+    "sig": 12,
+    "handler": "0x41f9a0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2056,
+    "last_id": 2056,
+    "sig": 12,
+    "handler": "0x41fa70"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2041,
+    "last_id": 2041,
+    "sig": 12,
+    "handler": "0x41fb10"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2040,
+    "last_id": 2040,
+    "sig": 12,
+    "handler": "0x41fbf0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2052,
+    "last_id": 2052,
+    "sig": 12,
+    "handler": "0x41fc20"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 2,
+    "code_name": "LBN_DBLCLK/CBN_DBLCLK",
+    "id": 2197,
+    "last_id": 2197,
+    "sig": 12,
+    "handler": "0x41fc40"
+   }
+  ],
+  "ddx": {
+   "2056": "Control",
+   "2041": "Control",
+   "2040": "Control",
+   "2348": "Control",
+   "2153": "DDX_0x4594e2",
+   "2052": "Control",
+   "2305": "Control",
+   "2197": "Control",
+   "2306": "Control",
+   "2314": "Control",
+   "2315": "Control",
+   "2144": "DDX_0x4594e2",
+   "2075": "DDX_0x459534"
+  }
+ },
+ "3019": {
+  "style": 1073741888,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 396,
+  "h": 204,
+  "title": "",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2176,
+    "cls": "Static",
+    "key": "VALUES FOR",
+    "x": 5,
+    "y": 5,
+    "w": 50,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50354
+   },
+   {
+    "id": 2171,
+    "cls": "Button",
+    "key": "PLAYER1",
+    "x": 63,
+    "y": 5,
+    "w": 50,
+    "h": 10,
+    "style": 1342308361,
+    "exstyle": 0,
+    "text_id": 50264
+   },
+   {
+    "id": 2172,
+    "cls": "Button",
+    "key": "PLAYER2",
+    "x": 118,
+    "y": 5,
+    "w": 50,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0,
+    "text_id": 50265
+   },
+   {
+    "id": 2173,
+    "cls": "Button",
+    "key": "PLAYER3",
+    "x": 173,
+    "y": 5,
+    "w": 50,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0,
+    "text_id": 50266
+   },
+   {
+    "id": 2174,
+    "cls": "Button",
+    "key": "PLAYER4",
+    "x": 228,
+    "y": 5,
+    "w": 50,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0,
+    "text_id": 50267
+   },
+   {
+    "id": 2175,
+    "cls": "Button",
+    "key": "ALL",
+    "x": 283,
+    "y": 5,
+    "w": 50,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0,
+    "text_id": 50103
+   },
+   {
+    "id": 65535,
+    "cls": "Static",
+    "key": "",
+    "x": 5,
+    "y": 20,
+    "w": 384,
+    "h": 1,
+    "style": 1342308368,
+    "exstyle": 0
+   },
+   {
+    "id": 2185,
+    "cls": "Static",
+    "key": "WEALTH",
+    "x": 6,
+    "y": 25,
+    "w": 45,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50368
+   },
+   {
+    "id": 2183,
+    "cls": "Edit",
+    "key": "",
+    "x": 6,
+    "y": 35,
+    "w": 35,
+    "h": 12,
+    "style": 1350639744,
+    "exstyle": 0
+   },
+   {
+    "id": 2184,
+    "cls": "msctls_updown32",
+    "key": "Spin1",
+    "x": 41,
+    "y": 35,
+    "w": 10,
+    "h": 10,
+    "style": 1342177334,
+    "exstyle": 0
+   },
+   {
+    "id": 2050,
+    "cls": "Button",
+    "key": "EXTEND",
+    "x": 336,
+    "y": 160,
+    "w": 54,
+    "h": 12,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50018
+   },
+   {
+    "id": 2277,
+    "cls": "Static",
+    "key": "CREW",
+    "x": 6,
+    "y": 56,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50152
+   },
+   {
+    "id": 2193,
+    "cls": "ListBox",
+    "key": "",
+    "x": 6,
+    "y": 66,
+    "w": 170,
+    "h": 30,
+    "style": 1352732433,
+    "exstyle": 0,
+    "text_id": 51702
+   },
+   {
+    "id": 2063,
+    "cls": "Static",
+    "key": "",
+    "x": 176,
+    "y": 66,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2161,
+    "cls": "Static",
+    "key": "BUILDINGS",
+    "x": 206,
+    "y": 55,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50124
+   },
+   {
+    "id": 2160,
+    "cls": "ListBox",
+    "key": "",
+    "x": 206,
+    "y": 65,
+    "w": 170,
+    "h": 30,
+    "style": 1352732433,
+    "exstyle": 0
+   },
+   {
+    "id": 2159,
+    "cls": "Static",
+    "key": "",
+    "x": 376,
+    "y": 65,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2170,
+    "cls": "Static",
+    "key": "MATERIAL",
+    "x": 7,
+    "y": 106,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50227
+   },
+   {
+    "id": 2169,
+    "cls": "ListBox",
+    "key": "",
+    "x": 6,
+    "y": 116,
+    "w": 170,
+    "h": 30,
+    "style": 1352732433,
+    "exstyle": 0,
+    "text_id": 51709
+   },
+   {
+    "id": 2168,
+    "cls": "Static",
+    "key": "",
+    "x": 176,
+    "y": 116,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2182,
+    "cls": "Static",
+    "key": "VEHICLES",
+    "x": 206,
+    "y": 106,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50358
+   },
+   {
+    "id": 2181,
+    "cls": "ListBox",
+    "key": "",
+    "x": 206,
+    "y": 116,
+    "w": 170,
+    "h": 30,
+    "style": 1352732433,
+    "exstyle": 0,
+    "text_id": 51715
+   },
+   {
+    "id": 2180,
+    "cls": "Static",
+    "key": "",
+    "x": 376,
+    "y": 116,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2164,
+    "cls": "Static",
+    "key": "KNOWLEDGE",
+    "x": 6,
+    "y": 56,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50212
+   },
+   {
+    "id": 2163,
+    "cls": "ListBox",
+    "key": "",
+    "x": 6,
+    "y": 66,
+    "w": 170,
+    "h": 30,
+    "style": 1352732433,
+    "exstyle": 0
+   },
+   {
+    "id": 2162,
+    "cls": "Static",
+    "key": "",
+    "x": 176,
+    "y": 66,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2317,
+    "cls": "Static",
+    "key": "MAGIC",
+    "x": 206,
+    "y": 55,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50224
+   },
+   {
+    "id": 2199,
+    "cls": "ListBox",
+    "key": "",
+    "x": 206,
+    "y": 65,
+    "w": 170,
+    "h": 30,
+    "style": 1352732433,
+    "exstyle": 0
+   },
+   {
+    "id": 2067,
+    "cls": "Static",
+    "key": "",
+    "x": 376,
+    "y": 65,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2167,
+    "cls": "Static",
+    "key": "HOMEBASE MAT",
+    "x": 7,
+    "y": 105,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50200
+   },
+   {
+    "id": 2166,
+    "cls": "ListBox",
+    "key": "",
+    "x": 6,
+    "y": 116,
+    "w": 170,
+    "h": 30,
+    "style": 1352732433,
+    "exstyle": 0,
+    "text_id": 51705
+   },
+   {
+    "id": 2165,
+    "cls": "Static",
+    "key": "",
+    "x": 176,
+    "y": 116,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2179,
+    "cls": "Static",
+    "key": "HOMEBASE PROD",
+    "x": 206,
+    "y": 106,
+    "w": 170,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50278
+   },
+   {
+    "id": 2178,
+    "cls": "ListBox",
+    "key": "",
+    "x": 206,
+    "y": 116,
+    "w": 170,
+    "h": 30,
+    "style": 1352732433,
+    "exstyle": 0,
+    "text_id": 51711
+   },
+   {
+    "id": 2177,
+    "cls": "Static",
+    "key": "",
+    "x": 376,
+    "y": 116,
+    "w": 15,
+    "h": 30,
+    "style": 1342177541,
+    "exstyle": 0
+   },
+   {
+    "id": 2226,
+    "cls": "Static",
+    "key": "",
+    "x": 6,
+    "y": 98,
+    "w": 170,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   },
+   {
+    "id": 2224,
+    "cls": "Static",
+    "key": "",
+    "x": 206,
+    "y": 97,
+    "w": 170,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   },
+   {
+    "id": 2238,
+    "cls": "Static",
+    "key": "",
+    "x": 6,
+    "y": 148,
+    "w": 170,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   },
+   {
+    "id": 2252,
+    "cls": "Static",
+    "key": "",
+    "x": 205,
+    "y": 148,
+    "w": 170,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   },
+   {
+    "id": 2236,
+    "cls": "Static",
+    "key": "",
+    "x": 6,
+    "y": 98,
+    "w": 170,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   },
+   {
+    "id": 2237,
+    "cls": "Static",
+    "key": "",
+    "x": 206,
+    "y": 97,
+    "w": 170,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   },
+   {
+    "id": 2232,
+    "cls": "Static",
+    "key": "",
+    "x": 6,
+    "y": 148,
+    "w": 170,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   },
+   {
+    "id": 2233,
+    "cls": "Static",
+    "key": "",
+    "x": 205,
+    "y": 148,
+    "w": 170,
+    "h": 5,
+    "style": 1342177554,
+    "exstyle": 0
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x4691a8",
+   "ctors": [
+    "0x422010"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2050,
+    "last_id": 2050,
+    "sig": 12,
+    "handler": "0x423400"
+   },
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x422ce0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 512,
+    "code_name": "EN_KILLFOCUS",
+    "id": 2183,
+    "last_id": 2183,
+    "sig": 12,
+    "handler": "0x422e30"
+   },
+   {
+    "msg": 78,
+    "msg_name": "WM_NOTIFY",
+    "code": 64814,
+    "code_name": "0xfd2e",
+    "id": 2184,
+    "last_id": 2184,
+    "sig": 38,
+    "handler": "0x422e50"
+   },
+   {
+    "msg": 15,
+    "msg_name": "WM_PAINT",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x420f70"
+   },
+   {
+    "msg": 123,
+    "msg_name": "WM_CONTEXTMENU",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 25,
+    "handler": "0x423350"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2171,
+    "last_id": 2175,
+    "sig": 13,
+    "handler": "0x422df0"
+   }
+  ],
+  "title_id": 51713,
+  "ddx": {
+   "2252": "Control",
+   "2238": "Control",
+   "2237": "Control",
+   "2236": "Control",
+   "2233": "Control",
+   "2232": "Control",
+   "2226": "Control",
+   "2224": "Control",
+   "2183": "Control",
+   "2050": "Control",
+   "2184": "Control",
+   "2176": "Control",
+   "2185": "Control",
+   "2175": "Control",
+   "2171": "Control",
+   "2172": "Control",
+   "2173": "Control",
+   "2174": "Control",
+   "2277": "Control",
+   "2182": "Control",
+   "2161": "Control",
+   "2170": "Control",
+   "2193": "Control",
+   "2160": "Control",
+   "2181": "Control",
+   "2169": "Control",
+   "2063": "Control",
+   "2180": "Control",
+   "2159": "Control",
+   "2168": "Control",
+   "2317": "Control",
+   "2179": "Control",
+   "2167": "Control",
+   "2164": "Control",
+   "2199": "Control",
+   "2163": "Control",
+   "2166": "Control",
+   "2178": "Control",
+   "2165": "Control",
+   "2067": "Control",
+   "2162": "Control",
+   "2177": "Control"
+  }
+ },
+ "3020": {
+  "style": 1220542528,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 186,
+  "h": 199,
+  "title": "PROGRAM",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2313,
+    "cls": "Button",
+    "key": "LANGUAGE",
+    "x": 4,
+    "y": 6,
+    "w": 177,
+    "h": 45,
+    "style": 1342177287,
+    "exstyle": 0,
+    "text_id": 50213
+   },
+   {
+    "id": 2207,
+    "cls": "Button",
+    "key": "GERMAN",
+    "x": 9,
+    "y": 21,
+    "w": 78,
+    "h": 10,
+    "style": 1342308361,
+    "exstyle": 0,
+    "text_id": 50185
+   },
+   {
+    "id": 2208,
+    "cls": "Button",
+    "key": "ENGLISH",
+    "x": 9,
+    "y": 31,
+    "w": 78,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0,
+    "text_id": 50173
+   },
+   {
+    "id": 2297,
+    "cls": "Button",
+    "key": "FONT",
+    "x": 4,
+    "y": 56,
+    "w": 177,
+    "h": 59,
+    "style": 1342177287,
+    "exstyle": 0,
+    "text_id": 50180
+   },
+   {
+    "id": 2105,
+    "cls": "ComboBox",
+    "key": "",
+    "x": 9,
+    "y": 68,
+    "w": 165,
+    "h": 174,
+    "style": 1344340226,
+    "exstyle": 0
+   },
+   {
+    "id": 2320,
+    "cls": "Static",
+    "key": "MENUS",
+    "x": 9,
+    "y": 85,
+    "w": 51,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50232
+   },
+   {
+    "id": 2155,
+    "cls": "Edit",
+    "key": "",
+    "x": 9,
+    "y": 96,
+    "w": 30,
+    "h": 13,
+    "style": 1350639616,
+    "exstyle": 0
+   },
+   {
+    "id": 2262,
+    "cls": "msctls_updown32",
+    "key": "Spin1",
+    "x": 39,
+    "y": 96,
+    "w": 11,
+    "h": 13,
+    "style": 1342177334,
+    "exstyle": 0
+   },
+   {
+    "id": 2299,
+    "cls": "Static",
+    "key": "GAME",
+    "x": 69,
+    "y": 85,
+    "w": 51,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50183
+   },
+   {
+    "id": 2156,
+    "cls": "Edit",
+    "key": "",
+    "x": 69,
+    "y": 96,
+    "w": 30,
+    "h": 13,
+    "style": 1350639616,
+    "exstyle": 0
+   },
+   {
+    "id": 2263,
+    "cls": "msctls_updown32",
+    "key": "Spin1",
+    "x": 99,
+    "y": 96,
+    "w": 11,
+    "h": 13,
+    "style": 1342177334,
+    "exstyle": 0
+   },
+   {
+    "id": 2331,
+    "cls": "Button",
+    "key": "PROGRAM",
+    "x": 3,
+    "y": 119,
+    "w": 177,
+    "h": 31,
+    "style": 1342177287,
+    "exstyle": 0,
+    "text_id": 50182
+   },
+   {
+    "id": 2098,
+    "cls": "Button",
+    "key": "SHOWQUICKSTART",
+    "x": 11,
+    "y": 132,
+    "w": 159,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50319
+   },
+   {
+    "id": 2324,
+    "cls": "Button",
+    "key": "MODE",
+    "x": 3,
+    "y": 154,
+    "w": 177,
+    "h": 31,
+    "style": 1342177287,
+    "exstyle": 0,
+    "text_id": 50238
+   },
+   {
+    "id": 2080,
+    "cls": "Button",
+    "key": "DEVELOPER ACTIVE",
+    "x": 11,
+    "y": 167,
+    "w": 159,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50160
+   }
+  ],
+  "class": {
+   "base": "CPropertyPage",
+   "vtable": "0x469460",
+   "ctors": [
+    "0x423ef0"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 7,
+    "code_name": "0x7",
+    "id": 2105,
+    "last_id": 2105,
+    "sig": 12,
+    "handler": "0x4246f0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2080,
+    "last_id": 2080,
+    "sig": 12,
+    "handler": "0x424730"
+   }
+  ],
+  "title_id": 50523,
+  "ddx": {
+   "2331": "Control",
+   "2098": "DDX_0x459534",
+   "2320": "Control",
+   "2299": "Control",
+   "2263": "Control",
+   "2297": "Control",
+   "2262": "Control",
+   "2105": "DDX_0x459617",
+   "2324": "Control",
+   "2080": "DDX_0x459534",
+   "2207": "DDX_0x459586",
+   "2208": "Control",
+   "2313": "Control",
+   "2155": "DDX_0x4594b3",
+   "2156": "DDX_0x4594b3"
+  }
+ },
+ "3021": {
+  "style": 2160066752,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 186,
+  "h": 174,
+  "title": "SOUND",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2356,
+    "cls": "Button",
+    "key": "GAME",
+    "x": 4,
+    "y": 6,
+    "w": 176,
+    "h": 51,
+    "style": 1342177287,
+    "exstyle": 0,
+    "text_id": 50183
+   },
+   {
+    "id": 2084,
+    "cls": "Button",
+    "key": "SOUNDFX",
+    "x": 12,
+    "y": 18,
+    "w": 117,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50328
+   },
+   {
+    "id": 2085,
+    "cls": "Button",
+    "key": "SOUNDLOOPS",
+    "x": 12,
+    "y": 27,
+    "w": 117,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50329
+   },
+   {
+    "id": 2086,
+    "cls": "Button",
+    "key": "MUSIC",
+    "x": 12,
+    "y": 39,
+    "w": 117,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50240
+   },
+   {
+    "id": 2355,
+    "cls": "Button",
+    "key": "EXPLORER",
+    "x": 4,
+    "y": 61,
+    "w": 176,
+    "h": 42,
+    "style": 1342177287,
+    "exstyle": 0,
+    "text_id": 50233
+   },
+   {
+    "id": 2082,
+    "cls": "Button",
+    "key": "SOUNDFX",
+    "x": 12,
+    "y": 73,
+    "w": 117,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50328
+   },
+   {
+    "id": 2083,
+    "cls": "Button",
+    "key": "MUSIC",
+    "x": 12,
+    "y": 85,
+    "w": 117,
+    "h": 9,
+    "style": 1342242819,
+    "exstyle": 0,
+    "text_id": 50240
+   },
+   {
+    "id": 2073,
+    "cls": "Button",
+    "key": "VOLUME",
+    "x": 46,
+    "y": 117,
+    "w": 93,
+    "h": 12,
+    "style": 1342242816,
+    "exstyle": 0,
+    "text_id": 50037
+   },
+   {
+    "id": 2372,
+    "cls": "Button",
+    "key": "VOLUME",
+    "x": 4,
+    "y": 106,
+    "w": 176,
+    "h": 30,
+    "style": 1342177287,
+    "exstyle": 0,
+    "text_id": 50366
+   }
+  ],
+  "class": {
+   "base": "CPropertyPage",
+   "vtable": "0x469c60",
+   "ctors": [
+    "0x429710"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2084,
+    "last_id": 2084,
+    "sig": 12,
+    "handler": "0x429c40"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2073,
+    "last_id": 2073,
+    "sig": 12,
+    "handler": "0x429c80"
+   }
+  ],
+  "ddx": {
+   "2372": "Control",
+   "2073": "Control",
+   "2085": "DDX_0x459534",
+   "2356": "Control",
+   "2355": "Control",
+   "2086": "DDX_0x459534",
+   "2084": "DDX_0x459534",
+   "2083": "DDX_0x459534",
+   "2082": "DDX_0x459534"
+  }
+ },
+ "3022": {
+  "style": 1073741888,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 396,
+  "h": 205,
+  "title": "",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2270,
+    "cls": "Static",
+    "key": "CLIMATE",
+    "x": 43,
+    "y": 6,
+    "w": 126,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50133
+   },
+   {
+    "id": 2225,
+    "cls": "Static",
+    "key": "",
+    "x": 43,
+    "y": 17,
+    "w": 126,
+    "h": 6,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2344,
+    "cls": "Static",
+    "key": "SEASON",
+    "x": 43,
+    "y": 36,
+    "w": 126,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50298
+   },
+   {
+    "id": 2246,
+    "cls": "Static",
+    "key": "",
+    "x": 43,
+    "y": 46,
+    "w": 126,
+    "h": 6,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2362,
+    "cls": "Static",
+    "key": "TIMEADVANCE",
+    "x": 43,
+    "y": 66,
+    "w": 126,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50344
+   },
+   {
+    "id": 2249,
+    "cls": "Static",
+    "key": "",
+    "x": 43,
+    "y": 76,
+    "w": 126,
+    "h": 6,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2334,
+    "cls": "Static",
+    "key": "RAIN",
+    "x": 42,
+    "y": 102,
+    "w": 126,
+    "h": 11,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50281
+   },
+   {
+    "id": 2243,
+    "cls": "Static",
+    "key": "",
+    "x": 42,
+    "y": 113,
+    "w": 126,
+    "h": 6,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2359,
+    "cls": "Static",
+    "key": "THUNDERSTORM",
+    "x": 42,
+    "y": 132,
+    "w": 126,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50341
+   },
+   {
+    "id": 2248,
+    "cls": "Static",
+    "key": "",
+    "x": 42,
+    "y": 142,
+    "w": 126,
+    "h": 6,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2375,
+    "cls": "Static",
+    "key": "WIND",
+    "x": 42,
+    "y": 161,
+    "w": 126,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50371
+   },
+   {
+    "id": 2256,
+    "cls": "Static",
+    "key": "",
+    "x": 42,
+    "y": 171,
+    "w": 126,
+    "h": 6,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2291,
+    "cls": "Static",
+    "key": "EARTHQUAKES",
+    "x": 217,
+    "y": 6,
+    "w": 126,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50164
+   },
+   {
+    "id": 2227,
+    "cls": "Static",
+    "key": "",
+    "x": 217,
+    "y": 17,
+    "w": 126,
+    "h": 6,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2369,
+    "cls": "Static",
+    "key": "VOLCANOES",
+    "x": 217,
+    "y": 36,
+    "w": 126,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50363
+   },
+   {
+    "id": 2253,
+    "cls": "Static",
+    "key": "",
+    "x": 217,
+    "y": 46,
+    "w": 126,
+    "h": 6,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2321,
+    "cls": "Static",
+    "key": "METEORITES",
+    "x": 217,
+    "y": 66,
+    "w": 126,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50234
+   },
+   {
+    "id": 2239,
+    "cls": "Static",
+    "key": "",
+    "x": 217,
+    "y": 76,
+    "w": 126,
+    "h": 6,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2301,
+    "cls": "Static",
+    "key": "GRAVITY",
+    "x": 217,
+    "y": 103,
+    "w": 126,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50194
+   },
+   {
+    "id": 2230,
+    "cls": "Static",
+    "key": "",
+    "x": 217,
+    "y": 113,
+    "w": 126,
+    "h": 6,
+    "style": 1342243090,
+    "exstyle": 0
+   },
+   {
+    "id": 2363,
+    "cls": "Static",
+    "key": "TIMEADVANCE",
+    "x": 43,
+    "y": 82,
+    "w": 60,
+    "h": 10,
+    "style": 1476526080,
+    "exstyle": 0,
+    "text_id": 50345
+   },
+   {
+    "id": 2322,
+    "cls": "Static",
+    "key": "METEORITES",
+    "x": 217,
+    "y": 82,
+    "w": 60,
+    "h": 10,
+    "style": 1476526080,
+    "exstyle": 0,
+    "text_id": 50235
+   },
+   {
+    "id": 2345,
+    "cls": "Static",
+    "key": "SEASON",
+    "x": 43,
+    "y": 52,
+    "w": 60,
+    "h": 10,
+    "style": 1476526080,
+    "exstyle": 0,
+    "text_id": 50299
+   },
+   {
+    "id": 2370,
+    "cls": "Static",
+    "key": "VOLCANOES",
+    "x": 217,
+    "y": 52,
+    "w": 60,
+    "h": 10,
+    "style": 1476526080,
+    "exstyle": 0,
+    "text_id": 50364
+   },
+   {
+    "id": 2271,
+    "cls": "Static",
+    "key": "CLIMATE",
+    "x": 43,
+    "y": 22,
+    "w": 60,
+    "h": 10,
+    "style": 1476526080,
+    "exstyle": 0,
+    "text_id": 50134
+   },
+   {
+    "id": 2292,
+    "cls": "Static",
+    "key": "EARTHQUAKES",
+    "x": 217,
+    "y": 22,
+    "w": 60,
+    "h": 10,
+    "style": 1476526080,
+    "exstyle": 0,
+    "text_id": 50165
+   },
+   {
+    "id": 2272,
+    "cls": "Static",
+    "key": "CLIMATE",
+    "x": 109,
+    "y": 22,
+    "w": 60,
+    "h": 10,
+    "style": 1476526082,
+    "exstyle": 0,
+    "text_id": 50135
+   },
+   {
+    "id": 2346,
+    "cls": "Static",
+    "key": "SEASON",
+    "x": 109,
+    "y": 52,
+    "w": 60,
+    "h": 10,
+    "style": 1476526082,
+    "exstyle": 0,
+    "text_id": 50300
+   },
+   {
+    "id": 2364,
+    "cls": "Static",
+    "key": "TIMEADVANCE",
+    "x": 108,
+    "y": 82,
+    "w": 60,
+    "h": 10,
+    "style": 1476526082,
+    "exstyle": 0,
+    "text_id": 50346
+   },
+   {
+    "id": 2293,
+    "cls": "Static",
+    "key": "EARTHQUAKES",
+    "x": 283,
+    "y": 22,
+    "w": 60,
+    "h": 10,
+    "style": 1476526082,
+    "exstyle": 0,
+    "text_id": 50166
+   },
+   {
+    "id": 2371,
+    "cls": "Static",
+    "key": "VOLCANOES",
+    "x": 283,
+    "y": 52,
+    "w": 60,
+    "h": 10,
+    "style": 1476526082,
+    "exstyle": 0,
+    "text_id": 50365
+   },
+   {
+    "id": 2323,
+    "cls": "Static",
+    "key": "METEORITES",
+    "x": 283,
+    "y": 82,
+    "w": 60,
+    "h": 10,
+    "style": 1476526082,
+    "exstyle": 0,
+    "text_id": 50236
+   },
+   {
+    "id": 2376,
+    "cls": "Static",
+    "key": "WIND",
+    "x": 42,
+    "y": 177,
+    "w": 60,
+    "h": 10,
+    "style": 1476526080,
+    "exstyle": 0,
+    "text_id": 50372
+   },
+   {
+    "id": 2377,
+    "cls": "Static",
+    "key": "WIND",
+    "x": 108,
+    "y": 177,
+    "w": 60,
+    "h": 10,
+    "style": 1476526082,
+    "exstyle": 0,
+    "text_id": 50373
+   },
+   {
+    "id": 2360,
+    "cls": "Static",
+    "key": "THUNDERSTORM",
+    "x": 42,
+    "y": 148,
+    "w": 60,
+    "h": 10,
+    "style": 1476526080,
+    "exstyle": 0,
+    "text_id": 50342
+   },
+   {
+    "id": 2361,
+    "cls": "Static",
+    "key": "THUNDERSTORM",
+    "x": 108,
+    "y": 148,
+    "w": 60,
+    "h": 10,
+    "style": 1476526082,
+    "exstyle": 0,
+    "text_id": 50343
+   },
+   {
+    "id": 2335,
+    "cls": "Static",
+    "key": "RAIN",
+    "x": 42,
+    "y": 119,
+    "w": 60,
+    "h": 11,
+    "style": 1476526080,
+    "exstyle": 0,
+    "text_id": 50282
+   },
+   {
+    "id": 2336,
+    "cls": "Static",
+    "key": "RAIN",
+    "x": 108,
+    "y": 120,
+    "w": 60,
+    "h": 11,
+    "style": 1476526082,
+    "exstyle": 0,
+    "text_id": 50283
+   },
+   {
+    "id": 2302,
+    "cls": "Static",
+    "key": "GRAVITY",
+    "x": 216,
+    "y": 119,
+    "w": 60,
+    "h": 10,
+    "style": 1476526080,
+    "exstyle": 0,
+    "text_id": 50195
+   },
+   {
+    "id": 2303,
+    "cls": "Static",
+    "key": "GRAVITY",
+    "x": 283,
+    "y": 119,
+    "w": 60,
+    "h": 10,
+    "style": 1476526082,
+    "exstyle": 0,
+    "text_id": 50196
+   },
+   {
+    "id": 2001,
+    "cls": "Static",
+    "key": "",
+    "x": 18,
+    "y": 10,
+    "w": 21,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2020,
+    "cls": "Static",
+    "key": "",
+    "x": 18,
+    "y": 39,
+    "w": 21,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2022,
+    "cls": "Static",
+    "key": "",
+    "x": 18,
+    "y": 67,
+    "w": 21,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2019,
+    "cls": "Static",
+    "key": "",
+    "x": 18,
+    "y": 106,
+    "w": 21,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2021,
+    "cls": "Static",
+    "key": "",
+    "x": 18,
+    "y": 134,
+    "w": 21,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2024,
+    "cls": "Static",
+    "key": "",
+    "x": 18,
+    "y": 163,
+    "w": 21,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2017,
+    "cls": "Static",
+    "key": "",
+    "x": 192,
+    "y": 10,
+    "w": 21,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2023,
+    "cls": "Static",
+    "key": "",
+    "x": 192,
+    "y": 39,
+    "w": 21,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   },
+   {
+    "id": 2018,
+    "cls": "Static",
+    "key": "",
+    "x": 192,
+    "y": 67,
+    "w": 21,
+    "h": 21,
+    "style": 1342177806,
+    "exstyle": 0
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x46a288",
+   "ctors": [
+    "0x4332b0"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 15,
+    "msg_name": "WM_PAINT",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x433ae0"
+   },
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x420f90"
+   }
+  ],
+  "ddx": {
+   "2023": "Control",
+   "2018": "Control",
+   "2017": "Control",
+   "2024": "Control",
+   "2022": "Control",
+   "2021": "Control",
+   "2020": "Control",
+   "2019": "Control",
+   "2001": "Control",
+   "2334": "Control",
+   "2359": "Control",
+   "2375": "Control",
+   "2301": "Control",
+   "2335": "Control",
+   "2360": "Control",
+   "2376": "Control",
+   "2302": "Control",
+   "2336": "Control",
+   "2361": "Control",
+   "2377": "Control",
+   "2303": "Control",
+   "2371": "Control",
+   "2364": "Control",
+   "2346": "Control",
+   "2323": "Control",
+   "2293": "Control",
+   "2272": "Control",
+   "2370": "Control",
+   "2363": "Control",
+   "2345": "Control",
+   "2322": "Control",
+   "2292": "Control",
+   "2271": "Control",
+   "2230": "Control",
+   "2369": "Control",
+   "2362": "Control",
+   "2344": "Control",
+   "2321": "Control",
+   "2291": "Control",
+   "2270": "Control",
+   "2256": "Control",
+   "2253": "Control",
+   "2249": "Control",
+   "2248": "Control",
+   "2246": "Control",
+   "2243": "Control",
+   "2239": "Control",
+   "2227": "Control",
+   "2225": "Control"
+  }
+ },
+ "3023": {
+  "style": 2160591040,
+  "exstyle": 1024,
+  "x": 0,
+  "y": 0,
+  "w": 245,
+  "h": 111,
+  "title": "PLAYERPROPERTIES",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 1,
+    "cls": "Button",
+    "key": "OK",
+    "x": 67,
+    "y": 88,
+    "w": 51,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50026
+   },
+   {
+    "id": 2,
+    "cls": "Button",
+    "key": "CANCEL",
+    "x": 124,
+    "y": 88,
+    "w": 51,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0
+   },
+   {
+    "id": 2187,
+    "cls": "Static",
+    "key": "",
+    "x": 18,
+    "y": 16,
+    "w": 66,
+    "h": 48,
+    "style": 1342181383,
+    "exstyle": 0
+   },
+   {
+    "id": 2188,
+    "cls": "Static",
+    "key": "",
+    "x": 96,
+    "y": 16,
+    "w": 67,
+    "h": 48,
+    "style": 1342181383,
+    "exstyle": 0
+   },
+   {
+    "id": 2258,
+    "cls": "msctls_updown32",
+    "key": "Spin1",
+    "x": 18,
+    "y": 67,
+    "w": 66,
+    "h": 9,
+    "style": 1342177377,
+    "exstyle": 0
+   },
+   {
+    "id": 2259,
+    "cls": "msctls_updown32",
+    "key": "Spin1",
+    "x": 110,
+    "y": 67,
+    "w": 66,
+    "h": 9,
+    "style": 1342177377,
+    "exstyle": 0
+   },
+   {
+    "id": 2273,
+    "cls": "Static",
+    "key": "COLOR",
+    "x": 18,
+    "y": 5,
+    "w": 66,
+    "h": 11,
+    "style": 1342308353,
+    "exstyle": 0,
+    "text_id": 50137
+   },
+   {
+    "id": 2275,
+    "cls": "Static",
+    "key": "CONTROL",
+    "x": 125,
+    "y": 5,
+    "w": 66,
+    "h": 11,
+    "style": 1342308353,
+    "exstyle": 0,
+    "text_id": 50147
+   },
+   {
+    "id": 2190,
+    "cls": "Static",
+    "key": "",
+    "x": 166,
+    "y": 16,
+    "w": 55,
+    "h": 48,
+    "style": 1342181383,
+    "exstyle": 0
+   },
+   {
+    "id": 2054,
+    "cls": "Button",
+    "key": "",
+    "x": 177,
+    "y": 67,
+    "w": 30,
+    "h": 9,
+    "style": 1342242816,
+    "exstyle": 0
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x469340",
+   "ctors": [
+    "0x4236b0"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x420f90"
+   },
+   {
+    "msg": 15,
+    "msg_name": "WM_PAINT",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x423af0"
+   },
+   {
+    "msg": 78,
+    "msg_name": "WM_NOTIFY",
+    "code": 64814,
+    "code_name": "0xfd2e",
+    "id": 2258,
+    "last_id": 2258,
+    "sig": 38,
+    "handler": "0x423c70"
+   },
+   {
+    "msg": 78,
+    "msg_name": "WM_NOTIFY",
+    "code": 64814,
+    "code_name": "0xfd2e",
+    "id": 2259,
+    "last_id": 2259,
+    "sig": 38,
+    "handler": "0x423ce0"
+   },
+   {
+    "msg": 83,
+    "msg_name": "WM_HELP",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 42,
+    "handler": "0x423dd0"
+   },
+   {
+    "msg": 513,
+    "msg_name": "WM_LBUTTONDOWN",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 49,
+    "handler": "0x423e00"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2054,
+    "last_id": 2054,
+    "sig": 12,
+    "handler": "0x423ed0"
+   }
+  ],
+  "ddx": {
+   "2054": "Control",
+   "2190": "Control",
+   "2275": "Control",
+   "2273": "Control",
+   "2188": "Control",
+   "2187": "Control",
+   "2259": "Control",
+   "2258": "Control",
+   "1": "Control",
+   "2": "Control"
+  }
+ },
+ "3024": {
+  "style": 2147483840,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 186,
+  "h": 103,
+  "title": "",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 2110,
+    "cls": "Edit",
+    "key": "",
+    "x": 5,
+    "y": 53,
+    "w": 174,
+    "h": 24,
+    "style": 1350631556,
+    "exstyle": 0
+   },
+   {
+    "id": 1,
+    "cls": "Button",
+    "key": "OK",
+    "x": 57,
+    "y": 84,
+    "w": 69,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50007
+   },
+   {
+    "id": 65535,
+    "cls": "Button",
+    "key": "",
+    "x": 6,
+    "y": 6,
+    "w": 171,
+    "h": 33,
+    "style": 1342177287,
+    "exstyle": 0
+   },
+   {
+    "id": 2358,
+    "cls": "Static",
+    "key": "TEXT",
+    "x": 12,
+    "y": 15,
+    "w": 159,
+    "h": 21,
+    "style": 1342308353,
+    "exstyle": 0
+   },
+   {
+    "id": 2274,
+    "cls": "Static",
+    "key": "COMMENT",
+    "x": 6,
+    "y": 43,
+    "w": 93,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50140
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x469588",
+   "ctors": [
+    "0x424910"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x420f90"
+   }
+  ],
+  "ddx": {
+   "1": "Control",
+   "2358": "DDX_0x4594e2",
+   "2274": "Control",
+   "2110": "DDX_0x4594e2"
+  }
+ },
+ "3025": {
+  "style": 2147483712,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 374,
+  "h": 251,
+  "title": "",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 1,
+    "cls": "Button",
+    "key": "CLOSE",
+    "x": 267,
+    "y": 204,
+    "w": 90,
+    "h": 15,
+    "style": 1073807371,
+    "exstyle": 0,
+    "text_id": 50034
+   },
+   {
+    "id": 2081,
+    "cls": "Button",
+    "key": "DONTSHOW",
+    "x": 78,
+    "y": 225,
+    "w": 213,
+    "h": 12,
+    "style": 1342242819,
+    "exstyle": 0
+   },
+   {
+    "id": 2310,
+    "cls": "Static",
+    "key": "",
+    "x": 12,
+    "y": 9,
+    "w": 99,
+    "h": 69,
+    "style": 1073741838,
+    "exstyle": 0
+   },
+   {
+    "id": 2311,
+    "cls": "Static",
+    "key": "",
+    "x": 117,
+    "y": 9,
+    "w": 99,
+    "h": 69,
+    "style": 1073741838,
+    "exstyle": 0
+   },
+   {
+    "id": 2312,
+    "cls": "Static",
+    "key": "",
+    "x": 225,
+    "y": 9,
+    "w": 99,
+    "h": 69,
+    "style": 1073741838,
+    "exstyle": 0
+   },
+   {
+    "id": 2053,
+    "cls": "Button",
+    "key": "<",
+    "x": 9,
+    "y": 45,
+    "w": 21,
+    "h": 18,
+    "style": 1342242944,
+    "exstyle": 0
+   },
+   {
+    "id": 2061,
+    "cls": "Button",
+    "key": ">",
+    "x": 19,
+    "y": 54,
+    "w": 21,
+    "h": 18,
+    "style": 1342242944,
+    "exstyle": 0
+   },
+   {
+    "id": 2034,
+    "cls": "Button",
+    "key": "^",
+    "x": 29,
+    "y": 63,
+    "w": 21,
+    "h": 18,
+    "style": 1342242944,
+    "exstyle": 0
+   },
+   {
+    "id": 2221,
+    "cls": "RICHEDIT",
+    "key": "",
+    "x": 66,
+    "y": 57,
+    "w": 129,
+    "h": 108,
+    "style": 1073809412,
+    "exstyle": 512
+   },
+   {
+    "id": 2,
+    "cls": "Button",
+    "key": "x",
+    "x": 351,
+    "y": 6,
+    "w": 9,
+    "h": 9,
+    "style": 1342242944,
+    "exstyle": 0
+   },
+   {
+    "id": 9,
+    "cls": "Button",
+    "key": "x",
+    "x": 340,
+    "y": 6,
+    "w": 9,
+    "h": 9,
+    "style": 1342242944,
+    "exstyle": 0
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x469750",
+   "ctors": [
+    "0x424e60"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x425390"
+   },
+   {
+    "msg": 15,
+    "msg_name": "WM_PAINT",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x425230"
+   },
+   {
+    "msg": 512,
+    "msg_name": "WM_MOUSEMOVE",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 49,
+    "handler": "0x425700"
+   },
+   {
+    "msg": 514,
+    "msg_name": "WM_LBUTTONUP",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 49,
+    "handler": "0x425840"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2053,
+    "last_id": 2053,
+    "sig": 12,
+    "handler": "0x4260b0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2061,
+    "last_id": 2061,
+    "sig": 12,
+    "handler": "0x4260f0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2034,
+    "last_id": 2034,
+    "sig": 12,
+    "handler": "0x426130"
+   },
+   {
+    "msg": 2,
+    "msg_name": "WM_DESTROY",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x426c00"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 9,
+    "last_id": 9,
+    "sig": 12,
+    "handler": "0x414200"
+   }
+  ],
+  "title_id": 50013,
+  "ddx": {
+   "9": "Control",
+   "2": "Control",
+   "2034": "Control",
+   "2061": "Control",
+   "2053": "Control",
+   "2312": "Control",
+   "2311": "Control",
+   "2310": "Control",
+   "1": "Control",
+   "2081": "DDX_0x459534",
+   "2221": "Control"
+  }
+ },
+ "3026": {
+  "style": 2160591040,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 198,
+  "h": 63,
+  "title": "REGISTRATION",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 1,
+    "cls": "Button",
+    "key": "OK",
+    "x": 141,
+    "y": 5,
+    "w": 50,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50026
+   },
+   {
+    "id": 2,
+    "cls": "Button",
+    "key": "CANCEL",
+    "x": 141,
+    "y": 23,
+    "w": 50,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50006
+   },
+   {
+    "id": 2151,
+    "cls": "Edit",
+    "key": "",
+    "x": 4,
+    "y": 14,
+    "w": 126,
+    "h": 12,
+    "style": 1350631552,
+    "exstyle": 0
+   },
+   {
+    "id": 2329,
+    "cls": "Static",
+    "key": "PLAYERNAME",
+    "x": 4,
+    "y": 4,
+    "w": 126,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50270
+   },
+   {
+    "id": 2152,
+    "cls": "Edit",
+    "key": "",
+    "x": 4,
+    "y": 41,
+    "w": 126,
+    "h": 12,
+    "style": 1350631552,
+    "exstyle": 0
+   },
+   {
+    "id": 2338,
+    "cls": "Static",
+    "key": "REGCODE",
+    "x": 4,
+    "y": 31,
+    "w": 126,
+    "h": 9,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50287
+   },
+   {
+    "id": 2051,
+    "cls": "Button",
+    "key": "HELP",
+    "x": 141,
+    "y": 41,
+    "w": 50,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50019
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x469870",
+   "ctors": [
+    "0x426cd0"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x420f90"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2051,
+    "last_id": 2051,
+    "sig": 12,
+    "handler": "0x427020"
+   }
+  ],
+  "title_id": 50524,
+  "ddx": {
+   "2051": "Control",
+   "1": "Control",
+   "2": "Control",
+   "2338": "Control",
+   "2329": "Control",
+   "2152": "DDX_0x4594e2",
+   "2151": "DDX_0x4594e2"
+  }
+ },
+ "3027": {
+  "style": 2429034688,
+  "exstyle": 1024,
+  "x": 0,
+  "y": 0,
+  "w": 410,
+  "h": 250,
+  "title": "SCENARIO PROPERTIES",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 4294967295,
+    "cls": "Static",
+    "key": "",
+    "x": 0,
+    "y": 0,
+    "w": 420,
+    "h": 1,
+    "style": 1342177296,
+    "exstyle": 0
+   },
+   {
+    "id": 2380,
+    "cls": "SysTabControl32",
+    "key": "MainTab",
+    "x": 5,
+    "y": 5,
+    "w": 400,
+    "h": 220,
+    "style": 1342251016,
+    "exstyle": 0
+   },
+   {
+    "id": 1,
+    "cls": "Button",
+    "key": "OK",
+    "x": 270,
+    "y": 230,
+    "w": 64,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50026
+   },
+   {
+    "id": 2,
+    "cls": "Button",
+    "key": "CANCEL",
+    "x": 339,
+    "y": 230,
+    "w": 66,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x469b28",
+   "ctors": [
+    "0x427be0"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x427bc0"
+   },
+   {
+    "msg": 78,
+    "msg_name": "WM_NOTIFY",
+    "code": 64985,
+    "code_name": "0xfdd9",
+    "id": 2380,
+    "last_id": 2380,
+    "sig": 38,
+    "handler": "0x4290d0"
+   },
+   {
+    "msg": 83,
+    "msg_name": "WM_HELP",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 42,
+    "handler": "0x423dd0"
+   }
+  ],
+  "ddx": {
+   "2380": "Control",
+   "1": "Control",
+   "2": "Control"
+  }
+ },
+ "3028": {
+  "style": 2160591040,
+  "exstyle": 1024,
+  "x": 0,
+  "y": 0,
+  "w": 244,
+  "h": 107,
+  "title": "SCENARIO DEFINITIONS",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 1,
+    "cls": "Button",
+    "key": "OK",
+    "x": 137,
+    "y": 90,
+    "w": 50,
+    "h": 12,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50026
+   },
+   {
+    "id": 2,
+    "cls": "Button",
+    "key": "CANCEL",
+    "x": 190,
+    "y": 90,
+    "w": 50,
+    "h": 12,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50006
+   },
+   {
+    "id": 2342,
+    "cls": "Static",
+    "key": "SCENARIO USES",
+    "x": 5,
+    "y": 3,
+    "w": 135,
+    "h": 10,
+    "style": 1342308352,
+    "exstyle": 0,
+    "text_id": 50296
+   },
+   {
+    "id": 2205,
+    "cls": "Button",
+    "key": "LOCAL AND USER ACTIVATED DEFS",
+    "x": 5,
+    "y": 14,
+    "w": 235,
+    "h": 10,
+    "style": 1342308361,
+    "exstyle": 0,
+    "text_id": 50156
+   },
+   {
+    "id": 2209,
+    "cls": "Button",
+    "key": "LOCAL DEFS ONLY",
+    "x": 5,
+    "y": 24,
+    "w": 235,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0,
+    "text_id": 50219
+   },
+   {
+    "id": 2214,
+    "cls": "Button",
+    "key": "SPECIFIED DEFS",
+    "x": 5,
+    "y": 33,
+    "w": 235,
+    "h": 10,
+    "style": 1342177289,
+    "exstyle": 0,
+    "text_id": 50332
+   },
+   {
+    "id": 2202,
+    "cls": "SysListView32",
+    "key": "List1",
+    "x": 5,
+    "y": 45,
+    "w": 235,
+    "h": 41,
+    "style": 1350647813,
+    "exstyle": 512
+   },
+   {
+    "id": 2072,
+    "cls": "Button",
+    "key": "USE ACTIVATED",
+    "x": 5,
+    "y": 90,
+    "w": 129,
+    "h": 12,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50036
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x4699f0",
+   "ctors": [
+    "0x427050"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x420f90"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2205,
+    "last_id": 2205,
+    "sig": 12,
+    "handler": "0x427aa0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2214,
+    "last_id": 2214,
+    "sig": 12,
+    "handler": "0x427aa0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2209,
+    "last_id": 2209,
+    "sig": 12,
+    "handler": "0x427aa0"
+   },
+   {
+    "msg": 273,
+    "msg_name": "WM_COMMAND",
+    "code": 0,
+    "code_name": "BN_CLICKED",
+    "id": 2072,
+    "last_id": 2072,
+    "sig": 12,
+    "handler": "0x427ab0"
+   },
+   {
+    "msg": 83,
+    "msg_name": "WM_HELP",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 42,
+    "handler": "0x423dd0"
+   }
+  ],
+  "ddx": {
+   "1": "Control",
+   "2": "Control",
+   "2342": "Control",
+   "2205": "DDX_0x459586",
+   "2209": "Control",
+   "2214": "Control",
+   "2202": "Control",
+   "2072": "Control"
+  }
+ },
+ "3029": {
+  "style": 2160591040,
+  "exstyle": 0,
+  "x": 0,
+  "y": 0,
+  "w": 217,
+  "h": 146,
+  "title": "NEW",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Sans Serif",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 1,
+    "cls": "Button",
+    "key": "OK",
+    "x": 108,
+    "y": 126,
+    "w": 50,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50026
+   },
+   {
+    "id": 2,
+    "cls": "Button",
+    "key": "CANCEL",
+    "x": 162,
+    "y": 126,
+    "w": 50,
+    "h": 14,
+    "style": 1342242827,
+    "exstyle": 0,
+    "text_id": 50006
+   },
+   {
+    "id": 2203,
+    "cls": "SysListView32",
+    "key": "List1",
+    "x": 3,
+    "y": 15,
+    "w": 210,
+    "h": 108,
+    "style": 1350631427,
+    "exstyle": 0
+   },
+   {
+    "id": 2316,
+    "cls": "Static",
+    "key": "LOCATION",
+    "x": 3,
+    "y": 3,
+    "w": 210,
+    "h": 9,
+    "style": 1342308364,
+    "exstyle": 0
+   }
+  ],
+  "class": {
+   "base": "CDialog",
+   "vtable": "0x469ed8",
+   "ctors": [
+    "0x42a070"
+   ]
+  },
+  "handlers": [
+   {
+    "msg": 20,
+    "msg_name": "WM_ERASEBKGND",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 1,
+    "handler": "0x420f90"
+   },
+   {
+    "msg": 78,
+    "msg_name": "WM_NOTIFY",
+    "code": 65533,
+    "code_name": "0xfffd",
+    "id": 2203,
+    "last_id": 2203,
+    "sig": 38,
+    "handler": "0x42a400"
+   },
+   {
+    "msg": 15,
+    "msg_name": "WM_PAINT",
+    "code": 0,
+    "code_name": "0x0",
+    "id": 0,
+    "last_id": 0,
+    "sig": 12,
+    "handler": "0x420f70"
+   }
+  ],
+  "title_id": 50519,
+  "ddx": {
+   "1": "Control",
+   "2": "Control",
+   "2316": "Control",
+   "2203": "Control"
+  }
+ },
+ "30721": {
+  "style": 2160591044,
+  "exstyle": 0,
+  "x": 9,
+  "y": 26,
+  "w": 183,
+  "h": 70,
+  "title": "Neu",
+  "cls": "",
+  "menu": "",
+  "font": {
+   "face": "MS Shell Dlg",
+   "size": 8,
+   "weight": 0,
+   "italic": 0
+  },
+  "controls": [
+   {
+    "id": 65535,
+    "cls": "Static",
+    "key": "&Neu",
+    "x": 6,
+    "y": 5,
+    "w": 123,
+    "h": 8,
+    "style": 1342177280,
+    "exstyle": 0
+   },
+   {
+    "id": 100,
+    "cls": "ListBox",
+    "key": "",
+    "x": 6,
+    "y": 15,
+    "w": 125,
+    "h": 49,
+    "style": 1352728577,
+    "exstyle": 0
+   },
+   {
+    "id": 1,
+    "cls": "Button",
+    "key": "OK",
+    "x": 137,
+    "y": 6,
+    "w": 40,
+    "h": 14,
+    "style": 1342242817,
+    "exstyle": 0
+   },
+   {
+    "id": 2,
+    "cls": "Button",
+    "key": "Abbrechen",
+    "x": 137,
+    "y": 23,
+    "w": 40,
+    "h": 14,
+    "style": 1342242816,
+    "exstyle": 0
+   },
+   {
+    "id": 57670,
+    "cls": "Button",
+    "key": "&Hilfe",
+    "x": 137,
+    "y": 43,
+    "w": 40,
+    "h": 14,
+    "style": 1342242816,
+    "exstyle": 0
+   }
+  ]
+ }
+}

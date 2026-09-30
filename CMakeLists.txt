@@ -53,8 +53,6 @@ add_custom_target(planet_data_sync ALL
     COMMENT "Syncing game resources"
 )
 
-#add_custom_target(planet_data_sync ALL DEPENDS ${DATA_SYMLINKS})
-
 set(EXTRA_LIBS "")
 if(UNIX)
     list(APPEND EXTRA_LIBS m)
@@ -65,13 +63,6 @@ endif()
 add_executable(clonk ${SRC_FILES})
 target_link_libraries(clonk PRIVATE OpenGL::GL GLEW::GLEW glfw ZLIB::ZLIB ${FREETYPE_LIBRARIES} ${EXTRA_LIBS})
 add_dependencies(clonk planet_data_sync)
-
-add_executable(test_loading tests/test_loading.cpp)
-target_link_libraries(test_loading PRIVATE ZLIB::ZLIB)
-add_dependencies(test_loading planet_data_sync)
-
-add_executable(test_zlib tests/test_zlib.cpp)
-target_link_libraries(test_zlib PRIVATE ZLIB::ZLIB)
 
 set(MIDI_LIBS "")
 if(UNIX)
@@ -99,29 +90,34 @@ set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 COMPONENTS Widgets Multimedia REQUIRED)
 
-set(LAUNCHER_SRC_FILES
-    launcher/src/main.cpp
-    launcher/src/C4Group.cpp
-    launcher/src/ConfigManager.cpp
-    launcher/src/Utils.cpp
-    launcher/src/Win3DWidgets.cpp
-    launcher/src/ClonkDialogs.cpp
-    launcher/src/OptionsDialog.cpp
-    launcher/src/ClonkLauncher.cpp
-    launcher/src/SplashWindow.h
-    launcher/src/TutorialWindow.h
+file(GLOB LAUNCHER_SRC_FILES CONFIGURE_DEPENDS
+    ${CMAKE_SOURCE_DIR}/launcher/src/*.cpp
+    ${CMAKE_SOURCE_DIR}/launcher/src/*.h
 )
 
-add_executable(clonk_launcher ${LAUNCHER_SRC_FILES})
+add_executable(clonk_launcher ${LAUNCHER_SRC_FILES} standard/src/StdIniRegistry.cpp)
+
 target_link_libraries(clonk_launcher PRIVATE Qt6::Widgets Qt6::Multimedia ZLIB::ZLIB)
 add_dependencies(clonk_launcher planet_data_sync)
 
 # Copy launcher resource folders to build directory
 add_custom_target(launcher_resources_sync ALL
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/launcher/res" "${CMAKE_BINARY_DIR}/res"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/launcher/res_wav" "${CMAKE_BINARY_DIR}/res_wav"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/launcher/res_splash" "${CMAKE_BINARY_DIR}/res_splash"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/launcher/res_dump" "${CMAKE_BINARY_DIR}/res_dump"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/launcher/data" "${CMAKE_BINARY_DIR}/data"
     COMMENT "Syncing launcher resources"
 )
 add_dependencies(clonk_launcher launcher_resources_sync)
+
+# Tests (ctest --test-dir build)
+enable_testing()
+add_executable(test_groupedit tests/test_groupedit.cpp launcher/src/GroupEdit.cpp launcher/src/C4Group.cpp)
+target_link_libraries(test_groupedit PRIVATE Qt6::Core ZLIB::ZLIB)
+add_test(NAME groupedit COMMAND test_groupedit "${CMAKE_SOURCE_DIR}/planet_data")
+
+add_executable(test_explorer tests/test_explorer.cpp launcher/src/ExplorerModel.cpp launcher/src/GroupEdit.cpp
+    launcher/src/C4Group.cpp launcher/src/C4TextDoc.cpp launcher/src/LauncherRes.cpp launcher/src/Utils.cpp)
+target_link_libraries(test_explorer PRIVATE Qt6::Widgets Qt6::Multimedia ZLIB::ZLIB)
+add_test(NAME explorer COMMAND test_explorer "${CMAKE_SOURCE_DIR}/planet_data" "${CMAKE_SOURCE_DIR}/launcher/data")
+set_tests_properties(explorer PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+
+add_executable(test_config tests/test_config.cpp launcher/src/ConfigManager.cpp standard/src/StdIniRegistry.cpp)
+add_test(NAME config COMMAND test_config)

@@ -1,4 +1,5 @@
 #include "Win3DWidgets.h"
+#include "LauncherRes.h"
 #include <QMouseEvent>
 #include <QApplication>
 #include <QFile>
@@ -68,10 +69,7 @@ Win3DButton::Win3DButton(const QString &text, QWidget *parent)
 }
 
 void Win3DButton::playClick() {
-    if (click_sound) {
-        click_sound->stop();
-        click_sound->play();
-    }
+    // standard Windows push buttons are silent in the original
 }
 
 void Win3DButton::paintEvent(QPaintEvent *event) {
@@ -198,225 +196,262 @@ void Win3DGroupBox::paintEvent(QPaintEvent *event) {
 }
 
 // Win3DTabWidget
+// Layout and look of the comctl32 tab control of Windows XP without visual styles (the original has
+// no manifest): TAB_SetItemBounds (row balancing, justification), TAB_EnsureSelectionVisible (row
+// rotation), TAB_DrawItem (edges with cut corners).
+namespace {
+constexpr int TAB_ICON_SIZE = 16;
+constexpr int TAB_ICON_PADDING = 3;  // image to text
+constexpr int TAB_H_PADDING = 6;     // uHItemPadding
+const QColor TAB_FACE(0xec, 0xe9, 0xd8);
+} // namespace
+
 Win3DTabWidget::Win3DTabWidget(QWidget *parent, const std::vector<std::string> &colors_in)
     : QWidget(parent) {
-    colors = colors_in.empty() ? std::vector<std::string>{"#ffffff", "#e3e3e3", "#a6a6a6", "#6a6a6a"} : colors_in;
-    stacked = new QStackedWidget(this);
-    main_layout = new QVBoxLayout(this);
-    main_layout->setContentsMargins(12, 50, 14, 14);
-    main_layout->addWidget(stacked);
-    setMouseTracking(true);
+    // highlight, light, shadow, dark shadow (XP color scheme)
+    colors = colors_in.size() >= 4 ? colors_in : std::vector<std::string>{"#ffffff", "#f1efe2", "#aca899", "#716f64"};
 }
 
 void Win3DTabWidget::addTab(QWidget *widget, const QString &text, const QIcon &icon) {
-    tabs.push_back({text, icon, widget});
-    stacked->addWidget(widget);
+    TabData t;
+    t.text = text;
+    t.icon = icon;
+    t.widget = widget;
+    tabs.push_back(t);
+    if (widget) {
+        widget->setParent(this);
+        widget->hide();
+    }
+    layoutTabs();
+    if (active_index < 0)
+        setActiveIndex(0);
     update();
 }
 
+QWidget *Win3DTabWidget::page(int index) const {
+    return index >= 0 && index < count() ? tabs[index].widget : nullptr;
+}
+
 void Win3DTabWidget::setActiveIndex(int index) {
-    if (index >= 0 && index < (int)tabs.size()) {
-        active_index = index;
-        stacked->setCurrentIndex(index);
-        update();
+    if (index < 0 || index >= count())
+        return;
+    const bool changed = index != active_index;
+    active_index = index;
+    // TAB_EnsureSelectionVisible: the row of the selected tab moves next to the frame, the rows
+    // that were in front of it move one row away
+    const int sel_row = tabs[index].row;
+    if (sel_row < static_cast<int>(row_order.size())) {
+        const int dist = row_order[sel_row];
+        if (dist != 0)
+            for (int &d : row_order)
+                d = d == dist ? 0 : (d < dist ? d + 1 : d);
     }
+    for (int i = 0; i < count(); ++i)
+        if (tabs[i].widget)
+            tabs[i].widget->setVisible(i == index);
+    if (tabs[index].widget)
+        tabs[index].widget->raise();
+    update();
+    if (changed)
+        emit currentChanged(index);
+}
+
+int Win3DTabWidget::naturalWidth(const TabData &t) const {
+    const int text_w = fontMetrics().horizontalAdvance(t.text);
+    const int icon_w = t.icon.isNull() ? 0 : TAB_ICON_SIZE + TAB_ICON_PADDING;
+    return text_w + icon_w + 2 * TAB_H_PADDING;
+}
+
+int Win3DTabWidget::rowCount(int w) const {
+    const int avail = w - 2 * SELECTED_OFFSET;
+    int rows = 1, pos = 0;
+    for (const auto &t : tabs) {
+        const int tw = naturalWidth(t);
+        if (pos > 0 && pos + tw > avail) {
+            ++rows;
+            pos = 0;
+        }
+        pos += tw;
+    }
+    return rows;
+}
+
+void Win3DTabWidget::layoutTabs() {
+    const int n = count();
+    num_rows = n ? rowCount(width()) : 1;
+    const bool reset_rows = static_cast<int>(row_order.size()) != num_rows;
+    if (reset_rows) {
+        row_order.resize(num_rows);
+        for (int r = 0; r < num_rows; ++r)
+            row_order[r] = r;
+    }
+    if (!n)
+        return;
+    // the same number of tabs on each row, the first rows take the remainder
+    const int per_row = n / num_rows, rem = n % num_rows;
+    for (int i = 0, row = 0, cnt = 0; i < n; ++i, ++cnt) {
+        if (cnt >= (row < rem ? per_row + 1 : per_row)) {
+            ++row;
+            cnt = 0;
+        }
+        tabs[i].row = row;
+    }
+    // justify every row to the full width
+    const int avail = width() - 2 * SELECTED_OFFSET;
+    for (int row = 0, first = 0; first < n; ++row) {
+        int last = first;
+        int sum = 0;
+        while (last < n && tabs[last].row == row)
+            sum += naturalWidth(tabs[last++]);
+        const int cnt = last - first;
+        if (cnt == 1) {
+            tabs[first].left = SELECTED_OFFSET;
+            tabs[first].right = SELECTED_OFFSET + avail - 1;
+        } else {
+            const int extra = (avail - sum) / cnt, remainder = (avail - sum) % cnt;
+            int x = SELECTED_OFFSET;
+            for (int i = first; i < last; ++i) {
+                int w = naturalWidth(tabs[i]) + extra;
+                if (i == last - 1)
+                    w += remainder;
+                tabs[i].left = x;
+                tabs[i].right = x + w - 1;
+                x += w;
+            }
+        }
+        first = last;
+    }
+    // new rows: the row of the selected tab goes next to the frame again
+    if (reset_rows && active_index >= 0 && active_index < n) {
+        const int dist = row_order[tabs[active_index].row];
+        if (dist != 0)
+            for (int &d : row_order)
+                d = d == dist ? 0 : (d < dist ? d + 1 : d);
+    }
+}
+
+int Win3DTabWidget::frameTop() const { return SELECTED_OFFSET + num_rows * ROW_HEIGHT; }
+
+int Win3DTabWidget::visualRow(int logical_row) const {
+    const int dist = logical_row < static_cast<int>(row_order.size()) ? row_order[logical_row] : 0;
+    return num_rows - 1 - dist;
+}
+
+QRect Win3DTabWidget::tabRect(int index) const {
+    const TabData &t = tabs[index];
+    const int top = SELECTED_OFFSET + visualRow(t.row) * ROW_HEIGHT;
+    return QRect(QPoint(t.left, top), QPoint(t.right, top + ROW_HEIGHT - 1));
+}
+
+QSize Win3DTabWidget::sizeForPageSize(const QSize &page) const {
+    const int w = page.width() + 8;
+    const int rows = count() ? rowCount(w) : 1;
+    return QSize(w, SELECTED_OFFSET + rows * ROW_HEIGHT + 2 + page.height() + 2);
+}
+
+QRect Win3DTabWidget::pageRect() const {
+    return QRect(4, frameTop() + 2, width() - 8, height() - frameTop() - 4);
+}
+
+void Win3DTabWidget::resizeEvent(QResizeEvent *event) {
+    QWidget::resizeEvent(event);
+    layoutTabs();
+    for (auto &t : tabs)
+        if (t.widget)
+            t.widget->setGeometry(pageRect());
 }
 
 void Win3DTabWidget::mousePressEvent(QMouseEvent *event) {
-    int w = width();
-    int cols = 3;
-    int spacing = 0;
-    int start_x = 2;
-    int base_tab_w = (w - 4) / cols;
-    int remainder = (w - 4) % cols;
-    int tab_h = 22;
-    int num_tabs = tabs.size();
-    int num_rows = (num_tabs + cols - 1) / cols;
-    int active_row = active_index / cols;
-
-    int visual_row_counter = 0;
-    for (int r = 0; r < num_rows; ++r) {
-        int v_row = (r == active_row) ? (num_rows - 1) : visual_row_counter;
-        if (r != active_row) visual_row_counter++;
-
-        int start_idx = r * cols;
-        int end_idx = std::min(start_idx + cols, num_tabs);
-        for (int i = start_idx; i < end_idx; ++i) {
-            int col = i % cols;
-            int extra_x = 0;
-            int current_w = base_tab_w;
-
-            if (v_row == num_rows - 1) {
-                if (col == 0) { extra_x = 0; current_w = base_tab_w + 2; }
-                else if (col == 1) { extra_x = 2; current_w = base_tab_w + 2; }
-                else if (col == 2) { extra_x = 4; current_w = base_tab_w - 4 + remainder; }
-            } else if (col == 2) {
-                current_w = base_tab_w + remainder;
-            }
-
-            int x = start_x + col * (base_tab_w + spacing) + extra_x;
-            int y = 2 + v_row * tab_h;
-
-            bool is_active = (i == active_index);
-            int draw_x = is_active ? (x - 2) : x;
-            int draw_y = is_active ? (y - 2) : y;
-            int draw_w = is_active ? (current_w + 4) : current_w;
-            int draw_h = is_active ? (tab_h + 3) : tab_h;
-
-            QRect r(draw_x, draw_y, draw_w, draw_h);
+    if (event->button() != Qt::LeftButton)
+        return;
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-            if (r.contains(event->position().toPoint())) {
+    const QPoint pos = event->position().toPoint();
 #else
-            if (r.contains(event->pos())) {
+    const QPoint pos = event->pos();
 #endif
-                setActiveIndex(i);
-                return;
-            }
+    // the selected tab is enlarged and lies on top
+    if (active_index >= 0 && tabRect(active_index).adjusted(-2, -2, 2, 0).contains(pos))
+        return;
+    for (int i = 0; i < count(); ++i)
+        if (tabRect(i).contains(pos)) {
+            setActiveIndex(i);
+            return;
         }
-    }
 }
 
-void Win3DTabWidget::paintEvent(QPaintEvent *event) {
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::TextAntialiasing, false);
-    QFont font = painter.font();
-    font.setStyleStrategy(QFont::NoAntialias);
-    font.setHintingPreference(QFont::PreferFullHinting);
-    painter.setFont(font);
-    painter.fillRect(rect(), QColor("#ece9d8"));
-
-    if (tabs.empty()) return;
-
-    int w = width();
-    int h = height();
-    int cols = 3;
-    int spacing = 0;
-    int start_x = 2;
-    int base_tab_w = (w - 4) / cols;
-    int remainder = (w - 4) % cols;
-    int tab_h = 20;
-    int num_tabs = tabs.size();
-    int num_rows = (num_tabs + cols - 1) / cols;
-    int active_row = active_index / cols;
-
-    int frame_y = num_rows * tab_h + 2;
-
-    auto draw_tab = [&](int i, int visual_row) {
-        const auto &tab_data = tabs[i];
-        int col = i % cols;
-        int extra_x = 0;
-        int current_w = base_tab_w;
-
-        if (visual_row == num_rows - 1) {
-            if (col == 0) { extra_x = 0; current_w = base_tab_w + 2; }
-            else if (col == 1) { extra_x = 2; current_w = base_tab_w + 2; }
-            else if (col == 2) { extra_x = 4; current_w = base_tab_w - 4 + remainder; }
-        } else if (col == 2) {
-            current_w = base_tab_w + remainder;
-        }
-
-        int x = start_x + col * (base_tab_w + spacing) + extra_x;
-        int y = 2 + visual_row * tab_h;
-
-        bool is_active = (i == active_index);
-        int draw_x = is_active ? (x - 2) : x;
-        int draw_y = is_active ? (y - 2) : y;
-        int draw_w = is_active ? (current_w + 4) : current_w;
-        int draw_h = is_active ? ((frame_y + 2) - draw_y) : tab_h;
-
-        painter.fillRect(draw_x, draw_y, draw_w, draw_h, QColor("#ece9d8"));
-
-        // White Top/Left
-        painter.setPen(QColor(colors[0].c_str()));
-        painter.drawLine(draw_x + 2, draw_y, draw_x + draw_w - 3, draw_y);
-        painter.drawLine(draw_x, draw_y + 2, draw_x, draw_y + draw_h - 1);
-        painter.drawPoint(draw_x + 1, draw_y + 1);
-
-        // Light Gray Top/Left Inner
-        painter.setPen(QColor(colors[1].c_str()));
-        painter.drawLine(draw_x + 2, draw_y + 1, draw_x + draw_w - 3, draw_y + 1);
-        painter.drawLine(draw_x + 1, draw_y + 2, draw_x + 1, draw_y + draw_h - 1);
-
-        // Dark Gray Right Inner
-        painter.setPen(QColor(colors[2].c_str()));
-        painter.drawLine(draw_x + draw_w - 2, draw_y + 2, draw_x + draw_w - 2, draw_y + draw_h - 1);
-
-        // Black Right Outer
-        painter.setPen(QColor(colors[3].c_str()));
-        painter.drawLine(draw_x + draw_w - 1, draw_y + 2, draw_x + draw_w - 1, draw_y + draw_h - 1);
-        painter.drawPoint(draw_x + draw_w - 2, draw_y + 1);
-
-        if (is_active) {
-            painter.setPen(QColor("#ece9d8"));
-            if (col == 0) {
-                painter.drawLine(draw_x + draw_w - 1, draw_y + draw_h - 1, draw_x + draw_w - 2, draw_y + draw_h - 1);
-            } else if (col == 1) {
-                painter.drawLine(draw_x, draw_y + draw_h - 1, draw_x + draw_w - 1, draw_y + draw_h - 1);
-            } else if (col == 2) {
-                painter.drawLine(draw_x, draw_y + draw_h - 1, draw_x + 1, draw_y + draw_h - 1);
-            }
-        }
-
-        // Label / Icon
-        painter.setPen(Qt::black);
-        QFontMetrics fm = painter.fontMetrics();
-#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
-        int text_w = fm.horizontalAdvance(tab_data.text);
-#else
-        int text_w = fm.width(tab_data.text);
-#endif
-        int icon_size = 16;
-        int content_spacing = 4;
-        int total_w = !tab_data.icon.isNull() ? (icon_size + content_spacing + text_w) : text_w;
-
-        int content_x = draw_x + (draw_w - total_w) / 2;
-
-        if (!tab_data.icon.isNull()) {
-            int icon_y = draw_y + (draw_h - icon_size) / 2;
-            painter.drawPixmap(content_x, icon_y, tab_data.icon.pixmap(icon_size, icon_size));
-            content_x += icon_size + content_spacing;
-        }
-
-        QRect text_rect(content_x, draw_y, text_w, draw_h);
-        painter.drawText(text_rect, Qt::AlignVCenter | Qt::AlignLeft, tab_data.text);
-    };
-
-    int visual_row_counter = 0;
-    for (int r = 0; r < num_rows; ++r) {
-        int v_row = (r == active_row) ? (num_rows - 1) : visual_row_counter;
-        if (r != active_row) visual_row_counter++;
-
-        int start_idx = r * cols;
-        int end_idx = std::min(start_idx + cols, num_tabs);
-
-        for (int i = end_idx - 1; i >= start_idx; --i) {
-            if (i != active_index) {
-                draw_tab(i, v_row);
-            }
-        }
+void Win3DTabWidget::drawTab(QPainter &p, int index, bool selected) {
+    const QColor hi(colors[0].c_str()), light(colors[1].c_str()), shadow(colors[2].c_str()),
+        dark(colors[3].c_str());
+    const QRect r = tabRect(index);
+    int L = r.left(), R = r.right(), T = r.top(), B = r.bottom();
+    if (selected) {
+        L -= SELECTED_OFFSET;
+        R += SELECTED_OFFSET;
+        T -= SELECTED_OFFSET;
+        B = frameTop();
+        // the selected tab covers the frame lines below it (but not the frame's side edges)
+        const int fl = qMax(L, 2), fr = qMin(R, width() - 3);
+        p.fillRect(QRect(QPoint(fl, T), QPoint(fr, B + 1)), TAB_FACE);
+        p.fillRect(QRect(QPoint(L, T), QPoint(R, B)), TAB_FACE);
+    } else {
+        p.fillRect(QRect(QPoint(L, T), QPoint(R, B)), TAB_FACE);
     }
+    auto vline = [&](int x, int y0, int y1, const QColor &c) { p.fillRect(QRect(QPoint(x, y0), QPoint(x, y1)), c); };
+    auto hline = [&](int x0, int x1, int y, const QColor &c) { p.fillRect(QRect(QPoint(x0, y), QPoint(x1, y)), c); };
+    // left and top: highlight outside, light inside, cut corner
+    vline(L, T + 2, B, hi);
+    vline(L + 1, T + 2, B, light);
+    p.fillRect(L + 1, T + 1, 1, 1, hi);
+    hline(L + 2, R - 2, T, hi);
+    hline(L + 2, R - 2, T + 1, light);
+    // right: dark shadow outside, shadow inside
+    p.fillRect(R - 1, T + 1, 1, 1, dark);
+    vline(R - 1, T + 2, B, shadow);
+    vline(R, T + 2, B, dark);
 
-    // Main frame border
-    painter.setPen(QColor(colors[0].c_str()));
-    painter.drawLine(0, frame_y, w-1, frame_y);
-    painter.drawLine(0, frame_y, 0, h-1);
-
-    painter.setPen(QColor(colors[1].c_str()));
-    painter.drawLine(1, frame_y+1, w-2, frame_y+1);
-    painter.drawLine(1, frame_y+1, 1, h-2);
-
-    painter.setPen(QColor(colors[2].c_str()));
-    painter.drawLine(1, h-2, w-2, h-2);
-    painter.drawLine(w-2, frame_y+1, w-2, h-2);
-
-    // Black Right Outer
-    painter.setPen(QColor(colors[3].c_str()));
-    painter.drawLine(0, h-1, w-1, h-1);
-    painter.drawLine(w-1, frame_y, w-1, h-1);
-
-    if (active_index >= 0 && active_index < num_tabs) {
-        draw_tab(active_index, num_rows - 1);
+    // icon and text, centered (TAB_DrawItemInterior)
+    const TabData &t = tabs[index];
+    const QFontMetrics fm = p.fontMetrics();
+    const int text_w = fm.horizontalAdvance(t.text);
+    const bool has_icon = !t.icon.isNull();
+    const int content_w = text_w + (has_icon ? TAB_ICON_SIZE + TAB_H_PADDING : 0);
+    const int w = R - L + 1;
+    int x = L + (w - content_w + 1) / 2;
+    if (has_icon) {
+        p.drawPixmap(x, T + 2, t.icon.pixmap(TAB_ICON_SIZE, TAB_ICON_SIZE));
+        x += TAB_ICON_SIZE + TAB_H_PADDING;
     }
+    p.setPen(Qt::black);
+    p.drawText(QRect(x, T + 3, text_w + 2, TAB_ICON_SIZE), Qt::AlignLeft | Qt::AlignVCenter, t.text);
+}
+
+void Win3DTabWidget::paintEvent(QPaintEvent *) {
+    QPainter p(this);
+    p.setFont(font());
+    p.fillRect(rect(), TAB_FACE);
+    const QColor hi(colors[0].c_str()), light(colors[1].c_str()), shadow(colors[2].c_str()),
+        dark(colors[3].c_str());
+
+    // page frame (DrawEdge EDGE_RAISED)
+    const int ft = frameTop(), w = width(), h = height();
+    p.fillRect(0, ft, w - 1, 1, hi);
+    p.fillRect(0, ft, 1, h - ft - 1, hi);
+    p.fillRect(1, ft + 1, w - 3, 1, light);
+    p.fillRect(1, ft + 1, 1, h - ft - 3, light);
+    p.fillRect(w - 1, ft, 1, h - ft, dark);
+    p.fillRect(0, h - 1, w, 1, dark);
+    p.fillRect(w - 2, ft + 1, 1, h - ft - 2, shadow);
+    p.fillRect(1, h - 2, w - 2, 1, shadow);
+
+    if (tabs.empty())
+        return;
+    // rows from the farthest to the one next to the frame, the selected tab last
+    for (int vis = 0; vis < num_rows; ++vis)
+        for (int i = 0; i < count(); ++i)
+            if (i != active_index && visualRow(tabs[i].row) == vis)
+                drawTab(p, i, false);
+    if (active_index >= 0)
+        drawTab(p, active_index, true);
 }
 
 // ClonkArea
@@ -528,10 +563,8 @@ ClonkButton::ClonkButton(const QString &text, QWidget *parent, const QString &bg
 }
 
 void ClonkButton::playClick() {
-    if (click_sound) {
-        click_sound->stop();
-        click_sound->play();
-    }
+    // skinned push button class (0x401060): wave 7002 if Sound\FESamples
+    LauncherRes::playSound(7002);
 }
 
 void ClonkButton::paintEvent(QPaintEvent *event) {

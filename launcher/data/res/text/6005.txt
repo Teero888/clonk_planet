@@ -1,0 +1,13 @@
+Die Benutzung der erweiterten Funktionen von Clonk geschieht grundsätzlich auf eigene Gefahr. Rückfragen beim Hersteller (Matthes Bender, RedWolf Design) sind nicht gestattet. Es gibt keinerlei Support. Der Entwicklermodus ist nur registrierten Spielern von Clonk Planet zugänglich.
+
+Der Entwicklermodus ermöglicht vollen Zugriff auf die Spieldaten (Szenarien, Objektdefinitionen, Spielerdateien) von Clonk. Durch unsachgemäße Anwendung kann nicht nur der Spielspaß zunichte, sondern das komplette Spiel unspielbar gemacht werden.
+
+Jeder, der die erweiterten Funktionen des Entwicklermodus nutzt, sollte verantwortungsvoll mit den gegebenen Möglichkeiten umgehen und eigenverantwortlich das Ziel anstreben, sinnvoll spielbare Erweiterungen zum Gesamtspiel zu erstellen, die der Gemeinschaft nützen. 
+
+Von Spielern erstelltes Material für Clonk darf in keinem Fall kommerziell genutzt werden. Für Szenarien, Objekte oder andere Spieldaten darf kein Entgelt verlangt werden.
+
+Die Weitergabe von "gehackten" oder auf anderem Wege modifizierten ausführbaren Programmen oder anderen nicht zur Bearbeitung freigegebenen Daten der Clonk-Produkte ist illegal. 
+
+Im Rahmen des Entwicklermodus zur Bearbeitung freigegebene Daten dürfen bei der Entwicklung neuer Spielerweiterungen für Clonk (und ausschließlich zu diesem Zweck) verwendet werden. Alle Rechte an den verwendeten Daten verbleiben jedoch beim Hersteller.
+
+Das Paßwort zur Aktivierung des Entwicklermodus findet sich in der zugehörigen Dokumentation, die als Download unter http://www.clonk.de erhältlich ist.

@@ -12,10 +12,10 @@ This is a port of Clonk Planet (originally released in 1999-2000 by RedWolf Desi
 ## Status
 
 * Engine: Ported to OpenGL, GLFW, and miniaudio.
-* Launcher: It's not quite finished, a bunch of UI for customizing scenarios and networking is still missing.
+* Launcher: Recreated from the original Planet.exe (reverse engineered): main window with player and developer view, new / rename / delete / drag & drop, scenario properties, options, network games, registration, quick start screen and the help file.
 * Networking: Works, you can open lobbies and join servers. A simple masterserver is also included since the official one from [clonk.de](http://www.clonk.de/) doesn't work anymore.
 * Audio: DirectSound interface is wrapped to miniaudio. MIDI playback is synthesized using a standalone helper binary (clonk_midi) with TinySoundFont and TinyMidiLoader.
-* Joysticks: Implemented via GLFW events in standard/src/StdJoystick.cpp. (Still no launcher UI though)
+* Joysticks: Implemented via GLFW events in standard/src/StdJoystick.cpp, configured on the Gamepad page of the launcher options.
 * Console / Editor: Currently not implemented since porting the windows UI requires some effort.
 
 ## Dependencies (Linux)
@@ -40,6 +40,8 @@ cmake -B build -S .
 cmake --build build -j$(nproc)
 ```
 
+To run the tests: `ctest --test-dir build`
+
 ## How to Run
 
 * Run Launcher:
@@ -54,3 +56,21 @@ cmake --build build -j$(nproc)
   If hosting a game behind a router, you must forward these ports to the host machine:
   - Port 11111 (TCP) - Control connection
   - Port 11112 (TCP) - Input connection
+
+## Configuration
+
+Settings are stored per user in `clonk.ini` (the original used the registry, `HKCU\Software\RedWolf Design\Clonk 4`):
+
+* Linux: `~/.config/clonk-planet/clonk.ini` (or `$XDG_CONFIG_HOME/clonk-planet`)
+* Windows: `%APPDATA%\Clonk Planet\clonk.ini`
+* macOS: `~/Library/Application Support/Clonk Planet/clonk.ini`
+
+It is created on the first start from the defaults in `planet_data/clonk.ini`. The environment variable `CLONK_CONFIG` selects a different file. Each registry key is a section, e.g.:
+
+```ini
+[General]
+Language=US
+
+[Network]
+LocalName=Clonk
+```

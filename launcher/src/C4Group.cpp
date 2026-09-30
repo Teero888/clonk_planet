@@ -125,6 +125,13 @@ bool C4Group::loadFromMemory(const uint8_t *data_ptr, size_t size) {
     int32_t num_entries = 0;
     std::memcpy(&num_entries, &header[36], 4);
 
+    // C4GroupHeader: char Maker[30 + 2] at 40, int32 Creation at 104, int32 Original at 108
+    maker_.assign(reinterpret_cast<const char *>(&header[40]), strnlen(reinterpret_cast<const char *>(&header[40]), 32));
+    std::memcpy(&creation_, &header[104], 4);
+    int32_t original = 0;
+    std::memcpy(&original, &header[108], 4);
+    original_ = original == C4GroupOriginal;
+
     size_t entry_base = 204;
     size_t file_base = 204 + num_entries * 316;
 
@@ -166,18 +173,22 @@ bool C4Group::loadFromMemory(const uint8_t *data_ptr, size_t size) {
     return true;
 }
 
-std::vector<uint8_t> C4Group::getFile(const std::string &name) const {
+const C4GroupEntry *C4Group::findEntry(const std::string &name) const {
     std::string lower_name = name;
     std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
-
     for (const auto &e : entries) {
         std::string cur_name = e.name;
         std::transform(cur_name.begin(), cur_name.end(), cur_name.begin(), ::tolower);
-        if (cur_name == lower_name) {
-            if (e.offset + e.size <= data.size()) {
-                return std::vector<uint8_t>(data.begin() + e.offset, data.begin() + e.offset + e.size);
-            }
-        }
+        if (cur_name == lower_name)
+            return &e;
+    }
+    return nullptr;
+}
+
+std::vector<uint8_t> C4Group::getFile(const std::string &name) const {
+    const C4GroupEntry *e = findEntry(name);
+    if (e && e->offset + e->size <= data.size()) {
+        return std::vector<uint8_t>(data.begin() + e->offset, data.begin() + e->offset + e->size);
     }
     return {};
 }
@@ -241,13 +252,29 @@ bool C4Group::decompressGzip(const std::vector<uint8_t> &src, std::vector<uint8_
     }
 }
 
-C4GroupWriter::C4GroupWriter() : maker("Gemini Launcher") {}
+C4GroupWriter::C4GroupWriter() : maker("RedWolf Design"), creation(static_cast<int32_t>(std::time(nullptr))) {}
+
+void C4GroupWriter::setHeaderFrom(const C4Group &source_grp) {
+    maker = source_grp.getMaker();
+    creation = source_grp.getCreation();
+    original = source_grp.isOriginal();
+}
+
+bool C4GroupWriter::isGroupName(const std::string &name) {
+    std::string lower_name = name;
+    std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+    if (lower_name.size() < 4)
+        return false;
+    std::string ext = lower_name.substr(lower_name.size() - 4);
+    return ext == ".c4p" || ext == ".c4f" || ext == ".c4s" || ext == ".c4d" || ext == ".c4v" || ext == ".c4g";
+}
 
 void C4GroupWriter::addFile(const std::string &name, const std::vector<uint8_t> &data, bool packed) {
     WriteEntry entry;
     entry.name = name;
     entry.data = data;
     entry.packed = packed;
+    entry.child_group = isGroupName(name);
     entry.time = std::time(nullptr);
     entries.push_back(entry);
 }
@@ -266,10 +293,13 @@ void C4GroupWriter::addFromGroup(const C4Group &source_grp, const std::vector<st
             }
         }
         if (!skip) {
-            auto file_data = source_grp.getFile(e.name);
-            if (!file_data.empty()) {
-                addFile(e.name, file_data, e.packed);
-            }
+            WriteEntry entry;
+            entry.name = e.name;
+            entry.data = source_grp.getFile(e.name);
+            entry.packed = e.packed;
+            entry.child_group = e.is_group;
+            entry.time = e.time;
+            entries.push_back(entry);
         }
     }
 }
@@ -284,35 +314,24 @@ std::vector<uint8_t> C4GroupWriter::makeHeader() {
     std::memcpy(&header[32], &ver2, 4);
     std::memcpy(&header[36], &num_entries, 4);
 
-    std::string m = maker.substr(0, 31);
+    std::string m = maker.substr(0, 30);
     std::memcpy(&header[40], m.c_str(), m.size());
 
-    int32_t time_val = std::time(nullptr);
-    int32_t orig_val = 1;
-    std::memcpy(&header[104], &time_val, 4);
+    int32_t orig_val = original ? C4GroupOriginal : 0;
+    std::memcpy(&header[104], &creation, 4);
     std::memcpy(&header[108], &orig_val, 4);
 
     C4Group::scramble(header.data(), header.size());
     return header;
 }
 
-std::vector<uint8_t> C4GroupWriter::makeEntryCore(const WriteEntry &entry, uint32_t offset, bool &child_group) {
+std::vector<uint8_t> C4GroupWriter::makeEntryCore(const WriteEntry &entry, uint32_t offset) {
     std::vector<uint8_t> core(316, 0);
     std::string name = entry.name.substr(0, 259);
     std::memcpy(core.data(), name.c_str(), name.size());
 
     int32_t packed = entry.packed ? 1 : 0;
-    std::string lower_name = entry.name;
-    std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
-
-    child_group = false;
-    if (lower_name.size() >= 4) {
-        std::string ext = lower_name.substr(lower_name.size() - 4);
-        if (ext == ".c4p" || ext == ".c4f" || ext == ".c4s" || ext == ".c4d" || ext == ".c4v") {
-            child_group = true;
-        }
-    }
-    int32_t child_val = child_group ? 1 : 0;
+    int32_t child_val = entry.child_group ? 1 : 0;
     int32_t size = entry.data.size();
     int32_t entry_size = size;
     int32_t time_val = entry.time;
@@ -333,8 +352,7 @@ std::vector<uint8_t> C4GroupWriter::makeMemoryBlob() {
     uint32_t current_offset = 0;
 
     for (const auto &entry : entries) {
-        bool child_group = false;
-        entry_cores.push_back(makeEntryCore(entry, current_offset, child_group));
+        entry_cores.push_back(makeEntryCore(entry, current_offset));
         current_offset += entry.data.size();
     }
 

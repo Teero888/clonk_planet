@@ -56,27 +56,58 @@ private:
     std::vector<std::string> colors;
 };
 
+// Tab control with the classic Windows look (comctl32 SysTabControl32 as used by the property
+// sheets of the original, XP colors): tabs get their natural width (icon + text), rows are
+// balanced and justified to the full width, the row of the selected tab is moved next to the page
+// frame. Pages are children placed at pageRect(); only the active one is visible.
 class Win3DTabWidget : public QWidget {
     Q_OBJECT
 public:
     explicit Win3DTabWidget(QWidget *parent = nullptr, const std::vector<std::string> &colors = {});
     void addTab(QWidget *widget, const QString &text, const QIcon &icon = QIcon());
     void setActiveIndex(int index);
-    int activeIndex() const { return active_index; }
+    int count() const { return static_cast<int>(tabs.size()); }
+    QWidget *page(int index) const;
+
+    // number of tab rows at the given control width
+    int rowCount(int width) const;
+    // control size that holds pages of the given size (tab rows + frame)
+    QSize sizeForPageSize(const QSize &page) const;
+    // area of the pages inside the frame
+    QRect pageRect() const;
+    // (inclusive) rectangle of a tab as drawn, without the enlargement of the selected tab
+    QRect tabRect(int index) const;
+
+    static constexpr int ROW_HEIGHT = 19;
+    static constexpr int SELECTED_OFFSET = 2;
+
+signals:
+    void currentChanged(int index);
+
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+
 private:
     struct TabData {
         QString text;
         QIcon icon;
         QWidget *widget;
+        int row = 0;           // logical row
+        int left = 0, right = 0; // x range (inclusive) inside the row
     };
+    int naturalWidth(const TabData &t) const;
+    void layoutTabs();
+    int frameTop() const;
+    int visualRow(int logical_row) const;
+    void drawTab(QPainter &p, int index, bool selected);
+
     std::vector<std::string> colors;
     std::vector<TabData> tabs;
-    int active_index = 0;
-    QStackedWidget *stacked = nullptr;
-    QVBoxLayout *main_layout = nullptr;
+    std::vector<int> row_order; // row_order[logical row] = distance from the frame (0 = next to it)
+    int num_rows = 1;
+    int active_index = -1;
 };
 
 class ClonkArea : public QFrame {

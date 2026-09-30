@@ -1,71 +1,29 @@
 #include "ClonkDialogs.h"
 #include "ClonkLauncher.h"
+#include "LauncherRes.h"
 #include <QDir>
 #include <QFile>
 
-QString CD::GetComicFontFamily(QWidget *parent) {
-    QWidget *p = parent;
-    while (p) {
-        if (auto launcher = qobject_cast<ClonkLauncher*>(p)) {
-            return launcher->getComicFontFamily();
-        }
-        p = p->parentWidget();
-    }
-    return "Comic Sans MS";
-}
-
-// ClonkPopupDialog
-ClonkPopupDialog::ClonkPopupDialog(QWidget *parent, const QString &text, const QString &dump_path)
-    : QDialog(parent) {
-    setFixedSize(338, 156);
-    setWindowTitle("Clonk Planet");
-
-    QString bg_texture = QDir(dump_path).filePath("Planet_fixed.bin_2_1019_1031.bmp");
-    QString btn_texture = QDir(dump_path).filePath("Planet_fixed.bin_2_1006_1031.bmp");
-
-    ClonkTexturedWidget *bg = new ClonkTexturedWidget(this, bg_texture);
-    bg->setGeometry(0, 0, 338, 156);
-
-    ClonkButton *btn_ok = new ClonkButton("OK", bg, btn_texture, QPoint(124, 13), QSize(75, 23));
-    btn_ok->move(5, 127);
-    connect(btn_ok, &QPushButton::clicked, this, &QDialog::accept);
-
-    ClonkTextArea *border = new ClonkTextArea(bg);
-    border->setGeometry(5, 5, 329, 117);
-
-    QLabel *label = new QLabel(text, border);
-    label->setGeometry(8, 8, 329 - 16, 117 - 16);
-    label->setWordWrap(true);
-    label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-
-    label->setStyleSheet("background: transparent; color: black;");
-
-    QString comic_family = CD::GetComicFontFamily(parent);
-    QFont label_font(comic_family, 12);
-    label_font.setStyleStrategy(QFont::NoAntialias);
-    label->setFont(label_font);
-}
-
 // ClonkPlayerPropertiesDialog
-ClonkPlayerPropertiesDialog::ClonkPlayerPropertiesDialog(QWidget *parent, const QString &dump_path)
+ClonkPlayerPropertiesDialog::ClonkPlayerPropertiesDialog(QWidget *parent)
     : QDialog(parent) {
     setFixedSize(368, 180);
     setWindowTitle("Clonk Planet");
 
-    QString bg_texture = QDir(dump_path).filePath("Planet_fixed.bin_2_1019_1031.bmp");
-    QString btn_texture = QDir(dump_path).filePath("Planet_fixed.bin_2_1006_1031.bmp");
-    QString flag_texture = QDir(dump_path).filePath("Planet_fixed.bin_2_1007_1031.bmp");
-    QString keyboard_texture = QDir(dump_path).filePath("Planet_fixed.bin_2_1009_1031.bmp");
-    QString mouse_texture = QDir(dump_path).filePath("Planet_fixed.bin_2_1017_1031.bmp");
+    QString bg_texture = LauncherRes::resPath("bitmap", 1019);
+    QString btn_texture = LauncherRes::resPath("bitmap", 1006);
+    QString flag_texture = LauncherRes::resPath("bitmap", 1007);
+    QString keyboard_texture = LauncherRes::resPath("bitmap", 1009);
+    QString mouse_texture = LauncherRes::resPath("bitmap", 1017);
 
     bg = new ClonkTexturedWidget(this, bg_texture);
     bg->setGeometry(0, 0, 368, 180);
 
-    btn_ok = new ClonkButton("OK", bg, btn_texture, QPoint(121, 12), QSize(77, 23));
+    btn_ok = new ClonkButton(LauncherRes::str(50026), bg, btn_texture, QPoint(121, 12), QSize(77, 23));
     btn_ok->move(101, 143);
     connect(btn_ok, &QPushButton::clicked, this, &QDialog::accept);
 
-    btn_cancel = new ClonkButton("Cancel", bg, btn_texture, QPoint(121, 12), QSize(77, 23));
+    btn_cancel = new ClonkButton(LauncherRes::str(50006), bg, btn_texture, QPoint(121, 12), QSize(77, 23));
     btn_cancel->move(186, 143);
     connect(btn_cancel, &QPushButton::clicked, this, &QDialog::reject);
 
@@ -112,21 +70,18 @@ ClonkPlayerPropertiesDialog::ClonkPlayerPropertiesDialog(QWidget *parent, const 
     connect(btn_mouse_toggle, &QPushButton::clicked, this, &ClonkPlayerPropertiesDialog::onMouseToggle);
     connect(mouse_atlas, &ClonkAtlasWidget::clicked, this, &ClonkPlayerPropertiesDialog::onMouseToggle);
 
-    QString comic_family = CD::GetComicFontFamily(parent);
-    QFont label_font(comic_family, 12);
-    label_font.setStyleStrategy(QFont::NoAntialias);
-
-    lbl_color = new QLabel("Color", bg);
-    lbl_color->setGeometry(27, 7, 99, 18);
-    lbl_color->setAlignment(Qt::AlignCenter);
+    // PlayerPropertiesDlg template: labels 2273 / 2275 in the frontend font
+    lbl_color = new QLabel(LauncherRes::controlText(LauncherRes::IDD_PLAYER_PROPERTIES, 2273), bg);
+    lbl_color->setGeometry(LauncherRes::controlRect(LauncherRes::IDD_PLAYER_PROPERTIES, 2273));
+    lbl_color->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     lbl_color->setStyleSheet("background: transparent; color: black;");
-    lbl_color->setFont(label_font);
+    lbl_color->setFont(LauncherRes::feFont());
 
-    lbl_controls = new QLabel("Control", bg);
-    lbl_controls->setGeometry(143, 7, 188, 18);
-    lbl_controls->setAlignment(Qt::AlignCenter);
+    lbl_controls = new QLabel(LauncherRes::controlText(LauncherRes::IDD_PLAYER_PROPERTIES, 2275), bg);
+    lbl_controls->setGeometry(LauncherRes::controlRect(LauncherRes::IDD_PLAYER_PROPERTIES, 2275));
+    lbl_controls->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     lbl_controls->setStyleSheet("background: transparent; color: black;");
-    lbl_controls->setFont(label_font);
+    lbl_controls->setFont(LauncherRes::feFont());
 }
 
 void ClonkPlayerPropertiesDialog::loadSettings(int color, int control, int mouse) {

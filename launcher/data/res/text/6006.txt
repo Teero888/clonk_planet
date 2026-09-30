@@ -1,0 +1,11 @@
+You are about to activate the advanced editing features of Clonk. Do this at your own risk. No support can be given by the author (Matthes Bender, RedWolf Design). The Clonk Planet Developer Mode is available to registered players only.
+
+The Developer Mode gives you full access to all game data (scenarios, object definitions, player files). Through improper use you can not only destroy all the fun in the game, but also make the whole game unplayable.
+
+Anybody using the advanced editing features should do so with great care and responsibility and try to produce useful extensions to the game, thus serving the whole community.
+
+Game content of the shareware package may be modified and used to create free game extensions and for this purpose only. Game content created by players using the developer mode may not be used commercially.
+
+Distributing "hacked" executable files of the shareware package is illegal. 
+
+The password needed to activate the developer mode can be found in the editing documentation available at http://www.clonk.de.

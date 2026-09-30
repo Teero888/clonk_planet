@@ -1,0 +1,81 @@
+{
+ "title": "Clonk Planet",
+ "base": "Planet.hlp>Def",
+ "items": [
+  {
+   "title": "Welcome to Clonk Planet",
+   "context": "HID_WELCOME",
+   "file": "t128.html"
+  },
+  {
+   "title": "Shareware and Registration",
+   "children": [
+    {
+     "title": "Shareware",
+     "context": "HID_SHAREWARE",
+     "file": "t129.html"
+    }
+   ]
+  },
+  {
+   "title": "Control",
+   "children": [
+    {
+     "title": "Mouse",
+     "context": "HID_CONTROLMOUSE",
+     "file": "t134.html"
+    },
+    {
+     "title": "Keyboard and Gamepad",
+     "context": "HID_CONTROL",
+     "file": "t135.html"
+    },
+    {
+     "title": "Line Construction and Pumps",
+     "context": "HID_LINES",
+     "file": "t137.html"
+    }
+   ]
+  },
+  {
+   "title": "Program",
+   "children": [
+    {
+     "title": "What is Clonk?",
+     "context": "HID_INFOCLONK",
+     "file": "t130.html"
+    },
+    {
+     "title": "Saving Games",
+     "context": "HID_SAVEGAME",
+     "file": "t136.html"
+    },
+    {
+     "title": "Networking",
+     "context": "HID_NETWORK",
+     "file": "t138.html"
+    },
+    {
+     "title": "System Requirements",
+     "context": "HID_SYSTEMREQS",
+     "file": "t131.html"
+    },
+    {
+     "title": "Disclaimer",
+     "context": "HID_DISCLAIMER",
+     "file": "t132.html"
+    }
+   ]
+  },
+  {
+   "title": "RedWolf Design",
+   "children": [
+    {
+     "title": "Contact",
+     "context": "HID_REDWOLFDESIGN",
+     "file": "t139.html"
+    }
+   ]
+  }
+ ]
+}

@@ -1,9 +1,10 @@
+#include "XPStyle.h"
 #include "LauncherCompat.h"
 #include <QApplication>
 #include "ClonkLauncher.h"
 #include "SplashWindow.h"
-#include "TutorialWindow.h"
-#include "OptionsDialog.h"
+#include "QuickStartDlg.h"
+#include "LauncherRes.h"
 #include <QDir>
 #include <QUrl>
 #include <QLoggingCategory>
@@ -15,7 +16,18 @@
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    QApplication::setStyle("Fusion");
+    // Fusion with the XP scrollbars of the original's screenshots
+    QApplication::setStyle(new XPStyle());
+    // XP menus
+    app.setStyleSheet(
+        "QMenuBar { background: #ece9d8; color: black; }"
+        "QMenuBar::item { background: transparent; padding: 3px 6px 3px 6px; }"
+        "QMenuBar::item:selected, QMenuBar::item:pressed { background: #316ac5; color: white; }"
+        "QMenu { background: white; color: black; border: 1px solid #aca899; padding: 2px 0px; }"
+        "QMenu::item { padding: 2px 20px 2px 28px; }"
+        "QMenu::item:selected { background: #316ac5; color: white; }"
+        "QMenu::item:disabled { color: #aca899; }"
+        "QMenu::separator { height: 1px; background: #aca899; margin: 3px 1px; }");
 
     // Load custom Comic Sans MS fonts first so they are available in the font database
     QString app_dir = QCoreApplication::applicationDirPath();
@@ -43,49 +55,8 @@ int main(int argc, char *argv[]) {
 
     ClonkLauncher *launcher = new ClonkLauncher();
 
-    // Check for screenshot arguments
-    bool take_screenshot_main = false;
-    QString screenshot_main_path;
-    bool take_screenshot_options = false;
-    QString screenshot_options_path;
-
-    for (int i = 1; i < argc; ++i) {
-        if (QString(argv[i]) == "--screenshot-main" && i + 1 < argc) {
-            take_screenshot_main = true;
-            screenshot_main_path = argv[i+1];
-        } else if (QString(argv[i]) == "--screenshot-options" && i + 1 < argc) {
-            take_screenshot_options = true;
-            screenshot_options_path = argv[i+1];
-        }
-    }
-
-    if (take_screenshot_main) {
-        launcher->show();
-        QTimer::singleShot(200, [launcher]() {
-            launcher->selectFirstItemAndExpand();
-        });
-        QTimer::singleShot(1000, [launcher, screenshot_main_path]() {
-            QPixmap pix = launcher->centralWidget()->grab();
-            pix.save(screenshot_main_path);
-            QCoreApplication::quit();
-        });
-        return app.exec();
-    }
-
-    if (take_screenshot_options) {
-        OptionsDialog *dlg = new OptionsDialog(launcher);
-        dlg->show();
-        QTimer::singleShot(1000, [dlg, screenshot_options_path]() {
-            QPixmap pix = dlg->grab();
-            pix.save(screenshot_options_path);
-            QCoreApplication::quit();
-        });
-        return app.exec();
-    }
-
-    // Setup Splash Window
-    QString base_path = QDir(QCoreApplication::applicationDirPath()).filePath("..");
-    QString splash_dir = QDir(base_path).filePath("launcher/res_splash");
+    // Splash window: frames of Splash.c4v
+    QString splash_dir = QDir(app_dir).filePath("data/splash");
 
     std::vector<QString> splash_frames;
     for (int i = 1; i <= 51; ++i) {
@@ -94,24 +65,15 @@ int main(int argc, char *argv[]) {
     }
 
     QSoundEffect *sound_start = new QSoundEffect();
-    sound_start->setSource(QUrl::fromLocalFile(QDir(QCoreApplication::applicationDirPath()).filePath("res_wav/sound_7008.wav")));
+    sound_start->setSource(QUrl::fromLocalFile(LauncherRes::resPath("wave", 7008)));
 
     SplashWindow *splash = new SplashWindow(splash_frames, sound_start);
     QObject::connect(splash, &SplashWindow::finished, launcher, [launcher]() {
         launcher->show();
         launcher->start_music();
 
-        // Launch the tutorial window
-        TutorialWindow *tut = new TutorialWindow(launcher->getDumpPath(), launcher);
-        tut->show();
-
-        // Position it directly on top of the main launcher window
-        QTimer::singleShot(100, [launcher, tut]() {
-            if (launcher && tut) {
-                QPoint center = launcher->geometry().center();
-                tut->move(center - tut->rect().center());
-            }
-        });
+        // ExplorerDlg::OnInitDialog posts WM_USER+21: the quick start screen (if enabled, player view)
+        QTimer::singleShot(0, launcher, [launcher] { QuickStartDlg::showAtStartup(launcher); });
     });
 
     splash->start();

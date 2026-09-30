@@ -1,0 +1,5 @@
+/*-- Neues Objekt --*/
+
+protected Initialize:
+  
+  return(1);

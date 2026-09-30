@@ -7,21 +7,10 @@
 #include <string>
 #include "Win3DWidgets.h"
 
-class CD {
-public:
-    static QString GetComicFontFamily(QWidget *parent);
-};
-
-class ClonkPopupDialog : public QDialog {
-    Q_OBJECT
-public:
-    explicit ClonkPopupDialog(QWidget *parent = nullptr, const QString &text = "Sample Clonk Message", const QString &dump_path = "");
-};
-
 class ClonkPlayerPropertiesDialog : public QDialog {
     Q_OBJECT
 public:
-    explicit ClonkPlayerPropertiesDialog(QWidget *parent = nullptr, const QString &dump_path = "");
+    explicit ClonkPlayerPropertiesDialog(QWidget *parent = nullptr);
     void loadSettings(int color, int control, int mouse);
     std::map<std::string, int> getSettings() const;
 

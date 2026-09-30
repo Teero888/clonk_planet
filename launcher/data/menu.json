@@ -1,0 +1,49 @@
+[
+ {
+  "key": "OPTIONS",
+  "flags": 16,
+  "items": [
+   {
+    "key": "OPTIONS",
+    "flags": 0,
+    "id": 4005
+   },
+   {
+    "key": "REGISTRATION",
+    "flags": 128,
+    "id": 4006
+   }
+  ]
+ },
+ {
+  "key": "HELP",
+  "flags": 144,
+  "items": [
+   {
+    "key": "CONTENTS",
+    "flags": 0,
+    "id": 4001
+   },
+   {
+    "key": "CREDITS",
+    "flags": 0,
+    "id": 4002
+   },
+   {
+    "key": "WEBSITE",
+    "flags": 0,
+    "id": 4003
+   },
+   {
+    "key": "",
+    "flags": 0,
+    "id": 0
+   },
+   {
+    "key": "ABOUT",
+    "flags": 128,
+    "id": 4000
+   }
+  ]
+ }
+]
