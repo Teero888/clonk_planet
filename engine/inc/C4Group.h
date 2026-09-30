@@ -167,7 +167,7 @@ protected:
   BOOL SetFilePtr(int iOffset);
   BOOL RewindFilePtr();
   BOOL AdvanceFilePtr(int iOffset, C4Group *pByChild = NULL);
-  BOOL AddEntry(int status, BOOL childgroup, const char *fname, long size, time_t time, const char *entryname = NULL, BYTE *membuf = NULL, BOOL fDeleteOnDisk = FALSE, BOOL fHoldBuffer = FALSE);
+  BOOL AddEntry(int status, BOOL childgroup, const char *fname, intptr_t size, time_t time, const char *entryname = NULL, BYTE *membuf = NULL, BOOL fDeleteOnDisk = FALSE, BOOL fHoldBuffer = FALSE);
   BOOL AddEntryOnDisk(const char *szFilename, const char *szAddAs = NULL, BOOL fMove = FALSE);
   BOOL SetFilePtr2Entry(const char *szName, C4Group *pByChild = NULL);
   BOOL AppendEntry2StdFile(C4GroupEntry *centry, CStdFile &stdfile);

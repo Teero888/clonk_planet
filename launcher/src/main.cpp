@@ -1,5 +1,4 @@
 #include "XPStyle.h"
-#include "LauncherCompat.h"
 #include <QApplication>
 #include "ClonkLauncher.h"
 #include "SplashWindow.h"

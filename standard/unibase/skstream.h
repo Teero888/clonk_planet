@@ -1,20 +1,13 @@
-#include <Compat.h>
+// No system headers here: this header is used together with the engine's Compat.h, which must not
+// meet <windows.h>. The socket headers are included by skstream.cpp.
+#include <stdint.h>
 
 #ifndef _WIN32
-  #include <sys/types.h>
-  #include <sys/socket.h>
-  #include <netinet/in.h>
-  #include <arpa/inet.h>
-  #include <netdb.h>
-  #include <unistd.h>
-  #include <sys/time.h>
   typedef int SOCKET;
-  #define INVALID_SOCKET -1
-  #define SOCKET_ERROR -1
 #else
-  #include <winsock2.h>
-  #include <windows.h>
+  typedef uintptr_t SOCKET; // UINT_PTR of winsock2.h
 #endif
+typedef int BOOL;
 
 // Code modified for use by Clonk engine.
 

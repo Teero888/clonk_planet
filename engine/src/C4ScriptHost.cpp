@@ -48,13 +48,13 @@ BOOL C4ScriptHost::Execute() {
   return FALSE;
 }
 
-long C4ScriptHost::Call(C4Thread *pCaller, const char *szFunction, long par0, long par1, long par2, long par3, long par4, long par5, long par6, long par7, long par8, long par9) {
+intptr_t C4ScriptHost::Call(C4Thread *pCaller, const char *szFunction, intptr_t par0, intptr_t par1, intptr_t par2, intptr_t par3, intptr_t par4, intptr_t par5, intptr_t par6, intptr_t par7, intptr_t par8, intptr_t par9) {
   if (!Script || !szFunction)
     return FALSE;
   return FunctionCall(pCaller, szFunction, NULL, par0, par1, par2, par3, par4, par5, par6, par7, par8, par9);
 }
 
-long C4ScriptHost::ObjectCall(C4Thread *pCaller, C4Object *pObj, const char *szFunction, long par0, long par1, long par2, long par3, long par4, long par5, long par6, long par7, long par8, long par9) {
+intptr_t C4ScriptHost::ObjectCall(C4Thread *pCaller, C4Object *pObj, const char *szFunction, intptr_t par0, intptr_t par1, intptr_t par2, intptr_t par3, intptr_t par4, intptr_t par5, intptr_t par6, intptr_t par7, intptr_t par8, intptr_t par9) {
   if (!Script || !pObj || !szFunction)
     return FALSE;
   return FunctionCall(pCaller, szFunction, pObj, par0, par1, par2, par3, par4, par5, par6, par7, par8, par9);
@@ -138,7 +138,7 @@ BOOL C4ScriptHost::GetFunctionDeclaration(int iIndex, char *sTarget, char *sQual
 void C4ScriptHost::ClearPointers(C4Object *pObj) {
   // Global variable pointers
   for (int cnt = 0; cnt < C4MaxVariable; cnt++)
-    if (Global[cnt] == (long)pObj)
+    if (Global[cnt] == (intptr_t)pObj)
       Global[cnt] = 0;
 }
 
@@ -156,7 +156,7 @@ BOOL C4ScriptHost::DenumerateVariablePointers() {
 #ifdef C4ENGINE
   for (int cnt = 0; cnt < C4MaxVariable; cnt++)
     if (Inside(Global[cnt], 1000000000, 1001000000))
-      Global[cnt] = (long)Game.Objects.ObjectPointer(Global[cnt] - 1000000000);
+      Global[cnt] = (intptr_t)Game.Objects.ObjectPointer(Global[cnt] - 1000000000);
 #endif
   return TRUE;
 }
@@ -267,8 +267,8 @@ C4ScriptFnRef *C4ScriptHost::GetFunctionRef(int iFunction) {
   return NULL;
 }
 
-long C4ScriptHost::FunctionCall(C4Thread *pCaller, const char *szFunction, C4Object *pObj, long iPar0, long iPar1, long iPar2, long iPar3, long iPar4, long iPar5, long iPar6, long iPar7, long iPar8,
-                                long iPar9) {
+intptr_t C4ScriptHost::FunctionCall(C4Thread *pCaller, const char *szFunction, C4Object *pObj, intptr_t iPar0, intptr_t iPar1, intptr_t iPar2, intptr_t iPar3, intptr_t iPar4, intptr_t iPar5, intptr_t iPar6, intptr_t iPar7, intptr_t iPar8,
+                                intptr_t iPar9) {
 
 #ifdef C4ENGINE
 

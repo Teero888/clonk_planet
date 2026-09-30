@@ -121,10 +121,10 @@ BOOL C4SoundEffect::SetVolume(int iVolume) {
   return DSndObjSetVolume(DSObj, (iVolume - 100) * 25); // 0 DB / -25 DB
 }
 
-BOOL DSndObjGetVolume(CSoundObject *pSO, long *lpVolume);
+BOOL DSndObjGetVolume(CSoundObject *pSO, intptr_t *lpVolume);
 
 int C4SoundEffect::GetVolume() {
-  long lVolume;
+  intptr_t lVolume;
   if (DSndObjGetVolume(DSObj, &lVolume))
     return BoundBy(lVolume / 25 + 100, 0, 100);
   return 0;

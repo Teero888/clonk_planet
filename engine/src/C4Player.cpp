@@ -283,7 +283,7 @@ void C4Player::PlaceReadyCrew(int tx1, int tx2, int ty, C4Object *FirstBase) {
       ctx = tx1 + Random(tx2 - tx1);
       cty = ty;
       if (!Game.C4S.PlrStart[PlrStartIndex].EnforcePosition) {
-        long lctx = ctx, lcty = cty;
+        intptr_t lctx = ctx, lcty = cty;
         FindSolidGround(lctx, lcty, pDef->Shape.Wdt * 3);
         ctx = (int)lctx;
         cty = (int)lcty;
@@ -322,7 +322,7 @@ void C4Player::PlaceReadyCrew(int tx1, int tx2, int ty, C4Object *FirstBase) {
         ctx = tx1 + Random(tx2 - tx1);
         cty = ty;
         if (!Game.C4S.PlrStart[PlrStartIndex].EnforcePosition) {
-          long lctx = ctx, lcty = cty;
+          intptr_t lctx = ctx, lcty = cty;
           FindSolidGround(lctx, lcty, pDef->Shape.Wdt * 3);
           ctx = (int)lctx;
           cty = (int)lcty;
@@ -362,7 +362,7 @@ void C4Player::PlaceReadyBase(int &tx, int &ty, C4Object **pFirstBase) {
         ctx = tx;
         cty = ty;
         {
-          long lctx = ctx, lcty = cty;
+          intptr_t lctx = ctx, lcty = cty;
           if (Game.C4S.PlrStart[PlrStartIndex].EnforcePosition || FindConSiteSpot(lctx, lcty, def->Shape.Wdt, def->Shape.Hgt, def->Category, 20)) {
             ctx = (int)lctx;
             cty = (int)lcty;
@@ -406,7 +406,7 @@ void C4Player::PlaceReadyVehic(int tx1, int tx2, int ty, C4Object *FirstBase) {
         ctx = tx1 + Random(tx2 - tx1);
         cty = ty;
         if (!Game.C4S.PlrStart[PlrStartIndex].EnforcePosition) {
-          long lctx = ctx, lcty = cty;
+          intptr_t lctx = ctx, lcty = cty;
           FindLevelGround(lctx, lcty, def->Shape.Wdt, 6);
           ctx = (int)lctx;
           cty = (int)lcty;
@@ -440,7 +440,7 @@ void C4Player::PlaceReadyMaterial(int tx1, int tx2, int ty, C4Object *FirstBase)
           ctx = tx1 + Random(tx2 - tx1);
           cty = ty;
           if (!Game.C4S.PlrStart[PlrStartIndex].EnforcePosition) {
-            long lctx = ctx, lcty = cty;
+            intptr_t lctx = ctx, lcty = cty;
             FindSolidGround(lctx, lcty, def->Shape.Wdt);
             ctx = (int)lctx;
             cty = (int)lcty;
@@ -515,7 +515,7 @@ BOOL C4Player::ScenarioInit() {
 
   // Place to solid ground
   if (!Game.C4S.PlrStart[PlrStartIndex].EnforcePosition) {
-    long lptx = ptx, lpty = pty;
+    intptr_t lptx = ptx, lpty = pty;
     FindSolidGround(lptx, lpty, 30);
     ptx = (int)lptx;
     pty = (int)lpty;
@@ -531,7 +531,7 @@ BOOL C4Player::ScenarioInit() {
   PlaceReadyCrew(ptx - 30, ptx + 30, pty, FirstBase);
 
   // Scenario script initialization
-  Game.Script.Call(NULL, PSF_InitializePlayer, Number, ptx, pty, (long)FirstBase);
+  Game.Script.Call(NULL, PSF_InitializePlayer, Number, ptx, pty, (intptr_t)FirstBase);
 
   Game.Landscape.UnLockQBA();
 
@@ -644,7 +644,7 @@ void C4Player::Evaluate() {
   SCopy(Game.ScenarioTitle, LastRound.Title);
   time_t t;
   time(&t);
-  LastRound.Date = (long)t;
+  LastRound.Date = (intptr_t)t;
   LastRound.Duration = Game.Time;
   LastRound.Won = !Eliminated;
   // Melee: personal value gain score ...check Game.Objects(C4D_Goal)

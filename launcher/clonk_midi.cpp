@@ -1,3 +1,7 @@
+// Ogg Vorbis decoder for the compressed samples of the SF3 soundfont
+#define STB_VORBIS_NO_INTEGER_CONVERSION // only the float API is used by tsf.h
+#include <external/stb_vorbis.c>
+
 #define TSF_IMPLEMENTATION
 #include <external/tsf.h>
 
@@ -53,7 +57,7 @@ void audio_callback(ma_device *pDevice, void *pOutput, const void *pInput, ma_ui
 
 int main(int argc, char **argv) {
   if (argc < 3) {
-    printf("Usage: clonk_midi <song.mid> <font.sf2>\n");
+    printf("Usage: clonk_midi <song.mid> <soundfont.sf2|sf3>\n");
     return 1;
   }
 

@@ -9,6 +9,7 @@
 
 #include <StdIniRegistry.h>
 
+#include <cstdint>
 #include <filesystem>
 #include <string>
 #include <utility>
@@ -24,11 +25,17 @@ public:
 
 private:
     static std::pair<std::string, std::string> split(const std::string &key);
+    // modification time and size: a change of either means the file was written by someone else
+    struct FileStamp {
+        std::filesystem::file_time_type time{};
+        std::uintmax_t size = 0;
+        bool operator==(const FileStamp &o) const { return time == o.time && size == o.size; }
+    };
     void refresh() const;
-    std::filesystem::file_time_type fileTime() const;
+    FileStamp fileStamp() const;
 
     std::string path_;
     mutable CStdIniRegistry registry_;
-    mutable std::filesystem::file_time_type loaded_time_{};
+    mutable FileStamp loaded_stamp_;
     std::vector<std::pair<std::string, std::string>> changes_; // key, value set since the last save
 };

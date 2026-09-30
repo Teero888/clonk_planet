@@ -3,18 +3,6 @@
 /* Sings up or retrieves game information from a master server */
 
 #include <C4Include.h>
-
-#ifndef _WIN32
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <unistd.h>
-#define SOCKET int
-#define INVALID_SOCKET -1
-#define SOCKET_ERROR -1
-#define closesocket close
-#endif
 #include <StdHTTP.h>
 
 C4MasterServerClient::C4MasterServerClient() { Default(); }

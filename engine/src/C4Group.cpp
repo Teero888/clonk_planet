@@ -533,7 +533,7 @@ BOOL C4Group::OpenRealGrpFile() {
   return TRUE;
 }
 
-BOOL C4Group::AddEntry(int status, BOOL childgroup, const char *fname, long size, time_t time, const char *entryname, BYTE *membuf, BOOL fDeleteOnDisk, BOOL fHoldBuffer) {
+BOOL C4Group::AddEntry(int status, BOOL childgroup, const char *fname, intptr_t size, time_t time, const char *entryname, BYTE *membuf, BOOL fDeleteOnDisk, BOOL fHoldBuffer) {
 
   // Folder: add file to folder immediately
   if (Status == GRPF_Folder) {
@@ -800,7 +800,7 @@ void C4Group::Clear() {
 
 BOOL C4Group::AppendEntry2StdFile(C4GroupEntry *centry, CStdFile &hTarget) {
   CStdFile hSource;
-  long csize;
+  intptr_t csize;
   BYTE fbuf;
 
   switch (centry->Status) {
@@ -1065,7 +1065,7 @@ BOOL C4Group::Add(const char *szFiles) {
   // Add files & directories
   char szFileName[_MAX_FNAME + 1];
   int iFileCount = 0;
-  long lAttrib = _A_ALL;
+  intptr_t lAttrib = _A_ALL;
   struct _finddata_t fdt;
   intptr_t fdthnd;
 
@@ -1106,7 +1106,7 @@ BOOL C4Group::Move(const char *szFiles) {
   // Add files & directories
   char szFileName[_MAX_FNAME + 1];
   int iFileCount = 0;
-  long lAttrib = _A_ALL;
+  intptr_t lAttrib = _A_ALL;
   struct _finddata_t fdt;
   intptr_t fdthnd;
 
@@ -1584,7 +1584,7 @@ HBITMAP C4Group::SubReadDDB(HDC hdc, int sx, int sy, int swdt, int shgt, int twd
   HBITMAP hbmp;
   BITMAPFILEHEADER fhead;
   BITMAPINFO *pbmi = (BITMAPINFO *)new BYTE[sizeof(BITMAPINFOHEADER) + 256 * sizeof(RGBQUAD)];
-  long bfoffs;
+  intptr_t bfoffs;
   BYTE fbuf;
   BYTE *bmpbits;
   const BOOL f256Only = TRUE; // Format accept flag

@@ -1,6 +1,6 @@
-# Clonk Planet Linux Port (incomplete/WIP)
+# Clonk Planet Linux Port
 
-This is a port of Clonk Planet (originally released in 1999-2000 by RedWolf Design) to Linux (and any modern OS really). It includes the C4Engine and a Qt6-based launcher (thank you RedWolf that you published **ONLY** the engine source and not the launcher, so i had to create it from 0). All gameplay features work as far as I have tested, so playing normally should work fine. Don't expect a smooth experience though... things might be broken - if you find any crashes or other issues please open an issue.
+This is a port of Clonk Planet (originally released in 1999-2000 by RedWolf Design) to Linux (and any modern OS really). It includes the C4Engine and a Qt6-based launcher (thank you RedWolf that you published **ONLY** the engine source and not the launcher, so i had to create it from 0). All gameplay features work as far as I have tested, so playing normally should work fine. Things might be broken - if you find any crashes or other issues please open an issue.
 
 ## Screenshots
 <p align="center">
@@ -9,16 +9,22 @@ This is a port of Clonk Planet (originally released in 1999-2000 by RedWolf Desi
   <img width="48%" alt="Controls" src="https://github.com/user-attachments/assets/df896463-5ffa-4e4f-9561-2b18dad4416b" />
 </p>
 
+## Download
+
+Ready to play builds for Linux and Windows are on the [releases page](../../releases): extract the archive
+and run `clonk_launcher` (`clonk_launcher.exe`). The game folder is written to (players, savegames), so
+extract it somewhere writable. The Linux build needs glibc 2.35 or newer (Ubuntu 22.04, Debian 12, ...).
+
 ## Status
 
-* Engine: Ported to OpenGL, GLFW, and miniaudio.
-* Launcher: Recreated from the original Planet.exe (reverse engineered): main window with player and developer view, new / rename / delete / drag & drop, scenario properties, options, network games, registration, quick start screen and the help file.
+* Engine: Ported to OpenGL, GLFW, and miniaudio. Runs on Linux and Windows (64 bit, built with MinGW-w64).
+* Launcher: Recreated from the original Planet.exe: main window with player and developer view, new / rename / delete / drag & drop, scenario properties, options, network games, registration, quick start screen and the help file.
 * Networking: Works, you can open lobbies and join servers. A simple masterserver is also included since the official one from [clonk.de](http://www.clonk.de/) doesn't work anymore.
-* Audio: DirectSound interface is wrapped to miniaudio. MIDI playback is synthesized using a standalone helper binary (clonk_midi) with TinySoundFont and TinyMidiLoader.
+* Audio: DirectSound interface is wrapped to miniaudio. MIDI playback is synthesized using a standalone helper binary (clonk_midi) with TinySoundFont and TinyMidiLoader, using the FluidR3 General MIDI soundfont (Ogg Vorbis compressed SF3 from MuseScore, see `planet_data/FluidR3Mono_License.md`).
 * Joysticks: Implemented via GLFW events in standard/src/StdJoystick.cpp, configured on the Gamepad page of the launcher options.
 * Console / Editor: Currently not implemented since porting the windows UI requires some effort.
 
-## Dependencies (Linux)
+## Building on Linux
 
 You need a C++17 compiler, CMake, OpenGL, GLFW3, GLEW, Freetype2, and Qt6 (Widgets and Multimedia modules).
 
@@ -34,13 +40,29 @@ On Arch Linux:
 pacman -S --needed base-devel cmake glew glfw-x11 freetype2 qt6-base qt6-multimedia
 ```
 
-## How to Build
+Build:
 ```
 cmake -B build -S .
 cmake --build build -j$(nproc)
 ```
 
 To run the tests: `ctest --test-dir build`
+
+## Building on Windows
+
+Windows builds use the MinGW-w64 toolchain of [MSYS2](https://www.msys2.org/) (MSVC is not supported: the engine relies on the POSIX functions of MinGW). In the MSYS2 UCRT64 shell:
+
+```sh
+pacman -S --needed zip mingw-w64-ucrt-x86_64-{gcc,cmake,ninja,glfw,glew,freetype,zlib,qt6-base,qt6-multimedia-wmf,qt6-multimedia}
+cmake -B build -S . -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+```
+
+## Creating a release
+
+`cmake --install build --prefix <folder>` creates a self-contained game folder: the programs, the game data and the libraries they need (Qt, GLFW, GLEW, ...; on Linux in `lib/`, core system libraries like glibc, OpenGL and X11 are expected on the system). `-DCLONK_BUILD_LAUNCHER=OFF` builds only the engine.
+
+The GitHub workflow builds and tests both platforms on every push and uploads the game folders; pushing a tag `v*` (e.g. `git tag v1.0.0 && git push origin v1.0.0`) publishes them as a release.
 
 ## How to Run
 

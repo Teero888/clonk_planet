@@ -1216,9 +1216,9 @@ BOOL C4Object::Exit(int iX, int iY, int iR, FIXED iXDir, FIXED iYDir, FIXED iRDi
   SetOCF();
   // Engine calls
   if (fCalls)
-    pContainer->Call(PSF_Ejection, (long)this);
+    pContainer->Call(PSF_Ejection, (intptr_t)this);
   if (fCalls)
-    Call(PSF_Departure, (long)pContainer);
+    Call(PSF_Departure, (intptr_t)pContainer);
   // Success
   return TRUE;
 }
@@ -1252,7 +1252,7 @@ BOOL C4Object::Enter(C4Object *pTarget, BOOL fCalls) {
   Contained->SetOCF();
   // Entrance call
   if (fCalls)
-    Call(PSF_Entrance, (long)Contained);
+    Call(PSF_Entrance, (intptr_t)Contained);
   // Success
   return TRUE;
 }
@@ -1273,7 +1273,7 @@ BOOL C4Object::ActivateEntrance(int by_plr, C4Object *by_obj) {
   }
   // Try entrance activation
   if (OCF & OCF_Entrance)
-    if (Call(PSF_ActivateEntrance, (long)by_obj))
+    if (Call(PSF_ActivateEntrance, (intptr_t)by_obj))
       return TRUE;
   // Failure
   return FALSE;
@@ -1849,18 +1849,18 @@ void C4Object::ClearPointers(C4Object *pObj) {
     cCom->ClearPointers(pObj);
   // Local variable pointers
   for (int cnt = 0; cnt < C4MaxVariable; cnt++)
-    if (Local[cnt] == (long)pObj)
+    if (Local[cnt] == (intptr_t)pObj)
       Local[cnt] = 0;
   // Menu
   if (Menu)
     Menu->ClearPointers(pObj);
 }
 
-long C4Object::Call(const char *szFunctionCall, long par0, long par1, long par2, long par3, long par4, long par5, long par6, long par7, long par8, long par9) {
+intptr_t C4Object::Call(const char *szFunctionCall, intptr_t par0, intptr_t par1, intptr_t par2, intptr_t par3, intptr_t par4, intptr_t par5, intptr_t par6, intptr_t par7, intptr_t par8, intptr_t par9) {
   return Call(NULL, szFunctionCall, par0, par1, par2, par3, par4, par5, par6, par7, par8, par9);
 }
 
-long C4Object::Call(C4Thread *pCaller, const char *szFunctionCall, long par0, long par1, long par2, long par3, long par4, long par5, long par6, long par7, long par8, long par9) {
+intptr_t C4Object::Call(C4Thread *pCaller, const char *szFunctionCall, intptr_t par0, intptr_t par1, intptr_t par2, intptr_t par3, intptr_t par4, intptr_t par5, intptr_t par6, intptr_t par7, intptr_t par8, intptr_t par9) {
   if (!Status || !Def || !szFunctionCall || !szFunctionCall[0])
     return FALSE;
   return Def->Script.ObjectCall(pCaller, this, szFunctionCall, par0, par1, par2, par3, par4, par5, par6, par7, par8, par9);
@@ -2305,7 +2305,7 @@ void C4Object::DenumeratePointers() {
       C4Object *pObj = Game.Objects.ObjectPointer(Local[cnt] - C4EnumPointer1);
       // Pointer ok, set it.
       if (pObj)
-        Local[cnt] = (long)pObj;
+        Local[cnt] = (intptr_t)pObj;
       // Hm, it's not a valid pointer
       else
         // Could it be a C4ID? If yes, leave it. If no, zero it.
@@ -2521,7 +2521,7 @@ BOOL C4Object::ContainedControl(BYTE byCom) {
   }
   // Call container script
   sprintf(OSTR, PSF_ContainedControl, ComName(byCom));
-  Contained->Call(OSTR, (long)this);
+  Contained->Call(OSTR, (intptr_t)this);
   // Success
   return TRUE;
 }
@@ -2800,7 +2800,7 @@ void C4Object::DirectCom(BYTE byCom, int iData) // By player ObjectCom
     }
     // Action target call control
     if (Action.Target)
-      Action.Target->CallControl(byCom, (long)this);
+      Action.Target->CallControl(byCom, (intptr_t)this);
     break;
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // - - - - - - - - - - - - - -
@@ -2981,13 +2981,13 @@ void C4Object::SetCommand(int iCommand, C4Object *pTarget, int iTx, int iTy, C4O
     CloseMenu();
   // Script overload
   if (fControl)
-    if (Call(PSF_ControlCommand, (long)CommandName(iCommand), (long)pTarget, iTx, iTy, (long)pTarget2, iData))
+    if (Call(PSF_ControlCommand, (intptr_t)CommandName(iCommand), (intptr_t)pTarget, iTx, iTy, (intptr_t)pTarget2, iData))
       return;
   // Inside vehicle control overload
   if (Contained)
     if (Contained->Def->VehicleControl & C4D_VehicleControl_Inside) {
       Contained->Controller = Controller;
-      if (Contained->Call(PSF_ControlCommand, (long)CommandName(iCommand), (long)pTarget, iTx, iTy, (long)pTarget2, iData))
+      if (Contained->Call(PSF_ControlCommand, (intptr_t)CommandName(iCommand), (intptr_t)pTarget, iTx, iTy, (intptr_t)pTarget2, iData))
         return;
     }
   // Outside vehicle control overload
@@ -2995,7 +2995,7 @@ void C4Object::SetCommand(int iCommand, C4Object *pTarget, int iTx, int iTy, C4O
     if (Action.Target)
       if (Action.Target->Def->VehicleControl & C4D_VehicleControl_Outside) {
         Action.Target->Controller = Controller;
-        if (Action.Target->Call(PSF_ControlCommand, (long)CommandName(iCommand), (long)pTarget, iTx, iTy, (long)pTarget2, iData))
+        if (Action.Target->Call(PSF_ControlCommand, (intptr_t)CommandName(iCommand), (intptr_t)pTarget, iTx, iTy, (intptr_t)pTarget2, iData))
           return;
       }
   // Add new command
@@ -3008,7 +3008,7 @@ BOOL C4Object::ExecuteCommand() {
     Command->Execute();
   // Command finished: engine call
   if (Command && Command->Finished)
-    Call(PSF_ControlCommandFinished, (long)CommandName(Command->Command), (long)Command->Target, Command->Tx, Command->Ty, (long)Command->Target2, Command->Data);
+    Call(PSF_ControlCommandFinished, (intptr_t)CommandName(Command->Command), (intptr_t)Command->Target, Command->Tx, Command->Ty, (intptr_t)Command->Target2, Command->Data);
   // Clear finished commands
   while (Command && Command->Finished)
     ClearCommand(Command);

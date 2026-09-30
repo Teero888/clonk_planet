@@ -41,7 +41,7 @@ BOOL AVICloseOutput(PAVIFILE *ppAviFile, PAVISTREAM *ppAviStream) {
   return TRUE;
 }
 
-BOOL AVIPutFrame(PAVISTREAM pAviStream, long lFrame, void *lpInfo, long lInfoSize, void *lpData, long lDataSize) {
+BOOL AVIPutFrame(PAVISTREAM pAviStream, intptr_t lFrame, void *lpInfo, intptr_t lInfoSize, void *lpData, intptr_t lDataSize) {
   if (!pAviStream)
     return FALSE;
   StdVideoInfo *pInfo = (StdVideoInfo *)pAviStream;

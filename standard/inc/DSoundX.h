@@ -9,6 +9,6 @@ BOOL DSndObjPlay(CSoundObject *hSO, DWORD dwPlayFlags);
 BOOL DSndObjStop(CSoundObject *hSO);
 BOOL DSndObjPlaying(CSoundObject *hSO);
 void DSndObjDestroy(CSoundObject *hSO);
-BOOL DSndObjSetVolume(CSoundObject *pSO, long lVolume);
+BOOL DSndObjSetVolume(CSoundObject *pSO, intptr_t lVolume);
 
 #define DSBPLAY_LOOPING 0x00000001

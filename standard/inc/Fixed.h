@@ -6,7 +6,7 @@
    This is rather silly. Nowadays we should simply use floats. However,
          I never dared changing the whole thing. */
 
-typedef long fixed;
+typedef intptr_t fixed;
 
 #define FIXED fixed
 
@@ -16,11 +16,11 @@ inline int fixtoi(fixed x) { return (x >> 16) + ((x & 0x8000) >> 15); }
 
 inline fixed ftofix(double x) {
   if (x > 32767)
-    return (long)0x7FFFFFFF; // Error
+    return (intptr_t)0x7FFFFFFF; // Error
   if (x < -32768)
-    return -(long)0x80000000; // Error
+    return -(intptr_t)0x80000000; // Error
 
-  return (long)(x * 65536 + (x < 0 ? -0.5 : 0.5));
+  return (intptr_t)(x * 65536 + (x < 0 ? -0.5 : 0.5));
 }
 
 inline double fixtof(fixed x) { return (double)x / 65536; }

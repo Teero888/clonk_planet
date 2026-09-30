@@ -9,10 +9,14 @@ std::pair<std::string, std::string> ConfigManager::split(const std::string &key)
     return {key.substr(0, slash), key.substr(slash + 1)};
 }
 
-std::filesystem::file_time_type ConfigManager::fileTime() const {
+ConfigManager::FileStamp ConfigManager::fileStamp() const {
+    FileStamp stamp;
     std::error_code ec;
-    auto t = std::filesystem::last_write_time(path_, ec);
-    return ec ? std::filesystem::file_time_type{} : t;
+    stamp.time = std::filesystem::last_write_time(path_, ec);
+    if (ec)
+        return {};
+    stamp.size = std::filesystem::file_size(path_, ec);
+    return stamp;
 }
 
 bool ConfigManager::load(const std::string &path) {
@@ -22,16 +26,16 @@ bool ConfigManager::load(const std::string &path) {
     // a file of the old flat [Software] format is converted right away (like the engine does)
     if (ok && registry_.WasLegacy())
         registry_.Save(path_);
-    loaded_time_ = fileTime();
+    loaded_stamp_ = fileStamp();
     return ok;
 }
 
 void ConfigManager::refresh() const {
-    if (path_.empty() || fileTime() == loaded_time_)
+    if (path_.empty() || fileStamp() == loaded_stamp_)
         return;
     // changed by the engine: values set by the launcher and not saved yet stay in effect
     registry_.Load(path_);
-    loaded_time_ = fileTime();
+    loaded_stamp_ = fileStamp();
     for (const auto &[key, value] : changes_) {
         const auto [section, name] = split(key);
         registry_.Set(section, name, value);
@@ -45,7 +49,7 @@ bool ConfigManager::save() {
     const bool ok = registry_.Save(path_);
     if (ok)
         changes_.clear();
-    loaded_time_ = fileTime();
+    loaded_stamp_ = fileStamp();
     return ok;
 }
 

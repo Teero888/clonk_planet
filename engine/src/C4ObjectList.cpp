@@ -503,8 +503,8 @@ C4Object *C4ObjectList::Enumerated(C4Object *pObj) {
 
 C4Object *C4ObjectList::Denumerated(C4Object *pObj) {
   // If valid enumeration, convert to pointer
-  if (Inside((long)pObj, C4EnumPointer1, C4EnumPointer2))
-    return ObjectPointer((long)pObj - C4EnumPointer1);
+  if (Inside((intptr_t)pObj, C4EnumPointer1, C4EnumPointer2))
+    return ObjectPointer((intptr_t)pObj - C4EnumPointer1);
   // Invalid, return original pointer
   return pObj;
 }

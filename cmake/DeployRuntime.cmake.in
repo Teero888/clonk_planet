@@ -1,0 +1,90 @@
+# Install step: makes the installed game folder self-contained. Copies the Qt plugins the launcher
+# needs and every library the programs and plugins depend on that is not part of the system
+# (Windows: next to the executables, Linux: lib/). Generated from DeployRuntime.cmake.in.
+
+set(prefix "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}")
+set(windows @CLONK_DEPLOY_WINDOWS@)
+set(qt_plugin_dir "@CLONK_QT_PLUGIN_DIR@")
+set(qt_plugins "@CLONK_QT_PLUGINS@")
+set(search_dirs "@CLONK_DEPLOY_SEARCH_DIRS@")
+set(system_regexes "@CLONK_DEPLOY_SYSTEM_REGEXES@")
+
+if(windows)
+    set(CMAKE_GET_RUNTIME_DEPENDENCIES_PLATFORM "windows+pe")
+    set(CMAKE_GET_RUNTIME_DEPENDENCIES_TOOL "objdump")
+    set(CMAKE_GET_RUNTIME_DEPENDENCIES_COMMAND "@CMAKE_OBJDUMP@")
+    set(plugin_dest "${prefix}")
+    set(lib_dest "${prefix}")
+else()
+    set(plugin_dest "${prefix}/plugins")
+    set(lib_dest "${prefix}/lib")
+    file(WRITE "${prefix}/qt.conf" "[Paths]\nPrefix=.\nPlugins=plugins\nLibraries=lib\n")
+endif()
+
+# Qt plugins (patterns relative to Qt's plugin directory)
+if(qt_plugin_dir)
+    foreach(pattern IN LISTS qt_plugins)
+        file(GLOB files "${qt_plugin_dir}/${pattern}")
+        foreach(file IN LISTS files)
+            if(file MATCHES "d\\.dll$" AND EXISTS "${file}" AND NOT file MATCHES "qwindows\\.dll$")
+                string(REGEX REPLACE "d\\.dll$" ".dll" release "${file}")
+                if(EXISTS "${release}")
+                    continue() # debug build of a plugin
+                endif()
+            endif()
+            file(RELATIVE_PATH rel "${qt_plugin_dir}" "${file}")
+            get_filename_component(dir "${plugin_dest}/${rel}" DIRECTORY)
+            file(COPY "${file}" DESTINATION "${dir}")
+        endforeach()
+    endforeach()
+endif()
+
+if(windows)
+    file(GLOB executables "${prefix}/*.exe")
+    file(GLOB_RECURSE libraries "${prefix}/*.dll")
+else()
+    set(executables "")
+    foreach(program clonk clonk_midi clonk_launcher masterserver)
+        if(EXISTS "${prefix}/${program}")
+            list(APPEND executables "${prefix}/${program}")
+        endif()
+    endforeach()
+    file(GLOB_RECURSE libraries "${prefix}/plugins/*.so")
+endif()
+
+file(GET_RUNTIME_DEPENDENCIES
+    EXECUTABLES ${executables}
+    LIBRARIES ${libraries}
+    DIRECTORIES ${search_dirs}
+    RESOLVED_DEPENDENCIES_VAR resolved
+    UNRESOLVED_DEPENDENCIES_VAR unresolved
+    CONFLICTING_DEPENDENCIES_PREFIX conflict
+    PRE_EXCLUDE_REGEXES "^api-ms-" "^ext-ms-"
+    POST_EXCLUDE_REGEXES ${system_regexes})
+
+# A library found in several places: the one already deployed, else the first search directory
+foreach(name IN LISTS conflict_FILENAMES)
+    set(choice "")
+    foreach(dir IN ITEMS "${lib_dest}" ${search_dirs})
+        foreach(path IN LISTS conflict_${name})
+            get_filename_component(path_dir "${path}" DIRECTORY)
+            if(NOT choice AND path_dir STREQUAL dir)
+                set(choice "${path}")
+            endif()
+        endforeach()
+    endforeach()
+    if(NOT choice)
+        list(GET conflict_${name} 0 choice)
+    endif()
+    list(APPEND resolved "${choice}")
+endforeach()
+
+foreach(lib IN LISTS resolved)
+    get_filename_component(name "${lib}" NAME)
+    if(NOT EXISTS "${lib_dest}/${name}")
+        message(STATUS "Deploying ${name}")
+        # the file itself under the name it is linked by (not the symlink)
+        configure_file("${lib}" "${lib_dest}/${name}" COPYONLY)
+    endif()
+endforeach()
+# Unresolved are system libraries (e.g. KERNEL32.dll when cross compiling for Windows).

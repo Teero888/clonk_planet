@@ -12,31 +12,17 @@ static CStdIniRegistry *g_registry = nullptr;
 static std::string g_registryPath;
 
 static std::string GetDefaultsPath() {
-#ifdef _WIN32
   char buf[1024];
-  DWORD len = GetModuleFileNameA(NULL, buf, sizeof(buf));
-  if (len > 0) {
-    char *lastSlash = strrchr(buf, '\\');
-    if (!lastSlash) lastSlash = strrchr(buf, '/');
-    if (lastSlash) {
-      strcpy(lastSlash + 1, "clonk.ini");
-      return std::string(buf);
-    }
-  }
-  return "clonk.ini";
-#else
-  char buf[1024];
-  ssize_t len = readlink("/proc/self/exe", buf, sizeof(buf) - 1);
-  if (len != -1) {
-    buf[len] = '\0';
+  if (GetModuleFileName(NULL, buf, sizeof(buf))) {
     char *lastSlash = strrchr(buf, '/');
+    char *lastBackslash = strrchr(buf, '\\');
+    if (lastBackslash > lastSlash) lastSlash = lastBackslash;
     if (lastSlash) {
       strcpy(lastSlash + 1, "clonk.ini");
       return std::string(buf);
     }
   }
   return "clonk.ini";
-#endif
 }
 
 static CStdIniRegistry &Registry() {

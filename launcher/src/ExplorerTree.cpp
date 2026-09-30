@@ -463,7 +463,7 @@ void ClonkLauncher::launchGame() {
     }
     saveConfig();
 
-    QString clonk_bin = QDir(QCoreApplication::applicationDirPath()).filePath("clonk");
+    QString clonk_bin = executablePath("clonk");
     if (!QFile::exists(clonk_bin)) {
         clonkMessage(this, clonk_bin);
         return;

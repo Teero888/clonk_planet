@@ -1,5 +1,7 @@
 /* Copyright (C) 1998-2000  Matthes Bender  RedWolf Design */
 
+// C4_WIN32_CONSOLE: the original Win32 editor (console mode), not ported
+
 /* Handles viewport editing in console mode */
 
 #include <C4Include.h>
@@ -40,7 +42,7 @@ void C4EditCursor::Execute() {
 }
 
 BOOL C4EditCursor::Init(HINSTANCE hInst) {
-#ifdef _WIN32
+#ifdef C4_WIN32_CONSOLE
   if (!(hMenu = LoadMenu(hInst, MAKEINTRESOURCE(IDR_CONTEXTMENUS))))
     return FALSE;
 #endif
@@ -270,7 +272,7 @@ BOOL C4EditCursor::LeftButtonUp() {
 }
 
 BOOL SetMenuItemEnable(HMENU hMenu, WORD id, BOOL fEnable) {
-#ifdef _WIN32
+#ifdef C4_WIN32_CONSOLE
   return EnableMenuItem(hMenu, id, MF_BYCOMMAND | MF_ENABLED | (fEnable ? 0 : MF_GRAYED));
 #else
   return FALSE;
@@ -278,7 +280,7 @@ BOOL SetMenuItemEnable(HMENU hMenu, WORD id, BOOL fEnable) {
 }
 
 BOOL SetMenuItemText(HMENU hMenu, WORD id, const char *szText) {
-#ifdef _WIN32
+#ifdef C4_WIN32_CONSOLE
   MENUITEMINFO minfo;
   ZeroMem(&minfo, sizeof(minfo));
   minfo.cbSize = sizeof(minfo);
@@ -443,7 +445,7 @@ void C4EditCursor::Default() {
 }
 
 void C4EditCursor::Clear() {
-#ifdef _WIN32
+#ifdef C4_WIN32_CONSOLE
   if (hMenu)
     DestroyMenu(hMenu);
   hMenu = NULL;
@@ -457,7 +459,7 @@ void C4EditCursor::UpdateGraphicsSystem() {
 }
 
 BOOL C4EditCursor::SetMode(int iMode) {
-#ifdef _WIN32
+#ifdef C4_WIN32_CONSOLE
   // Store focus
   HWND hFocus = GetFocus();
 #endif
@@ -498,7 +500,7 @@ BOOL C4EditCursor::SetMode(int iMode) {
     Game.MouseControl.ShowCursor();
   else
     Game.MouseControl.HideCursor();
-#ifdef _WIN32
+#ifdef C4_WIN32_CONSOLE
   // Restore focus
   SetFocus(hFocus);
 #endif
@@ -587,7 +589,7 @@ BOOL C4EditCursor::SetToolPatCol(BYTE &bCol) {
 }
 
 BOOL C4EditCursor::DoContextMenu() {
-#ifdef _WIN32
+#ifdef C4_WIN32_CONSOLE
   POINT point;
   GetCursorPos(&point);
   HMENU hContext = GetSubMenu(hMenu, 0);
@@ -635,7 +637,7 @@ void C4EditCursor::GrabContents() {
 void C4EditCursor::UpdateDropTarget(WORD wKeyFlags) {
   DropTarget = NULL;
 
-#ifdef _WIN32
+#ifdef C4_WIN32_CONSOLE
   C4Object *cobj;
   C4ObjectLink *clnk;
   if (wKeyFlags & MK_CONTROL)

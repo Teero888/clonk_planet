@@ -7,44 +7,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef _WIN32
-#include <mmsystem.h>
-BOOL PlayMidi(const char *sFileName, HWND appWnd) {
-  char buf[256];
-  sprintf(buf, "open %s type sequencer alias ITSMYMUSIC", sFileName);
-  if (mciSendString("close all", NULL, 0, NULL) != 0)
-    return FALSE;
-  if (mciSendString(buf, NULL, 0, NULL) != 0)
-    return FALSE;
-  if (mciSendString("play ITSMYMUSIC from 0 notify", NULL, 0, appWnd) != 0)
-    return FALSE;
-  return TRUE;
-}
 
-BOOL PauseMidi() {
-  if (mciSendString("stop ITSMYMUSIC", NULL, 0, NULL) != 0)
-    return FALSE;
-  return TRUE;
-}
+// General MIDI soundfont next to the executable (FluidR3 GM, samples Ogg Vorbis compressed)
+static const char *MidiSoundFont = "FluidR3Mono_GM.sf3";
 
-BOOL ResumeMidi(HWND appWnd) {
-  if (mciSendString("play ITSMYMUSIC notify", NULL, 0, appWnd) != 0)
-    return FALSE;
-  return TRUE;
-}
-
-BOOL StopMidi() {
-  if (mciSendString("close all", NULL, 0, NULL) != 0)
-    return FALSE;
-  return TRUE;
-}
-
-BOOL ReplayMidi(HWND appWnd) {
-  if (mciSendString("play ITSMYMUSIC from 0 notify", NULL, 0, appWnd) != 0)
-    return FALSE;
-  return TRUE;
-}
-#else
+// Ogg Vorbis decoder for the compressed samples of the SF3 soundfont
+#define STB_VORBIS_NO_INTEGER_CONVERSION // only the float API is used by tsf.h
+#include <external/stb_vorbis.c>
 
 #define TSF_IMPLEMENTATION
 #include <external/tsf.h>
@@ -121,10 +90,10 @@ BOOL StopMidi() {
 BOOL PlayMidi(const char *sFileName, HWND appWnd) {
     StopMidi();
 
-    g_MidiPlayer.tiny_sf = tsf_load_filename("FluidR3_GM_GS.sf2");
+    g_MidiPlayer.tiny_sf = tsf_load_filename(MidiSoundFont);
     
     if (!g_MidiPlayer.tiny_sf) {
-        fprintf(stderr, "Midi: Could not load SoundFont FluidR3_GM_GS.sf2\n");
+        fprintf(stderr, "Midi: Could not load SoundFont %s\n", MidiSoundFont);
         return FALSE;
     }
     tsf_set_output(g_MidiPlayer.tiny_sf, TSF_STEREO_INTERLEAVED, 44100, 0);
@@ -182,4 +151,3 @@ BOOL ReplayMidi(HWND appWnd) {
     return TRUE;
 }
 
-#endif

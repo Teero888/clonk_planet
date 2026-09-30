@@ -7,8 +7,7 @@
 #include <vector>
 #include <math.h>
 
-#define MINIAUDIO_IMPLEMENTATION
-#include <miniaudio.h>
+#include <miniaudio.h> // implementation: MiniAudio.cpp
 
 static ma_engine g_maEngine;
 static bool g_maEngineInitialized = false;
@@ -123,7 +122,7 @@ BOOL DSndObjPlaying(CSoundObject *pSO) {
   return FALSE;
 }
 
-BOOL DSndObjSetVolume(CSoundObject *pSO, long lVolume) {
+BOOL DSndObjSetVolume(CSoundObject *pSO, intptr_t lVolume) {
   if (!pSO)
     return FALSE;
   float db = (float)lVolume / 100.0f;
@@ -135,11 +134,11 @@ BOOL DSndObjSetVolume(CSoundObject *pSO, long lVolume) {
   return TRUE;
 }
 
-BOOL DSndObjGetVolume(CSoundObject *pSO, long *plVolume) {
+BOOL DSndObjGetVolume(CSoundObject *pSO, intptr_t *plVolume) {
   if (!pSO || !plVolume || pSO->sounds.empty())
     return FALSE;
   float volume = ma_sound_get_volume(pSO->sounds[0]);
   float db = 20.0f * log10f(volume);
-  *plVolume = (long)(db * 100.0f);
+  *plVolume = (intptr_t)(db * 100.0f);
   return TRUE;
 }

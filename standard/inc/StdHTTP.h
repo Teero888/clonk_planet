@@ -32,7 +32,7 @@ protected:
   bool ReceiveLine(char *sBuf, int iBufSize);
   bool ReceiveHeader(CStdHttpMessage &rMsg);
   HOSTENT *pHost;
-  int Socket;
+  intptr_t Socket; // StdNetSocket
   char UserAgent[httpMaxString + 1];
   char HostName[httpMaxString + 1];
   char PostTarget[httpMaxString + 1];

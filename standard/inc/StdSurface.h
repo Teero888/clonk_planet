@@ -2,12 +2,7 @@
 
 /* A wrapper class to DirectDraw surfaces */
 
-#ifdef _WIN32
-#include <windows.h>
-#include <ddraw.h>
-#else
 #include <Compat.h>
-#endif
 
 typedef LPDIRECTDRAWSURFACE2 SURFACE;
 

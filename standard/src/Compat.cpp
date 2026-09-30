@@ -1,4 +1,6 @@
 #include <C4Include.h>
+
+#ifndef _WIN32 // Windows: _findfirst of the C runtime
 #include <dirent.h>
 #include <sys/stat.h>
 #include <fnmatch.h>
@@ -104,6 +106,7 @@ void _findclose(intptr_t handle) {
   g_findHandles.erase(handle);
 }
 }
+#endif
 
 #include <pthread.h>
 #include <unistd.h>

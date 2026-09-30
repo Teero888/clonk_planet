@@ -100,15 +100,15 @@ protected:
 
 /* Some global landscape functions */
 
-BOOL AboveSolid(long &rx, long &ry);
-BOOL AboveSemiSolid(long &rx, long &ry);
-BOOL SemiAboveSolid(long &rx, long &ry);
-BOOL FindSolidGround(long &rx, long &ry, int width);
-BOOL FindLiquid(long &rx, long &ry, int width, int height);
-BOOL FindSurfaceLiquid(long &rx, long &ry, int width, int height);
-BOOL FindLevelGround(long &rx, long &ry, int width, int hrange);
-BOOL FindConSiteSpot(long &rx, long &ry, int wdt, int hgt, DWORD category, int hrange = -1);
-BOOL FindThrowingPosition(int iTx, int iTy, FIXED fXDir, FIXED fYDir, int iHeight, long &rX, long &rY);
+BOOL AboveSolid(intptr_t &rx, intptr_t &ry);
+BOOL AboveSemiSolid(intptr_t &rx, intptr_t &ry);
+BOOL SemiAboveSolid(intptr_t &rx, intptr_t &ry);
+BOOL FindSolidGround(intptr_t &rx, intptr_t &ry, int width);
+BOOL FindLiquid(intptr_t &rx, intptr_t &ry, int width, int height);
+BOOL FindSurfaceLiquid(intptr_t &rx, intptr_t &ry, int width, int height);
+BOOL FindLevelGround(intptr_t &rx, intptr_t &ry, int width, int hrange);
+BOOL FindConSiteSpot(intptr_t &rx, intptr_t &ry, int wdt, int hgt, DWORD category, int hrange = -1);
+BOOL FindThrowingPosition(int iTx, int iTy, FIXED fXDir, FIXED fYDir, int iHeight, intptr_t &rX, intptr_t &rY);
 BOOL PathFree(int x1, int y1, int x2, int y2, int *ix = NULL, int *iy = NULL);
-BOOL FindClosestFree(long &rX, long &rY, int iAngle1, int iAngle2, int iExcludeAngle1, int iExcludeAngle2);
+BOOL FindClosestFree(intptr_t &rX, intptr_t &rY, int iAngle1, int iAngle2, int iExcludeAngle1, int iExcludeAngle2);
 BOOL ConstructionCheck(C4ID id, int iX, int iY, C4Object *pByObj = NULL);

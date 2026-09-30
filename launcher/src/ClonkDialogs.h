@@ -1,6 +1,5 @@
 #pragma once
 
-#include "LauncherCompat.h"
 #include <QDialog>
 #include <QLabel>
 #include <map>

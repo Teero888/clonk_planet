@@ -1,13 +1,7 @@
 
 #include <C4Include.h>
 #include <StdHTTP.h>
-#ifndef _WIN32
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <unistd.h>
-#endif
+#include <StdNet.h>
 #include <string.h>
 
 CStdHttpMessage::CStdHttpMessage() { Default(); }
@@ -33,7 +27,7 @@ CStdHttp::~CStdHttp() { Clear(); }
 
 void CStdHttp::Default() {
   pHost = NULL;
-  Socket = -1;
+  Socket = StdNetInvalid;
   SCopy("StdHttp Agent", UserAgent);
   SCopy("Not connected", HostName);
   PostTarget[0] = 0;
@@ -67,27 +61,10 @@ bool CStdHttp::Connect(const char *szHost) {
 
   printf("CStdHttp::Connect: Connecting to %s:%d\n", szHostName, port);
 
-  struct hostent *pHostInfo = gethostbyname(szHostName);
-  if (!pHostInfo) {
-    printf("CStdHttp::Connect: gethostbyname failed for %s\n", szHostName);
-    return false;
-  }
-
   SCopy(szHostName, HostName, httpMaxString);
 
-  Socket = socket(AF_INET, SOCK_STREAM, 0);
-  if (Socket < 0) {
-    printf("CStdHttp::Connect: socket creation failed\n");
-    return false;
-  }
-
-  struct sockaddr_in remoteAddr;
-  memset(&remoteAddr, 0, sizeof(remoteAddr));
-  remoteAddr.sin_family = AF_INET;
-  remoteAddr.sin_port = htons(port);
-  memcpy(&remoteAddr.sin_addr, pHostInfo->h_addr_list[0], pHostInfo->h_length);
-
-  if (connect(Socket, (struct sockaddr *)&remoteAddr, sizeof(remoteAddr)) != 0) {
+  Socket = StdNetConnect(szHostName, port);
+  if (Socket == StdNetInvalid) {
     printf("CStdHttp::Connect: connect() failed to %s:%d\n", szHostName, port);
     Disconnect();
     return false;
@@ -97,8 +74,8 @@ bool CStdHttp::Connect(const char *szHost) {
 }
 
 void CStdHttp::Disconnect() {
-  if (Socket != -1) close(Socket);
-  Socket = -1;
+  StdNetClose(Socket);
+  Socket = StdNetInvalid;
   pHost = NULL;
   SCopy("Not connected", HostName);
 }
@@ -111,7 +88,7 @@ bool CStdHttp::Get(const char *szFilename, const char *szTarget) {
   
   char szIn[1024 + 1];
   sprintf(szIn, "GET %s/%s %s\r\nHost: %s\r\nUser-Agent: %s\r\n\r\n\r\n", DataPath, szFilename, httpVersion, HostName, UserAgent);
-  if (send(Socket, szIn, SLen(szIn), 0) == -1) return false;
+  if (StdNetSend(Socket, szIn, SLen(szIn)) == -1) return false;
   
   CStdHttpMessage Msg;
   if (!Receive(Msg) || !Msg.Success) return false;
@@ -144,7 +121,7 @@ bool CStdHttp::ReceiveHeader(CStdHttpMessage &rMsg) {
 bool CStdHttp::ReceiveLine(char *sBuf, int iBufSize) {
   char bBuf;
   int iResult, iIndex = 0;
-  while ((iResult = recv(Socket, &bBuf, 1, 0)) > 0) {
+  while ((iResult = StdNetRecv(Socket, &bBuf, 1)) > 0) {
     sBuf[iIndex] = 0;
     if (bBuf == '\n') {
       if (iIndex > 0 && sBuf[iIndex - 1] == '\r') sBuf[iIndex - 1] = 0;
@@ -162,12 +139,12 @@ bool CStdHttp::Post(const char *szText, BYTE *bpBinary, int iBinarySize) {
           PostTarget, httpVersion, HostName, UserAgent, RequestType, SLen(szText) + iBinarySize);
   
   printf("CStdHttp::Post: Sending header (%d bytes)\n", (int)strlen(szHeader));
-  if (send(Socket, szHeader, SLen(szHeader), 0) == -1) return false;
+  if (StdNetSend(Socket, szHeader, SLen(szHeader)) == -1) return false;
   printf("CStdHttp::Post: Sending text (%d bytes)\n", (int)strlen(szText));
-  if (send(Socket, szText, SLen(szText), 0) == -1) return false;
+  if (StdNetSend(Socket, szText, SLen(szText)) == -1) return false;
   if (bpBinary && iBinarySize > 0) {
     printf("CStdHttp::Post: Sending binary (%d bytes)\n", iBinarySize);
-    if (send(Socket, (const char *)bpBinary, iBinarySize, 0) == -1) return false;
+    if (StdNetSend(Socket, (const char *)bpBinary, iBinarySize) == -1) return false;
   }
   return true;
 }
@@ -191,7 +168,7 @@ bool CStdHttp::ReceiveBody(CStdHttpMessage &rMsg) {
     int iChunk;
     for (int iReceived = 0; iReceived < rMsg.ContentLength; iReceived += iChunk) {
       iChunk = Min(iMaxChunk, rMsg.ContentLength - iReceived);
-      iResult = recv(Socket, rMsg.Data + iReceived, iChunk, 0);
+      iResult = StdNetRecv(Socket, rMsg.Data + iReceived, iChunk);
       if (iResult <= 0) return false;
       iChunk = iResult;
     }
@@ -202,12 +179,9 @@ bool CStdHttp::ReceiveBody(CStdHttpMessage &rMsg) {
 
 bool CStdHttp::GetLocalAddress(const char *szTargetConnect, char *sBuffer) {
   if (!Connect(szTargetConnect)) return false;
-  struct sockaddr_in localAddr;
-  socklen_t sockaddrinSize = sizeof(localAddr);
-  getsockname(Socket, (struct sockaddr *)&localAddr, &sockaddrinSize);
-  SCopy(inet_ntoa(localAddr.sin_addr), sBuffer);
+  bool fOK = StdNetLocalAddress(Socket, sBuffer, 16);
   Disconnect();
-  return true;
+  return fOK;
 }
 
 bool CStdHttp::GetFile(const char *szHost, const char *szFilename, const char *szTargetPath) {

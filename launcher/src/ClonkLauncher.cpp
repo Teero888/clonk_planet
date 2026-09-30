@@ -297,6 +297,14 @@ ClonkLauncher::~ClonkLauncher() {
     stop_music();
 }
 
+QString ClonkLauncher::executablePath(const QString &name) {
+#ifdef Q_OS_WIN
+    return QDir(QCoreApplication::applicationDirPath()).filePath(name + ".exe");
+#else
+    return QDir(QCoreApplication::applicationDirPath()).filePath(name);
+#endif
+}
+
 std::string ClonkLauncher::get_cfg(const std::string &sub_key, const std::string &defaultValue) const {
     return config.getValue(sub_key, defaultValue);
 }
@@ -344,8 +352,8 @@ void ClonkLauncher::extract_frontend_music() {
 void ClonkLauncher::start_music() {
     if (!current_music_path.isEmpty() && QFile::exists(current_music_path)) {
         if (get_cfg("Sound\\FEMusic", "1") == "1") {
-            QString sf_path = QDir(planet_data_path).filePath("FluidR3_GM_GS.sf2");
-            QString midi_player_bin = QDir(base_path).filePath("build/clonk_midi");
+            QString sf_path = QDir(planet_data_path).filePath("FluidR3Mono_GM.sf3");
+            QString midi_player_bin = executablePath("clonk_midi");
 
             if (QFile::exists(sf_path) && QFile::exists(midi_player_bin)) {
                 stop_music();

@@ -10,4 +10,4 @@ BOOL AVIOpenOutput(const char *szFilename, PAVIFILE *ppAviFile, PAVISTREAM *ppAv
 
 BOOL AVICloseOutput(PAVIFILE *ppAviFile, PAVISTREAM *ppAviStream);
 
-BOOL AVIPutFrame(PAVISTREAM pAviStream, long lFrame, void *lpInfo, long lInfoSize, void *lpData, long lDataSize);
+BOOL AVIPutFrame(PAVISTREAM pAviStream, intptr_t lFrame, void *lpInfo, intptr_t lInfoSize, void *lpData, intptr_t lDataSize);

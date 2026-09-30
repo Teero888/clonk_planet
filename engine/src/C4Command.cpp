@@ -867,7 +867,7 @@ void C4Command::Throw() {
       iDir = -1;
 
     // Find throwing position
-    long lx = 0, ly = 0;
+    intptr_t lx = 0, ly = 0;
     FIXED pthrow = ftofix(4.0 * (float)cObj->GetPhysical()->Throw / (float)C4MaxPhysical);
     int iHeight = cObj->Shape.Hgt;
     if (!FindThrowingPosition(Tx, Ty, pthrow * iDir, -pthrow, iHeight, lx, ly))
@@ -1044,7 +1044,7 @@ void C4Command::Get() {
   // Target in solid: dig out
   if (!Target->Contained && (Target->OCF & OCF_InSolid)) {
     // Check for closest free position
-    long lx = Target->x, ly = Target->y;
+    intptr_t lx = Target->x, ly = Target->y;
     // Find all-closest dig-out position
     if (!FindClosestFree(lx, ly, -120, +120, -1, -1))
     // None found
@@ -1054,7 +1054,7 @@ void C4Command::Get() {
     }
     int iX = lx, iY = ly;
     // Check good-angle left/right dig-out position
-    long lx2 = Target->x, ly2 = Target->y;
+    intptr_t lx2 = Target->x, ly2 = Target->y;
     if (FindClosestFree(lx2, ly2, -140, +140, -40, +40))
       // Use good-angle position if it's not way worse
       if (Distance(Target->x, Target->y, lx2, ly2) < 10 * Distance(Target->x, Target->y, iX, iY)) {
@@ -1084,7 +1084,7 @@ void C4Command::Get() {
       if (cObj->Def->CollectionLimit && (cObj->Contents.ObjectCount() >= cObj->Def->CollectionLimit))
         ObjectComPut(cObj, cObj->Contained);
       // Check RejectCollect
-      if (cObj->Call(PSF_RejectCollection, (int)(long)Target->Def->id, (intptr_t)Target)) {
+      if (cObj->Call(PSF_RejectCollection, (int)(intptr_t)Target->Def->id, (intptr_t)Target)) {
         // Can't get due to RejectCollect: fail
         Finish();
         return;
@@ -1118,7 +1118,7 @@ void C4Command::Get() {
         if (cObj->Def->CollectionLimit && (cObj->Contents.ObjectCount() >= cObj->Def->CollectionLimit))
           ObjectComPut(cObj, Target->Contained);
         // Check RejectCollect
-        if (cObj->Call(PSF_RejectCollection, (int)(long)Target->Def->id, (intptr_t)Target)) {
+        if (cObj->Call(PSF_RejectCollection, (int)(intptr_t)Target->Def->id, (intptr_t)Target)) {
           // Can't get due to RejectCollect: fail
           Finish();
           return;
@@ -1165,7 +1165,7 @@ void C4Command::Get() {
         ObjectComDrop(cObj);
       }
       // Check RejectCollect
-      if (cObj->Call(PSF_RejectCollection, (long)Target->Def->id, (long)(intptr_t)Target)) {
+      if (cObj->Call(PSF_RejectCollection, (intptr_t)Target->Def->id, (intptr_t)(intptr_t)Target)) {
         // Can't get due to RejectCollect: fail
         Finish();
         cObj->Action.ComDir = COMD_Stop;
@@ -1355,7 +1355,7 @@ void C4Command::Put() {
         int iTy = Target->y + Target->Def->Collection.y + Target->Def->Collection.Hgt / 2;
         FIXED pthrow = ftofix(4.0 * (float)cObj->GetPhysical()->Throw / (float)C4MaxPhysical);
         int iHeight = cObj->Shape.Hgt;
-        long lx = 0, ly = 0;
+        intptr_t lx = 0, ly = 0;
         int iObjDist = Distance(cObj->x, cObj->y, Target->x, Target->y);
         if ((FindThrowingPosition(iTx, iTy, pthrow, -pthrow, iHeight, lx, ly) && (Distance((int)lx, (int)ly, cObj->x, cObj->y) < iObjDist)) ||
             (FindThrowingPosition(iTx, iTy, pthrow * -1, -pthrow, iHeight, lx, ly) && (Distance((int)lx, (int)ly, cObj->x, cObj->y) < iObjDist))) {
@@ -1632,7 +1632,7 @@ void C4Command::Construct() {
 
   // No construction site specified: find one
   if ((Tx == 0) && (Ty == 0)) {
-    long lx = cObj->x, ly = cObj->y;
+    intptr_t lx = cObj->x, ly = cObj->y;
     if (!FindConSiteSpot(lx, ly, pDef->Shape.Wdt, pDef->Shape.Hgt, pDef->Category, 20))
     // No site found: fail
     {
@@ -2263,7 +2263,7 @@ int C4Command::CallFailed() {
   char szFunctionFailed[1024 + 1];
   sprintf(szFunctionFailed, "%sFailed", Text);
   // Call failed-function
-  return (int)Target->Call(szFunctionFailed, (long)(intptr_t)cObj, Tx, Ty, (long)(intptr_t)Target2);
+  return (int)Target->Call(szFunctionFailed, (intptr_t)(intptr_t)cObj, Tx, Ty, (intptr_t)(intptr_t)Target2);
   // Extreme caution notice: the script call might do just about anything
   // including clearing all commands (including this) i.e. through a call
   // to SetCommand. Thus, we must not do anything in this command anymore

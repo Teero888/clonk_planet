@@ -1,6 +1,5 @@
 #pragma once
 
-#include "LauncherCompat.h"
 #include <QMainWindow>
 #include <QTreeView>
 #include <QTextEdit>
@@ -32,6 +31,8 @@ public:
 
     // the single main window (ExplorerDlg of the original)
     static ClonkLauncher *instance();
+    // program next to the launcher (clonk, clonk_midi; .exe on Windows)
+    static QString executablePath(const QString &name);
 
     // directory with the game data (clonk.ini, *.c4f, *.c4d, ...)
     QString planetDataPath() const { return planet_data_path; }

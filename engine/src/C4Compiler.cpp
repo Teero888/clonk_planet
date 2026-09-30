@@ -66,9 +66,11 @@ BOOL C4Compiler::CompileLine(C4CompilerValue *pRefs, const char *szSection, cons
 
   case C4CV_Variable:
     for (cnt = 0; (cnt < cRef->Size) && SCopySegment(szLine, cnt, szSegment, ',', C4MaxName); cnt++) {
-      long val;
-      if (sscanf(szSegment, "%li", &val) == 1)
-        memcpy(pTarget + cnt * sizeof(long), &val, sizeof(long));
+      long long read;
+      if (sscanf(szSegment, "%lli", &read) == 1) {
+        intptr_t val = (intptr_t)read;
+        memcpy(pTarget + cnt * sizeof(intptr_t), &val, sizeof(intptr_t));
+      }
     }
     break;
 
@@ -259,9 +261,9 @@ BOOL C4Compiler::DecompileStructure(C4CompilerValue *pRefs, void *vpData, void *
       // Compare to default
       iDiff = 0;
       for (cnt = 0; cnt < cRef->Size; cnt++) {
-        long lData, lDefault;
-        memcpy(&lData, pData + cRef->Offset + cnt * sizeof(long), sizeof(long));
-        memcpy(&lDefault, pDefault + cRef->Offset + cnt * sizeof(long), sizeof(long));
+        intptr_t lData, lDefault;
+        memcpy(&lData, pData + cRef->Offset + cnt * sizeof(intptr_t), sizeof(intptr_t));
+        memcpy(&lDefault, pDefault + cRef->Offset + cnt * sizeof(intptr_t), sizeof(intptr_t));
         if (lData != lDefault)
           iDiff = cnt + 1;
       }
@@ -278,9 +280,9 @@ BOOL C4Compiler::DecompileStructure(C4CompilerValue *pRefs, void *vpData, void *
       for (cnt = 0; cnt < iDiff; cnt++) {
         if (cnt)
           SAppend(",", *ppOutput);
-        long lData;
-        memcpy(&lData, pData + cRef->Offset + cnt * sizeof(long), sizeof(long));
-        sprintf(ostr, "%li", lData);
+        intptr_t lData;
+        memcpy(&lData, pData + cRef->Offset + cnt * sizeof(intptr_t), sizeof(intptr_t));
+        sprintf(ostr, "%lli", (long long)lData);
         SAppend(ostr, *ppOutput);
       }
       SAppend(LineFeed, *ppOutput);

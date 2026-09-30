@@ -1,7 +1,9 @@
 #ifndef INC_Compat
 #define INC_Compat
 
-#ifndef _WIN32
+/* The Win32 API subset used by the engine, emulated on top of the C library (POSIX, or MinGW on
+   Windows). The engine never includes <windows.h>: code that needs the real Windows API lives in
+   separate files (CompatWin.cpp, StdNet.cpp, skstream.cpp). */
 
 #include <stdint.h>
 #include <string.h>
@@ -80,12 +82,21 @@ typedef int BOOL;
 #define _MAX_FNAME 256
 #define _MAX_EXT 256
 
+#ifndef _WIN32
 #define WINAPI
 #define CALLBACK
 #define APIENTRY
 #define __stdcall
 #define __cdecl
 #define __fastcall
+#else
+// calling conventions are the same on x64
+#define WINAPI
+#define CALLBACK
+#ifndef APIENTRY
+#define APIENTRY
+#endif
+#endif
 
 #define MAX_PATH 260
 
@@ -112,6 +123,9 @@ typedef void *PAVIFILE;
 typedef void *PAVISTREAM;
 typedef void *PGETFRAME;
 
+#ifdef _WIN32
+#include <io.h> // _findfirst / _findnext / _findclose of the C runtime
+#else
 typedef uint32_t _fsize_t;
 
 struct _finddata_t {
@@ -130,6 +144,7 @@ intptr_t _findfirst(const char *a, struct _finddata_t *b);
 int _findnext(intptr_t a, struct _finddata_t *b);
 void _findclose(intptr_t a);
 }
+#endif
 
 // Registry stubs
 typedef void *HKEY;
@@ -186,6 +201,23 @@ inline void PostQuitMessage(int nExitCode) { exit(nExitCode); }
 #include <unistd.h>
 #include <libgen.h>
 
+#ifdef _WIN32
+// CompatWin.cpp
+extern "C" int CompatGetExePath(char *buf, int size);
+extern "C" int CompatIsReadablePtr(const void *ptr);
+inline int setenv(const char *name, const char *value, int overwrite) { return _putenv_s(name, value); }
+inline BOOL GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize) { return CompatGetExePath(lpFilename, (int)nSize) > 0; }
+inline BOOL SetCurrentDirectory(LPCSTR lpPathName) { return chdir(lpPathName) == 0; }
+inline DWORD GetTempPath(DWORD nBufferLength, LPSTR lpBuffer) {
+  const char *tmp = getenv("TEMP");
+  if (!tmp)
+    tmp = ".";
+  strncpy(lpBuffer, tmp, nBufferLength);
+  return strlen(lpBuffer);
+}
+#include <sys/stat.h>
+inline BOOL CreateDirectory(LPCSTR lpPathName, void *lpSecurityAttributes) { return mkdir(lpPathName) == 0; }
+#else
 inline BOOL GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize) {
   char buf[1024];
   ssize_t len = readlink("/proc/self/exe", buf, sizeof(buf) - 1);
@@ -208,6 +240,7 @@ inline DWORD GetTempPath(DWORD nBufferLength, LPSTR lpBuffer) {
 #include <sys/stat.h>
 
 inline BOOL CreateDirectory(LPCSTR lpPathName, void *lpSecurityAttributes) { return mkdir(lpPathName, 0755) == 0; }
+#endif
 
 // UI Stubs
 #define VK_F1 0x70
@@ -358,8 +391,10 @@ inline HBITMAP CreateDIBitmap(HDC hdc, const void *lpbmih, DWORD fdwInit, const 
 inline HICON CreateIconFromResource(PBYTE presbits, DWORD dwResSize, BOOL fIcon, DWORD dwVer) { return 0; }
 inline DWORD GetLastError() { return 0; }
 
+#ifndef _WIN32
 typedef struct utimbuf _utimbuf;
 #define _utime utime
+#endif
 
 #define CBM_INIT 0
 #define DIB_RGB_COLORS 0
@@ -413,32 +448,5 @@ inline int LoadString(HINSTANCE hInstance, UINT uID, LPSTR lpBuffer, int nBuffer
 #define PRIMARYLANGID(l) (l & 0x3ff)
 #define LANG_GERMAN 0x07
 
-#else
-
-#include <cstdint>
-#include <io.h>
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>
-#include <winsock2.h>
-#include <stdlib.h>
-
-inline int setenv(const char *name, const char *value, int overwrite) {
-    return _putenv_s(name, value);
-}
-
-typedef int socklen_t;
-
-#ifndef STDEXT_MAKE_CHECKED_ARRAY_ITERATOR_DEFINED
-#define STDEXT_MAKE_CHECKED_ARRAY_ITERATOR_DEFINED
-namespace stdext {
-    template<typename T>
-    inline T* make_checked_array_iterator(T* ptr, size_t size, size_t index = 0) {
-        return ptr + index;
-    }
-}
-#endif
-
-#endif // _WIN32
 
 #endif // INC_Compat

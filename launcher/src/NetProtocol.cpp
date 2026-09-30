@@ -4,9 +4,14 @@
 #include <QFile>
 #include <QFileInfo>
 
-#include <arpa/inet.h>
 #include <cerrno>
 #include <cstring>
+
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#else
+#include <arpa/inet.h>
 #include <fcntl.h>
 #include <netdb.h>
 #include <netinet/in.h>
@@ -15,6 +20,41 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#endif
+
+// Platform differences of the BSD socket API (winsock on Windows)
+namespace {
+#ifdef _WIN32
+struct WinsockStartup {
+    WinsockStartup() {
+        WSADATA data;
+        WSAStartup(MAKEWORD(2, 2), &data);
+    }
+} winsock_startup;
+using socklen_type = int;
+int socketError() { return WSAGetLastError(); }
+bool isRetry(int e) { return e == WSAEWOULDBLOCK || e == WSAEINTR; }
+bool isConnectPending(int e) { return e == WSAEWOULDBLOCK || e == WSAEINPROGRESS; }
+bool isInterrupted(int e) { return e == WSAEINTR; }
+int pollSocket(pollfd *p, int timeout_ms) { return WSAPoll(p, 1, timeout_ms); }
+void setNonBlocking(intptr_t fd) {
+    u_long on = 1;
+    ioctlsocket(static_cast<SOCKET>(fd), FIONBIO, &on);
+}
+void closeSocket(intptr_t fd) { closesocket(static_cast<SOCKET>(fd)); }
+constexpr int kSendFlags = 0;
+#else
+using socklen_type = socklen_t;
+int socketError() { return errno; }
+bool isRetry(int e) { return e == EAGAIN || e == EINTR; }
+bool isConnectPending(int e) { return e == EINPROGRESS; }
+bool isInterrupted(int e) { return e == EINTR; }
+int pollSocket(pollfd *p, int timeout_ms) { return ::poll(p, 1, timeout_ms); }
+void setNonBlocking(intptr_t fd) { ::fcntl(fd, F_SETFL, ::fcntl(fd, F_GETFL, 0) | O_NONBLOCK); }
+void closeSocket(intptr_t fd) { ::close(fd); }
+constexpr int kSendFlags = MSG_NOSIGNAL;
+#endif
+} // namespace
 
 // ---------------------------------------------------------------------------------------------
 // NetSocket
@@ -30,11 +70,13 @@ bool NetSocket::waitFor(short events, int timeout_ms) {
             error_ = Aborted;
             return false;
         }
-        pollfd p{fd_, events, 0};
-        int r = ::poll(&p, 1, kSlice);
+        pollfd p{};
+        p.fd = fd_;
+        p.events = events;
+        int r = pollSocket(&p, kSlice);
         if (r > 0)
             return true;
-        if (r < 0 && errno != EINTR) {
+        if (r < 0 && !isInterrupted(socketError())) {
             error_ = IOError;
             return false;
         }
@@ -64,15 +106,15 @@ bool NetSocket::connectTo(const QString &host, int port, int timeout_ms) {
     ::freeaddrinfo(res);
     addr.sin_port = htons(static_cast<uint16_t>(port));
 
-    fd_ = ::socket(AF_INET, SOCK_STREAM, 0);
+    fd_ = static_cast<intptr_t>(::socket(AF_INET, SOCK_STREAM, 0));
     if (fd_ < 0) {
+        fd_ = -1;
         error_ = NoSocket;
         return false;
     }
-    int flags = ::fcntl(fd_, F_GETFL, 0);
-    ::fcntl(fd_, F_SETFL, flags | O_NONBLOCK);
+    setNonBlocking(fd_);
     int r = ::connect(fd_, reinterpret_cast<sockaddr *>(&addr), sizeof(addr));
-    if (r != 0 && errno != EINPROGRESS) {
+    if (r != 0 && !isConnectPending(socketError())) {
         close();
         error_ = ConnectFailed;
         return false;
@@ -85,8 +127,8 @@ bool NetSocket::connectTo(const QString &host, int port, int timeout_ms) {
             return false;
         }
         int so_error = 0;
-        socklen_t len = sizeof(so_error);
-        ::getsockopt(fd_, SOL_SOCKET, SO_ERROR, &so_error, &len);
+        socklen_type len = sizeof(so_error);
+        ::getsockopt(fd_, SOL_SOCKET, SO_ERROR, reinterpret_cast<char *>(&so_error), &len);
         if (so_error != 0) {
             close();
             error_ = ConnectFailed;
@@ -94,13 +136,13 @@ bool NetSocket::connectTo(const QString &host, int port, int timeout_ms) {
         }
     }
     int one = 1;
-    ::setsockopt(fd_, IPPROTO_TCP, TCP_NODELAY, &one, sizeof(one));
+    ::setsockopt(fd_, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<const char *>(&one), sizeof(one));
     return true;
 }
 
 void NetSocket::close() {
     if (fd_ >= 0)
-        ::close(fd_);
+        closeSocket(fd_);
     fd_ = -1;
 }
 
@@ -109,9 +151,9 @@ bool NetSocket::sendAll(const void *data, size_t size) {
     while (size > 0) {
         if (fd_ < 0 || !waitFor(POLLOUT, timeout_ms_))
             return false;
-        ssize_t n = ::send(fd_, p, size, MSG_NOSIGNAL);
+        const int n = ::send(fd_, p, static_cast<int>(size), kSendFlags);
         if (n < 0) {
-            if (errno == EAGAIN || errno == EINTR)
+            if (isRetry(socketError()))
                 continue;
             error_ = IOError;
             return false;
@@ -126,9 +168,9 @@ int NetSocket::recvSome(void *data, size_t size) {
     while (true) {
         if (fd_ < 0 || !waitFor(POLLIN, timeout_ms_))
             return -1;
-        ssize_t n = ::recv(fd_, data, size, 0);
+        const int n = ::recv(fd_, static_cast<char *>(data), static_cast<int>(size), 0);
         if (n < 0) {
-            if (errno == EAGAIN || errno == EINTR)
+            if (isRetry(socketError()))
                 continue;
             error_ = IOError;
             return -1;
@@ -169,11 +211,11 @@ bool NetSocket::recvLine(std::string &line, size_t max_len) {
     }
 }
 
-static QString sockAddrString(int fd, bool peer) {
+static QString sockAddrString(intptr_t fd, bool peer) {
     if (fd < 0)
         return {};
     sockaddr_in a{};
-    socklen_t len = sizeof(a);
+    socklen_type len = sizeof(a);
     int r = peer ? ::getpeername(fd, reinterpret_cast<sockaddr *>(&a), &len)
                  : ::getsockname(fd, reinterpret_cast<sockaddr *>(&a), &len);
     if (r != 0)

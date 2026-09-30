@@ -74,7 +74,7 @@ public:
 
 public:
   char Title[C4MaxTitle + 1];
-  long Date;
+  intptr_t Date;
   int Duration;
   int Won;
   int Score, FinalScore, TotalScore;

@@ -57,7 +57,7 @@ void C4Thread::SetError(const char *szMessage) {
       GameMsgGlobal(Error.Message);
 }
 
-long C4Thread::ExecuteStatement() {
+intptr_t C4Thread::ExecuteStatement() {
 
   // Advance to value or function
   cScr = SAdvanceSpace(cScr);
@@ -65,7 +65,7 @@ long C4Thread::ExecuteStatement() {
   // String value
   if (cScr[0] == '"') {
     // Return string pointer
-    long rval = (long)cScr;
+    intptr_t rval = (intptr_t)cScr;
     // Advance to end of string
     cScr = SAdvancePast(cScr + 1, '"');
     return rval;
@@ -89,12 +89,12 @@ long C4Thread::ExecuteStatement() {
   if (LooksLikeInteger(identifier)) {
     int rval;
     sscanf(identifier, "%d", &rval);
-    return (long)rval;
+    return (intptr_t)rval;
   }
 
   // C4ID value
   if (LooksLikeID(identifier))
-    return (long)C4Id(identifier);
+    return (intptr_t)C4Id(identifier);
 
   // Function
   int psc;
@@ -115,7 +115,7 @@ long C4Thread::ExecuteStatement() {
   cScr++;
 
   // Zero default parameters
-  long parameter[C4ThreadMaxPar];
+  intptr_t parameter[C4ThreadMaxPar];
   int cpar;
   for (cpar = 0; cpar < C4ThreadMaxPar; cpar++)
     parameter[cpar] = 0;
@@ -155,19 +155,19 @@ long C4Thread::ExecuteStatement() {
 
   // Engine function
   if (C4ScriptFnMap[psc].Identifier)
-    return (long)C4ScriptFnMap[psc].Function(this, parameter[0], parameter[1], parameter[2], parameter[3], parameter[4], parameter[5], parameter[6], parameter[7], parameter[8], parameter[9], 0, 0);
+    return (intptr_t)C4ScriptFnMap[psc].Function(this, parameter[0], parameter[1], parameter[2], parameter[3], parameter[4], parameter[5], parameter[6], parameter[7], parameter[8], parameter[9], 0, 0);
 
   // Object script function
   if (cObj)
-    return (long)cObj->Call(this, identifier, parameter[0], parameter[1], parameter[2], parameter[3], parameter[4], parameter[5], parameter[6], parameter[7], parameter[8], parameter[9]);
+    return (intptr_t)cObj->Call(this, identifier, parameter[0], parameter[1], parameter[2], parameter[3], parameter[4], parameter[5], parameter[6], parameter[7], parameter[8], parameter[9]);
 
   // Global (scenario) script function
-  return (long)Game.Script.Call(this, identifier, parameter[0], parameter[1], parameter[2], parameter[3], parameter[4], parameter[5], parameter[6], parameter[7], parameter[8], parameter[9]);
+  return (intptr_t)Game.Script.Call(this, identifier, parameter[0], parameter[1], parameter[2], parameter[3], parameter[4], parameter[5], parameter[6], parameter[7], parameter[8], parameter[9]);
 }
 
-long C4Thread::Execute() {
+intptr_t C4Thread::Execute() {
 
-  long rval_exec = 0;
+  intptr_t rval_exec = 0;
 
   const char *cpStatement = cScr;
   bool fStatementDone = true;
@@ -233,8 +233,8 @@ long C4Thread::Execute() {
   }
 }
 
-long C4Thread::Execute(C4Thread *pCaller, const char *szScript, const char *szFunction, const char *cpPosition, C4Object *pObj, long par0, long par1, long par2, long par3, long par4, long par5,
-                       long par6, long par7, long par8, long par9) {
+intptr_t C4Thread::Execute(C4Thread *pCaller, const char *szScript, const char *szFunction, const char *cpPosition, C4Object *pObj, intptr_t par0, intptr_t par1, intptr_t par2, intptr_t par3, intptr_t par4, intptr_t par5,
+                       intptr_t par6, intptr_t par7, intptr_t par8, intptr_t par9) {
 
   // Set execution variables
   Caller = pCaller;

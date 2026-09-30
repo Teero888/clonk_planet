@@ -5,7 +5,6 @@
 // mode, Extern and Developer. Tab icons from bitmap 1037, window title "Options".
 // exec() == Accepted: every page wrote its values into the config and the config was saved.
 
-#include "LauncherCompat.h"
 #include <QDialog>
 #include <vector>
 

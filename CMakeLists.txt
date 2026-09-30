@@ -38,12 +38,8 @@ file(GLOB_RECURSE SRC_FILES
     "standard/unibase/*.cpp"
 )
 
-if(WIN32)
-    list(REMOVE_ITEM SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/standard/src/Compat.cpp")
-    add_compile_definitions(NOMINMAX)
-    if(MSVC)
-        add_compile_options(/FI"${CMAKE_CURRENT_SOURCE_DIR}/standard/inc/Compat.h")
-    endif()
+if(WIN32 AND NOT MINGW)
+    message(FATAL_ERROR "Windows builds use MinGW-w64 (MSYS2 UCRT64): the engine relies on its POSIX functions")
 endif()
 
 # copy resources to build directory
@@ -57,7 +53,7 @@ set(EXTRA_LIBS "")
 if(UNIX)
     list(APPEND EXTRA_LIBS m)
 elseif(WIN32)
-    list(APPEND EXTRA_LIBS ws2_32 dxguid winmm)
+    list(APPEND EXTRA_LIBS ws2_32)
 endif()
 
 add_executable(clonk ${SRC_FILES})
@@ -71,6 +67,11 @@ endif()
 
 add_executable(clonk_midi launcher/clonk_midi.cpp)
 target_link_libraries(clonk_midi PRIVATE ${MIDI_LIBS})
+if(MINGW)
+    # Windows 7 API level: newer headers emit inline wrappers for Windows 10 only functions
+    target_compile_definitions(clonk PRIVATE _WIN32_WINNT=0x0601)
+    target_compile_definitions(clonk_midi PRIVATE _WIN32_WINNT=0x0601)
+endif()
 add_dependencies(clonk_midi planet_data_sync)
 
 set(MS_LIBS "")
@@ -82,6 +83,9 @@ endif()
 
 add_executable(masterserver masterserver/masterserver.cpp)
 target_link_libraries(masterserver PRIVATE ${MS_LIBS})
+
+option(CLONK_BUILD_LAUNCHER "Build the Qt launcher and its tests" ON)
+if(CLONK_BUILD_LAUNCHER)
 
 # Qt6 Launcher target
 set(CMAKE_AUTOMOC ON)
@@ -121,3 +125,78 @@ set_tests_properties(explorer PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen"
 
 add_executable(test_config tests/test_config.cpp launcher/src/ConfigManager.cpp standard/src/StdIniRegistry.cpp)
 add_test(NAME config COMMAND test_config)
+
+endif() # CLONK_BUILD_LAUNCHER
+
+# ------------------------------------------------------------------------------------------------
+# Installation: a portable game folder (cmake --install build --prefix <dir>), used for releases.
+# Everything is placed next to the executables like in the original installation; the launcher
+# and the engine write players, savegames and scenarios into that folder.
+
+set(CLONK_PROGRAMS clonk clonk_midi masterserver)
+if(CLONK_BUILD_LAUNCHER)
+    list(APPEND CLONK_PROGRAMS clonk_launcher)
+endif()
+
+if(UNIX AND NOT APPLE)
+    # bundled libraries in lib/; DT_RPATH (not RUNPATH) so that it also applies to their dependencies
+    set_target_properties(${CLONK_PROGRAMS} PROPERTIES INSTALL_RPATH "$ORIGIN/lib")
+    foreach(program IN LISTS CLONK_PROGRAMS)
+        target_link_options(${program} PRIVATE "LINKER:--disable-new-dtags")
+    endforeach()
+endif()
+
+install(TARGETS ${CLONK_PROGRAMS} RUNTIME DESTINATION .)
+install(DIRECTORY planet_data/ DESTINATION .)
+install(FILES LICENSE.txt README.md DESTINATION .)
+install(FILES engine/license.txt DESTINATION . RENAME License-Engine.txt)
+if(CLONK_BUILD_LAUNCHER)
+    install(DIRECTORY launcher/data/ DESTINATION data)
+endif()
+
+# Make the folder self-contained: Qt plugins and the libraries that are not part of the system
+if(WIN32 OR (UNIX AND NOT APPLE))
+    set(CLONK_QT_PLUGIN_DIR "")
+    set(CLONK_QT_PLUGINS "")
+    if(CLONK_BUILD_LAUNCHER)
+        set(CLONK_QT_PLUGIN_DIR "${QT6_INSTALL_PREFIX}/${QT6_INSTALL_PLUGINS}")
+    endif()
+    if(WIN32)
+        set(CLONK_DEPLOY_WINDOWS TRUE)
+        set(CLONK_QT_PLUGINS "platforms/qwindows.dll" "multimedia/*.dll")
+        # the MinGW / MSYS2 directories with the DLLs (in order of preference)
+        get_filename_component(compiler_dir "${CMAKE_CXX_COMPILER}" DIRECTORY)
+        set(dll_dirs "${compiler_dir}")
+        foreach(root IN LISTS CMAKE_FIND_ROOT_PATH)
+            list(APPEND dll_dirs "${root}/bin")
+        endforeach()
+        set(CLONK_DLL_DIRS "${dll_dirs}" CACHE STRING "Directories with the DLLs to ship, in order of preference")
+        set(CLONK_DEPLOY_SEARCH_DIRS "${CLONK_DLL_DIRS}")
+        set(CLONK_DEPLOY_SYSTEM_REGEXES ".*[/\\\\][Ww][Ii][Nn][Dd][Oo][Ww][Ss][/\\\\].*")
+    else()
+        set(CLONK_DEPLOY_WINDOWS FALSE)
+        set(CLONK_QT_PLUGINS "platforms/libqxcb.so" "platforms/libqwayland*.so" "platforms/libqoffscreen.so" "platforminputcontexts/*.so"
+            "xcbglintegrations/*.so" "wayland-shell-integration/*.so" "wayland-decoration-client/*.so"
+            "wayland-graphics-integration-client/*.so")
+        set(CLONK_DEPLOY_SEARCH_DIRS "")
+        if(CLONK_BUILD_LAUNCHER)
+            set(CLONK_DEPLOY_SEARCH_DIRS "${QT6_INSTALL_PREFIX}/${QT6_INSTALL_LIBS}")
+        endif()
+        # Core libraries of every Linux desktop are left to the system
+        set(system_libs
+            ld-linux libc[.]so libm[.]so libmvec libdl[.]so libpthread[.]so librt[.]so libresolv[.]so
+            libutil[.]so libgcc_s[.]so libstdc[+][+][.]so libatomic[.]so
+            libGL[.]so libGLX libEGL libGLdispatch libOpenGL libGLU libdrm libgbm libvulkan
+            libX11 libxcb libXau libXdmcp libXext libXrender libXi[.]so libXrandr libXcursor libXinerama
+            libXfixes libXxf86vm libxkbcommon libwayland libSM[.]so libICE[.]so
+            libasound libpulse libpipewire libjack
+            libfontconfig libfreetype libexpat libz[.]so libbz2 liblzma libzstd libbrotli libpng libharfbuzz
+            libgraphite2 libglib-2 libgobject-2 libgio-2 libgmodule-2 libgthread-2 libpcre2-8 libffi
+            libdbus-1 libsystemd libudev libcap[.]so libselinux libmount libblkid libuuid libgssapi libkrb5
+            libk5crypto libcom_err libssl libcrypto libgcrypt libgpg-error liblz4)
+        list(TRANSFORM system_libs PREPEND ".*/")
+        set(CLONK_DEPLOY_SYSTEM_REGEXES "${system_libs}")
+    endif()
+    configure_file(cmake/DeployRuntime.cmake.in DeployRuntime.cmake @ONLY)
+    install(SCRIPT "${CMAKE_BINARY_DIR}/DeployRuntime.cmake")
+endif()

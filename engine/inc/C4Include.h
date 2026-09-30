@@ -15,16 +15,7 @@
 
 const int C4XVer1 = 4, C4XVer2 = 6, C4XVer3 = 5, C4XVer4 = 0;
 
-#ifdef _WIN32
-#include <Windows.h>
-#include <MMSystem.h>
-#include <ShellAPI.h>
-#include <DDraw.h>
-#include <VfW.h>
-#include <Commdlg.h>
-#else
 #include <Compat.h>
-#endif
 
 #include <math.h>
 #include <stdio.h>

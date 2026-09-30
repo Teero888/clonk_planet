@@ -52,7 +52,7 @@ private:
     bool waitFor(short events, int timeout_ms);
     bool aborted() const { return abort_ && abort_->load(); }
 
-    int fd_ = -1;
+    intptr_t fd_ = -1; // socket handle (SOCKET on Windows)
     int error_ = Ok;
     int timeout_ms_ = 15000;
     const std::atomic<bool> *abort_;

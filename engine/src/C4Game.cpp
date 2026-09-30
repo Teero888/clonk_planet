@@ -772,7 +772,7 @@ void C4Game::CrossCheckObjects() // Every Tick1 by ExecObjects
                         obj1->DoEnergy(-obj2->Mass / 5);
                         int tmass = Max(obj1->Mass, 50);
                         obj1->Fling(obj2->xdir * 50 / tmass, -Abs(obj2->ydir / 2) * 50 / tmass);
-                        obj1->Call(PSF_CatchBlow, -obj2->Mass / 5, (long)obj2);
+                        obj1->Call(PSF_CatchBlow, -obj2->Mass / 5, (intptr_t)obj2);
                         continue;
                       }
                     // Collection
@@ -786,14 +786,14 @@ void C4Game::CrossCheckObjects() // Every Tick1 by ExecObjects
                                 if (SEqual(obj2->Def->ActMap[obj2->Action.Act].Name, "FlyBase"))
                                   continue;
                           // Check for collect rejection
-                          if (obj1->Call(PSF_RejectCollection, (long)obj2->Def->id, (long)obj2))
+                          if (obj1->Call(PSF_RejectCollection, (intptr_t)obj2->Def->id, (intptr_t)obj2))
                             continue;
                           // Object enter container
                           obj2->Enter(obj1);
                           // Cancel attach (hacky)
                           ObjectComCancelAttach(obj2);
                           // Container Collection call
-                          obj1->Call(PSF_Collection, (long)obj2);
+                          obj1->Call(PSF_Collection, (intptr_t)obj2);
                           // Object Hit call
                           if (obj2->OCF & OCF_HitSpeed1)
                             obj2->Call(PSF_Hit);
@@ -2436,7 +2436,7 @@ C4Object *C4Game::PlaceVegetation(C4ID id, int iX, int iY, int iWdt, int iHgt, i
       while ((iTy > 0) && GBackIFT(iTx, iTy))
         iTy--;
       // Above semi solid
-      long lx = iTx, ly = iTy;
+      intptr_t lx = iTx, ly = iTy;
       if (!AboveSemiSolid(lx, ly) || !Inside((int)ly, 50, GBackHgt - 50))
         continue;
       iTx = lx;
@@ -2464,7 +2464,7 @@ C4Object *C4Game::PlaceVegetation(C4ID id, int iX, int iY, int iWdt, int iHgt, i
     iTy = iY + Random(iHgt);
     // Find liquid
     {
-      long lx = iTx, ly = iTy;
+      intptr_t lx = iTx, ly = iTy;
       if (!FindSurfaceLiquid(lx, ly, pDef->Shape.Wdt, pDef->Shape.Hgt))
         if (!FindLiquid(lx, ly, pDef->Shape.Wdt, pDef->Shape.Hgt))
           return NULL;
@@ -2497,7 +2497,7 @@ C4Object *C4Game::PlaceAnimal(C4ID idAnimal) {
     iX = Random(GBackWdt);
     iY = Random(GBackHgt);
     {
-      long lx = iX, ly = iY;
+      intptr_t lx = iX, ly = iY;
       if (!FindSolidGround(lx, ly, pDef->Shape.Wdt))
         return NULL;
       iX = lx;
@@ -2509,7 +2509,7 @@ C4Object *C4Game::PlaceAnimal(C4ID idAnimal) {
     iX = Random(GBackWdt);
     iY = Random(GBackHgt);
     {
-      long lx = iX, ly = iY;
+      intptr_t lx = iX, ly = iY;
       if (!FindSurfaceLiquid(lx, ly, pDef->Shape.Wdt, pDef->Shape.Hgt))
         if (!FindLiquid(lx, ly, pDef->Shape.Wdt, pDef->Shape.Hgt))
           return NULL;

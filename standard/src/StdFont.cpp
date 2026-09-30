@@ -2,13 +2,7 @@
 
 /* Class providing a quick bitmap font in DirectDraw created using true type */
 
-#ifdef _WIN32
-#include <Windows.h>
-#endif
 #include <stdio.h>
-#ifdef _WIN32
-#include <DDraw.h>
-#endif
 
 #include <Standard.h>
 #include <StdSurface.h>
@@ -40,69 +34,12 @@ void CStdFont::Clear()
 	for (int cnt=0; cnt<FNT_MaxChar; cnt++)	Character[cnt].Clear();
 	}
 
-#ifndef _WIN32
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#endif
 
 BOOL CStdFont::Init(HDC hdc, const char *szFontname, int iSize)
 	{
 	BYTE byColorIndex[FNT_MaxCol]={31,16,39,47,55,63,71,79,87,95};
-#ifdef _WIN32
-	char szChar[2];
-	
-	// Create windows font
-	HFONT hFont = CreateFont(hdc,szFontname,iSize,0);
-	if (!hFont) return FALSE;
-	SelectObject(hdc,hFont);
-	
-	// Get character & surface extent
-	SIZE csize;
-	int iSfcWdt=0,iFontHgt=0;
-	for (int cnt=0; cnt<FNT_MaxChar; cnt++)
-		{
-		szChar[0]=cnt; szChar[1]=0;
-		if (GetTextExtentPoint32(hdc,szChar,1,&csize)) 
-			{ 
-			Character[cnt].Wdt=csize.cx;
-			iSfcWdt+=csize.cx+FNT_CharSpace; iFontHgt=Max(iFontHgt,csize.cy); 
-			}
-		}
-
-	// Create font surface
-	if (!Surface.Create(iSfcWdt,(iFontHgt+2)*FNT_MaxCol)) { DeleteObject(hFont); return FALSE; }
-	// Set font index colors
-	for (int cnt=0; cnt<FNT_MaxCol; cnt++) Surface.SetPalette(byColorIndex[cnt],20*cnt+30,10*cnt,5*cnt);
-	Surface.AttachPalette();
-
-	// Set & draw characters
-	int cx=0,cy=0;
-	HDC hdc2 = Surface.GetDC();
-	if (!hdc2) { DeleteObject(hFont); return FALSE; }
-	SelectObject(hdc2,hFont);
-	SetTextAlign(hdc2,TA_LEFT); 
-  SetBkMode(hdc2,TRANSPARENT);
-	for (int cnt2=0; cnt2<FNT_MaxCol; cnt2++)
-		{
-		SetTextColor(hdc2,RGB(20*cnt2+30,10*cnt2,5*cnt2));
-		for (int cnt=0; cnt<FNT_MaxChar; cnt++)
-			{
-			szChar[0]=cnt; szChar[1]=0;
-			RECT rect; rect.left=cx; rect.top=cy; rect.right=cx+Character[cnt].Wdt; rect.bottom=cy+iFontHgt;
-			BOOL fResult = ExtTextOut(hdc2,cx,cy,ETO_CLIPPED,&rect,szChar,1,NULL);
-			Character[cnt].Set(Surface.Surface,cx,0,Character[cnt].Wdt,iFontHgt);
-			cx+=Character[cnt].Wdt+FNT_CharSpace; 
-			}
-		cy+=iFontHgt+FNT_CharSpace; cx=0;
-		}
-	Surface.ReleaseDC(hdc2);
-
-	// Delete windows font
-  DeleteObject(hFont);
-	
-	// Success 
-	return TRUE;
-#else
     FT_Library ft;
     if (FT_Init_FreeType(&ft)) return FALSE;
 
@@ -121,6 +58,8 @@ BOOL CStdFont::Init(HDC hdc, const char *szFontname, int iSize)
             "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
             "/usr/share/fonts/TTF/DejaVuSans.ttf",
             "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "C:/Windows/Fonts/comic.ttf",
+            "C:/Windows/Fonts/arial.ttf",
             NULL
         };
         if (FT_New_Face(ft, fontPath, 0, &face)) {
@@ -203,7 +142,6 @@ BOOL CStdFont::Init(HDC hdc, const char *szFontname, int iSize)
     FT_Done_Face(face);
     FT_Done_FreeType(ft);
     return TRUE;
-#endif
 	}
 
 HFONT CStdFont::CreateFont(HDC hdc, const char *szFacename, int iPtHeight, int iAttributes)

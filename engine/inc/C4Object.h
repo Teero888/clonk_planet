@@ -84,7 +84,7 @@ public:
   int Timer;
   int ViewEnergy;           // NoSave //
   int Audible, LastAudible; // NoSave //
-  long Local[C4MaxVariable];
+  intptr_t Local[C4MaxVariable];
   FIXED fix_x, fix_y, fix_r; // SyncClearance-Fix //
   FIXED xdir, ydir, rdir;
   BOOL Mobile;
@@ -143,9 +143,9 @@ public:
   BOOL MenuCommand(const char *szCommand);
 
   BOOL CallControl(BYTE byCom, int par0 = 0, int par1 = 0, int par2 = 0, int par3 = 0, int par4 = 0, int par5 = 0, int par6 = 0, int par7 = 0, int par8 = 0, int par9 = 0);
-  long Call(const char *szFunctionCall, long par0 = 0, long par1 = 0, long par2 = 0, long par3 = 0, long par4 = 0, long par5 = 0, long par6 = 0, long par7 = 0, long par8 = 0, long par9 = 0);
-  long Call(C4Thread *pCaller, const char *szFunctionCall, long par0 = 0, long par1 = 0, long par2 = 0, long par3 = 0, long par4 = 0, long par5 = 0, long par6 = 0, long par7 = 0, long par8 = 0,
-            long par9 = 0);
+  intptr_t Call(const char *szFunctionCall, intptr_t par0 = 0, intptr_t par1 = 0, intptr_t par2 = 0, intptr_t par3 = 0, intptr_t par4 = 0, intptr_t par5 = 0, intptr_t par6 = 0, intptr_t par7 = 0, intptr_t par8 = 0, intptr_t par9 = 0);
+  intptr_t Call(C4Thread *pCaller, const char *szFunctionCall, intptr_t par0 = 0, intptr_t par1 = 0, intptr_t par2 = 0, intptr_t par3 = 0, intptr_t par4 = 0, intptr_t par5 = 0, intptr_t par6 = 0, intptr_t par7 = 0, intptr_t par8 = 0,
+            intptr_t par9 = 0);
 
   BOOL ContainedControl(BYTE byCom);
 

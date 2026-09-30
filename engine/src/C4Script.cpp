@@ -18,7 +18,7 @@ static bool IsPointerValid(const void *ptr) {
     return false;
   if ((uintptr_t)ptr < 65536)
     return false;
-  return !IsBadReadPtr(ptr, 1);
+  return CompatIsReadablePtr(ptr) != 0;
 }
 #else
 #include <unistd.h>
@@ -61,11 +61,11 @@ const char *FnStringPar(const char *szPar) {
   return FnStringParBuf;
 }
 
-const char *FnStringFormat(const char *szFormatPar, long iPar0 = 0, long iPar1 = 0, long iPar2 = 0, long iPar3 = 0, long iPar4 = 0, long iPar5 = 0, long iPar6 = 0, long iPar7 = 0, long iPar8 = 0,
-                           long iPar9 = 0) {
+const char *FnStringFormat(const char *szFormatPar, intptr_t iPar0 = 0, intptr_t iPar1 = 0, intptr_t iPar2 = 0, intptr_t iPar3 = 0, intptr_t iPar4 = 0, intptr_t iPar5 = 0, intptr_t iPar6 = 0, intptr_t iPar7 = 0, intptr_t iPar8 = 0,
+                           intptr_t iPar9 = 0) {
   char szFormat[MaxFnStringParLen + 1];
   SCopy(FnStringPar(szFormatPar), szFormat);
-  long iPar[C4ThreadMaxPar];
+  intptr_t iPar[C4ThreadMaxPar];
   iPar[0] = iPar0;
   iPar[1] = iPar1;
   iPar[2] = iPar2;
@@ -184,18 +184,18 @@ DWORD StringBitEval(const char *str) {
 
 C4Object *Fn_this(C4Thread *cthr) { return cthr->cObj; }
 
-long Fn_return(C4Thread *cthr, long iReturnValue) {
+intptr_t Fn_return(C4Thread *cthr, intptr_t iReturnValue) {
   cthr->ReturnThread = TRUE;
   return iReturnValue;
 }
 
-long Fn_goto(C4Thread *cthr, long iCounter) {
+intptr_t Fn_goto(C4Thread *cthr, intptr_t iCounter) {
   Game.Script.Counter = iCounter;
   cthr->ReturnThread = TRUE;
   return iCounter;
 }
 
-long Fn_if(C4Thread *cthr, long fCondition) {
+intptr_t Fn_if(C4Thread *cthr, intptr_t fCondition) {
   // Following statement expected to be adjacent
   cthr->NextStatementAdjacent = TRUE;
   // Condition true, continue with next statement
@@ -206,7 +206,7 @@ long Fn_if(C4Thread *cthr, long fCondition) {
   return FALSE;
 }
 
-long Fn_while(C4Thread *cthr, long fCondition) {
+intptr_t Fn_while(C4Thread *cthr, intptr_t fCondition) {
   // Following statement expected to be adjacent
   cthr->NextStatementAdjacent = TRUE;
   // Condition false, skip next statement
@@ -219,7 +219,7 @@ long Fn_while(C4Thread *cthr, long fCondition) {
   return TRUE;
 }
 
-long FnChangeDef(C4Thread *cthr, long to_id, C4Object *pObj) {
+intptr_t FnChangeDef(C4Thread *cthr, intptr_t to_id, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -227,7 +227,7 @@ long FnChangeDef(C4Thread *cthr, long to_id, C4Object *pObj) {
   return pObj->ChangeDef(to_id);
 }
 
-long FnExplode(C4Thread *cthr, long iLevel, C4Object *pObj) {
+intptr_t FnExplode(C4Thread *cthr, intptr_t iLevel, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -236,7 +236,7 @@ long FnExplode(C4Thread *cthr, long iLevel, C4Object *pObj) {
   return TRUE;
 }
 
-long FnIncinerate(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnIncinerate(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -247,7 +247,7 @@ long FnIncinerate(C4Thread *cthr, C4Object *pObj) {
   return pObj->Incinerate(iCausedBy);
 }
 
-long FnExtinguish(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnExtinguish(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -255,7 +255,7 @@ long FnExtinguish(C4Thread *cthr, C4Object *pObj) {
   return pObj->Extinguish();
 }
 
-long FnSetSolidMask(C4Thread *cthr, long iX, long iY, long iWdt, long iHgt, long iTX, long iTY, C4Object *pObj) {
+intptr_t FnSetSolidMask(C4Thread *cthr, intptr_t iX, intptr_t iY, intptr_t iWdt, intptr_t iHgt, intptr_t iTX, intptr_t iTY, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -264,14 +264,14 @@ long FnSetSolidMask(C4Thread *cthr, long iX, long iY, long iWdt, long iHgt, long
   return TRUE;
 }
 
-long FnSetGravity(C4Thread *cthr, long iGravity) {
+intptr_t FnSetGravity(C4Thread *cthr, intptr_t iGravity) {
   Game.Landscape.Gravity = ftofix(0.2 * (float)BoundBy(iGravity, 5, 300) / 100.0);
   return TRUE;
 }
 
-long FnGetGravity(C4Thread *cthr) { return (int)(100.0 * fixtof(Game.Landscape.Gravity) / 0.2); }
+intptr_t FnGetGravity(C4Thread *cthr) { return (int)(100.0 * fixtof(Game.Landscape.Gravity) / 0.2); }
 
-long FnDeathAnnounce(C4Thread *cthr) {
+intptr_t FnDeathAnnounce(C4Thread *cthr) {
   const int MaxDeathMsg = 7;
   if (!cthr->cObj)
     return FALSE;
@@ -280,7 +280,7 @@ long FnDeathAnnounce(C4Thread *cthr) {
   return TRUE;
 }
 
-long FnGrabContents(C4Thread *cthr, C4Object *from) {
+intptr_t FnGrabContents(C4Thread *cthr, C4Object *from) {
   if (!cthr->cObj)
     return FALSE;
   if (!IsObjectValid(from))
@@ -291,20 +291,20 @@ long FnGrabContents(C4Thread *cthr, C4Object *from) {
   return TRUE;
 }
 
-long FnPunch(C4Thread *cthr, C4Object *target, long punch) {
+intptr_t FnPunch(C4Thread *cthr, C4Object *target, intptr_t punch) {
   if (!cthr->cObj)
     return FALSE;
   return ObjectComPunch(cthr->cObj, target, punch);
 }
 
-long FnFling(C4Thread *cthr, C4Object *pObj, long iXDir, long iYDir) {
+intptr_t FnFling(C4Thread *cthr, C4Object *pObj, intptr_t iXDir, intptr_t iYDir) {
   if (!IsObjectValid(pObj))
     return FALSE;
   pObj->Fling(itofix(iXDir), itofix(iYDir));
   return TRUE;
 }
 
-long FnJump(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnJump(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -312,7 +312,7 @@ long FnJump(C4Thread *cthr, C4Object *pObj) {
   return ObjectComJump(pObj);
 }
 
-long FnEnter(C4Thread *cthr, C4Object *pTarget, C4Object *pObj) {
+intptr_t FnEnter(C4Thread *cthr, C4Object *pTarget, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -320,7 +320,7 @@ long FnEnter(C4Thread *cthr, C4Object *pTarget, C4Object *pObj) {
   return pObj->Enter(pTarget);
 }
 
-long FnExit(C4Thread *cthr, C4Object *pObj, long tx, long ty, long tr, long txdir, long tydir, long trdir) {
+intptr_t FnExit(C4Thread *cthr, C4Object *pObj, intptr_t tx, intptr_t ty, intptr_t tr, intptr_t txdir, intptr_t tydir, intptr_t trdir) {
   if (!IsObjectValid(pObj))
     return FALSE;
   if (cthr->cObj) {
@@ -333,7 +333,7 @@ long FnExit(C4Thread *cthr, C4Object *pObj, long tx, long ty, long tr, long txdi
   return pObj->Exit(tx, ty + pObj->Shape.y, tr, itofix(txdir), itofix(tydir), ftofix((float)trdir / 10.0));
 }
 
-long FnSplit2Components(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnSplit2Components(C4Thread *cthr, C4Object *pObj) {
   C4Object *pThing, *pNew, *pContainer;
   int cnt, cnt2;
   // Pointer required
@@ -362,7 +362,7 @@ long FnSplit2Components(C4Thread *cthr, C4Object *pObj) {
   return TRUE;
 }
 
-long FnRemoveObject(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnRemoveObject(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -371,7 +371,7 @@ long FnRemoveObject(C4Thread *cthr, C4Object *pObj) {
   return TRUE;
 }
 
-long FnForcePosition(C4Thread *cthr, C4Object *pObj, long tx, long ty) {
+intptr_t FnForcePosition(C4Thread *cthr, C4Object *pObj, intptr_t tx, intptr_t ty) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -380,7 +380,7 @@ long FnForcePosition(C4Thread *cthr, C4Object *pObj, long tx, long ty) {
   return TRUE;
 }
 
-long FnSetPosition(C4Thread *cthr, long iX, long iY, C4Object *pObj) {
+intptr_t FnSetPosition(C4Thread *cthr, intptr_t iX, intptr_t iY, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -389,7 +389,7 @@ long FnSetPosition(C4Thread *cthr, long iX, long iY, C4Object *pObj) {
   return TRUE;
 }
 
-long FnDoCon(C4Thread *cthr, long iChange, C4Object *pObj) // in percent
+intptr_t FnDoCon(C4Thread *cthr, intptr_t iChange, C4Object *pObj) // in percent
 {
   if (!pObj)
     pObj = cthr->cObj;
@@ -399,7 +399,7 @@ long FnDoCon(C4Thread *cthr, long iChange, C4Object *pObj) // in percent
   return TRUE;
 }
 
-long FnGetCon(C4Thread *cthr, C4Object *pObj) // in percent
+intptr_t FnGetCon(C4Thread *cthr, C4Object *pObj) // in percent
 {
   if (!pObj)
     pObj = cthr->cObj;
@@ -408,7 +408,7 @@ long FnGetCon(C4Thread *cthr, C4Object *pObj) // in percent
   return 100 * pObj->Con / FullCon;
 }
 
-long FnDoEnergy(C4Thread *cthr, long iChange, C4Object *pObj) {
+intptr_t FnDoEnergy(C4Thread *cthr, intptr_t iChange, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -417,7 +417,7 @@ long FnDoEnergy(C4Thread *cthr, long iChange, C4Object *pObj) {
   return TRUE;
 }
 
-long FnDoBreath(C4Thread *cthr, long iChange, C4Object *pObj) {
+intptr_t FnDoBreath(C4Thread *cthr, intptr_t iChange, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -426,7 +426,7 @@ long FnDoBreath(C4Thread *cthr, long iChange, C4Object *pObj) {
   return TRUE;
 }
 
-long FnDoDamage(C4Thread *cthr, long iChange, C4Object *pObj) {
+intptr_t FnDoDamage(C4Thread *cthr, intptr_t iChange, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -438,7 +438,7 @@ long FnDoDamage(C4Thread *cthr, long iChange, C4Object *pObj) {
   return TRUE;
 }
 
-long FnDoMagicEnergy(C4Thread *cthr, long iChange, C4Object *pObj) {
+intptr_t FnDoMagicEnergy(C4Thread *cthr, intptr_t iChange, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -459,7 +459,7 @@ long FnDoMagicEnergy(C4Thread *cthr, long iChange, C4Object *pObj) {
   return TRUE;
 }
 
-long FnGetMagicEnergy(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetMagicEnergy(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -520,7 +520,7 @@ int PhysicalOffset(const char *szPhysical) {
   return -1;
 }
 
-long FnSetPhysical(C4Thread *cthr, const char *szPhysical, long iValue, long iMode, C4Object *pObj) {
+intptr_t FnSetPhysical(C4Thread *cthr, const char *szPhysical, intptr_t iValue, intptr_t iMode, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -562,7 +562,7 @@ long FnSetPhysical(C4Thread *cthr, const char *szPhysical, long iValue, long iMo
   return FALSE;
 }
 
-long FnResetPhysical(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnResetPhysical(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -582,7 +582,7 @@ long FnResetPhysical(C4Thread *cthr, C4Object *pObj) {
   return TRUE;
 }
 
-long FnGetPhysical(C4Thread *cthr, const char *szPhysical, long iMode, C4Object *pObj) {
+intptr_t FnGetPhysical(C4Thread *cthr, const char *szPhysical, intptr_t iMode, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -619,14 +619,14 @@ long FnGetPhysical(C4Thread *cthr, const char *szPhysical, long iMode, C4Object 
   return FALSE;
 }
 
-long FnSetEntrance(C4Thread *cthr, long e_status) {
+intptr_t FnSetEntrance(C4Thread *cthr, intptr_t e_status) {
   if (!cthr->cObj)
     return FALSE;
   cthr->cObj->EntranceStatus = e_status;
   return TRUE;
 }
 
-long FnSetXDir(C4Thread *cthr, long nxdir, C4Object *pObj) {
+intptr_t FnSetXDir(C4Thread *cthr, intptr_t nxdir, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -636,7 +636,7 @@ long FnSetXDir(C4Thread *cthr, long nxdir, C4Object *pObj) {
   return TRUE;
 }
 
-long FnSetRDir(C4Thread *cthr, long nrdir, C4Object *pObj) {
+intptr_t FnSetRDir(C4Thread *cthr, intptr_t nrdir, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -646,7 +646,7 @@ long FnSetRDir(C4Thread *cthr, long nrdir, C4Object *pObj) {
   return TRUE;
 }
 
-long FnSetYDir(C4Thread *cthr, long nydir, C4Object *pObj) {
+intptr_t FnSetYDir(C4Thread *cthr, intptr_t nydir, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -656,7 +656,7 @@ long FnSetYDir(C4Thread *cthr, long nydir, C4Object *pObj) {
   return TRUE;
 }
 
-long FnSetR(C4Thread *cthr, long nr, C4Object *pObj) {
+intptr_t FnSetR(C4Thread *cthr, intptr_t nr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -667,7 +667,7 @@ long FnSetR(C4Thread *cthr, long nr, C4Object *pObj) {
   return TRUE;
 }
 
-long FnSetAction(C4Thread *cthr, const char *szAction, C4Object *pTarget, C4Object *pTarget2) {
+intptr_t FnSetAction(C4Thread *cthr, const char *szAction, C4Object *pTarget, C4Object *pTarget2) {
   if (!cthr->cObj)
     return FALSE;
   if (!szAction)
@@ -675,7 +675,7 @@ long FnSetAction(C4Thread *cthr, const char *szAction, C4Object *pTarget, C4Obje
   return cthr->cObj->SetActionByName(FnStringPar(szAction), pTarget, pTarget2);
 }
 
-long FnSetActionData(C4Thread *cthr, long iData, C4Object *pObj) {
+intptr_t FnSetActionData(C4Thread *cthr, intptr_t iData, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -684,13 +684,13 @@ long FnSetActionData(C4Thread *cthr, long iData, C4Object *pObj) {
   return TRUE;
 }
 
-long FnObjectSetAction(C4Thread *cthr, C4Object *pObj, const char *szAction, C4Object *pTarget, C4Object *pTarget2) {
+intptr_t FnObjectSetAction(C4Thread *cthr, C4Object *pObj, const char *szAction, C4Object *pTarget, C4Object *pTarget2) {
   if (!szAction || !IsObjectValid(pObj))
     return FALSE;
   return pObj->SetActionByName(FnStringPar(szAction), pTarget, pTarget2);
 }
 
-long FnSetComDir(C4Thread *cthr, long ncomdir, C4Object *pObj) {
+intptr_t FnSetComDir(C4Thread *cthr, intptr_t ncomdir, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -699,7 +699,7 @@ long FnSetComDir(C4Thread *cthr, long ncomdir, C4Object *pObj) {
   return TRUE;
 }
 
-long FnSetDir(C4Thread *cthr, long ndir, C4Object *pObj) {
+intptr_t FnSetDir(C4Thread *cthr, intptr_t ndir, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -708,7 +708,7 @@ long FnSetDir(C4Thread *cthr, long ndir, C4Object *pObj) {
   return TRUE;
 }
 
-long FnSetCategory(C4Thread *cthr, long iCategory, C4Object *pObj) {
+intptr_t FnSetCategory(C4Thread *cthr, intptr_t iCategory, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -719,7 +719,7 @@ long FnSetCategory(C4Thread *cthr, long iCategory, C4Object *pObj) {
   return TRUE;
 }
 
-long FnSetAlive(C4Thread *cthr, long nalv, C4Object *pObj) {
+intptr_t FnSetAlive(C4Thread *cthr, intptr_t nalv, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -728,7 +728,7 @@ long FnSetAlive(C4Thread *cthr, long nalv, C4Object *pObj) {
   return TRUE;
 }
 
-long FnSetOwner(C4Thread *cthr, long iOwner, C4Object *pObj) {
+intptr_t FnSetOwner(C4Thread *cthr, intptr_t iOwner, C4Object *pObj) {
   // Object safety
   if (!pObj)
     pObj = cthr->cObj;
@@ -748,7 +748,7 @@ long FnSetOwner(C4Thread *cthr, long iOwner, C4Object *pObj) {
   return TRUE;
 }
 
-long FnSetPhase(C4Thread *cthr, long iVal, C4Object *pObj) {
+intptr_t FnSetPhase(C4Thread *cthr, intptr_t iVal, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -756,7 +756,7 @@ long FnSetPhase(C4Thread *cthr, long iVal, C4Object *pObj) {
   return pObj->SetPhase(iVal);
 }
 
-long FnSetCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Object *pTarget, long iTx, long iTy, C4Object *pTarget2, long iData, long iRetries) {
+intptr_t FnSetCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Object *pTarget, intptr_t iTx, intptr_t iTy, C4Object *pTarget2, intptr_t iData, intptr_t iRetries) {
   // Object
   if (!pObj)
     pObj = cthr->cObj;
@@ -780,7 +780,7 @@ long FnSetCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Objec
   return TRUE;
 }
 
-long FnAddCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Object *pTarget, long iTx, long iTy, C4Object *pTarget2, long iUpdateInterval, long iData, long iRetries) {
+intptr_t FnAddCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Object *pTarget, intptr_t iTx, intptr_t iTy, C4Object *pTarget2, intptr_t iUpdateInterval, intptr_t iData, intptr_t iRetries) {
   // Object
   if (!pObj)
     pObj = cthr->cObj;
@@ -800,7 +800,7 @@ long FnAddCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Objec
   return pObj->AddCommand(iCommand, pTarget, iTx, iTy, iUpdateInterval, pTarget2, TRUE, iData, FALSE, iRetries, szText);
 }
 
-long FnAppendCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Object *pTarget, long iTx, long iTy, C4Object *pTarget2, long iUpdateInterval, long iData, long iRetries) {
+intptr_t FnAppendCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Object *pTarget, intptr_t iTx, intptr_t iTy, C4Object *pTarget2, intptr_t iUpdateInterval, intptr_t iData, intptr_t iRetries) {
   // Object
   if (!pObj)
     pObj = cthr->cObj;
@@ -820,7 +820,7 @@ long FnAppendCommand(C4Thread *cthr, C4Object *pObj, const char *szCommand, C4Ob
   return pObj->AddCommand(iCommand, pTarget, iTx, iTy, iUpdateInterval, pTarget2, TRUE, iData, TRUE, iRetries, szText);
 }
 
-long FnGetCommand(C4Thread *cthr, C4Object *pObj, long iElement) {
+intptr_t FnGetCommand(C4Thread *cthr, C4Object *pObj, intptr_t iElement) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -831,15 +831,15 @@ long FnGetCommand(C4Thread *cthr, C4Object *pObj, long iElement) {
   // Return command element
   switch (iElement) {
   case 0: // Name
-    return (long)CommandName(pObj->Command->Command);
+    return (intptr_t)CommandName(pObj->Command->Command);
   case 1: // Target
-    return (long)pObj->Command->Target;
+    return (intptr_t)pObj->Command->Target;
   case 2: // Tx
     return pObj->Command->Tx;
   case 3: // Ty
     return pObj->Command->Ty;
   case 4: // Target2
-    return (long)pObj->Command->Target2;
+    return (intptr_t)pObj->Command->Target2;
   }
   // Undefined element
   return 0;
@@ -895,7 +895,7 @@ C4Object *FnGetActionTarget(C4Thread *cthr, int target_index, C4Object *pObj) {
   return NULL;
 }
 
-long FnGetDir(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetDir(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -903,7 +903,7 @@ long FnGetDir(C4Thread *cthr, C4Object *pObj) {
   return pObj->Action.Dir;
 }
 
-long FnGetEntrance(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetEntrance(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -911,7 +911,7 @@ long FnGetEntrance(C4Thread *cthr, C4Object *pObj) {
   return pObj->EntranceStatus;
 }
 
-long FnGetPhase(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetPhase(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -919,7 +919,7 @@ long FnGetPhase(C4Thread *cthr, C4Object *pObj) {
   return pObj->Action.Phase;
 }
 
-long FnGetEnergy(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetEnergy(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -927,7 +927,7 @@ long FnGetEnergy(C4Thread *cthr, C4Object *pObj) {
   return 100 * pObj->Energy / C4MaxPhysical;
 }
 
-long FnGetBreath(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetBreath(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -935,7 +935,7 @@ long FnGetBreath(C4Thread *cthr, C4Object *pObj) {
   return 100 * pObj->Breath / C4MaxPhysical;
 }
 
-long FnGetMass(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetMass(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -943,7 +943,7 @@ long FnGetMass(C4Thread *cthr, C4Object *pObj) {
   return pObj->Mass;
 }
 
-long FnGetRDir(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetRDir(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -951,7 +951,7 @@ long FnGetRDir(C4Thread *cthr, C4Object *pObj) {
   return fixtoi(pObj->rdir * 10);
 }
 
-long FnGetXDir(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetXDir(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -959,7 +959,7 @@ long FnGetXDir(C4Thread *cthr, C4Object *pObj) {
   return fixtoi(pObj->xdir * 10);
 }
 
-long FnGetYDir(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetYDir(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -967,7 +967,7 @@ long FnGetYDir(C4Thread *cthr, C4Object *pObj) {
   return fixtoi(pObj->ydir * 10);
 }
 
-long FnGetR(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetR(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -981,7 +981,7 @@ long FnGetR(C4Thread *cthr, C4Object *pObj) {
   return iR;
 }
 
-long FnGetComDir(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetComDir(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -989,7 +989,7 @@ long FnGetComDir(C4Thread *cthr, C4Object *pObj) {
   return pObj->Action.ComDir;
 }
 
-long FnGetX(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetX(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -997,7 +997,7 @@ long FnGetX(C4Thread *cthr, C4Object *pObj) {
   return pObj->x;
 }
 
-long FnGetVertexNum(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetVertexNum(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1005,7 +1005,7 @@ long FnGetVertexNum(C4Thread *cthr, C4Object *pObj) {
   return pObj->Shape.VtxNum;
 }
 
-long FnGetVertex(C4Thread *cthr, long iIndex, long fYCoordinate, C4Object *pObj) {
+intptr_t FnGetVertex(C4Thread *cthr, intptr_t iIndex, intptr_t fYCoordinate, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1018,7 +1018,7 @@ long FnGetVertex(C4Thread *cthr, long iIndex, long fYCoordinate, C4Object *pObj)
   return pObj->Shape.VtxX[iIndex];
 }
 
-long FnSetVertex(C4Thread *cthr, long iIndex, long fYCoordinate, long iValue, C4Object *pObj) {
+intptr_t FnSetVertex(C4Thread *cthr, intptr_t iIndex, intptr_t fYCoordinate, intptr_t iValue, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1032,7 +1032,7 @@ long FnSetVertex(C4Thread *cthr, long iIndex, long fYCoordinate, long iValue, C4
   return TRUE;
 }
 
-long FnAddVertex(C4Thread *cthr, long iX, long iY, C4Object *pObj) {
+intptr_t FnAddVertex(C4Thread *cthr, intptr_t iX, intptr_t iY, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1040,7 +1040,7 @@ long FnAddVertex(C4Thread *cthr, long iX, long iY, C4Object *pObj) {
   return pObj->Shape.AddVertex(iX, iY);
 }
 
-long FnGetY(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetY(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1048,7 +1048,7 @@ long FnGetY(C4Thread *cthr, C4Object *pObj) {
   return pObj->y;
 }
 
-long FnGetAlive(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetAlive(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1056,7 +1056,7 @@ long FnGetAlive(C4Thread *cthr, C4Object *pObj) {
   return pObj->Alive;
 }
 
-long FnGetOwner(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetOwner(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1064,7 +1064,7 @@ long FnGetOwner(C4Thread *cthr, C4Object *pObj) {
   return pObj->Owner;
 }
 
-long FnCrewMember(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnCrewMember(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1072,7 +1072,7 @@ long FnCrewMember(C4Thread *cthr, C4Object *pObj) {
   return pObj->Def->CrewMember;
 }
 
-long FnGetController(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetController(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1080,7 +1080,7 @@ long FnGetController(C4Thread *cthr, C4Object *pObj) {
   return pObj->Controller;
 }
 
-long FnGetCategory(C4Thread *cthr, C4Object *pObj, long idDef) {
+intptr_t FnGetCategory(C4Thread *cthr, C4Object *pObj, intptr_t idDef) {
   // Def category
   C4Def *pDef;
   if (idDef)
@@ -1094,7 +1094,7 @@ long FnGetCategory(C4Thread *cthr, C4Object *pObj, long idDef) {
   return pObj->Category;
 }
 
-long FnGetOCF(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetOCF(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1102,7 +1102,7 @@ long FnGetOCF(C4Thread *cthr, C4Object *pObj) {
   return pObj->OCF;
 }
 
-long FnGetDamage(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetDamage(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1110,7 +1110,7 @@ long FnGetDamage(C4Thread *cthr, C4Object *pObj) {
   return pObj->Damage;
 }
 
-long FnGetValue(C4Thread *cthr, C4Object *pObj, long idDef) {
+intptr_t FnGetValue(C4Thread *cthr, C4Object *pObj, intptr_t idDef) {
   // Def value
   C4Def *pDef;
   if (idDef)
@@ -1124,7 +1124,7 @@ long FnGetValue(C4Thread *cthr, C4Object *pObj, long idDef) {
   return pObj->GetValue();
 }
 
-long FnGetRank(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetRank(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1134,14 +1134,14 @@ long FnGetRank(C4Thread *cthr, C4Object *pObj) {
   return pObj->Info->Rank;
 }
 
-long FnValue(C4Thread *cthr, long id) {
+intptr_t FnValue(C4Thread *cthr, intptr_t id) {
   C4Def *pDef = C4Id2Def(id);
   if (pDef)
     return pDef->Value;
   return 0;
 }
 
-long FnGetActTime(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetActTime(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1157,7 +1157,7 @@ C4ID FnGetID(C4Thread *cthr, C4Object *pObj) {
   return pObj->Def->id;
 }
 
-long FnGetBase(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetBase(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1165,7 +1165,7 @@ long FnGetBase(C4Thread *cthr, C4Object *pObj) {
   return pObj->Base;
 }
 
-long FnGetMenu(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnGetMenu(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1175,7 +1175,7 @@ long FnGetMenu(C4Thread *cthr, C4Object *pObj) {
   return C4MN_None;
 }
 
-long FnCreateMenu(C4Thread *cthr, long iSymbol, C4Object *pMenuObj, C4Object *pCommandObj, long iExtra, const char *szCaption, long iExtraData, long iStyle, long fPermanent) {
+intptr_t FnCreateMenu(C4Thread *cthr, intptr_t iSymbol, C4Object *pMenuObj, C4Object *pCommandObj, intptr_t iExtra, const char *szCaption, intptr_t iExtraData, intptr_t iStyle, intptr_t fPermanent) {
   if (!pMenuObj)
     pMenuObj = cthr->cObj;
   if (!IsObjectValid(pMenuObj))
@@ -1206,7 +1206,7 @@ long FnCreateMenu(C4Thread *cthr, long iSymbol, C4Object *pMenuObj, C4Object *pC
   return TRUE;
 }
 
-long FnAddMenuItem(C4Thread *cthr, const char *szCaption, const char *szCommand, long idItem, C4Object *pMenuObj, long iCount, long iParameter, const char *szInfoCaption) {
+intptr_t FnAddMenuItem(C4Thread *cthr, const char *szCaption, const char *szCommand, intptr_t idItem, C4Object *pMenuObj, intptr_t iCount, intptr_t iParameter, const char *szInfoCaption) {
   if (!pMenuObj)
     pMenuObj = cthr->cObj;
   if (!IsObjectValid(pMenuObj))
@@ -1257,7 +1257,7 @@ long FnAddMenuItem(C4Thread *cthr, const char *szCaption, const char *szCommand,
   return TRUE;
 }
 
-long FnSelectMenuItem(C4Thread *cthr, long iItem, C4Object *pMenuObj) {
+intptr_t FnSelectMenuItem(C4Thread *cthr, intptr_t iItem, C4Object *pMenuObj) {
   if (!pMenuObj)
     pMenuObj = cthr->cObj;
   if (!IsObjectValid(pMenuObj))
@@ -1293,7 +1293,7 @@ C4Object *FnContents(C4Thread *cthr, int index, C4Object *pObj) {
   return NULL;
 }
 
-long FnShiftContents(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnShiftContents(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1333,7 +1333,7 @@ C4Object *FnScrollContents(C4Thread *cthr, C4Object *pObj) {
   return pObj->Contents.GetObject();
 }
 
-long FnContentsCount(C4Thread *cthr, long id, C4Object *pObj) {
+intptr_t FnContentsCount(C4Thread *cthr, intptr_t id, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1357,7 +1357,7 @@ C4Object *FnFindOtherContents(C4Thread *cthr, C4ID c_id, C4Object *pObj) {
   return pObj->Contents.FindOther(c_id);
 }
 
-long FnActIdle(C4Thread *cthr) {
+intptr_t FnActIdle(C4Thread *cthr) {
   if (!cthr->cObj)
     return FALSE;
   if (cthr->cObj->Action.Act == ActIdle)
@@ -1365,7 +1365,7 @@ long FnActIdle(C4Thread *cthr) {
   return FALSE;
 }
 
-long FnCheckEnergyNeedChain(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnCheckEnergyNeedChain(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1374,7 +1374,7 @@ long FnCheckEnergyNeedChain(C4Thread *cthr, C4Object *pObj) {
   return CheckEnergyNeedChain(pObj, EnergyChainChecked);
 }
 
-long FnEnergyCheck(C4Thread *cthr, long energy, C4Object *pObj) {
+intptr_t FnEnergyCheck(C4Thread *cthr, intptr_t energy, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1387,7 +1387,7 @@ long FnEnergyCheck(C4Thread *cthr, long energy, C4Object *pObj) {
   return FALSE;
 }
 
-long FnStuck(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnStuck(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1395,7 +1395,7 @@ long FnStuck(C4Thread *cthr, C4Object *pObj) {
   return pObj->Shape.CheckContact(pObj->x, pObj->y);
 }
 
-long FnInLiquid(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnInLiquid(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1403,7 +1403,7 @@ long FnInLiquid(C4Thread *cthr, C4Object *pObj) {
   return pObj->InLiquid;
 }
 
-long FnOnFire(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnOnFire(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1411,7 +1411,7 @@ long FnOnFire(C4Thread *cthr, C4Object *pObj) {
   return pObj->OnFire;
 }
 
-long FnComponentAll(C4Thread *cthr, C4Object *pObj, long c_id) {
+intptr_t FnComponentAll(C4Thread *cthr, C4Object *pObj, intptr_t c_id) {
   int cnt;
   if (!IsObjectValid(pObj))
     return FALSE;
@@ -1466,7 +1466,7 @@ C4Object *FnComposeContents(C4Thread *cthr, C4ID c_id, C4Object *pObj) {
   return pObj->ComposeContents(c_id);
 }
 
-long FnFindConstructionSite(C4Thread *cthr, long id, long iVarX, long iVarY) {
+intptr_t FnFindConstructionSite(C4Thread *cthr, intptr_t id, intptr_t iVarX, intptr_t iVarY) {
 
   C4Def *pDef;
   if (!(pDef = C4Id2Def(id)))
@@ -1484,7 +1484,7 @@ long FnFindConstructionSite(C4Thread *cthr, long id, long iVarX, long iVarY) {
 
 C4Object *FnFindBase(C4Thread *cthr, int iOwner, int iIndex) { return Game.FindBase(iOwner, iIndex); }
 
-long FnObjectCount(C4Thread *cthr, long id, long x, long y, long wdt, long hgt, long dwOCF, const char *szAction, C4Object *pActionTarget, C4Object *pContainer, long iOwner) {
+intptr_t FnObjectCount(C4Thread *cthr, intptr_t id, intptr_t x, intptr_t y, intptr_t wdt, intptr_t hgt, intptr_t dwOCF, const char *szAction, C4Object *pActionTarget, C4Object *pContainer, intptr_t iOwner) {
   // Local call adjust coordinates
   if (cthr->cObj)
     if (x || y || wdt || hgt) // if not default full range
@@ -1521,13 +1521,13 @@ C4Object *FnFindObject(C4Thread *cthr, C4ID id, int x, int y, int wdt, int hgt, 
                          pContainer, ANY_OWNER, pFindNext);
 }
 
-long FnMakeCrewMember(C4Thread *cthr, C4Object *pObj, long iPlayer) {
+intptr_t FnMakeCrewMember(C4Thread *cthr, C4Object *pObj, intptr_t iPlayer) {
   if (!IsObjectValid(pObj) || !ValidPlr(iPlayer))
     return FALSE;
   return Game.Players.Get(iPlayer)->MakeCrewMember(pObj);
 }
 
-long FnFlameConsumeMaterial(C4Thread *cthr, long x, long y) {
+intptr_t FnFlameConsumeMaterial(C4Thread *cthr, intptr_t x, intptr_t y) {
   if (cthr->cObj) {
     x += cthr->cObj->x;
     y += cthr->cObj->y;
@@ -1542,7 +1542,7 @@ long FnFlameConsumeMaterial(C4Thread *cthr, long x, long y) {
   return TRUE;
 }
 
-long FnSmoke(C4Thread *cthr, long tx, long ty, long level) {
+intptr_t FnSmoke(C4Thread *cthr, intptr_t tx, intptr_t ty, intptr_t level) {
   if (cthr->cObj) {
     tx += cthr->cObj->x;
     ty += cthr->cObj->y;
@@ -1551,7 +1551,7 @@ long FnSmoke(C4Thread *cthr, long tx, long ty, long level) {
   return TRUE;
 }
 
-long FnBubble(C4Thread *cthr, long tx, long ty) {
+intptr_t FnBubble(C4Thread *cthr, intptr_t tx, intptr_t ty) {
   if (cthr->cObj) {
     tx += cthr->cObj->x;
     ty += cthr->cObj->y;
@@ -1560,7 +1560,7 @@ long FnBubble(C4Thread *cthr, long tx, long ty) {
   return TRUE;
 }
 
-long FnExtractLiquid(C4Thread *cthr, long x, long y) {
+intptr_t FnExtractLiquid(C4Thread *cthr, intptr_t x, intptr_t y) {
   if (cthr->cObj) {
     x += cthr->cObj->x;
     y += cthr->cObj->y;
@@ -1570,7 +1570,7 @@ long FnExtractLiquid(C4Thread *cthr, long x, long y) {
   return Game.Landscape.ExtractMaterial(x, y);
 }
 
-long FnInsertMaterial(C4Thread *cthr, long mat, long x, long y) {
+intptr_t FnInsertMaterial(C4Thread *cthr, intptr_t mat, intptr_t x, intptr_t y) {
   if (cthr->cObj) {
     x += cthr->cObj->x;
     y += cthr->cObj->y;
@@ -1578,7 +1578,7 @@ long FnInsertMaterial(C4Thread *cthr, long mat, long x, long y) {
   return Game.Landscape.InsertMaterial(mat, x, y);
 }
 
-long FnObjectInsertMaterial(C4Thread *cthr, long mat, C4Object *target) {
+intptr_t FnObjectInsertMaterial(C4Thread *cthr, intptr_t mat, C4Object *target) {
   if (!IsObjectValid(target))
     return FALSE;
   if (mat == MNone)
@@ -1606,7 +1606,7 @@ long FnObjectInsertMaterial(C4Thread *cthr, long mat, C4Object *target) {
   return Game.Landscape.InsertMaterial(mat, target->x, target->y);
 }
 
-long FnObjectExtractLiquid(C4Thread *cthr, C4Object *from) {
+intptr_t FnObjectExtractLiquid(C4Thread *cthr, C4Object *from) {
   if (!IsObjectValid(from))
     return MNone;
 
@@ -1649,9 +1649,9 @@ long FnObjectExtractLiquid(C4Thread *cthr, C4Object *from) {
   return MNone;
 }
 
-long FnGetMaterialCount(C4Thread *cthr, long iMaterial) { return Game.Landscape.GetMaterialCount(iMaterial); }
+intptr_t FnGetMaterialCount(C4Thread *cthr, intptr_t iMaterial) { return Game.Landscape.GetMaterialCount(iMaterial); }
 
-long FnGetMaterial(C4Thread *cthr, long x, long y) {
+intptr_t FnGetMaterial(C4Thread *cthr, intptr_t x, intptr_t y) {
   if (cthr->cObj) {
     x += cthr->cObj->x;
     y += cthr->cObj->y;
@@ -1659,7 +1659,7 @@ long FnGetMaterial(C4Thread *cthr, long x, long y) {
   return GBackMat(x, y);
 }
 
-long FnGBackSolid(C4Thread *cthr, long x, long y) {
+intptr_t FnGBackSolid(C4Thread *cthr, intptr_t x, intptr_t y) {
   if (cthr->cObj) {
     x += cthr->cObj->x;
     y += cthr->cObj->y;
@@ -1667,7 +1667,7 @@ long FnGBackSolid(C4Thread *cthr, long x, long y) {
   return GBackSolid(x, y);
 }
 
-long FnGBackSemiSolid(C4Thread *cthr, long x, long y) {
+intptr_t FnGBackSemiSolid(C4Thread *cthr, intptr_t x, intptr_t y) {
   if (cthr->cObj) {
     x += cthr->cObj->x;
     y += cthr->cObj->y;
@@ -1675,7 +1675,7 @@ long FnGBackSemiSolid(C4Thread *cthr, long x, long y) {
   return GBackSemiSolid(x, y);
 }
 
-long FnGBackLiquid(C4Thread *cthr, long x, long y) {
+intptr_t FnGBackLiquid(C4Thread *cthr, intptr_t x, intptr_t y) {
   if (cthr->cObj) {
     x += cthr->cObj->x;
     y += cthr->cObj->y;
@@ -1683,7 +1683,7 @@ long FnGBackLiquid(C4Thread *cthr, long x, long y) {
   return GBackLiquid(x, y);
 }
 
-long FnExtractMaterialAmount(C4Thread *cthr, long x, long y, long mat, long amount) {
+intptr_t FnExtractMaterialAmount(C4Thread *cthr, intptr_t x, intptr_t y, intptr_t mat, intptr_t amount) {
   if (cthr->cObj) {
     x += cthr->cObj->x;
     y += cthr->cObj->y;
@@ -1697,7 +1697,7 @@ long FnExtractMaterialAmount(C4Thread *cthr, long x, long y, long mat, long amou
   return amount;
 }
 
-long FnBlastObjects(C4Thread *cthr, long iX, long iY, long iLevel, C4Object *pInObj) {
+intptr_t FnBlastObjects(C4Thread *cthr, intptr_t iX, intptr_t iY, intptr_t iLevel, C4Object *pInObj) {
   int iCausedBy = NO_OWNER;
   if (cthr->cObj)
     iCausedBy = cthr->cObj->Owner;
@@ -1705,9 +1705,9 @@ long FnBlastObjects(C4Thread *cthr, long iX, long iY, long iLevel, C4Object *pIn
   return TRUE;
 }
 
-long FnSound(C4Thread *cthr, const char *szSound, long fGlobal) { return SoundEffect(FnStringPar(szSound), 0, 100, fGlobal ? NULL : cthr->cObj); }
+intptr_t FnSound(C4Thread *cthr, const char *szSound, intptr_t fGlobal) { return SoundEffect(FnStringPar(szSound), 0, 100, fGlobal ? NULL : cthr->cObj); }
 
-long FnMusic(C4Thread *cthr, const char *szSongname) {
+intptr_t FnMusic(C4Thread *cthr, const char *szSongname) {
   if (!szSongname) {
     Config.Sound.RXMusic = FALSE;
     Game.MusicSystem.Stop();
@@ -1722,18 +1722,18 @@ long FnMusic(C4Thread *cthr, const char *szSongname) {
   return TRUE;
 }
 
-long FnSoundLevel(C4Thread *cthr, const char *szSound, long iLevel) { return SoundLevel(FnStringPar(szSound), iLevel); }
+intptr_t FnSoundLevel(C4Thread *cthr, const char *szSound, intptr_t iLevel) { return SoundLevel(FnStringPar(szSound), iLevel); }
 
-long FnGameOver() { return Game.DoGameOver(); }
+intptr_t FnGameOver() { return Game.DoGameOver(); }
 
-long FnGainMissionAccess(C4Thread *cthr, const char *szPassword) {
+intptr_t FnGainMissionAccess(C4Thread *cthr, const char *szPassword) {
   if (SLen(Config.General.MissionAccess) + SLen(FnStringPar(szPassword)) + 3 > CFG_MaxString)
     return FALSE;
   SAddModule(Config.General.MissionAccess, FnStringPar(szPassword));
   return TRUE;
 }
 
-long FnLog(C4Thread *cthr, const char *szMessage, long iPar0, long iPar1, long iPar2, long iPar3, long iPar4, long iPar5, long iPar6, long iPar7, long iPar8) {
+intptr_t FnLog(C4Thread *cthr, const char *szMessage, intptr_t iPar0, intptr_t iPar1, intptr_t iPar2, intptr_t iPar3, intptr_t iPar4, intptr_t iPar5, intptr_t iPar6, intptr_t iPar7, intptr_t iPar8) {
   Log(FnStringFormat(szMessage, iPar0, iPar1, iPar2, iPar3, iPar4, iPar5, iPar6, iPar7));
   return TRUE;
 }
@@ -1746,7 +1746,7 @@ const char *FnFormat(C4Thread *cthr, const char *szFormat, int iPar0, int iPar1,
 
 C4ID FnC4Id(C4Thread *cthr, const char *szID) { return (C4Id(FnStringPar(szID))); }
 
-long FnMessage(C4Thread *cthr, const char *szMessage, C4Object *pObj, long iPar0, long iPar1, long iPar2, long iPar3, long iPar4, long iPar5, long iPar6, long iPar7) {
+intptr_t FnMessage(C4Thread *cthr, const char *szMessage, C4Object *pObj, intptr_t iPar0, intptr_t iPar1, intptr_t iPar2, intptr_t iPar3, intptr_t iPar4, intptr_t iPar5, intptr_t iPar6, intptr_t iPar7) {
   char buf[MaxFnStringParLen + 1];
   if (!szMessage)
     return FALSE;
@@ -1768,12 +1768,12 @@ long FnMessage(C4Thread *cthr, const char *szMessage, C4Object *pObj, long iPar0
   return TRUE;
 }
 
-long FnScriptGo(C4Thread *cthr, long go) {
+intptr_t FnScriptGo(C4Thread *cthr, intptr_t go) {
   Game.Script.Go = go;
   return TRUE;
 }
 
-long FnCastPXS(C4Thread *cthr, const char *mat_name, long amt, long level, long tx, long ty) {
+intptr_t FnCastPXS(C4Thread *cthr, const char *mat_name, intptr_t amt, intptr_t level, intptr_t tx, intptr_t ty) {
   if (cthr->cObj) {
     tx += cthr->cObj->x;
     ty += cthr->cObj->y;
@@ -1782,7 +1782,7 @@ long FnCastPXS(C4Thread *cthr, const char *mat_name, long amt, long level, long 
   return TRUE;
 }
 
-long FnCastObjects(C4Thread *cthr, long id, long amt, long level, long tx, long ty) {
+intptr_t FnCastObjects(C4Thread *cthr, intptr_t id, intptr_t amt, intptr_t level, intptr_t tx, intptr_t ty) {
   if (cthr->cObj) {
     tx += cthr->cObj->x;
     ty += cthr->cObj->y;
@@ -1791,9 +1791,9 @@ long FnCastObjects(C4Thread *cthr, long id, long amt, long level, long tx, long 
   return TRUE;
 }
 
-long FnMaterial(C4Thread *cthr, const char *mat_name) { return Game.Material.Get(FnStringPar(mat_name)); }
+intptr_t FnMaterial(C4Thread *cthr, const char *mat_name) { return Game.Material.Get(FnStringPar(mat_name)); }
 
-C4Object *FnPlaceVegetation(C4Thread *cthr, C4ID id, long iX, long iY, long iWdt, long iHgt, long iGrowth) {
+C4Object *FnPlaceVegetation(C4Thread *cthr, C4ID id, intptr_t iX, intptr_t iY, intptr_t iWdt, intptr_t iHgt, intptr_t iGrowth) {
   // Local call: relative coordinates
   if (cthr->cObj) {
     iX += cthr->cObj->x;
@@ -1805,7 +1805,7 @@ C4Object *FnPlaceVegetation(C4Thread *cthr, C4ID id, long iX, long iY, long iWdt
 
 C4Object *FnPlaceAnimal(C4Thread *cthr, C4ID id) { return Game.PlaceAnimal(id); }
 
-long FnDrawVolcanoBranch(C4Thread *cthr, long mat, long fx, long fy, long tx, long ty, long size) {
+intptr_t FnDrawVolcanoBranch(C4Thread *cthr, intptr_t mat, intptr_t fx, intptr_t fy, intptr_t tx, intptr_t ty, intptr_t size) {
   int cx, cx2, cy;
   for (cy = ty; cy < fy; cy++) {
     cx = fx + (tx - fx) * (cy - fy) / (ty - fy);
@@ -1815,29 +1815,29 @@ long FnDrawVolcanoBranch(C4Thread *cthr, long mat, long fx, long fy, long tx, lo
   return TRUE;
 }
 
-long FnHostile(C4Thread *cthr, long iPlr1, long iPlr2) { return Hostile(iPlr1, iPlr2); }
+intptr_t FnHostile(C4Thread *cthr, intptr_t iPlr1, intptr_t iPlr2) { return Hostile(iPlr1, iPlr2); }
 
-long FnSetHostility(C4Thread *cthr, long iPlr, long iPlr2, long fHostile) {
+intptr_t FnSetHostility(C4Thread *cthr, intptr_t iPlr, intptr_t iPlr2, intptr_t fHostile) {
   if (!ValidPlr(iPlr))
     return FALSE;
   return Game.Players.Get(iPlr)->SetHostility(iPlr2, fHostile);
 }
 
-long FnSetPlrView(C4Thread *cthr, long iPlr, C4Object *tobj) {
+intptr_t FnSetPlrView(C4Thread *cthr, intptr_t iPlr, C4Object *tobj) {
   if (!ValidPlr(iPlr))
     return FALSE;
   Game.Players.Get(iPlr)->SetViewMode(C4PVM_Target, tobj);
   return TRUE;
 }
 
-long FnSetPlrShowControl(C4Thread *cthr, long iPlr, const char *defstring) {
+intptr_t FnSetPlrShowControl(C4Thread *cthr, intptr_t iPlr, const char *defstring) {
   if (!ValidPlr(iPlr))
     return FALSE;
   Game.Players.Get(iPlr)->ShowControl = StringBitEval(FnStringPar(defstring));
   return TRUE;
 }
 
-long FnSetPlrShowCommand(C4Thread *cthr, long iPlr, long iCom) {
+intptr_t FnSetPlrShowCommand(C4Thread *cthr, intptr_t iPlr, intptr_t iCom) {
   if (!ValidPlr(iPlr))
     return FALSE;
   Game.Players.Get(iPlr)->FlashCom = iCom;
@@ -1846,39 +1846,39 @@ long FnSetPlrShowCommand(C4Thread *cthr, long iPlr, long iCom) {
   return TRUE;
 }
 
-long FnSetPlrShowControlPos(C4Thread *cthr, long iPlr, long pos) {
+intptr_t FnSetPlrShowControlPos(C4Thread *cthr, intptr_t iPlr, intptr_t pos) {
   if (!ValidPlr(iPlr))
     return FALSE;
   Game.Players.Get(iPlr)->ShowControlPos = pos;
   return TRUE;
 }
 
-long FnGetPlrView(C4Thread *cthr, long iPlr) {
+intptr_t FnGetPlrView(C4Thread *cthr, intptr_t iPlr) {
   if (!ValidPlr(iPlr))
     return FALSE;
   return Game.Players.Get(iPlr)->ViewMode;
 }
 
-long FnDoHomebaseMaterial(C4Thread *cthr, long iPlr, long id, long iChange) {
+intptr_t FnDoHomebaseMaterial(C4Thread *cthr, intptr_t iPlr, intptr_t id, intptr_t iChange) {
   if (!ValidPlr(iPlr))
     return FALSE;
   int iLastcount = Game.Players.Get(iPlr)->HomeBaseMaterial.GetIDCount(id);
   return Game.Players.Get(iPlr)->HomeBaseMaterial.SetIDCount(id, iLastcount + iChange, TRUE);
 }
 
-long FnGetPlrDownDouble(C4Thread *cthr, long iPlr) {
+intptr_t FnGetPlrDownDouble(C4Thread *cthr, intptr_t iPlr) {
   if (!ValidPlr(iPlr))
     return FALSE;
   return Game.Players.Get(iPlr)->LastComDownDouble;
 }
 
-long FnSetPlrKnowledge(C4Thread *cthr, long iPlr, long id) {
+intptr_t FnSetPlrKnowledge(C4Thread *cthr, intptr_t iPlr, intptr_t id) {
   if (!ValidPlr(iPlr))
     return FALSE;
   return Game.Players.Get(iPlr)->Knowledge.SetIDCount(id, 1, TRUE);
 }
 
-long FnSetComponent(C4Thread *cthr, long idComponent, long iCount, C4Object *pObj) {
+intptr_t FnSetComponent(C4Thread *cthr, intptr_t idComponent, intptr_t iCount, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -1886,7 +1886,7 @@ long FnSetComponent(C4Thread *cthr, long idComponent, long iCount, C4Object *pOb
   return pObj->Component.SetIDCount(idComponent, iCount, TRUE);
 }
 
-long FnGetPlrKnowledge(C4Thread *cthr, long iPlr, long id, long iIndex, DWORD dwCategory) {
+intptr_t FnGetPlrKnowledge(C4Thread *cthr, intptr_t iPlr, intptr_t id, intptr_t iIndex, DWORD dwCategory) {
   if (!ValidPlr(iPlr))
     return FALSE;
   // Search by id, check if available, return BOOL
@@ -1908,7 +1908,7 @@ C4ID FnGetDefinition(C4Thread *cthr, int iIndex, DWORD dwCategory) {
   return pDef->id;
 }
 
-long FnGetComponent(C4Thread *cthr, long idComponent, long iIndex, C4Object *pObj, long idDef) {
+intptr_t FnGetComponent(C4Thread *cthr, intptr_t idComponent, intptr_t iIndex, C4Object *pObj, intptr_t idDef) {
   // Def component
   if (idDef) {
     // Get def
@@ -1937,7 +1937,7 @@ long FnGetComponent(C4Thread *cthr, long idComponent, long iIndex, C4Object *pOb
   return 0;
 }
 
-long FnGetHomebaseMaterial(C4Thread *cthr, long iPlr, long id, long iIndex, DWORD dwCategory) {
+intptr_t FnGetHomebaseMaterial(C4Thread *cthr, intptr_t iPlr, intptr_t id, intptr_t iIndex, DWORD dwCategory) {
   if (!ValidPlr(iPlr))
     return FALSE;
   // Search by id, return available count
@@ -1947,13 +1947,13 @@ long FnGetHomebaseMaterial(C4Thread *cthr, long iPlr, long id, long iIndex, DWOR
   return Game.Players.Get(iPlr)->HomeBaseMaterial.GetID(Game.Defs, dwCategory, iIndex);
 }
 
-long FnSetPlrMagic(C4Thread *cthr, long iPlr, long id) {
+intptr_t FnSetPlrMagic(C4Thread *cthr, intptr_t iPlr, intptr_t id) {
   if (!ValidPlr(iPlr))
     return FALSE;
   return Game.Players.Get(iPlr)->Magic.SetIDCount(id, 1, TRUE);
 }
 
-long FnGetPlrMagic(C4Thread *cthr, long iPlr, long id, long iIndex) {
+intptr_t FnGetPlrMagic(C4Thread *cthr, intptr_t iPlr, intptr_t id, intptr_t iIndex) {
   if (!ValidPlr(iPlr))
     return FALSE;
   // Search by id, check if available, return BOOL
@@ -1963,38 +1963,38 @@ long FnGetPlrMagic(C4Thread *cthr, long iPlr, long id, long iIndex) {
   return Game.Players.Get(iPlr)->Magic.GetID(Game.Defs, C4D_Magic, iIndex);
 }
 
-long FnGetWealth(C4Thread *cthr, long iPlr) {
+intptr_t FnGetWealth(C4Thread *cthr, intptr_t iPlr) {
   if (!ValidPlr(iPlr))
     return 0;
   return Game.Players.Get(iPlr)->Wealth;
 }
 
-long FnSetWealth(C4Thread *cthr, long iPlr, long iValue) {
+intptr_t FnSetWealth(C4Thread *cthr, intptr_t iPlr, intptr_t iValue) {
   if (!ValidPlr(iPlr))
     return FALSE;
   Game.Players.Get(iPlr)->Wealth = BoundBy(iValue, 0, 100000);
   return TRUE;
 }
 
-long FnDoScore(C4Thread *cthr, long iPlr, long iChange) {
+intptr_t FnDoScore(C4Thread *cthr, intptr_t iPlr, intptr_t iChange) {
   if (!ValidPlr(iPlr))
     return FALSE;
   return Game.Players.Get(iPlr)->DoPoints(iChange);
 }
 
-long FnGetPlrValue(C4Thread *cthr, long iPlr) {
+intptr_t FnGetPlrValue(C4Thread *cthr, intptr_t iPlr) {
   if (!ValidPlr(iPlr))
     return 0;
   return Game.Players.Get(iPlr)->Value;
 }
 
-long FnGetPlrValueGain(C4Thread *cthr, long iPlr) {
+intptr_t FnGetPlrValueGain(C4Thread *cthr, intptr_t iPlr) {
   if (!ValidPlr(iPlr))
     return 0;
   return Game.Players.Get(iPlr)->ValueGain;
 }
 
-long FnGetScore(C4Thread *cthr, long iPlr) {
+intptr_t FnGetScore(C4Thread *cthr, intptr_t iPlr) {
   if (!ValidPlr(iPlr))
     return 0;
   return Game.Players.Get(iPlr)->Points;
@@ -2012,15 +2012,15 @@ C4Object *FnGetCrew(C4Thread *cthr, int iPlr, int index) {
   return Game.Players.Get(iPlr)->Crew.GetObject(index);
 }
 
-long FnGetCrewCount(C4Thread *cthr, long iPlr) {
+intptr_t FnGetCrewCount(C4Thread *cthr, intptr_t iPlr) {
   if (!ValidPlr(iPlr))
     return 0;
   return Game.Players.Get(iPlr)->Crew.ObjectCount();
 }
 
-long FnGetPlayerCount(C4Thread *cthr) { return Game.Players.GetCount(); }
+intptr_t FnGetPlayerCount(C4Thread *cthr) { return Game.Players.GetCount(); }
 
-long FnEliminatePlayer(C4Thread *cthr, long iPlr) {
+intptr_t FnEliminatePlayer(C4Thread *cthr, intptr_t iPlr) {
   C4Player *pPlr = Game.Players.Get(iPlr);
   if (!pPlr)
     return FALSE;
@@ -2042,27 +2042,27 @@ C4Object *FnGetCaptain(C4Thread *cthr, int iPlr) {
   return Game.Players.Get(iPlr)->Captain;
 }
 
-long FnSetCursor(C4Thread *cthr, long iPlr, C4Object *pObj) {
+intptr_t FnSetCursor(C4Thread *cthr, intptr_t iPlr, C4Object *pObj) {
   if (!ValidPlr(iPlr))
     return FALSE;
   Game.Players.Get(iPlr)->SetCursor(pObj);
   return TRUE;
 }
 
-long FnSelectCrew(C4Thread *cthr, long iPlr, C4Object *pObj, long fSelect) {
+intptr_t FnSelectCrew(C4Thread *cthr, intptr_t iPlr, C4Object *pObj, intptr_t fSelect) {
   if (!ValidPlr(iPlr))
     return FALSE;
   Game.Players.Get(iPlr)->SelectCrew(pObj, fSelect);
   return TRUE;
 }
 
-long FnGetSelectCount(C4Thread *cthr, long iPlr) {
+intptr_t FnGetSelectCount(C4Thread *cthr, intptr_t iPlr) {
   if (!ValidPlr(iPlr))
     return 0;
   return Game.Players.Get(iPlr)->SelectCount;
 }
 
-long FnGetWind(C4Thread *cthr, long x, long y) {
+intptr_t FnGetWind(C4Thread *cthr, intptr_t x, intptr_t y) {
   if (cthr->cObj) {
     x += cthr->cObj->x;
     y += cthr->cObj->y;
@@ -2070,33 +2070,33 @@ long FnGetWind(C4Thread *cthr, long x, long y) {
   return Game.Weather.GetWind(x, y);
 }
 
-long FnSetWind(C4Thread *cthr, long iWind) {
+intptr_t FnSetWind(C4Thread *cthr, intptr_t iWind) {
   Game.Weather.SetWind(iWind);
   return TRUE;
 }
 
-long FnSetTemperature(C4Thread *cthr, long iTemperature) {
+intptr_t FnSetTemperature(C4Thread *cthr, intptr_t iTemperature) {
   Game.Weather.SetTemperature(iTemperature);
   return TRUE;
 }
 
-long FnGetTemperature(C4Thread *cthr) { return Game.Weather.GetTemperature(); }
+intptr_t FnGetTemperature(C4Thread *cthr) { return Game.Weather.GetTemperature(); }
 
-long FnSetSeason(C4Thread *cthr, long iSeason) {
+intptr_t FnSetSeason(C4Thread *cthr, intptr_t iSeason) {
   Game.Weather.SetSeason(iSeason);
   return TRUE;
 }
 
-long FnGetSeason(C4Thread *cthr) { return Game.Weather.GetSeason(); }
+intptr_t FnGetSeason(C4Thread *cthr) { return Game.Weather.GetSeason(); }
 
-long FnSetClimate(C4Thread *cthr, long iClimate) {
+intptr_t FnSetClimate(C4Thread *cthr, intptr_t iClimate) {
   Game.Weather.SetClimate(iClimate);
   return TRUE;
 }
 
-long FnGetClimate(C4Thread *cthr) { return Game.Weather.GetClimate(); }
+intptr_t FnGetClimate(C4Thread *cthr) { return Game.Weather.GetClimate(); }
 
-long FnSetSkyFade(C4Thread *cthr, long iFromRed, long iFromGreen, long iFromBlue, long iToRed, long iToGreen, long iToBlue) {
+intptr_t FnSetSkyFade(C4Thread *cthr, intptr_t iFromRed, intptr_t iFromGreen, intptr_t iFromBlue, intptr_t iToRed, intptr_t iToGreen, intptr_t iToBlue) {
   // Create color array
   int iColors[6];
   iColors[0] = iFromRed;
@@ -2115,7 +2115,7 @@ long FnSetSkyFade(C4Thread *cthr, long iFromRed, long iFromGreen, long iFromBlue
   return TRUE;
 }
 
-long FnSetSkyColor(C4Thread *cthr, long iIndex, long iRed, long iGreen, long iBlue) {
+intptr_t FnSetSkyColor(C4Thread *cthr, intptr_t iIndex, intptr_t iRed, intptr_t iGreen, intptr_t iBlue) {
   // Set sky palette
   Game.Landscape.Sky.SetColor(iIndex, iRed, iGreen, iBlue);
   // Copy sky palette to game palette
@@ -2126,53 +2126,53 @@ long FnSetSkyColor(C4Thread *cthr, long iIndex, long iRed, long iGreen, long iBl
   return TRUE;
 }
 
-long FnGetSkyColor(C4Thread *cthr, long iIndex, long iRGB) {
+intptr_t FnGetSkyColor(C4Thread *cthr, intptr_t iIndex, intptr_t iRGB) {
   if (!Inside(iIndex, 0, 19) || !Inside(iRGB, 0, 2))
     return 0;
   return Game.Landscape.Sky.Palette[iIndex * 3 + iRGB];
 }
 
-long FnLandscapeWidth(C4Thread *cthr) { return GBackWdt; }
+intptr_t FnLandscapeWidth(C4Thread *cthr) { return GBackWdt; }
 
-long FnLandscapeHeight(C4Thread *cthr) { return GBackHgt; }
+intptr_t FnLandscapeHeight(C4Thread *cthr) { return GBackHgt; }
 
-long FnLaunchLightning(C4Thread *cthr, long x, long y, long xdir, long xrange, long ydir, long yrange) { return Game.Weather.LaunchLightning(x, y, xdir, xrange, ydir, yrange); }
+intptr_t FnLaunchLightning(C4Thread *cthr, intptr_t x, intptr_t y, intptr_t xdir, intptr_t xrange, intptr_t ydir, intptr_t yrange) { return Game.Weather.LaunchLightning(x, y, xdir, xrange, ydir, yrange); }
 
-long FnLaunchVolcano(C4Thread *cthr, long x) { return Game.Weather.LaunchVolcano(Game.Material.Get("Lava"), x, GBackHgt - 1, BoundBy(15 * GBackHgt / 500 + Random(10), 10, 60)); }
+intptr_t FnLaunchVolcano(C4Thread *cthr, intptr_t x) { return Game.Weather.LaunchVolcano(Game.Material.Get("Lava"), x, GBackHgt - 1, BoundBy(15 * GBackHgt / 500 + Random(10), 10, 60)); }
 
-long FnLaunchEarthquake(C4Thread *cthr, long x, long y) {
+intptr_t FnLaunchEarthquake(C4Thread *cthr, intptr_t x, intptr_t y) {
   Game.Weather.LaunchEarthquake(x, y);
   return 1;
 }
 
-long FnShakeFree(C4Thread *cthr, long x, long y, long rad) {
+intptr_t FnShakeFree(C4Thread *cthr, intptr_t x, intptr_t y, intptr_t rad) {
   Game.Landscape.ShakeFree(x, y, rad);
   return 1;
 }
 
-long FnShakeObjects(C4Thread *cthr, long x, long y, long rad) {
+intptr_t FnShakeObjects(C4Thread *cthr, intptr_t x, intptr_t y, intptr_t rad) {
   Game.ShakeObjects(x, y, rad);
   return 1;
 }
 
-long FnDigFree(C4Thread *cthr, long x, long y, long rad, long fRequest) {
+intptr_t FnDigFree(C4Thread *cthr, intptr_t x, intptr_t y, intptr_t rad, intptr_t fRequest) {
   Game.Landscape.DigFree(x, y, rad, fRequest, cthr->cObj);
   return 1;
 }
 
-long FnDigFreeRect(C4Thread *cthr, long iX, long iY, long iWdt, long iHgt, long fRequest) {
+intptr_t FnDigFreeRect(C4Thread *cthr, intptr_t iX, intptr_t iY, intptr_t iWdt, intptr_t iHgt, intptr_t fRequest) {
   Game.Landscape.DigFreeRect(iX, iY, iWdt, iHgt, fRequest, cthr->cObj);
   return TRUE;
 }
 
-long FnFreeRect(C4Thread *cthr, long iX, long iY, long iWdt, long iHgt) {
+intptr_t FnFreeRect(C4Thread *cthr, intptr_t iX, intptr_t iY, intptr_t iWdt, intptr_t iHgt) {
   Game.Landscape.ClearRect(iX, iY, iWdt, iHgt);
   return TRUE;
 }
 
-long FnPathFree(C4Thread *cthr, long iX1, long iY1, long iX2, long iY2) { return PathFree(iX1, iY1, iX2, iY2); }
+intptr_t FnPathFree(C4Thread *cthr, intptr_t iX1, intptr_t iY1, intptr_t iX2, intptr_t iY2) { return PathFree(iX1, iY1, iX2, iY2); }
 
-long FnSetTransferZone(C4Thread *cthr, long iX, long iY, long iWdt, long iHgt, C4Object *pObj) {
+intptr_t FnSetTransferZone(C4Thread *cthr, intptr_t iX, intptr_t iY, intptr_t iWdt, intptr_t iHgt, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -2182,35 +2182,35 @@ long FnSetTransferZone(C4Thread *cthr, long iX, long iY, long iWdt, long iHgt, C
   return Game.TransferZones.Set(iX, iY, iWdt, iHgt, pObj);
 }
 
-long FnNot(C4Thread *cthr, long fCondition) { return !fCondition; }
+intptr_t FnNot(C4Thread *cthr, intptr_t fCondition) { return !fCondition; }
 
-long FnOr(C4Thread *cthr, long fCon1, long fCon2, long fCon3, long fCon4, long fCon5) { return (fCon1 || fCon2 || fCon3 || fCon4 || fCon5); }
+intptr_t FnOr(C4Thread *cthr, intptr_t fCon1, intptr_t fCon2, intptr_t fCon3, intptr_t fCon4, intptr_t fCon5) { return (fCon1 || fCon2 || fCon3 || fCon4 || fCon5); }
 
-long FnAnd(C4Thread *cthr, long fCon1, long fCon2) { return (fCon1 && fCon2); }
+intptr_t FnAnd(C4Thread *cthr, intptr_t fCon1, intptr_t fCon2) { return (fCon1 && fCon2); }
 
-long FnBitAnd(C4Thread *cthr, long iVal1, long iVal2) { return (iVal1 & iVal2); }
+intptr_t FnBitAnd(C4Thread *cthr, intptr_t iVal1, intptr_t iVal2) { return (iVal1 & iVal2); }
 
-long FnEqual(C4Thread *cthr, long iVal1, long iVal2) { return (iVal1 == iVal2); }
+intptr_t FnEqual(C4Thread *cthr, intptr_t iVal1, intptr_t iVal2) { return (iVal1 == iVal2); }
 
-long FnLessThan(C4Thread *cthr, long iVal1, long iVal2) { return (iVal1 < iVal2); }
+intptr_t FnLessThan(C4Thread *cthr, intptr_t iVal1, intptr_t iVal2) { return (iVal1 < iVal2); }
 
-long FnGreaterThan(C4Thread *cthr, long iVal1, long iVal2) { return (iVal1 > iVal2); }
+intptr_t FnGreaterThan(C4Thread *cthr, intptr_t iVal1, intptr_t iVal2) { return (iVal1 > iVal2); }
 
-long FnSum(C4Thread *cthr, long iVal1, long iVal2, long iVal3, long iVal4) { return (iVal1 + iVal2 + iVal3 + iVal4); }
+intptr_t FnSum(C4Thread *cthr, intptr_t iVal1, intptr_t iVal2, intptr_t iVal3, intptr_t iVal4) { return (iVal1 + iVal2 + iVal3 + iVal4); }
 
-long FnSub(C4Thread *cthr, long iVal1, long iVal2, long iVal3, long iVal4) { return (iVal1 - iVal2 - iVal3 - iVal4); }
+intptr_t FnSub(C4Thread *cthr, intptr_t iVal1, intptr_t iVal2, intptr_t iVal3, intptr_t iVal4) { return (iVal1 - iVal2 - iVal3 - iVal4); }
 
-long FnAbs(C4Thread *cthr, long iVal) { return Abs(iVal); }
+intptr_t FnAbs(C4Thread *cthr, intptr_t iVal) { return Abs(iVal); }
 
-long FnMul(C4Thread *cthr, long iVal1, long iVal2) { return (iVal1 * iVal2); }
+intptr_t FnMul(C4Thread *cthr, intptr_t iVal1, intptr_t iVal2) { return (iVal1 * iVal2); }
 
-long FnDiv(C4Thread *cthr, long iVal1, long iVal2) {
+intptr_t FnDiv(C4Thread *cthr, intptr_t iVal1, intptr_t iVal2) {
   if (!iVal2)
     return 0;
   return (iVal1 / iVal2);
 }
 
-long FnMod(C4Thread *cthr, long iVal1, long iVal2) {
+intptr_t FnMod(C4Thread *cthr, intptr_t iVal1, intptr_t iVal2) {
   if (!iVal2)
     return 0;
   return (iVal1 % iVal2);
@@ -2218,13 +2218,13 @@ long FnMod(C4Thread *cthr, long iVal1, long iVal2) {
 
 const double pi = 3.141592654;
 
-long FnSin(C4Thread *cthr, long iAngle, long iRadius) { return (int)(iRadius * sin(2.0 * pi * iAngle / 360.0)); }
+intptr_t FnSin(C4Thread *cthr, intptr_t iAngle, intptr_t iRadius) { return (int)(iRadius * sin(2.0 * pi * iAngle / 360.0)); }
 
-long FnCos(C4Thread *cthr, long iAngle, long iRadius) { return (int)(iRadius * cos(2.0 * pi * iAngle / 360.0)); }
+intptr_t FnCos(C4Thread *cthr, intptr_t iAngle, intptr_t iRadius) { return (int)(iRadius * cos(2.0 * pi * iAngle / 360.0)); }
 
-long FnSqrt(C4Thread *cthr, long iValue) { return (int)sqrt(iValue); }
+intptr_t FnSqrt(C4Thread *cthr, intptr_t iValue) { return (int)sqrt(iValue); }
 
-long FnAngle(C4Thread *cthr, long iX1, long iY1, long iX2, long iY2) {
+intptr_t FnAngle(C4Thread *cthr, intptr_t iX1, intptr_t iY1, intptr_t iX2, intptr_t iY2) {
   int iAngle;
 
   iAngle = (int)(180.0 * atan2(Abs(iY1 - iY2), Abs(iX1 - iX2)) / pi);
@@ -2244,13 +2244,13 @@ long FnAngle(C4Thread *cthr, long iX1, long iY1, long iX2, long iY2) {
   return iAngle;
 }
 
-long FnMin(C4Thread *cthr, long iVal1, long iVal2) { return Min(iVal1, iVal2); }
+intptr_t FnMin(C4Thread *cthr, intptr_t iVal1, intptr_t iVal2) { return Min(iVal1, iVal2); }
 
-long FnMax(C4Thread *cthr, long iVal1, long iVal2) { return Max(iVal1, iVal2); }
+intptr_t FnMax(C4Thread *cthr, intptr_t iVal1, intptr_t iVal2) { return Max(iVal1, iVal2); }
 
-long FnDistance(C4Thread *cthr, long iX1, long iY1, long iX2, long iY2) { return Distance(iX1, iY1, iX2, iY2); }
+intptr_t FnDistance(C4Thread *cthr, intptr_t iX1, intptr_t iY1, intptr_t iX2, intptr_t iY2) { return Distance(iX1, iY1, iX2, iY2); }
 
-long FnObjectDistance(C4Thread *cthr, C4Object *pObj2, C4Object *pObj) {
+intptr_t FnObjectDistance(C4Thread *cthr, C4Object *pObj2, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj) || !IsObjectValid(pObj2))
@@ -2258,7 +2258,7 @@ long FnObjectDistance(C4Thread *cthr, C4Object *pObj2, C4Object *pObj) {
   return Distance(pObj->x, pObj->y, pObj2->x, pObj2->y);
 }
 
-long FnObjectNumber(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnObjectNumber(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -2266,9 +2266,9 @@ long FnObjectNumber(C4Thread *cthr, C4Object *pObj) {
   return pObj->Number;
 }
 
-C4Object *FnObject(C4Thread *cthr, long iNumber) { return Game.Objects.ObjectPointer(iNumber); }
+C4Object *FnObject(C4Thread *cthr, intptr_t iNumber) { return Game.Objects.ObjectPointer(iNumber); }
 
-long FnShowInfo(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnShowInfo(C4Thread *cthr, C4Object *pObj) {
   if (!cthr->cObj)
     return FALSE;
   if (!pObj)
@@ -2278,60 +2278,60 @@ long FnShowInfo(C4Thread *cthr, C4Object *pObj) {
   return cthr->cObj->ActivateMenu(C4MN_Info, 0, 0, 0, pObj);
 }
 
-long FnBoundBy(C4Thread *cthr, long iVal, long iRange1, long iRange2) { return BoundBy(iVal, iRange1, iRange2); }
+intptr_t FnBoundBy(C4Thread *cthr, intptr_t iVal, intptr_t iRange1, intptr_t iRange2) { return BoundBy(iVal, iRange1, iRange2); }
 
-long FnInside(C4Thread *cthr, long iVal, long iRange1, long iRange2) { return Inside(iVal, iRange1, iRange2); }
+intptr_t FnInside(C4Thread *cthr, intptr_t iVal, intptr_t iRange1, intptr_t iRange2) { return Inside(iVal, iRange1, iRange2); }
 
-long FnSEqual(C4Thread *cthr, const char *szString1, const char *szString2) {
+intptr_t FnSEqual(C4Thread *cthr, const char *szString1, const char *szString2) {
   SCopy(FnStringPar(szString1), pscOSTR);
   return SEqual(pscOSTR, FnStringPar(szString2));
 }
 
-long FnRandom(C4Thread *cthr, long iRange) { return Random(iRange); }
+intptr_t FnRandom(C4Thread *cthr, intptr_t iRange) { return Random(iRange); }
 
-long FnSafeRandom(C4Thread *cthr, long iRange) { return SafeRandom(iRange); }
+intptr_t FnSafeRandom(C4Thread *cthr, intptr_t iRange) { return SafeRandom(iRange); }
 
-long FnSetVar(C4Thread *cthr, long iVarIndex, long iValue) {
+intptr_t FnSetVar(C4Thread *cthr, intptr_t iVarIndex, intptr_t iValue) {
   if (!Inside(iVarIndex, 0, C4ThreadMaxVar - 1))
     return FALSE;
   cthr->Variable[iVarIndex] = iValue;
   return iValue;
 }
 
-long FnIncVar(C4Thread *cthr, long iVarIndex) {
+intptr_t FnIncVar(C4Thread *cthr, intptr_t iVarIndex) {
   if (!Inside(iVarIndex, 0, C4ThreadMaxVar - 1))
     return FALSE;
   cthr->Variable[iVarIndex]++;
   return cthr->Variable[iVarIndex];
 }
 
-long FnDecVar(C4Thread *cthr, long iVarIndex) {
+intptr_t FnDecVar(C4Thread *cthr, intptr_t iVarIndex) {
   if (!Inside(iVarIndex, 0, C4ThreadMaxVar - 1))
     return FALSE;
   cthr->Variable[iVarIndex]--;
   return cthr->Variable[iVarIndex];
 }
 
-long FnVar(C4Thread *cthr, long iVarIndex) {
+intptr_t FnVar(C4Thread *cthr, intptr_t iVarIndex) {
   if (!Inside(iVarIndex, 0, C4ThreadMaxVar - 1))
     return FALSE;
   return cthr->Variable[iVarIndex];
 }
 
-long FnSetGlobal(C4Thread *cthr, long iVarIndex, long iValue) {
+intptr_t FnSetGlobal(C4Thread *cthr, intptr_t iVarIndex, intptr_t iValue) {
   if (!Inside(iVarIndex, 0, C4MaxGlobal - 1))
     return FALSE;
   Game.Script.Global[iVarIndex] = iValue;
   return iValue;
 }
 
-long FnGlobal(C4Thread *cthr, long iVarIndex) {
+intptr_t FnGlobal(C4Thread *cthr, intptr_t iVarIndex) {
   if (!Inside(iVarIndex, 0, C4MaxGlobal - 1))
     return FALSE;
   return Game.Script.Global[iVarIndex];
 }
 
-long FnSetLocal(C4Thread *cthr, long iVarIndex, long iValue, C4Object *pObj) {
+intptr_t FnSetLocal(C4Thread *cthr, intptr_t iVarIndex, intptr_t iValue, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -2342,7 +2342,7 @@ long FnSetLocal(C4Thread *cthr, long iVarIndex, long iValue, C4Object *pObj) {
   return iValue;
 }
 
-long FnLocal(C4Thread *cthr, long iVarIndex, C4Object *pObj) {
+intptr_t FnLocal(C4Thread *cthr, intptr_t iVarIndex, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   if (!IsObjectValid(pObj))
@@ -2352,13 +2352,13 @@ long FnLocal(C4Thread *cthr, long iVarIndex, C4Object *pObj) {
   return pObj->Local[iVarIndex];
 }
 
-long FnPar(C4Thread *cthr, long iParIndex) {
+intptr_t FnPar(C4Thread *cthr, intptr_t iParIndex) {
   if (!Inside(iParIndex, 0, C4ThreadMaxPar - 1))
     return FALSE;
   return cthr->Parameter[iParIndex];
 }
 
-long FnCall(C4Thread *cthr, const char *szFunction, long par0, long par1, long par2, long par3, long par4, long par5, long par6, long par7, long par8, long par9) {
+intptr_t FnCall(C4Thread *cthr, const char *szFunction, intptr_t par0, intptr_t par1, intptr_t par2, intptr_t par3, intptr_t par4, intptr_t par5, intptr_t par6, intptr_t par7, intptr_t par8, intptr_t par9) {
   if (!szFunction)
     return FALSE;
   if (!cthr->cObj)
@@ -2366,7 +2366,7 @@ long FnCall(C4Thread *cthr, const char *szFunction, long par0, long par1, long p
   return cthr->cObj->Call(FnStringPar(szFunction), par0, par1, par2, par3, par4, par5, par6, par7, par8, par9);
 }
 
-long FnObjectCall(C4Thread *cthr, C4Object *pObj, const char *szFunction, long par0, long par1, long par2, long par3, long par4, long par5, long par6, long par7, long par8, long par9) {
+intptr_t FnObjectCall(C4Thread *cthr, C4Object *pObj, const char *szFunction, intptr_t par0, intptr_t par1, intptr_t par2, intptr_t par3, intptr_t par4, intptr_t par5, intptr_t par6, intptr_t par7, intptr_t par8, intptr_t par9) {
   if (!IsObjectValid(pObj) || !szFunction)
     return FALSE;
   // Make failsafe
@@ -2376,7 +2376,7 @@ long FnObjectCall(C4Thread *cthr, C4Object *pObj, const char *szFunction, long p
   return pObj->Call(cthr, szFunc2, par0, par1, par2, par3, par4, par5, par6, par7, par8, par9);
 }
 
-long FnDefinitionCall(C4Thread *cthr, long idID, const char *szFunction, long par0, long par1, long par2, long par3, long par4, long par5, long par6, long par7, long par8, long par9) {
+intptr_t FnDefinitionCall(C4Thread *cthr, intptr_t idID, const char *szFunction, intptr_t par0, intptr_t par1, intptr_t par2, intptr_t par3, intptr_t par4, intptr_t par5, intptr_t par6, intptr_t par7, intptr_t par8, intptr_t par9) {
   if (!idID || !szFunction)
     return FALSE;
   // Make failsafe
@@ -2390,7 +2390,7 @@ long FnDefinitionCall(C4Thread *cthr, long idID, const char *szFunction, long pa
   return pDef->Script.Call(cthr, szFunc2, par0, par1, par2, par3, par4, par5, par6, par7, par8, par9);
 }
 
-long FnGameCall(C4Thread *cthr, const char *szFunction, long par0, long par1, long par2, long par3, long par4, long par5, long par6, long par7, long par8, long par9) {
+intptr_t FnGameCall(C4Thread *cthr, const char *szFunction, intptr_t par0, intptr_t par1, intptr_t par2, intptr_t par3, intptr_t par4, intptr_t par5, intptr_t par6, intptr_t par7, intptr_t par8, intptr_t par9) {
   if (!szFunction)
     return FALSE;
   // Make failsafe
@@ -2400,9 +2400,9 @@ long FnGameCall(C4Thread *cthr, const char *szFunction, long par0, long par1, lo
   return Game.Script.Call(cthr, szFunc2, par0, par1, par2, par3, par4, par5, par6, par7, par8, par9);
 }
 
-long FnEditCursor() { return (long)Console.EditCursor.GetTarget(); }
+intptr_t FnEditCursor() { return (intptr_t)Console.EditCursor.GetTarget(); }
 
-long FnResort(C4Thread *cthr, C4Object *pObj) {
+intptr_t FnResort(C4Thread *cthr, C4Object *pObj) {
   if (!pObj)
     pObj = cthr->cObj;
   // Resort single object
@@ -2414,56 +2414,56 @@ long FnResort(C4Thread *cthr, C4Object *pObj) {
   return TRUE;
 }
 
-long FnC4D_All() { return C4D_All; }
-long FnC4D_StaticBack() { return C4D_StaticBack; }
-long FnC4D_Structure() { return C4D_Structure; }
-long FnC4D_Vehicle() { return C4D_Vehicle; }
-long FnC4D_Living() { return C4D_Living; }
-long FnC4D_Object() { return C4D_Object; }
-long FnC4D_Knowledge() { return C4D_SelectKnowledge; }
-long FnC4D_Goal() { return C4D_Goal; }
-long FnC4D_Rule() { return C4D_Rule; }
+intptr_t FnC4D_All() { return C4D_All; }
+intptr_t FnC4D_StaticBack() { return C4D_StaticBack; }
+intptr_t FnC4D_Structure() { return C4D_Structure; }
+intptr_t FnC4D_Vehicle() { return C4D_Vehicle; }
+intptr_t FnC4D_Living() { return C4D_Living; }
+intptr_t FnC4D_Object() { return C4D_Object; }
+intptr_t FnC4D_Knowledge() { return C4D_SelectKnowledge; }
+intptr_t FnC4D_Goal() { return C4D_Goal; }
+intptr_t FnC4D_Rule() { return C4D_Rule; }
 
-long FnCOMD_None() { return COMD_None; }
-long FnCOMD_Stop() { return COMD_Stop; }
-long FnCOMD_Up() { return COMD_Up; }
-long FnCOMD_UpRight() { return COMD_UpRight; }
-long FnCOMD_Right() { return COMD_Right; }
-long FnCOMD_DownRight() { return COMD_DownRight; }
-long FnCOMD_Down() { return COMD_Down; }
-long FnCOMD_DownLeft() { return COMD_DownLeft; }
-long FnCOMD_Left() { return COMD_Left; }
-long FnCOMD_UpLeft() { return COMD_UpLeft; }
+intptr_t FnCOMD_None() { return COMD_None; }
+intptr_t FnCOMD_Stop() { return COMD_Stop; }
+intptr_t FnCOMD_Up() { return COMD_Up; }
+intptr_t FnCOMD_UpRight() { return COMD_UpRight; }
+intptr_t FnCOMD_Right() { return COMD_Right; }
+intptr_t FnCOMD_DownRight() { return COMD_DownRight; }
+intptr_t FnCOMD_Down() { return COMD_Down; }
+intptr_t FnCOMD_DownLeft() { return COMD_DownLeft; }
+intptr_t FnCOMD_Left() { return COMD_Left; }
+intptr_t FnCOMD_UpLeft() { return COMD_UpLeft; }
 
-long FnDIR_Left() { return DIR_Left; }
-long FnDIR_Right() { return DIR_Right; }
+intptr_t FnDIR_Left() { return DIR_Left; }
+intptr_t FnDIR_Right() { return DIR_Right; }
 
-long FnOCF_Prey() { return OCF_Prey; }
-long FnOCF_Living() { return OCF_Living; }
-long FnOCF_Edible() { return OCF_Edible; }
-long FnOCF_Collectible() { return OCF_Carryable; }
-long FnOCF_Container() { return OCF_Container; }
-long FnOCF_NotContained() { return OCF_NotContained; }
-long FnOCF_Fullcon() { return OCF_FullCon; }
-long FnOCF_CrewMember() { return OCF_CrewMember; }
-long FnOCF_Grab() { return OCF_Grab; }
-long FnOCF_OnFire() { return OCF_OnFire; }
-long FnOCF_Chop() { return OCF_Chop; }
-long FnOCF_Construct() { return OCF_Construct; }
-long FnOCF_InLiquid() { return OCF_InLiquid; }
-long FnOCF_InSolid() { return OCF_InSolid; }
-long FnOCF_InFree() { return OCF_InFree; }
-long FnOCF_Available() { return OCF_Available; }
-long FnOCF_PowerConsumer() { return OCF_PowerConsumer; }
-long FnOCF_PowerSupply() { return OCF_PowerSupply; }
-long FnOCF_AttractLightning() { return OCF_AttractLightning; }
+intptr_t FnOCF_Prey() { return OCF_Prey; }
+intptr_t FnOCF_Living() { return OCF_Living; }
+intptr_t FnOCF_Edible() { return OCF_Edible; }
+intptr_t FnOCF_Collectible() { return OCF_Carryable; }
+intptr_t FnOCF_Container() { return OCF_Container; }
+intptr_t FnOCF_NotContained() { return OCF_NotContained; }
+intptr_t FnOCF_Fullcon() { return OCF_FullCon; }
+intptr_t FnOCF_CrewMember() { return OCF_CrewMember; }
+intptr_t FnOCF_Grab() { return OCF_Grab; }
+intptr_t FnOCF_OnFire() { return OCF_OnFire; }
+intptr_t FnOCF_Chop() { return OCF_Chop; }
+intptr_t FnOCF_Construct() { return OCF_Construct; }
+intptr_t FnOCF_InLiquid() { return OCF_InLiquid; }
+intptr_t FnOCF_InSolid() { return OCF_InSolid; }
+intptr_t FnOCF_InFree() { return OCF_InFree; }
+intptr_t FnOCF_Available() { return OCF_Available; }
+intptr_t FnOCF_PowerConsumer() { return OCF_PowerConsumer; }
+intptr_t FnOCF_PowerSupply() { return OCF_PowerSupply; }
+intptr_t FnOCF_AttractLightning() { return OCF_AttractLightning; }
 
 C4Object *FnAnyContainer() { return ANY_CONTAINER; }
 C4Object *FnNoContainer() { return NO_CONTAINER; }
 
 //=========================== C4Script Function Map ===================================
 
-#define MkFn (long (*)(C4Thread *, long, long, long, long, long, long, long, long, long, long, long, long))
+#define MkFn (intptr_t (*)(C4Thread *, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t))
 
 C4ScriptFnDef C4ScriptFnMap[] = {
 

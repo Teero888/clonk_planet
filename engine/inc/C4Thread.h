@@ -24,8 +24,8 @@ public:
   BOOL ReturnThread;          // Set by return
   BOOL NextStatementAdjacent; // Do not expect statement separator ';'
 
-  long Variable[C4ThreadMaxVar];
-  long Parameter[C4ThreadMaxPar];
+  intptr_t Variable[C4ThreadMaxVar];
+  intptr_t Parameter[C4ThreadMaxPar];
 
 protected:
   C4Thread *Caller;
@@ -34,11 +34,11 @@ protected:
   C4ThreadError Error;
 
 public:
-  long Execute(C4Thread *pCaller, const char *szScript, const char *szFunction, const char *cpPosition, C4Object *pObj, long par0 = 0, long par1 = 0, long par2 = 0, long par3 = 0, long par4 = 0,
-               long par5 = 0, long par6 = 0, long par7 = 0, long par8 = 0, long par9 = 0);
+  intptr_t Execute(C4Thread *pCaller, const char *szScript, const char *szFunction, const char *cpPosition, C4Object *pObj, intptr_t par0 = 0, intptr_t par1 = 0, intptr_t par2 = 0, intptr_t par3 = 0, intptr_t par4 = 0,
+               intptr_t par5 = 0, intptr_t par6 = 0, intptr_t par7 = 0, intptr_t par8 = 0, intptr_t par9 = 0);
   void SetError(const char *szMessage);
 
 protected:
-  long Execute();
-  long ExecuteStatement();
+  intptr_t Execute();
+  intptr_t ExecuteStatement();
 };

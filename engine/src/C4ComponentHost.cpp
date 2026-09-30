@@ -1,12 +1,14 @@
 /* Copyright (C) 1998-2000  Matthes Bender  RedWolf Design */
 
+// C4_WIN32_CONSOLE: the original Win32 editor (console mode), not ported
+
 /* Holds a single text file component from a group */
 
 #include <C4Include.h>
 
 C4ComponentHost *pCmpHost = NULL;
 
-#if defined(C4ENGINE) && defined(_WIN32)
+#if defined(C4ENGINE) && defined(C4_WIN32_CONSOLE)
 
 BOOL CALLBACK ComponentDlgProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam) {
 
@@ -81,7 +83,7 @@ void C4ComponentHost::Clear() {
   if (Data)
     delete[] Data;
   Data = NULL;
-#ifdef _WIN32
+#ifdef C4_WIN32_CONSOLE
   if (hDialog)
     DestroyWindow(hDialog);
 #endif
@@ -121,7 +123,7 @@ void C4ComponentHost::Open() {
 
   pCmpHost = this;
 
-#if defined(C4ENGINE) && defined(_WIN32)
+#if defined(C4ENGINE) && defined(C4_WIN32_CONSOLE)
 
   DialogBox(Application.hInstance, MAKEINTRESOURCE(IDD_COMPONENT), Application.hWindow, (DLGPROC)ComponentDlgProc);
 
@@ -151,14 +153,14 @@ BOOL C4ComponentHost::GetLanguageString(const char *szLanguage, char *sTarget, i
 void C4ComponentHost::Close() {
   if (!hDialog)
     return;
-#ifdef _WIN32
+#ifdef C4_WIN32_CONSOLE
   EndDialog(hDialog, 1);
 #endif
   hDialog = NULL;
 }
 
 void C4ComponentHost::InitDialog(HWND hDlg) {
-#if defined(C4ENGINE) && defined(_WIN32)
+#if defined(C4ENGINE) && defined(C4_WIN32_CONSOLE)
   hDialog = hDlg;
   // Set text
   SetWindowText(hDialog, Name);

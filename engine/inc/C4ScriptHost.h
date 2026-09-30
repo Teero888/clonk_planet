@@ -28,7 +28,7 @@ protected:
 public:
   int Counter;
   BOOL Go;
-  long Global[C4MaxGlobal];
+  intptr_t Global[C4MaxGlobal];
   C4ID idDef;
   char *Script;
 
@@ -46,10 +46,10 @@ public:
   const char *GetControlDesc(const char *szFunctionFormat, int iCom, C4ID *pidImage = NULL);
   int GetControlFlag(const char *szFunctionFormat);
   int ResolveIncludes(C4DefList &rDefs);
-  long ObjectCall(C4Thread *pCaller, C4Object *pObj, const char *szFunction, long par0 = 0, long par1 = 0, long par2 = 0, long par3 = 0, long par4 = 0, long par5 = 0, long par6 = 0, long par7 = 0,
-                  long par8 = 0, long par9 = 0);
-  long Call(C4Thread *pCaller, const char *szFunction, long par0 = 0, long par1 = 0, long par2 = 0, long par3 = 0, long par4 = 0, long par5 = 0, long par6 = 0, long par7 = 0, long par8 = 0,
-            long par9 = 0);
+  intptr_t ObjectCall(C4Thread *pCaller, C4Object *pObj, const char *szFunction, intptr_t par0 = 0, intptr_t par1 = 0, intptr_t par2 = 0, intptr_t par3 = 0, intptr_t par4 = 0, intptr_t par5 = 0, intptr_t par6 = 0, intptr_t par7 = 0,
+                  intptr_t par8 = 0, intptr_t par9 = 0);
+  intptr_t Call(C4Thread *pCaller, const char *szFunction, intptr_t par0 = 0, intptr_t par1 = 0, intptr_t par2 = 0, intptr_t par3 = 0, intptr_t par4 = 0, intptr_t par5 = 0, intptr_t par6 = 0, intptr_t par7 = 0, intptr_t par8 = 0,
+            intptr_t par9 = 0);
   C4ScriptFnRef *GetFunctionRef(const char *szFunction);
   C4ScriptFnRef *GetFunctionRef(int iFunction);
 
@@ -58,7 +58,7 @@ protected:
   void AddFunctionTable(C4ScriptFnRef *pFn);
   void SetError(const char *szMessage);
   void MakeScript();
-  long FunctionCall(C4Thread *pCaller, const char *szFunction, C4Object *pObj, long iPar0, long iPar1, long iPar2, long iPar3, long iPar4, long iPar5, long iPar6, long iPar7, long iPar8, long iPar9);
+  intptr_t FunctionCall(C4Thread *pCaller, const char *szFunction, C4Object *pObj, intptr_t iPar0, intptr_t iPar1, intptr_t iPar2, intptr_t iPar3, intptr_t iPar4, intptr_t iPar5, intptr_t iPar6, intptr_t iPar7, intptr_t iPar8, intptr_t iPar9);
   int QualifierAccess(const char *szQualifier);
   BOOL ScanFunctionDesc(const char *szDesc, char *sDesc, C4ID *pidImage, char *sCondition);
 };
